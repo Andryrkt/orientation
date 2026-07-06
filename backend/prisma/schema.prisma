@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  VISITOR
+  STUDENT
+  COACH
+  ADMIN
+}
+
+enum NiveauMention {
+  BTS
+  LICENCE
+  MASTER
+  DOCTORAT
+}
+
+model Utilisateur {
+  id               String    @id @default(uuid())
+  nom              String
+  prenom           String
+  email            String    @unique
+  telephone        String?   @unique
+  password         String
+  role             Role      @default(STUDENT)
+  emailVerifiedAt  DateTime?
+  refreshTokenHash String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  profil    Profil?
+
+  @@map("utilisateurs")
+}
+
+model Profil {
+  id            String    @id @default(uuid())
+  utilisateurId String    @unique
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  dateNaissance DateTime?
+  sexe          String?
+  region        String?
+  niveauEtude   String?
+  photo         String?
+  bio           String?
+  interets      String[]  @default([])
+
+  @@map("profils")
+}
+
+model Domaine {
+  id          String   @id @default(uuid())
+  nom         String
+  slug        String   @unique
+  description String?
+  icone       String?
+  ordre       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  metiers  Metier[]
+  mentions Mention[]
+
+  @@map("domaines")
+}
+
+model Metier {
+  id                  String   @id @default(uuid())
+  domaineId           String
+  domaine             Domaine  @relation(fields: [domaineId], references: [id], onDelete: Restrict)
+  nom                 String
+  slug                String   @unique
+  description         String?
+  missions            String?
+  competences         Json     @default("[]")
+  salaireMin          Int?
+  salaireMax          Int?
+  niveauRequis        String?
+  perspectivesEmploi  String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("metiers")
+}
+
+model Universite {
+  id          String   @id @default(uuid())
+  nom         String
+  slug        String   @unique
+  description String?
+  adresse     String?
+  ville       String?
+  region      String?
+  telephone   String?
+  email       String?
+  siteWeb     String?
+  latitude    Float?
+  longitude   Float?
+  photos      Json     @default("[]")
+  statut      String   @default("public")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  mentions Mention[]
+
+  @@map("universites")
+}
+
+model Mention {
+  id            String        @id @default(uuid())
+  universiteId  String
+  universite    Universite    @relation(fields: [universiteId], references: [id], onDelete: Cascade)
+  domaineId     String
+  domaine       Domaine       @relation(fields: [domaineId], references: [id], onDelete: Restrict)
+  nom           String
+  slug          String        @unique
+  description   String?
+  niveau        NiveauMention @default(LICENCE)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  parcours Parcours[]
+
+  @@map("mentions")
+}
+
+model Parcours {
+  id               String   @id @default(uuid())
+  mentionId        String
+  mention          Mention  @relation(fields: [mentionId], references: [id], onDelete: Cascade)
+  nom              String
+  slug             String   @unique
+  description      String?
+  duree            String?
+  conditionsAcces  String?
+  debouches        String?
+  fraisAnnuels     Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("parcours")
+}
