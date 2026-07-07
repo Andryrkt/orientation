@@ -46,7 +46,7 @@ export interface Metier {
   nom: string;
   slug: string;
   description: string | null;
-  missions: string | null;
+  missions: string[];
   competences: string[];
   salaireMin: number | null;
   salaireMax: number | null;
@@ -54,6 +54,66 @@ export interface Metier {
   perspectivesEmploi: string | null;
   similaires?: Metier[];
   riasecCodes?: string[];
+
+  // Section 1 - Identification
+  autresAppellations: string[];
+  sousDomaine: string | null;
+  secteursActivite: string[];
+  codeRome: string | null;
+
+  // Section 2 - Environnement de travail
+  environnementTravail: string[];
+  environnementAutre: string | null;
+
+  // Section 3 - Competences
+  competencesComportementales: string[];
+  languesRequises: string[];
+  niveauLangues: string | null;
+
+  // Section 4 - Formation et parcours d'acces
+  specialiteDiplome: string | null;
+  formationsMadagascar: string[];
+  certifications: string[];
+  autoFormation: string | null;
+
+  // Section 5 - Conditions de travail et remuneration
+  salaireSource: string | null;
+  typeContrat: string[];
+  volumeHoraire: string[];
+  penibilitePhysique: number | null;
+  penibiliteStress: number | null;
+  penibiliteRisques: number | null;
+  avantages: string | null;
+
+  // Section 6 - Marche de l'emploi a Madagascar
+  niveauDemande: string | null;
+  regionsPresence: string[];
+  postesEvolution: string | null;
+  mobiliteInternationale: string | null;
+  tendances: string[];
+  employeurs: string[];
+
+  // Section 7 - Profil type et personnalite
+  traitsPersonnalite: string[];
+  centresInteret: string[];
+  valeursProfessionnelles: string[];
+  profilIntroExtraverti: string | null;
+
+  // Section 8 - Temoignage professionnel
+  temoignagePrenom: string | null;
+  temoignageAnneesExperience: number | null;
+  temoignageVille: string | null;
+  temoignageSecteurEmployeur: string | null;
+  temoignageCePlait: string | null;
+  temoignageDifficultes: string | null;
+  temoignageConseil: string | null;
+  temoignageCitation: string | null;
+  temoignageAccordPublication: string | null;
+
+  // Section 9 - Sources et validation
+  sources: string[];
+  fiabilite: string | null;
+  observations: string | null;
 }
 
 export interface Universite {

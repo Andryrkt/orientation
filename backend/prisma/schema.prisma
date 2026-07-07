@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -108,13 +109,74 @@ model Metier {
   nom                 String
   slug                String   @unique
   description         String?
-  missions            String?
+  missions            String[] @default([])
   competences         Json     @default("[]")
   salaireMin          Int?
   salaireMax          Int?
   niveauRequis        String?
   perspectivesEmploi  String?
   riasecCodes         String[] @default([])
+
+  // Section 1 - Identification
+  autresAppellations  String[] @default([])
+  sousDomaine         String?
+  secteursActivite    String[] @default([])
+  codeRome            String?
+
+  // Section 2 - Environnement de travail
+  environnementTravail String[] @default([])
+  environnementAutre   String?
+
+  // Section 3 - Competences
+  competencesComportementales String[] @default([])
+  languesRequises             String[] @default([])
+  niveauLangues                String?
+
+  // Section 4 - Formation et parcours d'acces
+  specialiteDiplome     String?
+  formationsMadagascar  String[] @default([])
+  certifications        String[] @default([])
+  autoFormation         String?
+
+  // Section 5 - Conditions de travail et remuneration
+  salaireSource       String?
+  typeContrat         String[] @default([])
+  volumeHoraire       String[] @default([])
+  penibilitePhysique  Int?
+  penibiliteStress    Int?
+  penibiliteRisques   Int?
+  avantages           String?
+
+  // Section 6 - Marche de l'emploi a Madagascar
+  niveauDemande           String?
+  regionsPresence         String[] @default([])
+  postesEvolution         String?
+  mobiliteInternationale  String?
+  tendances               String[] @default([])
+  employeurs              String[] @default([])
+
+  // Section 7 - Profil type et personnalite
+  traitsPersonnalite       String[] @default([])
+  centresInteret           String[] @default([])
+  valeursProfessionnelles  String[] @default([])
+  profilIntroExtraverti    String?
+
+  // Section 8 - Temoignage professionnel
+  temoignagePrenom             String?
+  temoignageAnneesExperience   Int?
+  temoignageVille              String?
+  temoignageSecteurEmployeur   String?
+  temoignageCePlait            String?
+  temoignageDifficultes        String?
+  temoignageConseil            String?
+  temoignageCitation           String?
+  temoignageAccordPublication  String?
+
+  // Section 9 - Sources et validation
+  sources       String[] @default([])
+  fiabilite     String?
+  observations  String?
+
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
