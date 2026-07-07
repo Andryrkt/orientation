@@ -18,9 +18,13 @@ cp .env.example .env
 docker compose up --build
 ```
 
-- Frontend : http://localhost:5173
-- Backend API : http://localhost:3000
-- Documentation API (Swagger) : http://localhost:3000/api/docs
+- Frontend : http://localhost:5174
+- Backend API : http://localhost:3001
+- Documentation API (Swagger) : http://localhost:3001/api/docs
+
+Les ports par défaut (`.env.example`) sont volontairement décalés (3001, 5174, 5434) pour éviter
+les conflits avec d'autres projets locaux utilisant les ports standards 3000/5173/5432. Modifie
+`.env` si tu veux revenir aux ports par défaut.
 
 Au premier démarrage, les migrations Prisma s'exécutent automatiquement puis la base est
 peuplée avec des données de démonstration (domaines, métiers, une université) ainsi qu'un
