@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
 import { Paginated } from '../../lib/types';
 
-export type FieldType = 'text' | 'number' | 'textarea' | 'select';
+export type FieldType = 'text' | 'number' | 'textarea' | 'select' | 'date';
 
 export interface FieldConfig {
   name: string;
@@ -22,6 +22,7 @@ export interface ColumnConfig<T> {
 interface AdminResourcePageProps<T extends { id: string }> {
   title: string;
   apiPath: string;
+  listApiPath?: string;
   queryKey: string;
   columns: ColumnConfig<T>[];
   fields: FieldConfig[];
@@ -33,6 +34,7 @@ interface AdminResourcePageProps<T extends { id: string }> {
 export function AdminResourcePage<T extends { id: string }>({
   title,
   apiPath,
+  listApiPath,
   queryKey,
   columns,
   fields,
@@ -48,7 +50,7 @@ export function AdminResourcePage<T extends { id: string }>({
 
   const { data, isLoading } = useQuery({
     queryKey: [queryKey],
-    queryFn: async () => (await api.get<Paginated<T>>(`${apiPath}?limit=100`)).data,
+    queryFn: async () => (await api.get<Paginated<T>>(`${listApiPath ?? apiPath}?limit=100`)).data,
   });
 
   const createMutation = useMutation({

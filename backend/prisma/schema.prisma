@@ -21,6 +21,19 @@ enum NiveauMention {
   DOCTORAT
 }
 
+enum FavorisableType {
+  METIER
+  UNIVERSITE
+  STAGE
+  BOURSE
+}
+
+enum CommentaireStatut {
+  EN_ATTENTE
+  APPROUVE
+  REJETE
+}
+
 model Utilisateur {
   id               String    @id @default(uuid())
   nom              String
@@ -34,7 +47,11 @@ model Utilisateur {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  profil    Profil?
+  profil        Profil?
+  favoris       Favori[]
+  blogs         Blog[]
+  blogLikes     BlogLike[]
+  commentaires  BlogCommentaire[]
 
   @@map("utilisateurs")
 }
@@ -66,6 +83,8 @@ model Domaine {
 
   metiers  Metier[]
   mentions Mention[]
+  stages   Stage[]
+  bourses  Bourse[]
 
   @@map("domaines")
 }
@@ -145,4 +164,98 @@ model Parcours {
   updatedAt        DateTime @updatedAt
 
   @@map("parcours")
+}
+
+model Stage {
+  id                    String    @id @default(uuid())
+  titre                 String
+  entreprise            String
+  description           String?
+  domaineId             String?
+  domaine               Domaine?  @relation(fields: [domaineId], references: [id], onDelete: SetNull)
+  duree                 String?
+  dateDebut             DateTime?
+  dateLimiteCandidature DateTime?
+  region                String?
+  niveauEtude           String?
+  remuneration          String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("stages")
+}
+
+model Bourse {
+  id          String    @id @default(uuid())
+  nom         String
+  organisme   String
+  pays        String?
+  domaineId   String?
+  domaine     Domaine?  @relation(fields: [domaineId], references: [id], onDelete: SetNull)
+  niveauEtude String?
+  montant     String?
+  dateLimite  DateTime?
+  conditions  String?
+  lien        String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("bourses")
+}
+
+model Blog {
+  id          String    @id @default(uuid())
+  titre       String
+  slug        String    @unique
+  contenu     String
+  image       String?
+  categorie   String?
+  auteurId    String
+  auteur      Utilisateur @relation(fields: [auteurId], references: [id], onDelete: Restrict)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  likes        BlogLike[]
+  commentaires BlogCommentaire[]
+
+  @@map("blogs")
+}
+
+model BlogLike {
+  id            String      @id @default(uuid())
+  blogId        String
+  blog          Blog        @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  utilisateurId String
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+
+  @@unique([blogId, utilisateurId])
+  @@map("blog_likes")
+}
+
+model BlogCommentaire {
+  id            String            @id @default(uuid())
+  blogId        String
+  blog          Blog              @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  utilisateurId String
+  utilisateur   Utilisateur       @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  contenu       String
+  statut        CommentaireStatut @default(EN_ATTENTE)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@map("blog_commentaires")
+}
+
+model Favori {
+  id            String          @id @default(uuid())
+  utilisateurId String
+  utilisateur   Utilisateur     @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  type          FavorisableType
+  entityId      String
+  createdAt     DateTime        @default(now())
+
+  @@unique([utilisateurId, type, entityId])
+  @@map("favoris")
 }

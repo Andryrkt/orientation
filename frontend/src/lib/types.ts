@@ -98,6 +98,69 @@ export interface Parcours {
   fraisAnnuels: number | null;
 }
 
+export interface Stage {
+  id: string;
+  titre: string;
+  entreprise: string;
+  description: string | null;
+  domaineId: string | null;
+  domaine?: Domaine | null;
+  duree: string | null;
+  dateDebut: string | null;
+  dateLimiteCandidature: string | null;
+  region: string | null;
+  niveauEtude: string | null;
+  remuneration: string | null;
+}
+
+export interface Bourse {
+  id: string;
+  nom: string;
+  organisme: string;
+  pays: string | null;
+  domaineId: string | null;
+  domaine?: Domaine | null;
+  niveauEtude: string | null;
+  montant: string | null;
+  dateLimite: string | null;
+  conditions: string | null;
+  lien: string | null;
+}
+
+export interface AuteurResume {
+  id: string;
+  nom: string;
+  prenom: string;
+}
+
+export type CommentaireStatut = 'EN_ATTENTE' | 'APPROUVE' | 'REJETE';
+
+export interface BlogCommentaire {
+  id: string;
+  blogId: string;
+  utilisateurId: string;
+  utilisateur?: AuteurResume;
+  blog?: { id: string; titre: string; slug: string };
+  contenu: string;
+  statut: CommentaireStatut;
+  createdAt: string;
+}
+
+export interface Blog {
+  id: string;
+  titre: string;
+  slug: string;
+  contenu: string;
+  image: string | null;
+  categorie: string | null;
+  auteurId: string;
+  auteur?: AuteurResume;
+  publishedAt: string | null;
+  createdAt: string;
+  _count?: { likes: number; commentaires?: number };
+  commentaires?: BlogCommentaire[];
+}
+
 export interface AdminStats {
   utilisateurs: number;
   domaines: number;
@@ -105,4 +168,18 @@ export interface AdminStats {
   universites: number;
   mentions: number;
   parcours: number;
+  stages: number;
+  bourses: number;
+  blogs: number;
+}
+
+export type FavorisableType = 'METIER' | 'UNIVERSITE' | 'STAGE' | 'BOURSE';
+
+export interface Favori {
+  id: string;
+  utilisateurId: string;
+  type: FavorisableType;
+  entityId: string;
+  createdAt: string;
+  entity: { id: string; nom: string; slug: string } | null;
 }

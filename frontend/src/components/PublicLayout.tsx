@@ -20,11 +20,15 @@ export function PublicLayout() {
             <NavLink to="/metiers" className={navLinkClass}>Métiers</NavLink>
             <NavLink to="/domaines" className={navLinkClass}>Domaines</NavLink>
             <NavLink to="/universites" className={navLinkClass}>Universités</NavLink>
+            <NavLink to="/stages" className={navLinkClass}>Stages</NavLink>
+            <NavLink to="/bourses" className={navLinkClass}>Bourses</NavLink>
+            <NavLink to="/blog" className={navLinkClass}>Blog</NavLink>
             {user?.role === 'ADMIN' && (
               <NavLink to="/admin" className={navLinkClass}>Back-office</NavLink>
             )}
             {user ? (
               <>
+                <NavLink to="/favoris" className={navLinkClass}>Mes favoris</NavLink>
                 <NavLink to="/profil" className={navLinkClass}>Mon profil</NavLink>
                 <button
                   onClick={() => logout()}

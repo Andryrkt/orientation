@@ -8,6 +8,10 @@ const links = [
   { to: '/admin/universites', label: 'Universités' },
   { to: '/admin/mentions', label: 'Mentions' },
   { to: '/admin/parcours', label: 'Parcours' },
+  { to: '/admin/stages', label: 'Stages' },
+  { to: '/admin/bourses', label: 'Bourses' },
+  { to: '/admin/blogs', label: 'Articles de blog' },
+  { to: '/admin/blog-commentaires', label: 'Commentaires' },
   { to: '/admin/utilisateurs', label: 'Utilisateurs' },
 ];
 

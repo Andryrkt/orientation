@@ -9,6 +9,9 @@ const LABELS: Record<keyof AdminStats, string> = {
   universites: 'Universités',
   mentions: 'Mentions',
   parcours: 'Parcours',
+  stages: 'Stages',
+  bourses: 'Bourses',
+  blogs: 'Articles de blog',
 };
 
 export function Dashboard() {

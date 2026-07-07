@@ -12,6 +12,10 @@ import { UniversitesModule } from './universites/universites.module';
 import { MentionsModule } from './mentions/mentions.module';
 import { ParcoursModule } from './parcours/parcours.module';
 import { AdminModule } from './admin/admin.module';
+import { FavorisModule } from './favoris/favoris.module';
+import { StagesModule } from './stages/stages.module';
+import { BoursesModule } from './bourses/bourses.module';
+import { BlogsModule } from './blogs/blogs.module';
 
 @Module({
   imports: [
@@ -26,6 +30,10 @@ import { AdminModule } from './admin/admin.module';
     MentionsModule,
     ParcoursModule,
     AdminModule,
+    FavorisModule,
+    StagesModule,
+    BoursesModule,
+    BlogsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

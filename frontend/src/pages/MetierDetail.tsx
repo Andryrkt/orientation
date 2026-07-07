@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { Metier } from '../lib/types';
+import { FavoriteButton } from '../components/FavoriteButton';
 
 export function MetierDetail() {
   const { slug } = useParams();
@@ -16,7 +17,10 @@ export function MetierDetail() {
   return (
     <div className="max-w-3xl mx-auto">
       <p className="text-sm font-medium text-brand-600 mb-1">{metier.domaine?.nom}</p>
-      <h1 className="text-3xl font-bold text-slate-900 mb-4">{metier.nom}</h1>
+      <div className="flex items-start justify-between gap-4 mb-4">
+        <h1 className="text-3xl font-bold text-slate-900">{metier.nom}</h1>
+        <FavoriteButton type="METIER" entityId={metier.id} className="shrink-0" />
+      </div>
       <p className="text-slate-700 mb-6">{metier.description}</p>
 
       <div className="grid sm:grid-cols-2 gap-6 mb-8">

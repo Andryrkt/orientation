@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { api } from '../lib/api';
-import { Domaine, Metier, Paginated } from '../lib/types';
+import { Bourse, Domaine, Paginated } from '../lib/types';
 import { FavoriteButton } from '../components/FavoriteButton';
 
-export function MetiersList() {
-  const [searchParams] = useSearchParams();
-  const [domaine, setDomaine] = useState(searchParams.get('domaine') ?? '');
-  const [q, setQ] = useState('');
+function formatDate(value: string | null) {
+  if (!value) return null;
+  return new Date(value).toLocaleDateString('fr-FR');
+}
+
+export function BoursesList() {
+  const [domaine, setDomaine] = useState('');
+  const [pays, setPays] = useState('');
 
   const { data: domaines } = useQuery({
     queryKey: ['domaines-filter'],
@@ -16,25 +20,25 @@ export function MetiersList() {
   });
 
   const { data, isLoading } = useQuery({
-    queryKey: ['metiers', domaine, q],
+    queryKey: ['bourses', domaine, pays],
     queryFn: async () =>
       (
-        await api.get<Paginated<Metier>>('/metiers', {
-          params: { limit: 50, ...(domaine && { domaine }), ...(q && { q }) },
+        await api.get<Paginated<Bourse>>('/bourses', {
+          params: { limit: 50, ...(domaine && { domaine }), ...(pays && { pays }) },
         })
       ).data,
   });
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Métiers</h1>
+      <h1 className="text-2xl font-bold text-slate-800 mb-6">Bourses</h1>
 
       <div className="flex flex-wrap gap-3 mb-6">
         <input
           type="text"
-          placeholder="Rechercher un métier..."
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
+          placeholder="Filtrer par pays..."
+          value={pays}
+          onChange={(e) => setPays(e.target.value)}
           className="border border-slate-300 rounded-md px-3 py-2 text-sm flex-1 min-w-[200px]"
         />
         <select
@@ -51,23 +55,24 @@ export function MetiersList() {
 
       {isLoading && <p className="text-slate-400">Chargement...</p>}
       {!isLoading && data?.items.length === 0 && (
-        <p className="text-slate-400">Aucun métier ne correspond à ta recherche.</p>
+        <p className="text-slate-400">Aucune bourse disponible pour le moment.</p>
       )}
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {data?.items.map((m) => (
+        {data?.items.map((b) => (
           <Link
-            key={m.id}
-            to={`/metiers/${m.slug}`}
+            key={b.id}
+            to={`/bourses/${b.id}`}
             className="relative block bg-white border border-slate-200 rounded-lg p-5 hover:shadow-md transition-shadow"
           >
-            <FavoriteButton type="METIER" entityId={m.id} compact className="absolute top-4 right-4" />
-            <p className="text-xs font-medium text-brand-600 mb-1 pr-8">{m.domaine?.nom}</p>
-            <h3 className="text-lg font-bold text-slate-800 mb-2">{m.nom}</h3>
-            <p className="text-slate-600 text-sm line-clamp-2">{m.description}</p>
-            {(m.salaireMin || m.salaireMax) && (
+            <FavoriteButton type="BOURSE" entityId={b.id} compact className="absolute top-4 right-4" />
+            <p className="text-xs font-medium text-brand-600 mb-1 pr-8">{b.organisme}</p>
+            <h3 className="text-lg font-bold text-slate-800 mb-1">{b.nom}</h3>
+            <p className="text-sm text-slate-500 mb-2">{b.pays}</p>
+            {b.montant && <p className="text-slate-600 text-sm">{b.montant}</p>}
+            {b.dateLimite && (
               <p className="text-xs text-slate-500 mt-3">
-                Salaire : {m.salaireMin?.toLocaleString('fr-FR')} - {m.salaireMax?.toLocaleString('fr-FR')} Ar
+                Date limite : {formatDate(b.dateLimite)}
               </p>
             )}
           </Link>

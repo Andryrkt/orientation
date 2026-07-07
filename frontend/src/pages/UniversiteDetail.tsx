@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { Universite } from '../lib/types';
+import { FavoriteButton } from '../components/FavoriteButton';
 
 export function UniversiteDetail() {
   const { slug } = useParams();
@@ -15,7 +16,10 @@ export function UniversiteDetail() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold text-slate-900 mb-2">{universite.nom}</h1>
+      <div className="flex items-start justify-between gap-4 mb-2">
+        <h1 className="text-3xl font-bold text-slate-900">{universite.nom}</h1>
+        <FavoriteButton type="UNIVERSITE" entityId={universite.id} className="shrink-0" />
+      </div>
       <p className="text-slate-500 mb-4">
         {universite.adresse ? `${universite.adresse}, ` : ''}
         {universite.ville}{universite.region ? `, ${universite.region}` : ''}

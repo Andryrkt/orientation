@@ -6,6 +6,9 @@ import { MetiersModule } from '../metiers/metiers.module';
 import { UniversitesModule } from '../universites/universites.module';
 import { MentionsModule } from '../mentions/mentions.module';
 import { ParcoursModule } from '../parcours/parcours.module';
+import { StagesModule } from '../stages/stages.module';
+import { BoursesModule } from '../bourses/bourses.module';
+import { BlogsModule } from '../blogs/blogs.module';
 
 @Module({
   imports: [
@@ -15,6 +18,9 @@ import { ParcoursModule } from '../parcours/parcours.module';
     UniversitesModule,
     MentionsModule,
     ParcoursModule,
+    StagesModule,
+    BoursesModule,
+    BlogsModule,
   ],
   controllers: [AdminController],
 })
