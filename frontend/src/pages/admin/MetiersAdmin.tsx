@@ -26,12 +26,20 @@ export function MetiersAdmin() {
         salaireMax: undefined,
         niveauRequis: '',
         perspectivesEmploi: '',
+        riasecCodes: '',
       }}
-      toFormValues={(item) => ({ ...item, competences: (item.competences ?? []).join(', ') })}
+      toFormValues={(item) => ({
+        ...item,
+        competences: (item.competences ?? []).join(', '),
+        riasecCodes: (item.riasecCodes ?? []).join(', '),
+      })}
       toPayload={(values) => ({
         ...values,
         competences: typeof values.competences === 'string'
           ? values.competences.split(',').map((c) => c.trim()).filter(Boolean)
+          : [],
+        riasecCodes: typeof values.riasecCodes === 'string'
+          ? values.riasecCodes.split(',').map((c) => c.trim().toUpperCase()).filter(Boolean)
           : [],
       })}
       columns={[
@@ -56,6 +64,11 @@ export function MetiersAdmin() {
         { name: 'salaireMax', label: 'Salaire maximum (Ar)', type: 'number' },
         { name: 'niveauRequis', label: 'Niveau requis', type: 'text' },
         { name: 'perspectivesEmploi', label: "Perspectives d'emploi", type: 'textarea' },
+        {
+          name: 'riasecCodes',
+          label: 'Codes RIASEC (ex: R, I) — pour les recommandations du questionnaire',
+          type: 'text',
+        },
       ]}
     />
   );

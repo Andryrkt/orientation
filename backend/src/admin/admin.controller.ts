@@ -12,6 +12,8 @@ import { ParcoursService } from '../parcours/parcours.service';
 import { StagesService } from '../stages/stages.service';
 import { BoursesService } from '../bourses/bourses.service';
 import { BlogsService } from '../blogs/blogs.service';
+import { QuestionnairesService } from '../questionnaires/questionnaires.service';
+import { CoachsService } from '../coachs/coachs.service';
 
 @ApiBearerAuth()
 @ApiTags('admin')
@@ -29,22 +31,49 @@ export class AdminController {
     private stagesService: StagesService,
     private boursesService: BoursesService,
     private blogsService: BlogsService,
+    private questionnairesService: QuestionnairesService,
+    private coachsService: CoachsService,
   ) {}
 
   @Get('stats')
   async stats() {
-    const [utilisateurs, domaines, metiers, universites, mentions, parcours, stages, bourses, blogs] =
-      await Promise.all([
-        this.usersService.countAll(),
-        this.domainesService.countAll(),
-        this.metiersService.countAll(),
-        this.universitesService.countAll(),
-        this.mentionsService.countAll(),
-        this.parcoursService.countAll(),
-        this.stagesService.countAll(),
-        this.boursesService.countAll(),
-        this.blogsService.countAll(),
-      ]);
-    return { utilisateurs, domaines, metiers, universites, mentions, parcours, stages, bourses, blogs };
+    const [
+      utilisateurs,
+      domaines,
+      metiers,
+      universites,
+      mentions,
+      parcours,
+      stages,
+      bourses,
+      blogs,
+      testsCompletes,
+      coachs,
+    ] = await Promise.all([
+      this.usersService.countAll(),
+      this.domainesService.countAll(),
+      this.metiersService.countAll(),
+      this.universitesService.countAll(),
+      this.mentionsService.countAll(),
+      this.parcoursService.countAll(),
+      this.stagesService.countAll(),
+      this.boursesService.countAll(),
+      this.blogsService.countAll(),
+      this.questionnairesService.countAll(),
+      this.coachsService.countAll(),
+    ]);
+    return {
+      utilisateurs,
+      domaines,
+      metiers,
+      universites,
+      mentions,
+      parcours,
+      stages,
+      bourses,
+      blogs,
+      testsCompletes,
+      coachs,
+    };
   }
 }

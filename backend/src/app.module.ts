@@ -16,6 +16,8 @@ import { FavorisModule } from './favoris/favoris.module';
 import { StagesModule } from './stages/stages.module';
 import { BoursesModule } from './bourses/bourses.module';
 import { BlogsModule } from './blogs/blogs.module';
+import { QuestionnairesModule } from './questionnaires/questionnaires.module';
+import { CoachsModule } from './coachs/coachs.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { BlogsModule } from './blogs/blogs.module';
     StagesModule,
     BoursesModule,
     BlogsModule,
+    QuestionnairesModule,
+    CoachsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

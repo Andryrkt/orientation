@@ -36,6 +36,7 @@ export interface Domaine {
   description: string | null;
   icone: string | null;
   ordre: number;
+  riasecCodes?: string[];
 }
 
 export interface Metier {
@@ -52,6 +53,7 @@ export interface Metier {
   niveauRequis: string | null;
   perspectivesEmploi: string | null;
   similaires?: Metier[];
+  riasecCodes?: string[];
 }
 
 export interface Universite {
@@ -171,9 +173,86 @@ export interface AdminStats {
   stages: number;
   bourses: number;
   blogs: number;
+  testsCompletes: number;
+  coachs: number;
 }
 
-export type FavorisableType = 'METIER' | 'UNIVERSITE' | 'STAGE' | 'BOURSE';
+export type TypeQuestion = 'CHOIX_MULTIPLE' | 'ECHELLE' | 'TEXTE';
+
+export interface Reponse {
+  id: string;
+  texte: string;
+  ordre: number;
+  score?: Record<string, number>;
+}
+
+export interface Question {
+  id: string;
+  texte: string;
+  type: TypeQuestion;
+  ordre: number;
+  scoreDimensions?: Record<string, number>;
+  reponses: Reponse[];
+}
+
+export interface Questionnaire {
+  id: string;
+  titre: string;
+  description: string | null;
+  type: string | null;
+  actif?: boolean;
+  questions?: Question[];
+  _count?: { questions: number; resultats: number };
+}
+
+export interface RecommendationItem {
+  id: string;
+  nom: string;
+  slug: string;
+}
+
+export interface ResultatOrientation {
+  id: string;
+  utilisateurId: string;
+  questionnaireId: string;
+  questionnaire?: { titre: string };
+  scores: Record<string, number>;
+  profilDominant: string | null;
+  domainesRecommandes: RecommendationItem[];
+  metiersRecommandes: RecommendationItem[];
+  reponses: unknown[];
+  createdAt: string;
+}
+
+export interface CoachAvis {
+  id: string;
+  coachId: string;
+  utilisateurId: string;
+  utilisateur?: AuteurResume;
+  note: number;
+  commentaire: string | null;
+  createdAt: string;
+}
+
+export interface Coach {
+  id: string;
+  utilisateurId: string | null;
+  nom: string;
+  prenom: string;
+  email: string | null;
+  telephone: string | null;
+  photo: string | null;
+  bio: string | null;
+  specialites: string[];
+  experience: string | null;
+  disponibilites: string | null;
+  visible: boolean;
+  noteMoyenne: number | null;
+  avisCount: number;
+  avis?: CoachAvis[];
+}
+
+export type FavorisableType = 'METIER' | 'UNIVERSITE' | 'STAGE' | 'BOURSE' | 'COACH';
 
 export interface Favori {
   id: string;

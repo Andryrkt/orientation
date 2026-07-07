@@ -14,6 +14,12 @@ import { BoursesList } from './pages/BoursesList';
 import { BourseDetail } from './pages/BourseDetail';
 import { BlogsList } from './pages/BlogsList';
 import { BlogDetail } from './pages/BlogDetail';
+import { QuestionnairesList } from './pages/QuestionnairesList';
+import { QuestionnaireTake } from './pages/QuestionnaireTake';
+import { QuestionnaireResultat } from './pages/QuestionnaireResultat';
+import { QuestionnaireHistorique } from './pages/QuestionnaireHistorique';
+import { CoachsList } from './pages/CoachsList';
+import { CoachDetail } from './pages/CoachDetail';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Profil } from './pages/Profil';
@@ -29,6 +35,9 @@ import { StagesAdmin } from './pages/admin/StagesAdmin';
 import { BoursesAdmin } from './pages/admin/BoursesAdmin';
 import { BlogsAdmin } from './pages/admin/BlogsAdmin';
 import { BlogCommentairesAdmin } from './pages/admin/BlogCommentairesAdmin';
+import { QuestionnairesAdmin } from './pages/admin/QuestionnairesAdmin';
+import { QuestionnaireBuilder } from './pages/admin/QuestionnaireBuilder';
+import { CoachsAdmin } from './pages/admin/CoachsAdmin';
 import { UtilisateursAdmin } from './pages/admin/UtilisateursAdmin';
 
 export default function App() {
@@ -47,11 +56,17 @@ export default function App() {
         <Route path="bourses/:id" element={<BourseDetail />} />
         <Route path="blog" element={<BlogsList />} />
         <Route path="blog/:slug" element={<BlogDetail />} />
+        <Route path="questionnaire" element={<QuestionnairesList />} />
+        <Route path="coachs" element={<CoachsList />} />
+        <Route path="coachs/:id" element={<CoachDetail />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
           <Route path="profil" element={<Profil />} />
           <Route path="favoris" element={<Favoris />} />
+          <Route path="questionnaire/:id" element={<QuestionnaireTake />} />
+          <Route path="questionnaire/resultats/:id" element={<QuestionnaireResultat />} />
+          <Route path="mes-resultats" element={<QuestionnaireHistorique />} />
         </Route>
       </Route>
 
@@ -67,6 +82,9 @@ export default function App() {
           <Route path="bourses" element={<BoursesAdmin />} />
           <Route path="blogs" element={<BlogsAdmin />} />
           <Route path="blog-commentaires" element={<BlogCommentairesAdmin />} />
+          <Route path="questionnaires" element={<QuestionnairesAdmin />} />
+          <Route path="questionnaires/:id" element={<QuestionnaireBuilder />} />
+          <Route path="coachs" element={<CoachsAdmin />} />
           <Route path="utilisateurs" element={<UtilisateursAdmin />} />
         </Route>
       </Route>

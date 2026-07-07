@@ -33,6 +33,13 @@ export class FavorisService {
         });
         return bourse && { id: bourse.id, nom: bourse.nom, slug: bourse.id };
       }
+      case FavorisableType.COACH: {
+        const coach = await this.prisma.coach.findUnique({
+          where: { id: entityId },
+          select: { id: true, nom: true, prenom: true },
+        });
+        return coach && { id: coach.id, nom: `${coach.prenom} ${coach.nom}`, slug: coach.id };
+      }
     }
   }
 

@@ -6,6 +6,7 @@ const TYPE_LABELS: Record<string, string> = {
   UNIVERSITE: 'Universités',
   STAGE: 'Stages',
   BOURSE: 'Bourses',
+  COACH: 'Coachs',
 };
 
 const TYPE_LINK: Record<string, (slug: string) => string> = {
@@ -13,6 +14,7 @@ const TYPE_LINK: Record<string, (slug: string) => string> = {
   UNIVERSITE: (slug) => `/universites/${slug}`,
   STAGE: (id) => `/stages/${id}`,
   BOURSE: (id) => `/bourses/${id}`,
+  COACH: (id) => `/coachs/${id}`,
 };
 
 export function Favoris() {
@@ -29,7 +31,7 @@ export function Favoris() {
 
       {favoris.length === 0 && (
         <p className="text-slate-400">
-          Tu n'as pas encore de favoris. Ajoute des métiers, universités, stages ou bourses depuis leur page de détail.
+          Tu n'as pas encore de favoris. Ajoute des métiers, universités, stages, bourses ou coachs depuis leur page de détail.
         </p>
       )}
 

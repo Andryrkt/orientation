@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsIn, IsInt, IsOptional, IsString } from 'class-validator';
+
+const RIASEC_CODES = ['R', 'I', 'A', 'S', 'E', 'C'];
 
 export class CreateDomaineDto {
   @ApiProperty()
@@ -20,4 +22,14 @@ export class CreateDomaineDto {
   @IsOptional()
   @IsInt()
   ordre?: number;
+
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description: 'Codes RIASEC associes (R, I, A, S, E, C) pour les recommandations du questionnaire',
+  })
+  @IsOptional()
+  @IsArray()
+  @IsIn(RIASEC_CODES, { each: true })
+  riasecCodes?: string[];
 }

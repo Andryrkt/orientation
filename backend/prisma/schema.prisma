@@ -26,12 +26,19 @@ enum FavorisableType {
   UNIVERSITE
   STAGE
   BOURSE
+  COACH
 }
 
 enum CommentaireStatut {
   EN_ATTENTE
   APPROUVE
   REJETE
+}
+
+enum TypeQuestion {
+  CHOIX_MULTIPLE
+  ECHELLE
+  TEXTE
 }
 
 model Utilisateur {
@@ -47,11 +54,14 @@ model Utilisateur {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  profil        Profil?
-  favoris       Favori[]
-  blogs         Blog[]
-  blogLikes     BlogLike[]
-  commentaires  BlogCommentaire[]
+  profil               Profil?
+  favoris              Favori[]
+  blogs                Blog[]
+  blogLikes            BlogLike[]
+  commentaires         BlogCommentaire[]
+  resultatsOrientation ResultatOrientation[]
+  coachProfil          Coach?
+  avisCoachs           CoachAvis[]
 
   @@map("utilisateurs")
 }
@@ -78,6 +88,7 @@ model Domaine {
   description String?
   icone       String?
   ordre       Int      @default(0)
+  riasecCodes String[] @default([])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -102,6 +113,7 @@ model Metier {
   salaireMax          Int?
   niveauRequis        String?
   perspectivesEmploi  String?
+  riasecCodes         String[] @default([])
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
@@ -246,6 +258,100 @@ model BlogCommentaire {
   updatedAt     DateTime          @updatedAt
 
   @@map("blog_commentaires")
+}
+
+model Questionnaire {
+  id          String   @id @default(uuid())
+  titre       String
+  description String?
+  type        String?  @default("RIASEC")
+  actif       Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  questions Question[]
+  resultats ResultatOrientation[]
+
+  @@map("questionnaires")
+}
+
+model Question {
+  id              String        @id @default(uuid())
+  questionnaireId String
+  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
+  texte           String
+  type            TypeQuestion  @default(CHOIX_MULTIPLE)
+  ordre           Int           @default(0)
+  scoreDimensions Json          @default("{}")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  reponses Reponse[]
+
+  @@map("questions")
+}
+
+model Reponse {
+  id         String   @id @default(uuid())
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  texte      String
+  score      Json     @default("{}")
+  ordre      Int      @default(0)
+
+  @@map("reponses")
+}
+
+model ResultatOrientation {
+  id                  String        @id @default(uuid())
+  utilisateurId       String
+  utilisateur         Utilisateur   @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  questionnaireId     String
+  questionnaire       Questionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Restrict)
+  scores              Json
+  profilDominant      String?
+  domainesRecommandes Json          @default("[]")
+  metiersRecommandes  Json          @default("[]")
+  reponses            Json          @default("[]")
+  createdAt           DateTime      @default(now())
+
+  @@map("resultats_orientation")
+}
+
+model Coach {
+  id              String       @id @default(uuid())
+  utilisateurId   String?      @unique
+  utilisateur     Utilisateur? @relation(fields: [utilisateurId], references: [id], onDelete: SetNull)
+  nom             String
+  prenom          String
+  email           String?
+  telephone       String?
+  photo           String?
+  bio             String?
+  specialites     String[]     @default([])
+  experience      String?
+  disponibilites  String?
+  visible         Boolean      @default(true)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  avis CoachAvis[]
+
+  @@map("coachs")
+}
+
+model CoachAvis {
+  id            String      @id @default(uuid())
+  coachId       String
+  coach         Coach       @relation(fields: [coachId], references: [id], onDelete: Cascade)
+  utilisateurId String
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  note          Int
+  commentaire   String?
+  createdAt     DateTime    @default(now())
+
+  @@unique([coachId, utilisateurId])
+  @@map("coach_avis")
 }
 
 model Favori {

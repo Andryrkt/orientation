@@ -12,6 +12,8 @@ const links = [
   { to: '/admin/bourses', label: 'Bourses' },
   { to: '/admin/blogs', label: 'Articles de blog' },
   { to: '/admin/blog-commentaires', label: 'Commentaires' },
+  { to: '/admin/questionnaires', label: "Questionnaires d'orientation" },
+  { to: '/admin/coachs', label: 'Coachs' },
   { to: '/admin/utilisateurs', label: 'Utilisateurs' },
 ];
 
