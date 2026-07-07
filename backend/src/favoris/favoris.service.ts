@@ -40,6 +40,11 @@ export class FavorisService {
         });
         return coach && { id: coach.id, nom: `${coach.prenom} ${coach.nom}`, slug: coach.id };
       }
+      case FavorisableType.CENTRE_FORMATION:
+        return this.prisma.centreFormation.findUnique({
+          where: { id: entityId },
+          select: { id: true, nom: true, slug: true },
+        });
     }
   }
 

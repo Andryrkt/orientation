@@ -14,6 +14,7 @@ import { BoursesService } from '../bourses/bourses.service';
 import { BlogsService } from '../blogs/blogs.service';
 import { QuestionnairesService } from '../questionnaires/questionnaires.service';
 import { CoachsService } from '../coachs/coachs.service';
+import { CentresFormationService } from '../centres-formation/centres-formation.service';
 
 @ApiBearerAuth()
 @ApiTags('admin')
@@ -33,6 +34,7 @@ export class AdminController {
     private blogsService: BlogsService,
     private questionnairesService: QuestionnairesService,
     private coachsService: CoachsService,
+    private centresFormationService: CentresFormationService,
   ) {}
 
   @Get('stats')
@@ -49,6 +51,7 @@ export class AdminController {
       blogs,
       testsCompletes,
       coachs,
+      centresFormation,
     ] = await Promise.all([
       this.usersService.countAll(),
       this.domainesService.countAll(),
@@ -61,6 +64,7 @@ export class AdminController {
       this.blogsService.countAll(),
       this.questionnairesService.countAll(),
       this.coachsService.countAll(),
+      this.centresFormationService.countAll(),
     ]);
     return {
       utilisateurs,
@@ -74,6 +78,7 @@ export class AdminController {
       blogs,
       testsCompletes,
       coachs,
+      centresFormation,
     };
   }
 }

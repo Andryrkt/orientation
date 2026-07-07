@@ -176,6 +176,35 @@ async function main() {
     }
   }
 
+  const centresFormationData = [
+    {
+      nom: 'Centre de Formation Professionnelle Analamanga',
+      slug: 'centre-formation-professionnelle-analamanga',
+      adresse: 'Lot II M 12 Ankorondrano',
+      ville: 'Antananarivo',
+      region: 'Analamanga',
+      contact: '+261340000001',
+      siteWeb: 'https://cfp-analamanga.mg',
+    },
+    {
+      nom: 'Institut de Formation Technique de Toamasina',
+      slug: 'institut-formation-technique-toamasina',
+      adresse: 'Avenue de l\'Independance',
+      ville: 'Toamasina',
+      region: 'Atsinanana',
+      contact: '+261340000002',
+      siteWeb: 'https://ift-toamasina.mg',
+    },
+  ];
+
+  for (const c of centresFormationData) {
+    await prisma.centreFormation.upsert({
+      where: { slug: c.slug },
+      update: c,
+      create: c,
+    });
+  }
+
   console.log('Seed termine.');
 }
 

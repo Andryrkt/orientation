@@ -27,6 +27,7 @@ enum FavorisableType {
   STAGE
   BOURSE
   COACH
+  CENTRE_FORMATION
 }
 
 enum CommentaireStatut {
@@ -316,6 +317,21 @@ model ResultatOrientation {
   createdAt           DateTime      @default(now())
 
   @@map("resultats_orientation")
+}
+
+model CentreFormation {
+  id        String   @id @default(uuid())
+  nom       String
+  slug      String   @unique
+  adresse   String?
+  ville     String?
+  region    String?
+  contact   String?
+  siteWeb   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("centres_formation")
 }
 
 model Coach {

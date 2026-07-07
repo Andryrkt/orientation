@@ -6,6 +6,7 @@ const links = [
   { to: '/admin/domaines', label: 'Domaines' },
   { to: '/admin/metiers', label: 'Métiers' },
   { to: '/admin/universites', label: 'Universités' },
+  { to: '/admin/centres-formation', label: 'Centres de formation' },
   { to: '/admin/mentions', label: 'Mentions' },
   { to: '/admin/parcours', label: 'Parcours' },
   { to: '/admin/stages', label: 'Stages' },

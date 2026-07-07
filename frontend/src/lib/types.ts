@@ -175,6 +175,7 @@ export interface AdminStats {
   blogs: number;
   testsCompletes: number;
   coachs: number;
+  centresFormation: number;
 }
 
 export type TypeQuestion = 'CHOIX_MULTIPLE' | 'ECHELLE' | 'TEXTE';
@@ -252,7 +253,18 @@ export interface Coach {
   avis?: CoachAvis[];
 }
 
-export type FavorisableType = 'METIER' | 'UNIVERSITE' | 'STAGE' | 'BOURSE' | 'COACH';
+export interface CentreFormation {
+  id: string;
+  nom: string;
+  slug: string;
+  adresse: string | null;
+  ville: string | null;
+  region: string | null;
+  contact: string | null;
+  siteWeb: string | null;
+}
+
+export type FavorisableType = 'METIER' | 'UNIVERSITE' | 'STAGE' | 'BOURSE' | 'COACH' | 'CENTRE_FORMATION';
 
 export interface Favori {
   id: string;

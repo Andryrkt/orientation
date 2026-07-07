@@ -11,6 +11,7 @@ import { BoursesModule } from '../bourses/bourses.module';
 import { BlogsModule } from '../blogs/blogs.module';
 import { QuestionnairesModule } from '../questionnaires/questionnaires.module';
 import { CoachsModule } from '../coachs/coachs.module';
+import { CentresFormationModule } from '../centres-formation/centres-formation.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CoachsModule } from '../coachs/coachs.module';
     BlogsModule,
     QuestionnairesModule,
     CoachsModule,
+    CentresFormationModule,
   ],
   controllers: [AdminController],
 })

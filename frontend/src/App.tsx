@@ -20,6 +20,8 @@ import { QuestionnaireResultat } from './pages/QuestionnaireResultat';
 import { QuestionnaireHistorique } from './pages/QuestionnaireHistorique';
 import { CoachsList } from './pages/CoachsList';
 import { CoachDetail } from './pages/CoachDetail';
+import { CentresFormationList } from './pages/CentresFormationList';
+import { CentreFormationDetail } from './pages/CentreFormationDetail';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Profil } from './pages/Profil';
@@ -38,6 +40,7 @@ import { BlogCommentairesAdmin } from './pages/admin/BlogCommentairesAdmin';
 import { QuestionnairesAdmin } from './pages/admin/QuestionnairesAdmin';
 import { QuestionnaireBuilder } from './pages/admin/QuestionnaireBuilder';
 import { CoachsAdmin } from './pages/admin/CoachsAdmin';
+import { CentresFormationAdmin } from './pages/admin/CentresFormationAdmin';
 import { UtilisateursAdmin } from './pages/admin/UtilisateursAdmin';
 
 export default function App() {
@@ -50,6 +53,8 @@ export default function App() {
         <Route path="domaines" element={<DomainesList />} />
         <Route path="universites" element={<UniversitesList />} />
         <Route path="universites/:slug" element={<UniversiteDetail />} />
+        <Route path="centres-formation" element={<CentresFormationList />} />
+        <Route path="centres-formation/:slug" element={<CentreFormationDetail />} />
         <Route path="stages" element={<StagesList />} />
         <Route path="stages/:id" element={<StageDetail />} />
         <Route path="bourses" element={<BoursesList />} />
@@ -85,6 +90,7 @@ export default function App() {
           <Route path="questionnaires" element={<QuestionnairesAdmin />} />
           <Route path="questionnaires/:id" element={<QuestionnaireBuilder />} />
           <Route path="coachs" element={<CoachsAdmin />} />
+          <Route path="centres-formation" element={<CentresFormationAdmin />} />
           <Route path="utilisateurs" element={<UtilisateursAdmin />} />
         </Route>
       </Route>
