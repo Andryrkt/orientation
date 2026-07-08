@@ -32,7 +32,7 @@ export function QuestionnairesList() {
             <p className="text-slate-600 text-sm mb-4">{q.description}</p>
             <Link
               to={user ? `/questionnaire/${q.id}` : '/login'}
-              className="inline-block px-4 py-2 bg-brand-600 text-white rounded-md text-sm font-medium hover:bg-brand-700"
+              className="btn-primary"
             >
               {user ? 'Commencer le test' : 'Se connecter pour commencer'}
             </Link>

@@ -31,7 +31,7 @@ export function BoursesList() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Bourses</h1>
+      <h1 className="page-title">Bourses</h1>
 
       <div className="flex flex-wrap gap-3 mb-6">
         <input
@@ -39,12 +39,12 @@ export function BoursesList() {
           placeholder="Filtrer par pays..."
           value={pays}
           onChange={(e) => setPays(e.target.value)}
-          className="border border-slate-300 rounded-md px-3 py-2 text-sm flex-1 min-w-[200px]"
+          className="field-input flex-1 min-w-[200px]"
         />
         <select
           value={domaine}
           onChange={(e) => setDomaine(e.target.value)}
-          className="border border-slate-300 rounded-md px-3 py-2 text-sm"
+          className="field-input"
         >
           <option value="">Tous les domaines</option>
           {domaines?.items.map((d) => (
@@ -63,7 +63,7 @@ export function BoursesList() {
           <Link
             key={b.id}
             to={`/bourses/${b.id}`}
-            className="relative block bg-white border border-slate-200 rounded-lg p-5 hover:shadow-md transition-shadow"
+            className="card relative block p-5"
           >
             <FavoriteButton type="BOURSE" entityId={b.id} compact className="absolute top-4 right-4" />
             <p className="text-xs font-medium text-brand-600 mb-1 pr-8">{b.organisme}</p>

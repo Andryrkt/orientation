@@ -25,13 +25,13 @@ export function BlogsList() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Blog / Conseils</h1>
+      <h1 className="page-title">Blog / Conseils</h1>
 
       <div className="flex flex-wrap gap-3 mb-6">
         <select
           value={categorie}
           onChange={(e) => setCategorie(e.target.value)}
-          className="border border-slate-300 rounded-md px-3 py-2 text-sm"
+          className="field-input"
         >
           <option value="">Toutes les catégories</option>
           {BLOG_CATEGORIES.map((c) => (
@@ -50,7 +50,7 @@ export function BlogsList() {
           <Link
             key={b.id}
             to={`/blog/${b.slug}`}
-            className="block bg-white border border-slate-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+            className="card block overflow-hidden"
           >
             {b.image && <img src={b.image} alt="" className="w-full h-36 object-cover" />}
             <div className="p-5">

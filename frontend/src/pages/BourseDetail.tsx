@@ -56,7 +56,7 @@ export function BourseDetail() {
           href={bourse.lien}
           target="_blank"
           rel="noreferrer"
-          className="inline-block px-4 py-2 bg-brand-600 text-white rounded-md font-medium hover:bg-brand-700"
+          className="btn-primary"
         >
           Voir l'offre complète
         </a>

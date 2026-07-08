@@ -38,7 +38,7 @@ export function QuestionnaireHistorique() {
             <Link
               key={r.id}
               to={`/questionnaire/resultats/${r.id}`}
-              className="block bg-white border border-slate-200 rounded-lg p-5 hover:shadow-md transition-shadow"
+              className="card block p-5"
             >
               <div className="flex items-center justify-between">
                 <div>

@@ -27,7 +27,7 @@ export function CoachsList() {
           placeholder="Rechercher un coach..."
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          className="border border-slate-300 rounded-md px-3 py-2 text-sm flex-1 min-w-[200px]"
+          className="field-input flex-1 min-w-[200px]"
         />
       </div>
 
@@ -41,7 +41,7 @@ export function CoachsList() {
           <Link
             key={c.id}
             to={`/coachs/${c.id}`}
-            className="relative block bg-white border border-slate-200 rounded-lg p-5 hover:shadow-md transition-shadow"
+            className="card relative block p-5"
           >
             <FavoriteButton type="COACH" entityId={c.id} compact className="absolute top-4 right-4" />
             <h3 className="text-lg font-bold text-slate-800 mb-1 pr-8">{c.prenom} {c.nom}</h3>

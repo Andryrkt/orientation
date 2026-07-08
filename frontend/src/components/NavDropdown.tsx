@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 
-type NavDropdownItem = { to: string; label: string } | { label: string; onClick: () => void };
+export type NavDropdownItem = { to: string; label: string } | { label: string; onClick: () => void };
 
 interface NavDropdownProps {
   label: ReactNode;

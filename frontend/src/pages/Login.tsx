@@ -26,13 +26,13 @@ export function Login() {
 
   return (
     <div className="max-w-sm mx-auto">
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Connexion</h1>
+      <h1 className="page-title">Connexion</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <div className="bg-red-50 text-red-700 text-sm rounded-md px-3 py-2">{error}</div>}
         <div>
           <label className="block text-sm font-medium text-slate-600 mb-1">Email ou téléphone</label>
           <input
-            className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+            className="field-input"
             value={identifiant}
             onChange={(e) => setIdentifiant(e.target.value)}
             required
@@ -42,7 +42,7 @@ export function Login() {
           <label className="block text-sm font-medium text-slate-600 mb-1">Mot de passe</label>
           <input
             type="password"
-            className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+            className="field-input"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -51,7 +51,7 @@ export function Login() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2 bg-brand-600 text-white rounded-md font-medium hover:bg-brand-700 disabled:opacity-50"
+          className="btn-primary w-full"
         >
           Se connecter
         </button>

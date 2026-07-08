@@ -101,7 +101,7 @@ export function BlogDetail() {
       {user ? (
         <form onSubmit={handleComment} className="mb-8">
           <textarea
-            className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+            className="field-input"
             rows={3}
             placeholder="Ton commentaire..."
             value={comment}
@@ -115,7 +115,7 @@ export function BlogDetail() {
           <button
             type="submit"
             disabled={commentMutation.isPending || !comment.trim()}
-            className="mt-2 px-4 py-2 bg-brand-600 text-white rounded-md text-sm font-medium hover:bg-brand-700 disabled:opacity-50"
+            className="btn-primary mt-2"
           >
             Publier
           </button>

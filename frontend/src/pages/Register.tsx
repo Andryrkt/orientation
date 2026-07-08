@@ -26,14 +26,14 @@ export function Register() {
 
   return (
     <div className="max-w-sm mx-auto">
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Inscription</h1>
+      <h1 className="page-title">Inscription</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <div className="bg-red-50 text-red-700 text-sm rounded-md px-3 py-2">{error}</div>}
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">Prénom</label>
             <input
-              className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+              className="field-input"
               value={form.prenom}
               onChange={(e) => setForm({ ...form, prenom: e.target.value })}
               required
@@ -42,7 +42,7 @@ export function Register() {
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">Nom</label>
             <input
-              className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+              className="field-input"
               value={form.nom}
               onChange={(e) => setForm({ ...form, nom: e.target.value })}
               required
@@ -81,7 +81,7 @@ export function Register() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2 bg-brand-600 text-white rounded-md font-medium hover:bg-brand-700 disabled:opacity-50"
+          className="btn-primary w-full"
         >
           Créer mon compte
         </button>

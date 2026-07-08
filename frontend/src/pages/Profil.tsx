@@ -35,7 +35,7 @@ export function Profil() {
 
   return (
     <div className="max-w-lg mx-auto">
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Mon profil</h1>
+      <h1 className="page-title">Mon profil</h1>
       <form onSubmit={handleSubmit} className="space-y-4 bg-white border border-slate-200 rounded-lg p-6">
         {saved && (
           <div className="bg-green-50 text-green-700 text-sm rounded-md px-3 py-2">Profil mis à jour.</div>
@@ -45,7 +45,7 @@ export function Profil() {
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">Prénom</label>
             <input
-              className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+              className="field-input"
               value={form.prenom}
               onChange={(e) => setForm({ ...form, prenom: e.target.value })}
             />
@@ -53,7 +53,7 @@ export function Profil() {
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">Nom</label>
             <input
-              className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+              className="field-input"
               value={form.nom}
               onChange={(e) => setForm({ ...form, nom: e.target.value })}
             />
@@ -62,7 +62,7 @@ export function Profil() {
         <div>
           <label className="block text-sm font-medium text-slate-600 mb-1">Région</label>
           <input
-            className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+            className="field-input"
             value={form.region}
             onChange={(e) => setForm({ ...form, region: e.target.value })}
           />
@@ -70,7 +70,7 @@ export function Profil() {
         <div>
           <label className="block text-sm font-medium text-slate-600 mb-1">Niveau d'étude</label>
           <input
-            className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+            className="field-input"
             value={form.niveauEtude}
             onChange={(e) => setForm({ ...form, niveauEtude: e.target.value })}
           />
@@ -78,7 +78,7 @@ export function Profil() {
         <div>
           <label className="block text-sm font-medium text-slate-600 mb-1">Bio</label>
           <textarea
-            className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+            className="field-input"
             rows={3}
             value={form.bio}
             onChange={(e) => setForm({ ...form, bio: e.target.value })}
@@ -89,7 +89,7 @@ export function Profil() {
             Centres d'intérêt (séparés par des virgules)
           </label>
           <input
-            className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+            className="field-input"
             value={form.interets}
             onChange={(e) => setForm({ ...form, interets: e.target.value })}
           />
@@ -97,7 +97,7 @@ export function Profil() {
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 bg-brand-600 text-white rounded-md font-medium hover:bg-brand-700 disabled:opacity-50"
+          className="btn-primary"
         >
           Enregistrer
         </button>

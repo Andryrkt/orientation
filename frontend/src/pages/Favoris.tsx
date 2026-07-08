@@ -29,7 +29,7 @@ export function Favoris() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Mes favoris</h1>
+      <h1 className="page-title">Mes favoris</h1>
 
       {favoris.length === 0 && (
         <p className="text-slate-400">

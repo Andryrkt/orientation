@@ -12,14 +12,14 @@ export function UniversitesList() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Universités et établissements</h1>
+      <h1 className="page-title">Universités et établissements</h1>
       {isLoading && <p className="text-slate-400">Chargement...</p>}
       <div className="grid md:grid-cols-2 gap-4">
         {data?.items.map((u) => (
           <Link
             key={u.id}
             to={`/universites/${u.slug}`}
-            className="relative block bg-white border border-slate-200 rounded-lg p-5 hover:shadow-md transition-shadow"
+            className="card relative block p-5"
           >
             <FavoriteButton type="UNIVERSITE" entityId={u.id} compact className="absolute top-4 right-4" />
             <h3 className="text-lg font-bold text-slate-800 mb-1 pr-8">{u.nom}</h3>
