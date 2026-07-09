@@ -4,13 +4,15 @@ import { useAuth } from '../lib/auth-context';
 import { NavDropdown, NavDropdownItem } from './NavDropdown';
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `px-3 py-2 rounded-full text-sm font-medium transition-colors ${
-    isActive ? 'bg-brand-100 text-brand-700' : 'text-slate-600 hover:bg-slate-100'
+  `px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+    isActive
+      ? 'bg-neon-purple/20 text-purple-300 border border-purple-500/30'
+      : 'text-slate-300 hover:text-white hover:bg-white/8'
   }`;
 
 const mobileLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `block px-3 py-2 rounded-lg text-sm font-medium ${
-    isActive ? 'bg-brand-100 text-brand-700' : 'text-slate-600 hover:bg-slate-100'
+  `block px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+    isActive ? 'bg-neon-purple/20 text-purple-300' : 'text-slate-300 hover:text-white hover:bg-white/8'
   }`;
 
 const ORIENTATION_ITEMS = [
@@ -42,13 +44,27 @@ export function PublicLayout() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="sticky top-0 z-20 bg-white/85 backdrop-blur-md border-b border-slate-200/80">
+      {/* ── Header ── */}
+      <header
+        className="sticky top-0 z-20"
+        style={{
+          background: 'rgba(10, 8, 24, 0.7)',
+          backdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+        }}
+      >
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-lg font-extrabold text-slate-900">
-            <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 text-white flex items-center justify-center text-sm font-bold shadow-brand">
+          <Link to="/" className="flex items-center gap-2.5 text-lg font-extrabold text-white hover:opacity-90 transition-opacity">
+            <span
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black text-white"
+              style={{
+                background: 'linear-gradient(135deg, #a855f7, #818cf8)',
+                boxShadow: '0 4px 14px rgba(168, 85, 247, 0.4)',
+              }}
+            >
               OM
             </span>
-            OrientMad
+            <span className="gradient-text">OrientMad</span>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
@@ -63,7 +79,7 @@ export function PublicLayout() {
             ) : (
               <>
                 <NavLink to="/login" className={navLinkClass}>Connexion</NavLink>
-                <NavLink to="/register" className="btn-primary ml-1 px-4 py-2">
+                <NavLink to="/register" className="btn-primary ml-2 px-4 py-2 text-sm">
                   Inscription
                 </NavLink>
               </>
@@ -72,7 +88,7 @@ export function PublicLayout() {
 
           <button
             onClick={() => setMobileOpen((o) => !o)}
-            className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"
+            className="lg:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-all"
             aria-label="Menu"
           >
             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -86,7 +102,13 @@ export function PublicLayout() {
         </div>
 
         {mobileOpen && (
-          <div className="lg:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-1">
+          <div
+            className="lg:hidden px-4 py-3 space-y-1"
+            style={{
+              background: 'rgba(10, 8, 24, 0.95)',
+              borderTop: '1px solid rgba(255,255,255,0.06)',
+            }}
+          >
             {[...ORIENTATION_ITEMS, ...OPPORTUNITES_ITEMS, { to: '/blog', label: 'Blog / Conseils' }].map(
               (item) => (
                 <NavLink key={item.to} to={item.to} className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
@@ -99,7 +121,7 @@ export function PublicLayout() {
                 Back-office
               </NavLink>
             )}
-            <div className="pt-2 mt-2 border-t border-slate-200">
+            <div className="pt-2 mt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
               {user ? (
                 <>
                   {userItems.map((item) =>
@@ -110,11 +132,8 @@ export function PublicLayout() {
                     ) : (
                       <button
                         key={item.label}
-                        onClick={() => {
-                          setMobileOpen(false);
-                          item.onClick();
-                        }}
-                        className="block w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100"
+                        onClick={() => { setMobileOpen(false); item.onClick(); }}
+                        className="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/8 transition-all"
                       >
                         {item.label}
                       </button>
@@ -122,11 +141,11 @@ export function PublicLayout() {
                   )}
                 </>
               ) : (
-                <div className="flex gap-2">
-                  <NavLink to="/login" className="btn-secondary flex-1" onClick={() => setMobileOpen(false)}>
+                <div className="flex gap-2 pt-1">
+                  <NavLink to="/login" className="btn-secondary flex-1 text-center py-2" onClick={() => setMobileOpen(false)}>
                     Connexion
                   </NavLink>
-                  <NavLink to="/register" className="btn-primary flex-1" onClick={() => setMobileOpen(false)}>
+                  <NavLink to="/register" className="btn-primary flex-1 text-center py-2" onClick={() => setMobileOpen(false)}>
                     Inscription
                   </NavLink>
                 </div>
@@ -136,65 +155,70 @@ export function PublicLayout() {
         )}
       </header>
 
+      {/* ── Main ── */}
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
         <Outlet />
       </main>
 
-      <footer className="border-t border-slate-200 bg-white">
+      {/* ── Footer ── */}
+      <footer style={{ background: 'rgba(10,8,24,0.8)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-6xl mx-auto px-4 py-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <div className="flex items-center gap-2 text-base font-extrabold text-slate-900 mb-2">
-              <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 text-white flex items-center justify-center text-xs font-bold">
+            <div className="flex items-center gap-2 text-base font-extrabold text-white mb-3">
+              <span
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black text-white"
+                style={{ background: 'linear-gradient(135deg, #a855f7, #818cf8)' }}
+              >
                 OM
               </span>
-              OrientMad
+              <span className="gradient-text">OrientMad</span>
             </div>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-400 leading-relaxed">
               La plateforme de référence pour l'orientation scolaire, universitaire et
               professionnelle à Madagascar.
             </p>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-800 mb-3">Orientation</h4>
+            <h4 className="text-sm font-bold text-white mb-3">Orientation</h4>
             <ul className="space-y-2 text-sm text-slate-500">
               {ORIENTATION_ITEMS.map((item) => (
                 <li key={item.to}>
-                  <Link to={item.to} className="hover:text-brand-600">{item.label}</Link>
+                  <Link to={item.to} className="hover:text-purple-400 transition-colors">{item.label}</Link>
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-800 mb-3">Opportunités</h4>
+            <h4 className="text-sm font-bold text-white mb-3">Opportunités</h4>
             <ul className="space-y-2 text-sm text-slate-500">
               {OPPORTUNITES_ITEMS.map((item) => (
                 <li key={item.to}>
-                  <Link to={item.to} className="hover:text-brand-600">{item.label}</Link>
+                  <Link to={item.to} className="hover:text-purple-400 transition-colors">{item.label}</Link>
                 </li>
               ))}
               <li>
-                <Link to="/blog" className="hover:text-brand-600">Blog / Conseils</Link>
+                <Link to="/blog" className="hover:text-purple-400 transition-colors">Blog / Conseils</Link>
               </li>
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-800 mb-3">Compte</h4>
+            <h4 className="text-sm font-bold text-white mb-3">Compte</h4>
             <ul className="space-y-2 text-sm text-slate-500">
               {user ? (
                 <>
-                  <li><Link to="/favoris" className="hover:text-brand-600">Mes favoris</Link></li>
-                  <li><Link to="/profil" className="hover:text-brand-600">Mon profil</Link></li>
+                  <li><Link to="/favoris" className="hover:text-purple-400 transition-colors">Mes favoris</Link></li>
+                  <li><Link to="/profil" className="hover:text-purple-400 transition-colors">Mon profil</Link></li>
                 </>
               ) : (
                 <>
-                  <li><Link to="/login" className="hover:text-brand-600">Connexion</Link></li>
-                  <li><Link to="/register" className="hover:text-brand-600">Inscription</Link></li>
+                  <li><Link to="/login" className="hover:text-purple-400 transition-colors">Connexion</Link></li>
+                  <li><Link to="/register" className="hover:text-purple-400 transition-colors">Inscription</Link></li>
                 </>
               )}
             </ul>
           </div>
         </div>
-        <div className="border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+        <div className="py-4 text-center text-xs text-slate-600" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
           © {new Date().getFullYear()} OrientMad — Orientation scolaire, universitaire et professionnelle à Madagascar
         </div>
       </footer>

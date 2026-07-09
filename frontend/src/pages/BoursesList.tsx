@@ -31,7 +31,21 @@ export function BoursesList() {
 
   return (
     <div>
-      <h1 className="page-title">Bourses</h1>
+      <section className="relative overflow-hidden px-6 py-10 sm:py-12 rounded-[2rem] border border-slate-100 bg-gradient-to-r from-amber-50/60 via-yellow-50/40 to-slate-50/60 mb-8 shadow-[0_8px_30px_rgb(0,0,0,0.01)]">
+        <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-amber-100/50 blur-[80px] -z-10" />
+        <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-yellow-100/40 blur-[80px] -z-10" />
+        <div className="max-w-2xl">
+          <span className="eyebrow mb-3 px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-100/30 inline-block text-xs font-semibold">
+            🎓 Financement &amp; Soutien
+          </span>
+          <h1 className="text-3xl font-extrabold text-slate-900 mb-3 tracking-tight">
+            Trouve une bourse d'études
+          </h1>
+          <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+            Découvrez des opportunités de bourses nationales et internationales adaptées à votre profil académique pour financer vos études.
+          </p>
+        </div>
+      </section>
 
       <div className="flex flex-wrap gap-3 mb-6">
         <input

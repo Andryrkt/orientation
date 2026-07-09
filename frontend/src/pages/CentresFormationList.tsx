@@ -20,10 +20,21 @@ export function CentresFormationList() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-800 mb-2">Centres de formation</h1>
-      <p className="text-slate-500 mb-6">
-        Centres et instituts de formation professionnelle référencés à Madagascar.
-      </p>
+      <section className="relative overflow-hidden px-6 py-10 sm:py-12 rounded-[2rem] border border-slate-100 bg-gradient-to-r from-rose-50/60 via-red-50/40 to-slate-50/60 mb-8 shadow-[0_8px_30px_rgb(0,0,0,0.01)]">
+        <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-rose-100/50 blur-[80px] -z-10" />
+        <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-red-100/40 blur-[80px] -z-10" />
+        <div className="max-w-2xl">
+          <span className="eyebrow mb-3 px-3 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-100/30 inline-block text-xs font-semibold">
+            🛠️ Formations Professionnelles
+          </span>
+          <h1 className="text-3xl font-extrabold text-slate-900 mb-3 tracking-tight">
+            Découvre les centres de formation
+          </h1>
+          <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+            Trouvez des centres d'apprentissage technique et des instituts spécialisés pour acquérir des compétences pratiques à Madagascar.
+          </p>
+        </div>
+      </section>
 
       <div className="flex flex-wrap gap-3 mb-6">
         <input

@@ -16,10 +16,21 @@ export function CoachsList() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-800 mb-2">Coachs et mentors</h1>
-      <p className="text-slate-500 mb-6">
-        Des professionnels référencés pour t'accompagner dans ton orientation.
-      </p>
+      <section className="relative overflow-hidden px-6 py-10 sm:py-12 rounded-[2rem] border border-slate-100 bg-gradient-to-r from-emerald-50/60 via-teal-50/40 to-slate-50/60 mb-8 shadow-[0_8px_30px_rgb(0,0,0,0.01)]">
+        <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-emerald-100/50 blur-[80px] -z-10" />
+        <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-teal-100/40 blur-[80px] -z-10" />
+        <div className="max-w-2xl">
+          <span className="eyebrow mb-3 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100/30 inline-block text-xs font-semibold">
+            🤝 Accompagnement Personnalisé
+          </span>
+          <h1 className="text-3xl font-extrabold text-slate-900 mb-3 tracking-tight">
+            Échange avec nos coachs d'orientation
+          </h1>
+          <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+            Bénéficiez de conseils individuels d'experts locaux pour affiner vos choix scolaires et professionnels en toute confiance.
+          </p>
+        </div>
+      </section>
 
       <div className="flex flex-wrap gap-3 mb-6">
         <input

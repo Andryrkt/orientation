@@ -36,13 +36,15 @@ export function NavDropdown({ label, items, align = 'left', active }: NavDropdow
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className={`flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium ${
-          isActive ? 'bg-brand-100 text-brand-700' : 'text-slate-600 hover:bg-slate-100'
+        className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+          isActive
+            ? 'bg-neon-purple/20 text-purple-300 border border-purple-500/30'
+            : 'text-slate-300 hover:text-white hover:bg-white/8'
         }`}
       >
         {label}
         <svg
-          className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? 'rotate-180 text-purple-400' : 'text-slate-500'}`}
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -55,9 +57,13 @@ export function NavDropdown({ label, items, align = 'left', active }: NavDropdow
       </button>
       {open && (
         <div
-          className={`absolute mt-1 min-w-[200px] bg-white border border-slate-200 rounded-md shadow-lg py-1 z-20 ${
-            align === 'right' ? 'right-0' : 'left-0'
-          }`}
+          className={`absolute mt-2 min-w-[220px] py-2 z-20 rounded-2xl ${align === 'right' ? 'right-0' : 'left-0'}`}
+          style={{
+            background: 'rgba(15, 12, 41, 0.92)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(168,85,247,0.1)',
+          }}
         >
           {items.map((item) =>
             'to' in item ? (
@@ -66,8 +72,10 @@ export function NavDropdown({ label, items, align = 'left', active }: NavDropdow
                 to={item.to}
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
-                  `block px-4 py-2 text-sm ${
-                    isActive ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-50'
+                  `block mx-2 px-3.5 py-2 text-sm font-medium rounded-xl transition-all ${
+                    isActive
+                      ? 'bg-purple-500/20 text-purple-300'
+                      : 'text-slate-300 hover:bg-white/8 hover:text-white'
                   }`
                 }
               >
@@ -80,7 +88,7 @@ export function NavDropdown({ label, items, align = 'left', active }: NavDropdow
                   setOpen(false);
                   item.onClick();
                 }}
-                className="block w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50"
+                className="block w-[calc(100%-16px)] mx-2 text-left px-3.5 py-2 text-sm font-medium text-slate-300 hover:bg-white/8 hover:text-white rounded-xl transition-all"
               >
                 {item.label}
               </button>

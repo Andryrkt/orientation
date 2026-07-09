@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
+/* ── Icônes SVG ── */
 function IconBriefcase() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} className="w-6 h-6">
@@ -38,82 +39,209 @@ function IconDocument() {
     </svg>
   );
 }
+
+/* ── Data ── */
 const FEATURES = [
-  { title: 'Métiers', desc: "Explore les métiers, leurs débouchés et les compétences requises.", to: '/metiers', icon: IconBriefcase },
-  { title: 'Domaines', desc: 'Parcours les grands domaines de formation et leurs filières associées.', to: '/domaines', icon: IconAcademic },
-  { title: 'Universités', desc: 'Trouve les établissements et parcours de formation à Madagascar.', to: '/universites', icon: IconBuilding },
-  { title: 'Centres de formation', desc: 'Découvre les centres et instituts spécialisés près de chez toi.', to: '/centres-formation', icon: IconBuilding },
-  { title: 'Coachs', desc: "Échange avec des coachs d'orientation pour affiner ton choix.", to: '/coachs', icon: IconUsers },
-  { title: 'Blog & conseils', desc: "Des articles et témoignages pour t'aider à choisir ta voie.", to: '/blog', icon: IconDocument },
+  {
+    title: 'Métiers',
+    desc: 'Explore les métiers, leurs débouchés et les compétences requises.',
+    to: '/metiers',
+    icon: IconBriefcase,
+    gradient: 'from-purple-500 to-indigo-500',
+    glow: 'rgba(168,85,247,0.25)',
+    badge: '15+ fiches',
+  },
+  {
+    title: 'Domaines',
+    desc: 'Parcours les grands domaines de formation et leurs filières.',
+    to: '/domaines',
+    icon: IconAcademic,
+    gradient: 'from-indigo-500 to-cyan-500',
+    glow: 'rgba(129,140,248,0.25)',
+    badge: '6 domaines',
+  },
+  {
+    title: 'Universités',
+    desc: 'Trouve les établissements et parcours de formation à Madagascar.',
+    to: '/universites',
+    icon: IconBuilding,
+    gradient: 'from-cyan-500 to-teal-500',
+    glow: 'rgba(34,211,238,0.25)',
+    badge: '4+ universités',
+  },
+  {
+    title: 'Centres de formation',
+    desc: 'Découvre les centres et instituts spécialisés près de chez toi.',
+    to: '/centres-formation',
+    icon: IconBuilding,
+    gradient: 'from-pink-500 to-rose-500',
+    glow: 'rgba(236,72,153,0.25)',
+    badge: 'Formations pro',
+  },
+  {
+    title: 'Coachs',
+    desc: "Échange avec des coachs d'orientation pour affiner ton choix.",
+    to: '/coachs',
+    icon: IconUsers,
+    gradient: 'from-emerald-500 to-teal-500',
+    glow: 'rgba(52,211,153,0.25)',
+    badge: 'Accompagnement',
+  },
+  {
+    title: 'Blog & conseils',
+    desc: "Des articles et témoignages pour t'aider à choisir ta voie.",
+    to: '/blog',
+    icon: IconDocument,
+    gradient: 'from-amber-500 to-orange-500',
+    glow: 'rgba(251,191,36,0.25)',
+    badge: 'Conseils',
+  },
 ];
 
 const STEPS = [
-  { title: 'Explore', desc: 'Parcours les métiers, domaines et universités à Madagascar.' },
-  { title: 'Réponds au questionnaire', desc: "Identifie tes intérêts et affinités grâce à notre test d'orientation." },
-  { title: 'Décide', desc: 'Compare les résultats, échange avec un coach et fais ton choix en confiance.' },
+  { title: 'Explore', desc: 'Parcours les métiers, domaines et universités à Madagascar.', num: '01' },
+  { title: 'Réponds au questionnaire', desc: "Identifie tes intérêts grâce à notre test d'orientation RIASEC.", num: '02' },
+  { title: 'Décide', desc: 'Compare tes résultats, échange avec un coach et fais ton choix.', num: '03' },
 ];
 
 const STATS = [
-  { value: '100%', label: 'Gratuit' },
-  { value: '6', label: 'Domaines couverts' },
-  { value: 'Mada.', label: 'Contenu 100% local' },
+  { value: '100%', label: 'Gratuit', icon: '✦' },
+  { value: '6', label: 'Domaines', icon: '◈' },
+  { value: '15+', label: 'Fiches métiers', icon: '◉' },
+  { value: 'Mada.', label: 'Contenu local', icon: '◆' },
 ];
 
-function FeatureCard({ title, desc, to, icon: Icon }: { title: string; desc: string; to: string; icon: () => ReactNode }) {
+/* ── Feature Card ── */
+function FeatureCard({
+  title, desc, to, icon: Icon, gradient, glow, badge,
+}: { title: string; desc: string; to: string; icon: () => ReactNode; gradient: string; glow: string; badge: string }) {
   return (
-    <Link to={to} className="card block p-6">
-      <div className="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center mb-4">
+    <Link
+      to={to}
+      className="group relative block p-6 rounded-2xl transition-all duration-300 overflow-hidden"
+      style={{
+        background: 'rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,255,255,0.07)',
+        backdropFilter: 'blur(16px)',
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.borderColor = `${glow.replace('0.25', '0.5')}`;
+        (e.currentTarget as HTMLElement).style.transform = 'translateY(-6px)';
+        (e.currentTarget as HTMLElement).style.boxShadow = `0 20px 40px rgba(0,0,0,0.4), 0 0 40px ${glow}`;
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.07)';
+        (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+        (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+      }}
+    >
+      {/* Background glow */}
+      <div
+        className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{ background: `radial-gradient(circle, ${glow} 0%, transparent 70%)`, transform: 'translate(30%, -30%)' }}
+      />
+
+      {/* Icon */}
+      <div
+        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-5 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}
+        style={{ boxShadow: `0 4px 16px ${glow}` }}
+      >
         <Icon />
       </div>
-      <h3 className="text-lg font-bold text-slate-800 mb-1.5">{title}</h3>
-      <p className="text-slate-600 text-sm">{desc}</p>
+
+      {/* Badge */}
+      <span className="inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full mb-3"
+        style={{ background: glow, color: '#e2e8f0', border: '1px solid rgba(255,255,255,0.1)' }}>
+        {badge}
+      </span>
+
+      <h3 className="text-lg font-bold text-white mb-2 group-hover:text-purple-300 transition-colors duration-200">{title}</h3>
+      <p className="text-slate-400 text-sm leading-relaxed mb-4">{desc}</p>
+
+      {/* Arrow */}
+      <div className="flex items-center gap-1 text-xs font-semibold opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+        style={{ color: '#c084fc' }}>
+        Explorer
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </div>
     </Link>
   );
 }
 
+/* ── Home Page ── */
 export function Home() {
   return (
-    <div>
-      <section className="relative overflow-hidden -mx-4 px-4 py-16 sm:py-20 rounded-3xl">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-50 via-white to-slate-50" />
-        <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-brand-100/70 blur-3xl -z-10" />
-        <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-brand-200/40 blur-3xl -z-10" />
+    <div className="space-y-24 pb-12">
 
-        <div className="text-center max-w-3xl mx-auto">
-          <span className="eyebrow mb-4 px-3 py-1 rounded-full bg-brand-50">
-            Orientation scolaire &amp; professionnelle
-          </span>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-5 tracking-tight">
-            Trouve ta voie avec <span className="text-brand-600">OrientMad</span>
+      {/* ── Hero Section ── */}
+      <section className="relative overflow-hidden -mx-4 px-4 pt-20 pb-24 text-center">
+        {/* Background glows */}
+        <div className="glow-orb w-[600px] h-[600px] -top-48 left-1/2 -translate-x-1/2"
+          style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%)' }} />
+        <div className="glow-orb w-80 h-80 top-10 -left-20"
+          style={{ background: 'radial-gradient(circle, rgba(129,140,248,0.1) 0%, transparent 70%)' }} />
+        <div className="glow-orb w-80 h-80 top-10 -right-20"
+          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.08) 0%, transparent 70%)' }} />
+
+        <div className="relative z-10 max-w-4xl mx-auto">
+          {/* Pill badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 text-sm font-semibold"
+            style={{
+              background: 'rgba(168,85,247,0.12)',
+              border: '1px solid rgba(168,85,247,0.25)',
+              color: '#c084fc',
+            }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+            Orientation scolaire &amp; professionnelle à Madagascar
+          </div>
+
+          {/* Title */}
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
+            <span className="text-white">Trouve ta voie avec</span>
+            <br />
+            <span className="gradient-text">OrientMad</span>
           </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-8">
+
+          <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
             La plateforme de référence pour l'orientation scolaire, universitaire et professionnelle
             à Madagascar : métiers, formations, universités et bien plus.
           </p>
-          <div className="flex flex-wrap justify-center gap-3 mb-10">
-            <Link to="/metiers" className="btn-primary">
+
+          {/* CTAs */}
+          <div className="flex flex-wrap justify-center gap-4 mb-16">
+            <Link to="/metiers" className="btn-primary px-7 py-3.5 text-base">
               Découvrir les métiers
             </Link>
-            <Link to="/questionnaire" className="btn-secondary">
+            <Link to="/questionnaire" className="btn-secondary px-7 py-3.5 text-base">
               Faire le questionnaire
             </Link>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-x-10 gap-y-4">
+          {/* Stats */}
+          <div className="inline-flex flex-wrap justify-center gap-x-10 gap-y-6 px-8 py-5 rounded-2xl"
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.07)',
+              backdropFilter: 'blur(10px)',
+            }}>
             {STATS.map((s) => (
               <div key={s.label} className="text-center">
-                <p className="text-2xl font-extrabold text-slate-900">{s.value}</p>
-                <p className="text-xs text-slate-500">{s.label}</p>
+                <p className="text-3xl font-black text-white mb-0.5">{s.value}</p>
+                <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#a78bfa' }}>{s.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-16">
-        <div className="text-center max-w-xl mx-auto mb-10">
+      {/* ── Features Grid ── */}
+      <section>
+        <div className="section-header">
           <span className="eyebrow mb-2">Explore</span>
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">Tout pour construire ton avenir</h2>
+          <h2 className="section-title">Tout pour construire ton avenir</h2>
+          <p className="section-subtitle">Découvrez nos ressources pour affiner votre parcours d'études et de carrière.</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {FEATURES.map((f) => (
@@ -122,38 +250,65 @@ export function Home() {
         </div>
       </section>
 
-      <section className="py-16">
-        <div className="text-center max-w-xl mx-auto mb-10">
+      {/* ── Steps ── */}
+      <section>
+        <div className="section-header">
           <span className="eyebrow mb-2">Comment ça marche</span>
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">Trois étapes vers ta décision</h2>
+          <h2 className="section-title">Trois étapes vers ta décision</h2>
+          <p className="section-subtitle">Un accompagnement simple, progressif et efficace.</p>
         </div>
-        <div className="grid sm:grid-cols-3 gap-8">
+        <div className="relative grid sm:grid-cols-3 gap-8 lg:gap-12">
+          {/* Connector line */}
+          <div className="hidden sm:block absolute top-8 left-[16%] right-[16%] h-px"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(168,85,247,0.3), rgba(129,140,248,0.3), transparent)' }} />
+
           {STEPS.map((step, i) => (
-            <div key={step.title} className="text-center px-2">
-              <div className="w-10 h-10 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center mx-auto mb-4">
-                {i + 1}
+            <div key={step.title} className="text-center group">
+              <div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 text-xl font-black text-white group-hover:scale-110 transition-transform duration-300"
+                style={{
+                  background: i === 0 ? 'linear-gradient(135deg,#a855f7,#818cf8)' : i === 1 ? 'linear-gradient(135deg,#818cf8,#22d3ee)' : 'linear-gradient(135deg,#22d3ee,#34d399)',
+                  boxShadow: `0 4px 20px rgba(168,85,247,${0.3 - i * 0.05})`,
+                }}
+              >
+                {step.num}
               </div>
-              <h3 className="text-base font-bold text-slate-800 mb-1.5">{step.title}</h3>
-              <p className="text-slate-600 text-sm">{step.desc}</p>
+              <h3 className="text-lg font-bold text-white mb-2">{step.title}</h3>
+              <p className="text-slate-400 text-sm leading-relaxed">{step.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="relative overflow-hidden -mx-4 px-4 py-14 rounded-3xl mb-4">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-600 to-brand-800" />
-        <div className="text-center max-w-xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
-            Prêt à découvrir ta voie ?
+      {/* ── CTA Section ── */}
+      <section className="relative overflow-hidden -mx-4 px-6 py-20 rounded-[2.5rem] text-center">
+        {/* Background */}
+        <div className="absolute inset-0 -z-10"
+          style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.15) 0%, rgba(129,140,248,0.1) 50%, rgba(34,211,238,0.1) 100%)' }} />
+        <div className="absolute inset-0 -z-10"
+          style={{ background: 'rgba(10,8,24,0.5)', backdropFilter: 'blur(2px)' }} />
+        <div style={{ border: '1px solid rgba(168,85,247,0.15)' }}
+          className="absolute inset-0 -z-10 rounded-[2.5rem]" />
+
+        {/* Glows */}
+        <div className="glow-orb w-80 h-80 -top-20 left-1/4"
+          style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%)' }} />
+        <div className="glow-orb w-80 h-80 -bottom-20 right-1/4"
+          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.15) 0%, transparent 70%)' }} />
+
+        <div className="relative z-10 max-w-2xl mx-auto">
+          <h2 className="text-4xl sm:text-5xl font-extrabold text-white mb-5 tracking-tight">
+            Prêt à découvrir <span className="gradient-text">ta voie</span> ?
           </h2>
-          <p className="text-brand-100 mb-7">
-            Crée ton compte gratuitement et accède au questionnaire d'orientation, à tes favoris et bien plus.
+          <p className="text-lg text-slate-400 mb-10 leading-relaxed">
+            Créez votre compte gratuitement pour accéder au questionnaire d'orientation complet,
+            enregistrer vos favoris et entrer en contact avec nos coachs.
           </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Link to="/register" className="px-6 py-3 bg-white text-brand-700 rounded-lg font-medium hover:bg-brand-50 transition-colors">
-              Créer un compte
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link to="/register" className="btn-primary px-8 py-4 text-base">
+              Créer un compte gratuit
             </Link>
-            <Link to="/universites" className="px-6 py-3 border border-white/40 text-white rounded-lg font-medium hover:bg-white/10 transition-colors">
+            <Link to="/universites" className="btn-secondary px-8 py-4 text-base">
               Explorer les universités
             </Link>
           </div>
