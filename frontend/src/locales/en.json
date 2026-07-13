@@ -1,0 +1,61 @@
+{
+  "nav": {
+    "orientation": "Orientation",
+    "opportunities": "Opportunities",
+    "blog": "Blog / Tips",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "backoffice": "Admin Panel",
+    "theme": "Toggle Theme",
+    "my_favorites": "My Favorites",
+    "my_results": "My Results",
+    "support_tickets": "Support / Tickets",
+    "my_profile": "My Profile",
+    "my_cv": "My CV",
+    "jobs": "Jobs",
+    "domains": "Domains",
+    "universities": "Universities",
+    "training_centers": "Training Centers",
+    "questionnaire": "Questionnaire",
+    "coaches": "Coaches",
+    "internships": "Internships",
+    "scholarships": "Scholarships"
+  },
+  "footer": {
+    "description": "The reference platform for academic, university, and professional guidance in Madagascar.",
+    "orientation": "Orientation",
+    "opportunities": "Opportunities",
+    "account": "Account",
+    "copyright": "OrientMad — Academic, university, and professional guidance in Madagascar"
+  },
+  "home": {
+    "hero_title_gradient": "Your future starts here.",
+    "hero_subtitle": "The modern, comprehensive, and local guidance platform.",
+    "hero_desc": "Explore fields, take our RIASEC test, and find your path.",
+    "explore_btn": "Explore Jobs",
+    "take_test_btn": "Take the Test",
+    "explore_section_title": "Explore Guidance",
+    "explore_section_desc": "Access local resources to make the best decisions."
+  },
+  "profile": {
+    "title": "My Profile",
+    "cv_generator_title": "📄 CV Generator & Suggestions",
+    "cv_generator_desc": "Automatically generate a professional CV suggestion based on your orientation test results, edit it, and download it as PDF.",
+    "create_cv_btn": "Create My CV →",
+    "updated_msg": "Profile updated successfully.",
+    "email_label": "Email",
+    "photo_label": "Profile Picture (URL)",
+    "firstname": "First Name",
+    "lastname": "Last Name",
+    "phone": "Phone Number",
+    "region": "Region / City",
+    "address": "Address",
+    "education_level": "Education Level",
+    "select_level": "Select your level",
+    "bio": "Bio",
+    "interests": "Interests (comma separated)",
+    "save_btn": "Save Changes",
+    "saving_btn": "Saving..."
+  }
+}

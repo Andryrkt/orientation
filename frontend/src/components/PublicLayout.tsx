@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/auth-context';
 import { useTheme } from '../lib/theme-context';
 import { NavDropdown, NavDropdownItem } from './NavDropdown';
@@ -16,33 +17,35 @@ const mobileLinkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? 'bg-neon-purple/20 text-purple-300' : 'text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/8'
   }`;
 
-const ORIENTATION_ITEMS = [
-  { to: '/metiers', label: 'Métiers' },
-  { to: '/domaines', label: 'Domaines' },
-  { to: '/universites', label: 'Universités' },
-  { to: '/centres-formation', label: 'Centres de formation' },
-  { to: '/questionnaire', label: 'Questionnaire' },
-  { to: '/coachs', label: 'Coachs' },
-];
-
-const OPPORTUNITES_ITEMS = [
-  { to: '/stages', label: 'Stages' },
-  { to: '/bourses', label: 'Bourses' },
-];
-
 export function PublicLayout() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const { t, i18n } = useTranslation();
+
+  const ORIENTATION_ITEMS = [
+    { to: '/metiers', label: t('nav.jobs') },
+    { to: '/domaines', label: t('nav.domains') },
+    { to: '/universites', label: t('nav.universities') },
+    { to: '/centres-formation', label: t('nav.training_centers') },
+    { to: '/questionnaire', label: t('nav.questionnaire') },
+    { to: '/coachs', label: t('nav.coaches') },
+  ];
+
+  const OPPORTUNITES_ITEMS = [
+    { to: '/stages', label: t('nav.internships') },
+    { to: '/bourses', label: t('nav.scholarships') },
+  ];
 
   const userItems: NavDropdownItem[] = user
     ? [
-        { to: '/favoris', label: 'Mes favoris' },
-        { to: '/mes-resultats', label: 'Mes résultats' },
-        { to: '/tickets', label: 'Support / Tickets' },
-        { to: '/profil', label: 'Mon profil' },
-        { to: '/mon-cv', label: 'Mon CV' },
-        { label: 'Déconnexion', onClick: () => logout() },
+        { to: '/favoris', label: t('nav.my_favorites') },
+        { to: '/mes-resultats', label: t('nav.my_results') },
+        { to: '/tickets', label: t('nav.support_tickets') },
+        { to: '/profil', label: t('nav.my_profile') },
+        { to: '/mon-cv', label: t('nav.my_cv') },
+        { label: t('nav.logout'), onClick: () => logout() },
       ]
     : [];
 
@@ -75,29 +78,82 @@ export function PublicLayout() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
-            <NavDropdown label="Orientation" items={ORIENTATION_ITEMS} />
-            <NavDropdown label="Opportunités" items={OPPORTUNITES_ITEMS} />
-            <NavLink to="/blog" className={navLinkClass}>Blog / Conseils</NavLink>
+            <NavDropdown label={t('nav.orientation')} items={ORIENTATION_ITEMS} />
+            <NavDropdown label={t('nav.opportunities')} items={OPPORTUNITES_ITEMS} />
+            <NavLink to="/blog" className={navLinkClass}>{t('nav.blog')}</NavLink>
             {user?.role === 'ADMIN' && (
-              <NavLink to="/admin" className={navLinkClass}>Back-office</NavLink>
+              <NavLink to="/admin" className={navLinkClass}>{t('nav.backoffice')}</NavLink>
             )}
             {user ? (
               <NavDropdown label={`${user.prenom} ${user.nom}`} items={userItems} align="right" />
             ) : (
               <>
-                <NavLink to="/login" className={navLinkClass}>Connexion</NavLink>
+                <NavLink to="/login" className={navLinkClass}>{t('nav.login')}</NavLink>
                 <NavLink to="/register" className="btn-primary ml-2 px-4 py-2 text-sm">
-                  Inscription
+                  {t('nav.register')}
                 </NavLink>
               </>
             )}
 
+            {/* Sélecteur de langue (Desktop) */}
+            <div className="relative">
+              <button
+                onClick={() => setLangOpen(!langOpen)}
+                className="flex items-center gap-1 px-2.5 py-2 rounded-xl text-slate-500 hover:text-purple-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-purple-300 dark:hover:bg-white/8 transition-all duration-200 text-sm font-semibold ml-1"
+                aria-label="Changer de langue"
+                title="Changer de langue"
+              >
+                <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-.778.099-1.533.284-2.253m0 0A17.919 17.919 0 0112 10.5z" />
+                </svg>
+                <span className="uppercase text-xs">{i18n.language}</span>
+                <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {langOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
+                  <div
+                    className="absolute right-0 mt-2 w-32 rounded-xl border py-1.5 space-y-0.5 z-50 animate-dropdown"
+                    style={{
+                      background: theme === 'dark' ? 'rgba(10, 8, 24, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                      backdropFilter: 'blur(24px)',
+                      borderColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(15, 23, 42, 0.08)',
+                      boxShadow: theme === 'dark' ? '0 10px 25px rgba(0, 0, 0, 0.5)' : '0 10px 25px rgba(15, 23, 42, 0.08)',
+                    }}
+                  >
+                    {[
+                      { code: 'fr', label: 'Français' },
+                      { code: 'en', label: 'English' },
+                      { code: 'mg', label: 'Malagasy' },
+                    ].map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          i18n.changeLanguage(lang.code);
+                          setLangOpen(false);
+                        }}
+                        className={`flex w-full items-center px-3 py-1.5 text-xs text-left font-bold transition-all duration-150 rounded-lg ${
+                          i18n.language === lang.code
+                            ? 'text-purple-500 bg-purple-500/10'
+                            : 'text-slate-600 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-white/8 hover:text-slate-800 dark:hover:text-white'
+                        }`}
+                      >
+                        {lang.label}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
             {/* Commutateur de thème (Desktop) */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-xl text-slate-500 hover:text-purple-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-purple-300 dark:hover:bg-white/8 transition-all duration-200 ml-2"
-              aria-label="Changer de thème"
-              title="Changer de thème"
+              className="p-2 rounded-xl text-slate-500 hover:text-purple-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-purple-300 dark:hover:bg-white/8 transition-all duration-200 ml-1"
+              aria-label={t('nav.theme')}
+              title={t('nav.theme')}
             >
               {theme === 'dark' ? (
                 // Soleil
@@ -115,6 +171,50 @@ export function PublicLayout() {
           </nav>
 
           <div className="flex items-center lg:hidden">
+            {/* Sélecteur de langue abrégé (Mobile) */}
+            <div className="relative mr-1">
+              <button
+                onClick={() => setLangOpen(!langOpen)}
+                className="p-2 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:text-slate-350 dark:hover:text-white dark:hover:bg-white/10 transition-all text-xs font-bold uppercase"
+              >
+                {i18n.language}
+              </button>
+              {langOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
+                  <div
+                    className="absolute right-0 mt-2 w-28 rounded-xl border py-1 z-50 animate-dropdown"
+                    style={{
+                      background: theme === 'dark' ? 'rgba(10, 8, 24, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                      backdropFilter: 'blur(24px)',
+                      borderColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(15, 23, 42, 0.08)',
+                      boxShadow: theme === 'dark' ? '0 10px 25px rgba(0, 0, 0, 0.5)' : '0 10px 25px rgba(15, 23, 42, 0.08)',
+                    }}
+                  >
+                    {[
+                      { code: 'fr', label: 'FR' },
+                      { code: 'en', label: 'EN' },
+                      { code: 'mg', label: 'MG' },
+                    ].map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          i18n.changeLanguage(lang.code);
+                          setLangOpen(false);
+                        }}
+                        className={`flex w-full items-center px-3 py-1.5 text-xs text-left font-bold transition-all duration-150 rounded-lg ${
+                          i18n.language === lang.code
+                            ? 'text-purple-500 bg-purple-500/10'
+                            : 'text-slate-600 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-white/8 hover:text-slate-800 dark:hover:text-white'
+                        }`}
+                      >
+                        {lang.label}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
             {/* Commutateur de thème (Mobile) */}
             <button
               onClick={toggleTheme}
@@ -161,7 +261,7 @@ export function PublicLayout() {
               boxShadow: theme === 'dark' ? '0 20px 40px rgba(0, 0, 0, 0.5)' : '0 20px 40px rgba(15, 23, 42, 0.08)',
             }}
           >
-            {[...ORIENTATION_ITEMS, ...OPPORTUNITES_ITEMS, { to: '/blog', label: 'Blog / Conseils' }].map(
+            {[...ORIENTATION_ITEMS, ...OPPORTUNITES_ITEMS, { to: '/blog', label: t('nav.blog') }].map(
               (item) => (
                 <NavLink key={item.to} to={item.to} className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
                   {item.label}
@@ -170,7 +270,7 @@ export function PublicLayout() {
             )}
             {user?.role === 'ADMIN' && (
               <NavLink to="/admin" className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
-                Back-office
+                {t('nav.backoffice')}
               </NavLink>
             )}
             <div className="pt-2.5 mt-2.5" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
@@ -195,10 +295,10 @@ export function PublicLayout() {
               ) : (
                 <div className="flex gap-2 pt-1">
                   <NavLink to="/login" className="btn-secondary flex-1 text-center py-2" onClick={() => setMobileOpen(false)}>
-                    Connexion
+                    {t('nav.login')}
                   </NavLink>
                   <NavLink to="/register" className="btn-primary flex-1 text-center py-2" onClick={() => setMobileOpen(false)}>
-                    Inscription
+                    {t('nav.register')}
                   </NavLink>
                 </div>
               )}
@@ -232,12 +332,11 @@ export function PublicLayout() {
               <span className="gradient-text animate-text-shine">OrientMad</span>
             </div>
             <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-              La plateforme de référence pour l'orientation scolaire, universitaire et
-              professionnelle à Madagascar.
+              {t('footer.description')}
             </p>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">Orientation</h4>
+            <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">{t('footer.orientation')}</h4>
             <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
               {ORIENTATION_ITEMS.map((item) => (
                 <li key={item.to}>
@@ -247,7 +346,7 @@ export function PublicLayout() {
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">Opportunités</h4>
+            <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">{t('footer.opportunities')}</h4>
             <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
               {OPPORTUNITES_ITEMS.map((item) => (
                 <li key={item.to}>
@@ -255,31 +354,31 @@ export function PublicLayout() {
                 </li>
               ))}
               <li>
-                <Link to="/blog" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Blog / Conseils</Link>
+                <Link to="/blog" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.blog')}</Link>
               </li>
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">Compte</h4>
+            <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">{t('footer.account')}</h4>
             <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
               {user ? (
                 <>
-                  <li><Link to="/favoris" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Mes favoris</Link></li>
-                  <li><Link to="/tickets" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Support & Tickets</Link></li>
-                  <li><Link to="/profil" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Mon profil</Link></li>
-                  <li><Link to="/mon-cv" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Mon CV</Link></li>
+                  <li><Link to="/favoris" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.my_favorites')}</Link></li>
+                  <li><Link to="/tickets" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.support_tickets')}</Link></li>
+                  <li><Link to="/profil" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.my_profile')}</Link></li>
+                  <li><Link to="/mon-cv" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.my_cv')}</Link></li>
                 </>
               ) : (
                 <>
-                  <li><Link to="/login" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Connexion</Link></li>
-                  <li><Link to="/register" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Inscription</Link></li>
+                  <li><Link to="/login" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.login')}</Link></li>
+                  <li><Link to="/register" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.register')}</Link></li>
                 </>
               )}
             </ul>
           </div>
         </div>
         <div className="py-4 text-center text-xs text-slate-500 dark:text-slate-600" style={{ borderTop: theme === 'dark' ? '1px solid rgba(255,255,255,0.04)' : '1px solid rgba(15,23,42,0.04)' }}>
-          © {new Date().getFullYear()} OrientMad — Orientation scolaire, universitaire et professionnelle à Madagascar
+          © {new Date().getFullYear()} {t('footer.copyright')}
         </div>
       </footer>
     </div>

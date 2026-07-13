@@ -1,0 +1,61 @@
+{
+  "nav": {
+    "orientation": "Fizahan-dalana",
+    "opportunities": "Tolotra",
+    "blog": "Blog / Torohevitra",
+    "login": "Hiditra",
+    "register": "Hisoratra anarana",
+    "logout": "Hivoaka",
+    "backoffice": "Sehatry ny Admin",
+    "theme": "Hanova endrika",
+    "my_favorites": "Ny tianko",
+    "my_results": "Ny vokatry ny fizahako",
+    "support_tickets": "Fanampiana / Tickets",
+    "my_profile": "Ny mombamomba ahy",
+    "my_cv": "Ny CV-ko",
+    "jobs": "Ireo Asa",
+    "domains": "Ireo Sehatra",
+    "universities": "Ireo Oniversite",
+    "training_centers": "Ivon-toeram-piofanana",
+    "questionnaire": "Fizahana RIASEC",
+    "coaches": "Mpanoro hevitra",
+    "internships": "Stages / Fampiharana",
+    "scholarships": "Vatsim-pianarana"
+  },
+  "footer": {
+    "description": "Ny sehatra fakan-kevitra ho an'ny fizahan-dalana amin'ny fianarana, an-danin'ny oniversite ary ny asa eto Madagasikara.",
+    "orientation": "Fizahan-dalana",
+    "opportunities": "Tolotra",
+    "account": "Kaonty",
+    "copyright": "OrientMad — Sehatra fakan-kevitra ho an'ny fizahan-dalana amin'ny fianarana sy ny asa eto Madagasikara"
+  },
+  "home": {
+    "hero_title_gradient": "Eto no manomboka ny hoavinao.",
+    "hero_subtitle": "Sehatra fizahan-dalana vaovao, feno ary ho antsika eto an-toerana.",
+    "hero_desc": "Jereo ireo lalam-piofanana, ataovy ny fizahana RIASEC ary tadiavo ny asanao.",
+    "explore_btn": "Hizaha ireo asa",
+    "take_test_btn": "Hanao ny fizahana",
+    "explore_section_title": "Karohy ny momba ny orientation",
+    "explore_section_desc": "Mahazoa loharano eto an-toerana hahafahana misafidy tsara."
+  },
+  "profile": {
+    "title": "Ny mombamomba ahy",
+    "cv_generator_title": "📄 Mpamorona CV & Tolo-kevitra",
+    "cv_generator_desc": "Mamorona soso-kevitra CV matihanina avy hatrany mifototra amin'ny vokatry ny fizahan-dalana nataonao, ovay ary alao amin'ny endrika PDF.",
+    "create_cv_btn": "Hamorona ny CV-ko →",
+    "updated_msg": "Voavao ny mombamomba anao.",
+    "email_label": "Email",
+    "photo_label": "Sarin'ny mombamomba (URL)",
+    "firstname": "Fanampiny",
+    "lastname": "Anarana",
+    "phone": "Laharan-telefaonina",
+    "region": "Faritra / Tanàna",
+    "address": "Adiresy",
+    "education_level": "Ambaratonga fianarana",
+    "select_level": "Safidio ny ambaratonganao",
+    "bio": "Mombamomba fohy (Bio)",
+    "interests": "Ny zavatra mahaliana (sarahina amin'ny faingo)",
+    "save_btn": "Tehirizina",
+    "saving_btn": "Eo am-pitehirizana..."
+  }
+}

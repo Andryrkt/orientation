@@ -1,0 +1,61 @@
+{
+  "nav": {
+    "orientation": "Orientation",
+    "opportunities": "Opportunités",
+    "blog": "Blog / Conseils",
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Déconnexion",
+    "backoffice": "Back-office",
+    "theme": "Changer de thème",
+    "my_favorites": "Mes favoris",
+    "my_results": "Mes résultats",
+    "support_tickets": "Support / Tickets",
+    "my_profile": "Mon profil",
+    "my_cv": "Mon CV",
+    "jobs": "Métiers",
+    "domains": "Domaines",
+    "universities": "Universités",
+    "training_centers": "Centres de formation",
+    "questionnaire": "Questionnaire",
+    "coaches": "Coachs",
+    "internships": "Stages",
+    "scholarships": "Bourses"
+  },
+  "footer": {
+    "description": "La plateforme de référence pour l'orientation scolaire, universitaire et professionnelle à Madagascar.",
+    "orientation": "Orientation",
+    "opportunities": "Opportunités",
+    "account": "Compte",
+    "copyright": "OrientMad — Orientation scolaire, universitaire et professionnelle à Madagascar"
+  },
+  "home": {
+    "hero_title_gradient": "Ton avenir commence ici.",
+    "hero_subtitle": "La plateforme d'orientation moderne, complète et locale.",
+    "hero_desc": "Découvre les filières, passe notre test RIASEC et trouve ta voie.",
+    "explore_btn": "Explorer les métiers",
+    "take_test_btn": "Passer le test",
+    "explore_section_title": "Explore l'orientation",
+    "explore_section_desc": "Accède à des ressources locales pour faire les meilleurs choix."
+  },
+  "profile": {
+    "title": "Mon profil",
+    "cv_generator_title": "📄 Générateur de CV & Suggestions",
+    "cv_generator_desc": "Générez automatiquement une suggestion de CV professionnel basée sur vos résultats de test d'orientation, éditez et téléchargez en PDF.",
+    "create_cv_btn": "Créer mon CV →",
+    "updated_msg": "Profil mis à jour.",
+    "email_label": "Email",
+    "photo_label": "Photo de profil (URL)",
+    "firstname": "Prénom",
+    "lastname": "Nom",
+    "phone": "Téléphone",
+    "region": "Région / Ville",
+    "address": "Adresse",
+    "education_level": "Niveau d'études",
+    "select_level": "Sélectionnez votre niveau",
+    "bio": "Bio",
+    "interests": "Intérêts (séparés par des virgules)",
+    "save_btn": "Enregistrer",
+    "saving_btn": "Enregistrement..."
+  }
+}

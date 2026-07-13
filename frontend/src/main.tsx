@@ -6,6 +6,7 @@ import App from './App';
 import { AuthProvider } from './lib/auth-context';
 import { ThemeProvider } from './lib/theme-context';
 import './index.css';
+import './lib/i18n';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },

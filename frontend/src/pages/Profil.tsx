@@ -1,10 +1,12 @@
 import { FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/auth-context';
 import { api } from '../lib/api';
 
 export function Profil() {
   const { user, refreshUser } = useAuth();
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     nom: user?.nom ?? '',
     prenom: user?.prenom ?? '',
@@ -39,7 +41,7 @@ export function Profil() {
 
   return (
     <div className="max-w-lg mx-auto">
-      <h1 className="page-title">Mon profil</h1>
+      <h1 className="page-title">{t('profile.title')}</h1>
 
       <div className="mb-6 p-5 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white shadow-md relative overflow-hidden">
         <div className="absolute right-0 bottom-0 opacity-10 transform translate-y-2 translate-x-2">
@@ -47,23 +49,23 @@ export function Profil() {
             <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
           </svg>
         </div>
-        <h3 className="text-lg font-bold">📄 Générateur de CV & Suggestions</h3>
+        <h3 className="text-lg font-bold">{t('profile.cv_generator_title')}</h3>
         <p className="text-xs text-purple-100 mt-1 leading-relaxed">
-          Générez automatiquement une suggestion de CV professionnel basée sur vos résultats de test d'orientation, éditez et téléchargez en PDF.
+          {t('profile.cv_generator_desc')}
         </p>
         <Link
           to="/mon-cv"
           className="inline-block mt-3 px-4 py-2 bg-white text-indigo-600 hover:bg-indigo-50 font-semibold text-xs rounded-lg shadow-sm transition duration-300"
         >
-          Créer mon CV →
+          {t('profile.create_cv_btn')}
         </Link>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 bg-white border border-slate-200 rounded-lg p-6">
         {saved && (
-          <div className="bg-green-50 text-green-700 text-sm rounded-md px-3 py-2">Profil mis à jour.</div>
+          <div className="bg-green-50 text-green-700 text-sm rounded-md px-3 py-2">{t('profile.updated_msg')}</div>
         )}
-         <p className="text-sm text-slate-500">Email : {user.email}</p>
+         <p className="text-sm text-slate-500">{t('profile.email_label')} : {user.email}</p>
 
         <div className="flex items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl mb-2">
           <div className="w-16 h-16 rounded-full bg-slate-200 border border-slate-300 flex-shrink-0 overflow-hidden flex items-center justify-center">
@@ -75,7 +77,7 @@ export function Profil() {
           </div>
           <div className="flex-1">
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-              Photo de profil (URL)
+              {t('profile.photo_label')}
             </label>
             <input
               type="text"
@@ -88,7 +90,7 @@ export function Profil() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1">Prénom</label>
+            <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.firstname')}</label>
             <input
               className="field-input"
               value={form.prenom}
@@ -96,7 +98,7 @@ export function Profil() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1">Nom</label>
+            <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.lastname')}</label>
             <input
               className="field-input"
               value={form.nom}
@@ -106,7 +108,7 @@ export function Profil() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1">Région</label>
+            <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.region')}</label>
             <input
               className="field-input"
               value={form.region}
@@ -114,7 +116,7 @@ export function Profil() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1">Téléphone</label>
+            <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.phone')}</label>
             <input
               className="field-input"
               value={form.telephone}
@@ -123,7 +125,7 @@ export function Profil() {
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">Adresse</label>
+          <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.address')}</label>
           <input
             className="field-input"
             value={form.adresse}
@@ -131,7 +133,7 @@ export function Profil() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">Niveau d'étude</label>
+          <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.education_level')}</label>
           <input
             className="field-input"
             value={form.niveauEtude}
@@ -139,7 +141,7 @@ export function Profil() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">Bio</label>
+          <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.bio')}</label>
           <textarea
             className="field-input"
             rows={3}
@@ -149,7 +151,7 @@ export function Profil() {
         </div>
         <div>
           <label className="block text-sm font-medium text-slate-600 mb-1">
-            Centres d'intérêt (séparés par des virgules)
+            {t('profile.interests')}
           </label>
           <input
             className="field-input"
@@ -162,7 +164,7 @@ export function Profil() {
           disabled={loading}
           className="btn-primary"
         >
-          Enregistrer
+          {loading ? t('profile.saving_btn') : t('profile.save_btn')}
         </button>
       </form>
     </div>

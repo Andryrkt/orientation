@@ -1,5 +1,6 @@
 import { ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../lib/theme-context';
 
 /* ── Données RIASEC pour le Teaser ── */
@@ -352,6 +353,7 @@ function MiniRiasecTeaser() {
 /* ── Home Page ── */
 export function Home() {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   return (
     <div className="space-y-24 pb-12">
 
@@ -375,28 +377,27 @@ export function Home() {
               boxShadow: '0 0 15px rgba(168,85,247,0.1)',
             }}>
             <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
-            Orientation scolaire &amp; professionnelle à Madagascar
+            {t('footer.copyright')}
           </div>
 
           {/* Title */}
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
-            <span className="text-slate-900 dark:text-white">Trouve ta voie avec</span>
+            <span className="text-slate-900 dark:text-white">{t('home.hero_title_gradient')}</span>
             <br />
             <span className="gradient-text animate-text-shine">OrientMad</span>
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            La plateforme de référence pour l'orientation scolaire, universitaire et professionnelle
-            à Madagascar : métiers, formations, universités et bien plus.
+            {t('home.hero_subtitle')} {t('home.hero_desc')}
           </p>
 
           {/* CTAs */}
           <div className="flex flex-wrap justify-center gap-4 mb-16">
             <Link to="/metiers" className="btn-primary px-7 py-3.5 text-base">
-              Découvrir les métiers
+              {t('home.explore_btn')}
             </Link>
             <Link to="/questionnaire" className="btn-secondary px-7 py-3.5 text-base">
-              Faire le questionnaire
+              {t('home.take_test_btn')}
             </Link>
           </div>
 
@@ -421,8 +422,8 @@ export function Home() {
       <section>
         <div className="section-header">
           <span className="eyebrow mb-2">Explore</span>
-          <h2 className="section-title">Tout pour construire ton avenir</h2>
-          <p className="section-subtitle">Découvrez nos ressources pour affiner votre parcours d'études et de carrière.</p>
+          <h2 className="section-title">{t('home.explore_section_title')}</h2>
+          <p className="section-subtitle">{t('home.explore_section_desc')}</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {FEATURES.map((f) => (
