@@ -25,6 +25,7 @@ import { CentreFormationDetail } from './pages/CentreFormationDetail';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Profil } from './pages/Profil';
+import { CvGenerator } from './pages/CvGenerator';
 import { Favoris } from './pages/Favoris';
 import { NotFound } from './pages/NotFound';
 import { Dashboard } from './pages/admin/Dashboard';
@@ -72,6 +73,7 @@ export default function App() {
         <Route path="register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
           <Route path="profil" element={<Profil />} />
+          <Route path="mon-cv" element={<CvGenerator />} />
           <Route path="favoris" element={<Favoris />} />
           <Route path="questionnaire/:id" element={<QuestionnaireTake />} />
           <Route path="questionnaire/resultats/:id" element={<QuestionnaireResultat />} />

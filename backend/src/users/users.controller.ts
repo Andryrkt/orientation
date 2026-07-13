@@ -29,6 +29,11 @@ export class UsersController {
     return this.usersService.findMe(user.id);
   }
 
+  @Get('users/me/cv-suggestion')
+  getCvSuggestion(@CurrentUser() user: { id: string }) {
+    return this.usersService.getCvSuggestion(user.id);
+  }
+
   @Patch('users/me')
   updateMe(@CurrentUser() user: { id: string }, @Body() dto: UpdateProfileDto) {
     return this.usersService.updateMe(user.id, dto);

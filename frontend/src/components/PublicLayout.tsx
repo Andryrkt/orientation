@@ -41,6 +41,7 @@ export function PublicLayout() {
         { to: '/mes-resultats', label: 'Mes résultats' },
         { to: '/tickets', label: 'Support / Tickets' },
         { to: '/profil', label: 'Mon profil' },
+        { to: '/mon-cv', label: 'Mon CV' },
         { label: 'Déconnexion', onClick: () => logout() },
       ]
     : [];
@@ -266,6 +267,7 @@ export function PublicLayout() {
                   <li><Link to="/favoris" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Mes favoris</Link></li>
                   <li><Link to="/tickets" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Support & Tickets</Link></li>
                   <li><Link to="/profil" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Mon profil</Link></li>
+                  <li><Link to="/mon-cv" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Mon CV</Link></li>
                 </>
               ) : (
                 <>

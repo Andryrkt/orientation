@@ -47,4 +47,30 @@ export class UpdateProfileDto {
   @IsArray()
   @IsString({ each: true })
   interets?: string[];
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  titreCv?: string;
+
+  @ApiProperty({ required: false, type: [Object] })
+  @IsOptional()
+  @IsArray()
+  experiences?: any[];
+
+  @ApiProperty({ required: false, type: [Object] })
+  @IsOptional()
+  @IsArray()
+  formations?: any[];
+
+  @ApiProperty({ required: false, type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  competences?: string[];
+
+  @ApiProperty({ required: false, type: [Object] })
+  @IsOptional()
+  @IsArray()
+  langues?: any[];
 }

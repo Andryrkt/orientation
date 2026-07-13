@@ -1,5 +1,26 @@
 export type Role = 'VISITOR' | 'STUDENT' | 'COACH' | 'ADMIN';
 
+export interface ExperienceCv {
+  poste: string;
+  entreprise: string;
+  dateDebut: string;
+  dateFin: string;
+  description: string;
+}
+
+export interface FormationCv {
+  diplome: string;
+  ecole: string;
+  dateDebut: string;
+  dateFin: string;
+  description: string;
+}
+
+export interface LangueCv {
+  langue: string;
+  niveau: string;
+}
+
 export interface Profil {
   id: string;
   dateNaissance: string | null;
@@ -9,6 +30,11 @@ export interface Profil {
   photo: string | null;
   bio: string | null;
   interets: string[];
+  titreCv: string | null;
+  experiences: ExperienceCv[];
+  formations: FormationCv[];
+  competences: string[];
+  langues: LangueCv[];
 }
 
 export interface User {

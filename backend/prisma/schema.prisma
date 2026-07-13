@@ -81,6 +81,11 @@ model Profil {
   photo         String?
   bio           String?
   interets      String[]  @default([])
+  titreCv       String?
+  experiences   Json      @default("[]")
+  formations    Json      @default("[]")
+  competences   Json      @default("[]")
+  langues       Json      @default("[]")
 
   @@map("profils")
 }
