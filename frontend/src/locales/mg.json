@@ -20,7 +20,8 @@
     "questionnaire": "Fizahana RIASEC",
     "coaches": "Mpanoro hevitra",
     "internships": "Stages / Fampiharana",
-    "scholarships": "Vatsim-pianarana"
+    "scholarships": "Vatsim-pianarana",
+    "ressources": "Fianarana & Docs"
   },
   "footer": {
     "description": "Ny sehatra fakan-kevitra ho an'ny fizahan-dalana amin'ny fianarana, an-danin'ny oniversite ary ny asa eto Madagasikara.",
@@ -57,5 +58,29 @@
     "interests": "Ny zavatra mahaliana (sarahina amin'ny faingo)",
     "save_btn": "Tehirizina",
     "saving_btn": "Eo am-pitehirizana..."
+  },
+  "ressources": {
+    "title": "Sehatry ny Fianarana & Tahirin-kevitra",
+    "subtitle": "Loharano ho an'ny fianarana sy tahirin-kevitra matihanina mifanaraka amin'ny lalanao.",
+    "tab_learning": "Sehatry ny Fianarana",
+    "tab_docs": "Sehatry ny Tahirin-kevitra",
+    "select_level_prompt": "Farito ny ambaratonga fianaranao",
+    "select_level_desc": "Mba hanolorana anao ny tahirin-kevitra sy ny lesona mifanaraka indriveau, safidio ny ambaratonganao ankehitriny :",
+    "level_lycee": "Lisea / Fanomanana BACC",
+    "level_lycee_desc": "Hahazoana lesona teorika, fampiharana, boky fianarana ary ireo laza adina efa lasa tamin'ny BACC.",
+    "level_bachelier": "Nahazo BACC vao haingana",
+    "level_bachelier_desc": "Hahazoana laza adina sy fanitsiana amin'ny fifaninanana hidirana oniversite (ESP Vontovorona, Dokotera Ankatso...) ary torolalana amin'ny fiovana ho eny amin'ny oniversite.",
+    "level_universite": "Oniversite & Matihanina",
+    "level_universite_desc": "Haka modely CV, taratasy fangatahana asa, torolalana amin'ny tatitry ny stage sy ny fikarohana Master.",
+    "btn_choose": "Hanamarina sy hiditra",
+    "btn_change_level": "Hanova ny ambaratonga fianarako",
+    "search_placeholder": "Hitady lesona, lohahevitra, modely...",
+    "category_all": "Rehetra",
+    "duration": "Faharetany : {{duration}}",
+    "pages": "Pajy : {{pages}}",
+    "download": "Hampidina",
+    "read": "Hovakiana ny lesona",
+    "empty_msg": "Tsy misy loharano azo ampiasaina amin'ity sokajy ity.",
+    "modal_close": "Hanakatona"
   }
 }

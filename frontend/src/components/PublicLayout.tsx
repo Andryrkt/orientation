@@ -40,6 +40,7 @@ export function PublicLayout() {
 
   const userItems: NavDropdownItem[] = user
     ? [
+        { to: '/ressources', label: t('nav.ressources') },
         { to: '/favoris', label: t('nav.my_favorites') },
         { to: '/mes-resultats', label: t('nav.my_results') },
         { to: '/tickets', label: t('nav.support_tickets') },
@@ -81,6 +82,9 @@ export function PublicLayout() {
             <NavDropdown label={t('nav.orientation')} items={ORIENTATION_ITEMS} />
             <NavDropdown label={t('nav.opportunities')} items={OPPORTUNITES_ITEMS} />
             <NavLink to="/blog" className={navLinkClass}>{t('nav.blog')}</NavLink>
+            {user && (
+              <NavLink to="/ressources" className={navLinkClass}>{t('nav.ressources')}</NavLink>
+            )}
             {user?.role === 'ADMIN' && (
               <NavLink to="/admin" className={navLinkClass}>{t('nav.backoffice')}</NavLink>
             )}

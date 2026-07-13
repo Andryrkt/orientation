@@ -27,6 +27,7 @@ import { Register } from './pages/Register';
 import { Profil } from './pages/Profil';
 import { CvGenerator } from './pages/CvGenerator';
 import { Favoris } from './pages/Favoris';
+import { RessourcesApprentissage } from './pages/RessourcesApprentissage';
 import { NotFound } from './pages/NotFound';
 import { Dashboard } from './pages/admin/Dashboard';
 import { DomainesAdmin } from './pages/admin/DomainesAdmin';
@@ -74,6 +75,7 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="profil" element={<Profil />} />
           <Route path="mon-cv" element={<CvGenerator />} />
+          <Route path="ressources" element={<RessourcesApprentissage />} />
           <Route path="favoris" element={<Favoris />} />
           <Route path="questionnaire/:id" element={<QuestionnaireTake />} />
           <Route path="questionnaire/resultats/:id" element={<QuestionnaireResultat />} />

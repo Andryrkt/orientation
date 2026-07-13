@@ -492,3 +492,25 @@ model TicketMessage {
 
   @@map("ticket_messages")
 }
+
+enum TypeRessource {
+  COURS
+  DOCUMENT
+}
+
+model Ressource {
+  id           String        @id @default(uuid())
+  titre        String
+  description  String?
+  contenu      String        @db.Text
+  type         TypeRessource
+  niveauEtude  String        // 'LYCEE', 'NOUVEAU_BACHELIER' ou 'UNIVERSITE'
+  categorie    String        // ex: 'Mathématiques', 'Concours Polytechnique', 'Modèle de CV'
+  fichierUrl   String?       // Lien de téléchargement optionnel
+  dureeLecture String?       // ex: '15 min', '2 pages'
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@map("ressources")
+}
+

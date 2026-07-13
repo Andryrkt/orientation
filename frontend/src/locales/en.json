@@ -20,7 +20,8 @@
     "questionnaire": "Questionnaire",
     "coaches": "Coaches",
     "internships": "Internships",
-    "scholarships": "Scholarships"
+    "scholarships": "Scholarships",
+    "ressources": "Learning & Docs"
   },
   "footer": {
     "description": "The reference platform for academic, university, and professional guidance in Madagascar.",
@@ -57,5 +58,29 @@
     "interests": "Interests (comma separated)",
     "save_btn": "Save Changes",
     "saving_btn": "Saving..."
+  },
+  "ressources": {
+    "title": "Learning & Documents Hub",
+    "subtitle": "Educational resources and professional documents tailored to your path.",
+    "tab_learning": "Learning Platform",
+    "tab_docs": "Document Platform",
+    "select_level_prompt": "Configure your study profile",
+    "select_level_desc": "To suggest the most relevant documents and courses, select your current situation:",
+    "level_lycee": "High School / BACC Prep",
+    "level_lycee_desc": "Access theoretical courses, practical exercises, textbooks, and past BACC exam papers.",
+    "level_bachelier": "New BACC Graduate",
+    "level_bachelier_desc": "Find past entrance exam papers (ESP Vontovorona, Medicine Ankatso...) and guides to succeed in your transition to university.",
+    "level_universite": "University & Professional",
+    "level_universite_desc": "Download CV templates, cover letters, and guides for your internship reports and Master's thesis.",
+    "btn_choose": "Confirm & Access",
+    "btn_change_level": "Edit my study profile",
+    "search_placeholder": "Search for a course, subject, template...",
+    "category_all": "All",
+    "duration": "Duration: {{duration}}",
+    "pages": "Pages: {{pages}}",
+    "download": "Download",
+    "read": "Read course",
+    "empty_msg": "No resources available for this category.",
+    "modal_close": "Close"
   }
 }
