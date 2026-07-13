@@ -29,12 +29,13 @@ export class UsersService {
   }
 
   async updateMe(userId: string, dto: UpdateProfileDto) {
-    const { nom, prenom, ...profilFields } = dto;
+    const { nom, prenom, telephone, ...profilFields } = dto;
     await this.prisma.utilisateur.update({
       where: { id: userId },
       data: {
         ...(nom && { nom }),
         ...(prenom && { prenom }),
+        ...(telephone !== undefined && { telephone }),
         profil: {
           upsert: {
             create: {

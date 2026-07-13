@@ -26,6 +26,7 @@ export interface Profil {
   dateNaissance: string | null;
   sexe: string | null;
   region: string | null;
+  adresse: string | null;
   niveauEtude: string | null;
   photo: string | null;
   bio: string | null;

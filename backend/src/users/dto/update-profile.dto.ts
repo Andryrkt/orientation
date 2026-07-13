@@ -14,6 +14,11 @@ export class UpdateProfileDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
+  @IsString()
+  telephone?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsDateString()
   dateNaissance?: string;
 
@@ -36,6 +41,11 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   photo?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  adresse?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()

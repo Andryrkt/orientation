@@ -651,7 +651,8 @@ export function CvGenerator() {
                     <div className="flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-1 text-slate-500 text-xs mt-3">
                       <span>✉️ {user.email}</span>
                       {user.telephone && <span>📞 {user.telephone}</span>}
-                      {user.profil?.region && <span>📍 {user.profil.region}</span>}
+                      {user.profil?.adresse && <span>📍 {user.profil.adresse}</span>}
+                      {!user.profil?.adresse && user.profil?.region && <span>📍 {user.profil.region}</span>}
                     </div>
                   </div>
                 </div>
@@ -805,7 +806,8 @@ export function CvGenerator() {
                     <div className="text-xs text-slate-300 space-y-1 text-left md:text-right font-light">
                       <p>✉️ {user.email}</p>
                       {user.telephone && <p>📞 {user.telephone}</p>}
-                      {user.profil?.region && <p>📍 {user.profil.region}</p>}
+                      {user.profil?.adresse && <p>📍 {user.profil.adresse}</p>}
+                      {!user.profil?.adresse && user.profil?.region && <p>📍 {user.profil.region}</p>}
                     </div>
                   </div>
                 </div>
@@ -948,10 +950,11 @@ export function CvGenerator() {
                     <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest border-b border-slate-800 pb-1">
                       Contact
                     </h3>
-                    <div className="text-[11px] space-y-1.5">
+                    <div className="text-[11px] space-y-1.5 font-light">
                       <p className="truncate">✉️ {user.email}</p>
                       {user.telephone && <p>📞 {user.telephone}</p>}
-                      {user.profil?.region && <p>📍 {user.profil.region}</p>}
+                      {user.profil?.adresse && <p className="whitespace-pre-line">📍 {user.profil.adresse}</p>}
+                      {!user.profil?.adresse && user.profil?.region && <p>📍 {user.profil.region}</p>}
                     </div>
                   </div>
 

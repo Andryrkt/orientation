@@ -8,7 +8,10 @@ export function Profil() {
   const [form, setForm] = useState({
     nom: user?.nom ?? '',
     prenom: user?.prenom ?? '',
+    telephone: user?.telephone ?? '',
     region: user?.profil?.region ?? '',
+    adresse: user?.profil?.adresse ?? '',
+    photo: user?.profil?.photo ?? '',
     niveauEtude: user?.profil?.niveauEtude ?? '',
     bio: user?.profil?.bio ?? '',
     interets: (user?.profil?.interets ?? []).join(', '),
@@ -60,7 +63,29 @@ export function Profil() {
         {saved && (
           <div className="bg-green-50 text-green-700 text-sm rounded-md px-3 py-2">Profil mis à jour.</div>
         )}
-        <p className="text-sm text-slate-500">Email : {user.email}</p>
+         <p className="text-sm text-slate-500">Email : {user.email}</p>
+
+        <div className="flex items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl mb-2">
+          <div className="w-16 h-16 rounded-full bg-slate-200 border border-slate-300 flex-shrink-0 overflow-hidden flex items-center justify-center">
+            {form.photo ? (
+              <img src={form.photo} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-2xl">👤</span>
+            )}
+          </div>
+          <div className="flex-1">
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+              Photo de profil (URL)
+            </label>
+            <input
+              type="text"
+              placeholder="https://example.com/avatar.jpg"
+              className="field-input bg-white"
+              value={form.photo}
+              onChange={(e) => setForm({ ...form, photo: e.target.value })}
+            />
+          </div>
+        </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">Prénom</label>
@@ -79,12 +104,30 @@ export function Profil() {
             />
           </div>
         </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm font-medium text-slate-600 mb-1">Région</label>
+            <input
+              className="field-input"
+              value={form.region}
+              onChange={(e) => setForm({ ...form, region: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-600 mb-1">Téléphone</label>
+            <input
+              className="field-input"
+              value={form.telephone}
+              onChange={(e) => setForm({ ...form, telephone: e.target.value })}
+            />
+          </div>
+        </div>
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">Région</label>
+          <label className="block text-sm font-medium text-slate-600 mb-1">Adresse</label>
           <input
             className="field-input"
-            value={form.region}
-            onChange={(e) => setForm({ ...form, region: e.target.value })}
+            value={form.adresse}
+            onChange={(e) => setForm({ ...form, adresse: e.target.value })}
           />
         </div>
         <div>
