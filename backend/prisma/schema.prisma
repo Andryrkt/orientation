@@ -64,6 +64,8 @@ model Utilisateur {
   resultatsOrientation ResultatOrientation[]
   coachProfil          Coach?
   avisCoachs           CoachAvis[]
+  tickets              Ticket[]
+  ticketMessages       TicketMessage[]
 
   @@map("utilisateurs")
 }
@@ -442,4 +444,45 @@ model Favori {
 
   @@unique([utilisateurId, type, entityId])
   @@map("favoris")
+}
+
+enum TicketStatut {
+  OUVERT
+  EN_COURS
+  RESOLU
+  FERME
+}
+
+enum TicketPriorite {
+  BASSE
+  MOYENNE
+  HAUTE
+}
+
+model Ticket {
+  id            String          @id @default(uuid())
+  sujet         String
+  description   String?
+  statut        TicketStatut    @default(OUVERT)
+  priorite      TicketPriorite  @default(MOYENNE)
+  categorie     String          @default("AUTRE")
+  utilisateurId String
+  utilisateur   Utilisateur     @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  messages      TicketMessage[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@map("tickets")
+}
+
+model TicketMessage {
+  id            String      @id @default(uuid())
+  ticketId      String
+  ticket        Ticket      @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  auteurId      String
+  auteur        Utilisateur @relation(fields: [auteurId], references: [id], onDelete: Cascade)
+  message       String
+  createdAt     DateTime    @default(now())
+
+  @@map("ticket_messages")
 }

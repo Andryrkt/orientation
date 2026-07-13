@@ -193,6 +193,7 @@ export interface AuteurResume {
   id: string;
   nom: string;
   prenom: string;
+  email?: string;
 }
 
 export type CommentaireStatut = 'EN_ATTENTE' | 'APPROUVE' | 'REJETE';
@@ -236,6 +237,7 @@ export interface AdminStats {
   testsCompletes: number;
   coachs: number;
   centresFormation: number;
+  tickets: number;
 }
 
 export type TypeQuestion = 'CHOIX_MULTIPLE' | 'ECHELLE' | 'TEXTE';
@@ -333,4 +335,30 @@ export interface Favori {
   entityId: string;
   createdAt: string;
   entity: { id: string; nom: string; slug: string } | null;
+}
+
+export type TicketStatut = 'OUVERT' | 'EN_COURS' | 'RESOLU' | 'FERME';
+export type TicketPriorite = 'BASSE' | 'MOYENNE' | 'HAUTE';
+
+export interface TicketMessage {
+  id: string;
+  ticketId: string;
+  auteurId: string;
+  auteur?: AuteurResume;
+  message: string;
+  createdAt: string;
+}
+
+export interface Ticket {
+  id: string;
+  sujet: string;
+  description: string | null;
+  statut: TicketStatut;
+  priorite: TicketPriorite;
+  categorie: string;
+  utilisateurId: string;
+  utilisateur?: AuteurResume;
+  messages?: TicketMessage[];
+  createdAt: string;
+  updatedAt: string;
 }

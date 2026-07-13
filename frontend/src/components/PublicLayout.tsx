@@ -39,6 +39,7 @@ export function PublicLayout() {
     ? [
         { to: '/favoris', label: 'Mes favoris' },
         { to: '/mes-resultats', label: 'Mes résultats' },
+        { to: '/tickets', label: 'Support / Tickets' },
         { to: '/profil', label: 'Mon profil' },
         { label: 'Déconnexion', onClick: () => logout() },
       ]
@@ -206,7 +207,7 @@ export function PublicLayout() {
       </header>
 
       {/* ── Main ── */}
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8 relative z-10">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8 relative z-20">
         <Outlet />
       </main>
 
@@ -263,6 +264,7 @@ export function PublicLayout() {
               {user ? (
                 <>
                   <li><Link to="/favoris" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Mes favoris</Link></li>
+                  <li><Link to="/tickets" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Support & Tickets</Link></li>
                   <li><Link to="/profil" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Mon profil</Link></li>
                 </>
               ) : (

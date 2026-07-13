@@ -15,6 +15,7 @@ const LABELS: Record<keyof AdminStats, string> = {
   testsCompletes: "Tests d'orientation complétés",
   coachs: 'Coachs',
   centresFormation: 'Centres de formation',
+  tickets: 'Tickets / Support',
 };
 
 export function Dashboard() {

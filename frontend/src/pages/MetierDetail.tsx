@@ -446,7 +446,7 @@ export function MetierDetail() {
           <JaugeSalaire 
             min={metier.salaireMin || 0}
             max={metier.salaireMax || 0}
-            source={metier.salaireSource}
+            source={metier.salaireSource ?? undefined}
             id="section-salaire"
           />
         )}

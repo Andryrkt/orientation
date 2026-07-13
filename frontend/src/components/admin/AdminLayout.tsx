@@ -39,7 +39,10 @@ const groups: { title?: string; links: { to: string; label: string; end?: boolea
   },
   {
     title: 'Administration',
-    links: [{ to: '/admin/utilisateurs', label: 'Utilisateurs' }],
+    links: [
+      { to: '/admin/utilisateurs', label: 'Utilisateurs' },
+      { to: '/admin/tickets', label: 'Tickets / Support' },
+    ],
   },
 ];
 

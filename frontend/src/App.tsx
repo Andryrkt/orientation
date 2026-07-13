@@ -42,6 +42,10 @@ import { QuestionnaireBuilder } from './pages/admin/QuestionnaireBuilder';
 import { CoachsAdmin } from './pages/admin/CoachsAdmin';
 import { CentresFormationAdmin } from './pages/admin/CentresFormationAdmin';
 import { UtilisateursAdmin } from './pages/admin/UtilisateursAdmin';
+import { Tickets } from './pages/Tickets';
+import { TicketDetail } from './pages/TicketDetail';
+import { TicketsAdmin } from './pages/admin/TicketsAdmin';
+import { TicketDetailAdmin } from './pages/admin/TicketDetailAdmin';
 
 export default function App() {
   return (
@@ -72,6 +76,8 @@ export default function App() {
           <Route path="questionnaire/:id" element={<QuestionnaireTake />} />
           <Route path="questionnaire/resultats/:id" element={<QuestionnaireResultat />} />
           <Route path="mes-resultats" element={<QuestionnaireHistorique />} />
+          <Route path="tickets" element={<Tickets />} />
+          <Route path="tickets/:id" element={<TicketDetail />} />
         </Route>
       </Route>
 
@@ -92,6 +98,8 @@ export default function App() {
           <Route path="coachs" element={<CoachsAdmin />} />
           <Route path="centres-formation" element={<CentresFormationAdmin />} />
           <Route path="utilisateurs" element={<UtilisateursAdmin />} />
+          <Route path="tickets" element={<TicketsAdmin />} />
+          <Route path="tickets/:id" element={<TicketDetailAdmin />} />
         </Route>
       </Route>
 

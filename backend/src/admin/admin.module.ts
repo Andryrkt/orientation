@@ -12,6 +12,7 @@ import { BlogsModule } from '../blogs/blogs.module';
 import { QuestionnairesModule } from '../questionnaires/questionnaires.module';
 import { CoachsModule } from '../coachs/coachs.module';
 import { CentresFormationModule } from '../centres-formation/centres-formation.module';
+import { TicketsModule } from '../tickets/tickets.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { CentresFormationModule } from '../centres-formation/centres-formation.m
     QuestionnairesModule,
     CoachsModule,
     CentresFormationModule,
+    TicketsModule,
   ],
   controllers: [AdminController],
 })
