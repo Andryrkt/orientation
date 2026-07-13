@@ -57,7 +57,7 @@ export function NavDropdown({ label, items, align = 'left', active }: NavDropdow
       </button>
       {open && (
         <div
-          className={`absolute mt-2 min-w-[220px] py-2 z-20 rounded-2xl ${align === 'right' ? 'right-0' : 'left-0'}`}
+          className={`absolute mt-2 min-w-[220px] py-2 z-20 rounded-2xl animate-dropdown ${align === 'right' ? 'right-0' : 'left-0'}`}
           style={{
             background: 'rgba(15, 12, 41, 0.92)',
             backdropFilter: 'blur(20px)',

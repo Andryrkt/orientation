@@ -5,6 +5,17 @@ import { api } from '../lib/api';
 import { Domaine, Metier, Paginated } from '../lib/types';
 import { FavoriteButton } from '../components/FavoriteButton';
 
+const DOMAINE_IMAGES: Record<string, string> = {
+  'sciences-technologies': 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80',
+  'sante-medecine': 'https://images.unsplash.com/photo-1530026405186-ed1ea0ac7a63?auto=format&fit=crop&w=400&q=80',
+  'economie-gestion': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=400&q=80',
+  'droit-sciences-politiques': 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80',
+  'lettres-sciences-humaines': 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=400&q=80',
+  'arts-communication': 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=400&q=80',
+};
+
+const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=400&q=80';
+
 // Gradient par domaine
 const DOMAINE_COLORS: Record<string, { gradient: string; glow: string; text: string }> = {
   'sciences-technologies': { gradient: 'from-blue-500 to-indigo-500', glow: 'rgba(99,102,241,0.3)', text: '#818cf8' },
@@ -20,6 +31,13 @@ const DEFAULT_COLOR = { gradient: 'from-slate-500 to-slate-600', glow: 'rgba(148
 function getColor(slug?: string) {
   if (!slug) return DEFAULT_COLOR;
   return DOMAINE_COLORS[slug] ?? DEFAULT_COLOR;
+}
+
+function formatSalary(val: number | null) {
+  if (!val) return '—';
+  if (val >= 1000000) return `${(val / 1000000).toFixed(1)}M`;
+  if (val >= 1000) return `${(val / 1000).toFixed(0)}k`;
+  return val.toString();
 }
 
 export function MetiersList() {
@@ -62,10 +80,10 @@ export function MetiersList() {
             style={{ background: 'rgba(129,140,248,0.15)', border: '1px solid rgba(129,140,248,0.25)', color: '#818cf8' }}>
             📂 Fiches Métiers
           </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">
             Découvre les métiers <span className="gradient-text">à Madagascar</span>
           </h1>
-          <p className="text-slate-400 text-base leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed">
             Explorez les opportunités de carrière, les compétences requises, les salaires locaux et les témoignages de professionnels.
           </p>
         </div>
@@ -107,20 +125,23 @@ export function MetiersList() {
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         {data?.items.map((m) => {
           const color = getColor(m.domaine?.slug);
+          const slugDomaine = m.domaine?.slug || '';
+          const imageUrl = DOMAINE_IMAGES[slugDomaine] || DEFAULT_IMAGE;
+          
           return (
             <Link
               key={m.id}
               to={`/metiers/${m.slug}`}
-              className="group relative block p-6 rounded-2xl transition-all duration-300 overflow-hidden"
+              className="group relative block rounded-2xl transition-all duration-300 overflow-hidden"
               style={{
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.07)',
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.06)',
                 backdropFilter: 'blur(16px)',
               }}
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLElement).style.borderColor = color.glow.replace('0.3', '0.5');
-                (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
-                (e.currentTarget as HTMLElement).style.boxShadow = `0 20px 40px rgba(0,0,0,0.4), 0 0 30px ${color.glow}`;
+                (e.currentTarget as HTMLElement).style.transform = 'translateY(-6px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = `0 20px 40px rgba(0,0,0,0.5), 0 0 30px ${color.glow}`;
               }}
               onMouseLeave={(e) => {
                 (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.07)';
@@ -129,45 +150,65 @@ export function MetiersList() {
               }}
             >
               {/* Background glow */}
-              <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                style={{ background: `radial-gradient(circle, ${color.glow} 0%, transparent 70%)`, transform: 'translate(30%, -30%)' }} />
+              <div className="absolute bottom-0 right-0 w-32 h-32 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                style={{ background: `radial-gradient(circle, ${color.glow} 0%, transparent 70%)` }} />
 
-              {/* Domain pill */}
-              <div className="flex items-center justify-between mb-4 pr-8">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold"
-                  style={{ background: color.glow, color: color.text, border: `1px solid ${color.glow.replace('0.3', '0.4')}` }}>
-                  <span className={`w-1.5 h-1.5 rounded-full bg-gradient-to-br ${color.gradient} inline-block`} />
-                  {m.domaine?.nom}
-                </span>
+              {/* Photo d'en-tête de la vignette */}
+              <div className="w-full h-36 relative overflow-hidden rounded-t-2xl">
+                <img 
+                  src={imageUrl} 
+                  alt={m.nom}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                
+                {/* Domain badge sur l'image */}
+                <div className="absolute top-3 left-3">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold"
+                    style={{ background: 'rgba(10, 8, 24, 0.75)', color: color.text, border: `1px solid ${color.glow}` }}>
+                    <span className={`w-1.5 h-1.5 rounded-full bg-gradient-to-br ${color.gradient} inline-block`} />
+                    {m.domaine?.nom}
+                  </span>
+                </div>
+
+                {/* Favorite button sur l'image */}
+                <FavoriteButton type="METIER" entityId={m.id} compact className="absolute top-3 right-3 scale-90" />
               </div>
 
-              {/* Favorite */}
-              <FavoriteButton type="METIER" entityId={m.id} compact className="absolute top-4 right-4" />
+              {/* Contenu textuel inférieur */}
+              <div className="p-5 space-y-3">
+                {/* Title */}
+                <h3 className="text-base font-bold text-white group-hover:text-purple-300 transition-colors duration-200 line-clamp-1">
+                  {m.nom}
+                </h3>
+                
+                <p className="text-slate-400 text-xs line-clamp-2 leading-relaxed h-8">
+                  {m.description}
+                </p>
 
-              {/* Title */}
-              <h3 className="text-lg font-bold text-white mb-2 group-hover:text-purple-300 transition-colors duration-200">
-                {m.nom}
-              </h3>
-              <p className="text-slate-400 text-sm line-clamp-2 leading-relaxed mb-4">{m.description}</p>
+                {/* Salary & Arrow */}
+                <div className="flex items-center justify-between pt-2.5 border-t border-white/5">
+                  {(m.salaireMin || m.salaireMax) ? (
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold"
+                      style={{ color: color.text }}>
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {formatSalary(m.salaireMin)} – {formatSalary(m.salaireMax)} Ar/m.
+                    </div>
+                  ) : (
+                    <span className="text-[10px] text-slate-500 italic">Salaire non spécifié</span>
+                  )}
 
-              {/* Salary */}
-              {(m.salaireMin || m.salaireMax) && (
-                <div className="flex items-center gap-1.5 text-xs"
-                  style={{ color: color.text }}>
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  {m.salaireMin?.toLocaleString('fr-FR')} – {m.salaireMax?.toLocaleString('fr-FR')} Ar/mois
+                  <div className="flex items-center gap-1 text-[11px] font-bold opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                    style={{ color: '#c084fc' }}>
+                    Voir
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </div>
-              )}
-
-              {/* Arrow */}
-              <div className="flex items-center gap-1 mt-4 text-xs font-semibold opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
-                style={{ color: '#c084fc' }}>
-                Voir la fiche
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
               </div>
             </Link>
           );

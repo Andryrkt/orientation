@@ -34,10 +34,10 @@ export function DomainesList() {
             style={{ background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.3)', color: '#c084fc' }}>
             🎓 Domaines de formation
           </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">
             Explore les grands domaines <span className="gradient-text">d'études</span>
           </h1>
-          <p className="text-slate-400 text-base leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed">
             Parcourez les filières et secteurs académiques pour structurer votre projet de formation scolaire ou universitaire.
           </p>
         </div>
@@ -86,10 +86,10 @@ export function DomainesList() {
                 {theme.icon}
               </div>
 
-              <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-300 transition-colors duration-200">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors duration-200">
                 {d.nom}
               </h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-5">{d.description}</p>
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-5">{d.description}</p>
 
               <div className="flex items-center gap-1 text-xs font-semibold opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
                 style={{ color: theme.text }}>
