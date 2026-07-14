@@ -13,6 +13,7 @@ describe('OrientMad API (e2e)', () => {
   const adminEmail = `admin-${suffix}@test.mg`;
   let domaineId: string;
   let metierId: string;
+  let nouveauDomaineId: string;
   let studentToken: string;
   let adminToken: string;
 
@@ -44,8 +45,8 @@ describe('OrientMad API (e2e)', () => {
   });
 
   afterAll(async () => {
-    await prisma.metier.deleteMany({ where: { domaineId } });
-    await prisma.domaine.delete({ where: { id: domaineId } });
+    await prisma.metier.deleteMany({ where: { domaineId: { in: [domaineId, nouveauDomaineId].filter(Boolean) } } });
+    await prisma.domaine.deleteMany({ where: { id: { in: [domaineId, nouveauDomaineId].filter(Boolean) } } });
     await prisma.utilisateur.deleteMany({ where: { email: { in: [studentEmail, adminEmail] } } });
     await app.close();
   });
@@ -120,6 +121,40 @@ describe('OrientMad API (e2e)', () => {
   it('DELETE /metiers/:id permet a un admin de supprimer un metier', async () => {
     const res = await request(app.getHttpServer())
       .delete(`/metiers/${metierId}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(res.status).toBe(200);
+  });
+
+  it('POST /domaines refuse un utilisateur non-admin', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/domaines')
+      .set('Authorization', `Bearer ${studentToken}`)
+      .send({ nom: 'Domaine interdit', ordre: 10 });
+    expect(res.status).toBe(403);
+  });
+
+  it('POST /domaines permet a un admin de creer un domaine', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/domaines')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ nom: `Nouveau domaine ${suffix}`, ordre: 10 });
+    expect(res.status).toBe(201);
+    expect(res.body.slug).toContain('nouveau-domaine');
+    nouveauDomaineId = res.body.id;
+  });
+
+  it('PATCH /domaines/:id permet a un admin de modifier un domaine', async () => {
+    const res = await request(app.getHttpServer())
+      .patch(`/domaines/${nouveauDomaineId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ ordre: 15 });
+    expect(res.status).toBe(200);
+    expect(res.body.ordre).toBe(15);
+  });
+
+  it('DELETE /domaines/:id permet a un admin de supprimer un domaine', async () => {
+    const res = await request(app.getHttpServer())
+      .delete(`/domaines/${nouveauDomaineId}`)
       .set('Authorization', `Bearer ${adminToken}`);
     expect(res.status).toBe(200);
   });
