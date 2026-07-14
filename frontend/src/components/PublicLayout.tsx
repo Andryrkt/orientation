@@ -360,6 +360,9 @@ export function PublicLayout() {
               <li>
                 <Link to="/blog" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.blog')}</Link>
               </li>
+              <li>
+                <Link to="/guide" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Guide d'utilisation</Link>
+              </li>
             </ul>
           </div>
           <div>

@@ -389,3 +389,16 @@ export interface Ticket {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Ressource {
+  id: string;
+  titre: string;
+  description: string | null;
+  contenu: string;
+  type: 'COURS' | 'DOCUMENT';
+  niveauEtude: string;
+  categorie: string;
+  fichierUrl: string | null;
+  dureeLecture: string | null;
+  createdAt: string;
+}

@@ -35,6 +35,7 @@ const groups: { title?: string; links: { to: string; label: string; end?: boolea
     links: [
       { to: '/admin/blogs', label: 'Articles de blog' },
       { to: '/admin/blog-commentaires', label: 'Commentaires' },
+      { to: '/admin/ressources', label: 'Ressources / Docs' },
     ],
   },
   {

@@ -29,6 +29,7 @@ import { CvGenerator } from './pages/CvGenerator';
 import { Favoris } from './pages/Favoris';
 import { RessourcesApprentissage } from './pages/RessourcesApprentissage';
 import { NotFound } from './pages/NotFound';
+import { GuideUtilisateur } from './pages/GuideUtilisateur';
 import { Dashboard } from './pages/admin/Dashboard';
 import { DomainesAdmin } from './pages/admin/DomainesAdmin';
 import { MetiersAdmin } from './pages/admin/MetiersAdmin';
@@ -48,6 +49,7 @@ import { Tickets } from './pages/Tickets';
 import { TicketDetail } from './pages/TicketDetail';
 import { TicketsAdmin } from './pages/admin/TicketsAdmin';
 import { TicketDetailAdmin } from './pages/admin/TicketDetailAdmin';
+import { RessourcesAdmin } from './pages/admin/RessourcesAdmin';
 
 export default function App() {
   return (
@@ -72,6 +74,7 @@ export default function App() {
         <Route path="coachs/:id" element={<CoachDetail />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="guide" element={<GuideUtilisateur />} />
         <Route element={<ProtectedRoute />}>
           <Route path="profil" element={<Profil />} />
           <Route path="mon-cv" element={<CvGenerator />} />
@@ -97,6 +100,7 @@ export default function App() {
           <Route path="bourses" element={<BoursesAdmin />} />
           <Route path="blogs" element={<BlogsAdmin />} />
           <Route path="blog-commentaires" element={<BlogCommentairesAdmin />} />
+          <Route path="ressources" element={<RessourcesAdmin />} />
           <Route path="questionnaires" element={<QuestionnairesAdmin />} />
           <Route path="questionnaires/:id" element={<QuestionnaireBuilder />} />
           <Route path="coachs" element={<CoachsAdmin />} />
