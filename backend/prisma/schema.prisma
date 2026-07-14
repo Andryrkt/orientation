@@ -12,6 +12,7 @@ enum Role {
   VISITOR
   STUDENT
   COACH
+  TEACHER
   ADMIN
 }
 
@@ -29,6 +30,7 @@ enum FavorisableType {
   BOURSE
   COACH
   CENTRE_FORMATION
+  ENSEIGNANT
 }
 
 enum CommentaireStatut {
@@ -64,6 +66,8 @@ model Utilisateur {
   resultatsOrientation ResultatOrientation[]
   coachProfil          Coach?
   avisCoachs           CoachAvis[]
+  enseignantProfil     Enseignant?
+  avisEnseignants      EnseignantAvis[]
   tickets              Ticket[]
   ticketMessages       TicketMessage[]
 
@@ -438,6 +442,42 @@ model CoachAvis {
 
   @@unique([coachId, utilisateurId])
   @@map("coach_avis")
+}
+
+model Enseignant {
+  id              String           @id @default(uuid())
+  utilisateurId   String?          @unique
+  utilisateur     Utilisateur?     @relation(fields: [utilisateurId], references: [id], onDelete: SetNull)
+  nom             String
+  prenom          String
+  email           String?
+  telephone       String?
+  photo           String?
+  bio             String?
+  matieres        String[]         @default([])
+  etablissement   String?
+  disponibilites  String?
+  visible         Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  avis EnseignantAvis[]
+
+  @@map("enseignants")
+}
+
+model EnseignantAvis {
+  id            String      @id @default(uuid())
+  enseignantId  String
+  enseignant    Enseignant  @relation(fields: [enseignantId], references: [id], onDelete: Cascade)
+  utilisateurId String
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  note          Int
+  commentaire   String?
+  createdAt     DateTime    @default(now())
+
+  @@unique([enseignantId, utilisateurId])
+  @@map("enseignant_avis")
 }
 
 model Favori {

@@ -31,6 +31,7 @@ export function PublicLayout() {
     { to: '/centres-formation', label: t('nav.training_centers') },
     { to: '/questionnaire', label: t('nav.questionnaire') },
     { to: '/coachs', label: t('nav.coaches') },
+    { to: '/enseignants', label: 'Enseignants' },
   ];
 
   const OPPORTUNITES_ITEMS = [

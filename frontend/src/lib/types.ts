@@ -353,7 +353,7 @@ export interface CentreFormation {
   siteWeb: string | null;
 }
 
-export type FavorisableType = 'METIER' | 'UNIVERSITE' | 'STAGE' | 'BOURSE' | 'COACH' | 'CENTRE_FORMATION';
+export type FavorisableType = 'METIER' | 'UNIVERSITE' | 'STAGE' | 'BOURSE' | 'COACH' | 'CENTRE_FORMATION' | 'ENSEIGNANT';
 
 export interface Favori {
   id: string;
@@ -401,4 +401,34 @@ export interface Ressource {
   fichierUrl: string | null;
   dureeLecture: string | null;
   createdAt: string;
+}
+
+export interface EnseignantAvis {
+  id: string;
+  enseignantId: string;
+  utilisateurId: string;
+  utilisateur?: { id: string; nom: string; prenom: string };
+  note: number;
+  commentaire: string | null;
+  createdAt: string;
+}
+
+export interface Enseignant {
+  id: string;
+  utilisateurId: string | null;
+  nom: string;
+  prenom: string;
+  email: string | null;
+  telephone: string | null;
+  photo: string | null;
+  bio: string | null;
+  matieres: string[];
+  etablissement: string | null;
+  disponibilites: string | null;
+  visible: boolean;
+  createdAt: string;
+  updatedAt: string;
+  noteMoyenne: number | null;
+  avisCount: number;
+  avis?: EnseignantAvis[];
 }

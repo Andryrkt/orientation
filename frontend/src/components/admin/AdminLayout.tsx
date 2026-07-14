@@ -28,6 +28,7 @@ const groups: { title?: string; links: { to: string; label: string; end?: boolea
     links: [
       { to: '/admin/questionnaires', label: "Questionnaires d'orientation" },
       { to: '/admin/coachs', label: 'Coachs' },
+      { to: '/admin/enseignants', label: 'Enseignants' },
     ],
   },
   {

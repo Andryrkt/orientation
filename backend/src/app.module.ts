@@ -21,6 +21,7 @@ import { CoachsModule } from './coachs/coachs.module';
 import { CentresFormationModule } from './centres-formation/centres-formation.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { RessourcesModule } from './ressources/ressources.module';
+import { EnseignantsModule } from './enseignants/enseignants.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { RessourcesModule } from './ressources/ressources.module';
     CentresFormationModule,
     TicketsModule,
     RessourcesModule,
+    EnseignantsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

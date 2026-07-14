@@ -20,6 +20,8 @@ import { QuestionnaireResultat } from './pages/QuestionnaireResultat';
 import { QuestionnaireHistorique } from './pages/QuestionnaireHistorique';
 import { CoachsList } from './pages/CoachsList';
 import { CoachDetail } from './pages/CoachDetail';
+import { EnseignantsList } from './pages/EnseignantsList';
+import { EnseignantDetail } from './pages/EnseignantDetail';
 import { CentresFormationList } from './pages/CentresFormationList';
 import { CentreFormationDetail } from './pages/CentreFormationDetail';
 import { Login } from './pages/Login';
@@ -50,6 +52,7 @@ import { TicketDetail } from './pages/TicketDetail';
 import { TicketsAdmin } from './pages/admin/TicketsAdmin';
 import { TicketDetailAdmin } from './pages/admin/TicketDetailAdmin';
 import { RessourcesAdmin } from './pages/admin/RessourcesAdmin';
+import { EnseignantsAdmin } from './pages/admin/EnseignantsAdmin';
 
 export default function App() {
   return (
@@ -72,6 +75,8 @@ export default function App() {
         <Route path="questionnaire" element={<QuestionnairesList />} />
         <Route path="coachs" element={<CoachsList />} />
         <Route path="coachs/:id" element={<CoachDetail />} />
+        <Route path="enseignants" element={<EnseignantsList />} />
+        <Route path="enseignants/:id" element={<EnseignantDetail />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="guide" element={<GuideUtilisateur />} />
@@ -104,6 +109,7 @@ export default function App() {
           <Route path="questionnaires" element={<QuestionnairesAdmin />} />
           <Route path="questionnaires/:id" element={<QuestionnaireBuilder />} />
           <Route path="coachs" element={<CoachsAdmin />} />
+          <Route path="enseignants" element={<EnseignantsAdmin />} />
           <Route path="centres-formation" element={<CentresFormationAdmin />} />
           <Route path="utilisateurs" element={<UtilisateursAdmin />} />
           <Route path="tickets" element={<TicketsAdmin />} />
