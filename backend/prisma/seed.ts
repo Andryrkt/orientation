@@ -499,7 +499,49 @@ async function main() {
             dureeLecture: r.dureeLecture,
           },
         });
-      }
+    }
+  }
+
+  }
+
+  // Peuplement d'enseignants fictifs de démo
+  const enseignantsData = [
+    {
+      nom: 'Ravelomanantsoa',
+      prenom: 'Jean',
+      email: 'jean.rav@test.mg',
+      telephone: '0341122233',
+      bio: "Enseignant passionné de sciences exactes avec plus de 15 ans d'expérience au Lycée de Nanisana.",
+      matieres: ['Mathématiques', 'Physique-Chimie'],
+      etablissement: 'Lycée de Nanisana',
+      disponibilites: 'Mercredi après-midi, Samedi matin',
+    },
+    {
+      nom: 'Rakotomalala',
+      prenom: 'Marie',
+      email: 'marie.rak@test.mg',
+      telephone: '0331122233',
+      bio: "Professeur de lettres modernes dévouée à la réussite de ses élèves, en poste au Lycée Gallieni.",
+      matieres: ['Français', 'Histoire-Géographie'],
+      etablissement: 'Lycée Gallieni',
+      disponibilites: 'Lundi après-midi, Vendredi après-midi',
+    },
+    {
+      nom: 'Andrianarivo',
+      prenom: 'Hery',
+      email: 'hery.and@test.mg',
+      telephone: '0321122233',
+      bio: "Enseignant en SVT au Lycée Jules Ferry, spécialisé dans l'écologie et la biodiversité de Madagascar.",
+      matieres: ['Sciences de la Vie et de la Terre'],
+      etablissement: 'Lycée Jules Ferry',
+      disponibilites: 'Mardi matin, Jeudi après-midi',
+    },
+  ];
+
+  for (const e of enseignantsData) {
+    const existing = await prisma.enseignant.findFirst({ where: { email: e.email } });
+    if (!existing) {
+      await prisma.enseignant.create({ data: e });
     }
   }
 

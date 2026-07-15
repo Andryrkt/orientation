@@ -44,6 +44,7 @@ export function MetiersList() {
   const [searchParams] = useSearchParams();
   const [domaine, setDomaine] = useState(searchParams.get('domaine') ?? '');
   const [q, setQ] = useState('');
+  const [niveauRequis, setNiveauRequis] = useState('');
 
   const { data: domaines } = useQuery({
     queryKey: ['domaines-filter'],
@@ -51,11 +52,16 @@ export function MetiersList() {
   });
 
   const { data, isLoading } = useQuery({
-    queryKey: ['metiers', domaine, q],
+    queryKey: ['metiers', domaine, q, niveauRequis],
     queryFn: async () =>
       (
         await api.get<Paginated<Metier>>('/metiers', {
-          params: { limit: 50, ...(domaine && { domaine }), ...(q && { q }) },
+          params: {
+            limit: 50,
+            ...(domaine && { domaine }),
+            ...(q && { q }),
+            ...(niveauRequis && { niveauRequis }),
+          },
         })
       ).data,
   });
@@ -107,6 +113,17 @@ export function MetiersList() {
           {domaines?.items.map((d) => (
             <option key={d.id} value={d.slug}>{d.nom}</option>
           ))}
+        </select>
+        <select
+          value={niveauRequis}
+          onChange={(e) => setNiveauRequis(e.target.value)}
+          className="field-input"
+        >
+          <option value="">Tous les niveaux d'études</option>
+          <option value="Bac">Bac</option>
+          <option value="Licence">Licence</option>
+          <option value="Master">Master</option>
+          <option value="Doctorat">Doctorat</option>
         </select>
       </div>
 
