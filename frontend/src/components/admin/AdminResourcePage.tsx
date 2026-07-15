@@ -1,9 +1,10 @@
 import { FormEvent, ReactNode, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import Editor from 'react-simple-wysiwyg';
 import { api } from '../../lib/api';
 import { Paginated } from '../../lib/types';
 
-export type FieldType = 'text' | 'number' | 'textarea' | 'select' | 'date';
+export type FieldType = 'text' | 'number' | 'textarea' | 'select' | 'date' | 'wysiwyg';
 
 export interface FieldConfig {
   name: string;
@@ -47,6 +48,7 @@ export function AdminResourcePage<T extends { id: string }>({
   const [showForm, setShowForm] = useState(false);
   const [values, setValues] = useState<Record<string, unknown>>(emptyItem);
   const [error, setError] = useState<string | null>(null);
+  const [fullscreenField, setFullscreenField] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: [queryKey],
@@ -197,9 +199,71 @@ export function AdminResourcePage<T extends { id: string }>({
                   <label className="block text-sm font-medium text-slate-600 mb-1">
                     {field.label}
                   </label>
-                  {field.type === 'textarea' ? (
+                  {field.type === 'wysiwyg' ? (
+                    <div>
+                      <div className="border border-slate-300 rounded-md overflow-hidden bg-white text-slate-800">
+                        <div className="bg-slate-50 border-b border-slate-200 px-3 py-1.5 flex justify-between items-center text-xs text-slate-500">
+                          <span>Éditeur de texte riche</span>
+                          <button
+                            type="button"
+                            onClick={() => setFullscreenField(field.name)}
+                            className="text-brand-600 hover:text-brand-800 font-semibold flex items-center gap-1 focus:outline-none"
+                          >
+                            <span>⛶</span> Plein écran
+                          </button>
+                        </div>
+                        <Editor
+                          value={(values[field.name] as string) ?? ''}
+                          onChange={(e) => setValues({ ...values, [field.name]: e.target.value })}
+                        />
+                      </div>
+
+                      {fullscreenField === field.name && (
+                        <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+                          <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden border border-slate-200">
+                            {/* Header */}
+                            <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
+                              <div>
+                                <h3 className="font-bold text-slate-800">{field.label}</h3>
+                                <p className="text-xs text-slate-500">Mode plein écran</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setFullscreenField(null)}
+                                className="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-semibold transition-colors focus:outline-none"
+                              >
+                                Fermer le plein écran
+                              </button>
+                            </div>
+                            
+                            {/* Editor Area */}
+                            <div className="flex-1 overflow-y-auto p-6 bg-slate-50 flex flex-col justify-stretch">
+                              <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm flex flex-col flex-grow">
+                                <Editor
+                                  value={(values[field.name] as string) ?? ''}
+                                  onChange={(e) => setValues({ ...values, [field.name]: e.target.value })}
+                                  containerProps={{ style: { minHeight: '55vh' } }}
+                                />
+                              </div>
+                            </div>
+                            
+                            {/* Footer */}
+                            <div className="bg-slate-50 border-t border-slate-200 px-6 py-3 flex justify-end">
+                              <button
+                                type="button"
+                                onClick={() => setFullscreenField(null)}
+                                className="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold transition-colors shadow-sm focus:outline-none"
+                              >
+                                Valider & Retour
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : field.type === 'textarea' ? (
                     <textarea
-                      className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+                      className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm text-slate-800"
                       rows={3}
                       required={field.required}
                       value={(values[field.name] as string) ?? ''}

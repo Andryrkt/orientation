@@ -40,7 +40,7 @@ export function BlogsAdmin() {
       ]}
       fields={[
         { name: 'titre', label: 'Titre', type: 'text', required: true },
-        { name: 'contenu', label: 'Contenu', type: 'textarea', required: true },
+        { name: 'contenu', label: 'Contenu', type: 'wysiwyg', required: true },
         { name: 'image', label: 'Image (URL)', type: 'text' },
         { name: 'categorie', label: 'Catégorie', type: 'select', options: BLOG_CATEGORIES },
         {

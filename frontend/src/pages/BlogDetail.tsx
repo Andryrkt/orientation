@@ -81,7 +81,7 @@ export function BlogDetail() {
 
       {blog.image && <img src={blog.image} alt="" className="w-full rounded-lg mb-6" />}
 
-      <div className="text-slate-700 whitespace-pre-line mb-8">{blog.contenu}</div>
+      <div className="text-slate-700 mb-8" dangerouslySetInnerHTML={{ __html: blog.contenu }} />
 
       <button
         onClick={handleLike}

@@ -11,7 +11,8 @@ function formatDate(value: string | null) {
 }
 
 function excerpt(text: string, length = 140) {
-  return text.length > length ? `${text.slice(0, length)}…` : text;
+  const cleanText = text.replace(/<[^>]*>/g, '');
+  return cleanText.length > length ? `${cleanText.slice(0, length)}…` : cleanText;
 }
 
 export function BlogsList() {
