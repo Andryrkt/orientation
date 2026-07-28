@@ -50,8 +50,11 @@ proxy (Traefik) et le TLS (Let's Encrypt) — pas besoin d'installer Caddy/Nginx
    - `COOKIE_SECURE=true`, `SWAGGER_ENABLED=false`
    - Secrets régénérés (`POSTGRES_PASSWORD`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`,
      `DATABASE_URL` cohérent avec le mot de passe Postgres choisi).
-3. **Dokploy → Domains** : mapper `avenirassure.mg` → service `frontend` (port 80, HTTPS
-   activé) et `api.avenirassure.mg` → service `backend` (port 3000, HTTPS activé).
+3. **Routage Traefik** : `docker-compose.prod.yml` déclare directement les labels Traefik
+   (`traefik.enable`, routers `orientmad-frontend`/`orientmad-api`, `entrypoints=websecure`,
+   `tls.certResolver=letsencrypt`) et rejoint le réseau externe `dokploy-network` — pas
+   besoin de configurer l'onglet Domains de Dokploy en plus. Si tu changes de domaine, mets
+   à jour les règles `Host(...)` dans les labels du fichier.
 4. **Redéployer** : comme `VITE_API_URL` est injecté dans le bundle frontend **au moment
    du build**, tout changement de cette variable nécessite un rebuild complet (pas juste un
    restart) pour être pris en compte.
