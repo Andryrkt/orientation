@@ -7,7 +7,9 @@ volontairement générique (pas d'hébergeur précis) : à adapter selon la plat
 ## 1. Ce qui a été préparé pour la prod
 
 - `docker-compose.prod.yml` : build des images en mode `prod` (backend Node compilé,
-  frontend servi par Nginx), sans montage du code source, sans exposer le port Postgres.
+  frontend servi par Nginx), sans montage du code source. Aucun port n'est publié sur
+  l'hôte (`expose` uniquement) : les conteneurs ne sont joignables que via le réseau
+  Docker interne, à charge d'un reverse proxy (ou de Dokploy) de router vers eux.
 - `.env.production.example` : modèle de variables d'environnement de production.
 - `backend/.dockerignore`, `frontend/.dockerignore` : évitent de copier `node_modules`,
   `.env`, `dist`, etc. dans le contexte de build.
@@ -22,9 +24,14 @@ volontairement générique (pas d'hébergeur précis) : à adapter selon la plat
 
 - Un serveur avec Docker + Docker Compose.
 - Un reverse proxy en frontal pour le TLS/HTTPS et le nom de domaine (ex. Caddy, Nginx,
-  Traefik) — **ce dépôt ne gère pas la terminaison TLS lui-même**. Il route :
-  - `https://ton-domaine.mg` → conteneur `frontend` (port 80)
-  - `https://api.ton-domaine.mg` → conteneur `backend` (port 3000)
+  Traefik) — **ce dépôt ne gère pas la terminaison TLS lui-même**. Les conteneurs `backend`
+  et `frontend` ne publient aucun port sur l'hôte (voir §1) : le reverse proxy doit rejoindre
+  le même réseau Docker que la stack (ex. `docker network connect`) et router vers eux via
+  leur nom de service, sur les ports internes :
+  - `https://ton-domaine.mg` → service `frontend`, port `80`
+  - `https://api.ton-domaine.mg` → service `backend`, port `3000`
+  - Avec Dokploy, ce routage est géré automatiquement (voir §2bis) — pas de config manuelle
+    de reverse proxy nécessaire.
 
 ## 2bis. Déploiement via Dokploy (déploiement actuel)
 
