@@ -14,7 +14,8 @@ EXPOSE 3000
 CMD ["sh", "-c", "npx prisma migrate deploy && (npx prisma db seed || true) && npm run start:dev"]
 
 FROM base AS build
-RUN npm run build
+RUN npm run build \
+  && test -f dist/main.js || (echo "ERREUR: dist/main.js absent apres 'npm run build'" && ls -la dist 2>&1 && exit 1)
 
 FROM node:22-alpine AS prod
 RUN apk add --no-cache openssl
