@@ -26,6 +26,31 @@ volontairement générique (pas d'hébergeur précis) : à adapter selon la plat
   - `https://ton-domaine.mg` → conteneur `frontend` (port 80)
   - `https://api.ton-domaine.mg` → conteneur `backend` (port 3000)
 
+## 2bis. Déploiement via Dokploy (déploiement actuel)
+
+Le projet est déployé via Dokploy (source GitHub, `docker-compose.prod.yml`), avec le
+domaine **avenirassure.mg**. Contrairement à un VPS nu, Dokploy gère lui-même le reverse
+proxy (Traefik) et le TLS (Let's Encrypt) — pas besoin d'installer Caddy/Nginx en plus.
+
+1. **DNS** : créer deux enregistrements A pointant vers l'IP du serveur Dokploy
+   (`37.27.191.181`) :
+   - `avenirassure.mg` (et éventuellement `www.avenirassure.mg`)
+   - `api.avenirassure.mg`
+2. **Dokploy → Environment** (onglet Environment de l'app compose) : coller les variables
+   de `.env.production.example` remplies, notamment :
+   - `FRONTEND_ORIGIN=https://avenirassure.mg`
+   - `VITE_API_URL=https://api.avenirassure.mg`
+   - `COOKIE_SECURE=true`, `SWAGGER_ENABLED=false`
+   - Secrets régénérés (`POSTGRES_PASSWORD`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`,
+     `DATABASE_URL` cohérent avec le mot de passe Postgres choisi).
+3. **Dokploy → Domains** : mapper `avenirassure.mg` → service `frontend` (port 80, HTTPS
+   activé) et `api.avenirassure.mg` → service `backend` (port 3000, HTTPS activé).
+4. **Redéployer** : comme `VITE_API_URL` est injecté dans le bundle frontend **au moment
+   du build**, tout changement de cette variable nécessite un rebuild complet (pas juste un
+   restart) pour être pris en compte.
+5. **Vérifier** : `https://api.avenirassure.mg/health` doit répondre `{"status":"ok"}`, et
+   `https://avenirassure.mg` doit charger l'application et pouvoir appeler l'API.
+
 ## 3. Configuration
 
 ```bash
