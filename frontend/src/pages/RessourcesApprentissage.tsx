@@ -149,7 +149,7 @@ export function RessourcesApprentissage() {
     return (
       <div className="max-w-3xl mx-auto py-16 px-4">
         <div className="text-center mb-12">
-          <span className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-2xl text-white mx-auto mb-5 shadow-lg shadow-purple-500/20">🎓</span>
+          <span className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-2xl text-white mx-auto mb-5 shadow-lg shadow-blue-500/20">🎓</span>
           <h1 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
             {t('ressources.select_level_prompt')}
           </h1>
@@ -163,14 +163,14 @@ export function RessourcesApprentissage() {
           <button
             onClick={() => updateLevelMutation.mutate('LYCEE')}
             disabled={updateLevelMutation.isPending}
-            className="p-6 text-left bg-white border border-slate-200 dark:bg-white/3 dark:border-white/5 hover:border-purple-500/40 hover:bg-purple-500/5 rounded-2xl transition duration-300 group flex flex-col justify-between"
+            className="p-6 text-left bg-white border border-slate-200 dark:bg-white/3 dark:border-white/5 hover:border-blue-500/40 hover:bg-blue-500/5 rounded-2xl transition duration-300 group flex flex-col justify-between"
           >
             <div>
               <span className="text-3xl mb-4 block group-hover:scale-110 transition duration-300">🏫</span>
               <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{t('ressources.level_lycee')}</h3>
               <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">{t('ressources.level_lycee_desc')}</p>
             </div>
-            <span className="inline-flex mt-6 text-xs font-semibold text-purple-500 group-hover:translate-x-1 transition duration-300">Choisir →</span>
+            <span className="inline-flex mt-6 text-xs font-semibold text-blue-500 group-hover:translate-x-1 transition duration-300">Choisir →</span>
           </button>
 
           {/* Card Nouveau Bachelier */}
@@ -216,7 +216,7 @@ export function RessourcesApprentissage() {
         }}>
         <div className="relative z-10 flex flex-col md:flex-row justify-between md:items-center gap-6">
           <div>
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-4 bg-purple-550/15 border border-purple-500/25 text-purple-400">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-4 bg-blue-550/15 border border-blue-500/25 text-blue-400">
               📚 {selectedLevel === 'LYCEE' ? t('ressources.level_lycee') : selectedLevel === 'NOUVEAU_BACHELIER' ? t('ressources.level_bachelier') : t('ressources.level_universite')}
             </span>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">
@@ -241,7 +241,7 @@ export function RessourcesApprentissage() {
           onClick={() => { setActiveTab('LEARNING'); setActiveCategory('All'); }}
           className={`px-6 py-3 font-bold text-sm border-b-2 transition-all duration-200 -mb-px ${
             activeTab === 'LEARNING'
-              ? 'border-purple-500 text-purple-500 dark:text-purple-400'
+              ? 'border-blue-500 text-blue-500 dark:text-blue-400'
               : 'border-transparent text-slate-400 hover:text-slate-650 dark:hover:text-slate-200'
           }`}
         >
@@ -251,7 +251,7 @@ export function RessourcesApprentissage() {
           onClick={() => { setActiveTab('DOCS'); setActiveCategory('All'); }}
           className={`px-6 py-3 font-bold text-sm border-b-2 transition-all duration-200 -mb-px ${
             activeTab === 'DOCS'
-              ? 'border-purple-500 text-purple-500 dark:text-purple-400'
+              ? 'border-blue-500 text-blue-500 dark:text-blue-400'
               : 'border-transparent text-slate-400 hover:text-slate-650 dark:hover:text-slate-200'
           }`}
         >
@@ -279,7 +279,7 @@ export function RessourcesApprentissage() {
               onClick={() => setActiveCategory(cat)}
               className={`px-4 py-1.5 rounded-full text-xs font-semibold transition duration-205 ${
                 activeCategory === cat
-                  ? 'bg-purple-500 text-white shadow-md shadow-purple-500/20'
+                  ? 'bg-blue-500 text-white shadow-md shadow-blue-500/20'
                   : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-350 hover:bg-slate-200 dark:hover:bg-white/10'
               }`}
             >
@@ -292,7 +292,7 @@ export function RessourcesApprentissage() {
       {/* Resources grid */}
       {isLoading ? (
         <div className="flex items-center gap-3 text-slate-400 py-16 justify-center">
-          <div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" />
+          <div className="w-6 h-6 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
           Chargement...
         </div>
       ) : ressourcesData?.items.length === 0 ? (
@@ -309,7 +309,7 @@ export function RessourcesApprentissage() {
             >
               <div>
                 <div className="flex items-center justify-between gap-3 mb-4">
-                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400">
                     {res.categorie}
                   </span>
                   {res.dureeLecture && (
@@ -325,7 +325,7 @@ export function RessourcesApprentissage() {
               <div className="flex gap-2">
                 <button
                   onClick={() => setReaderResource(res)}
-                  className="flex-1 py-2.5 text-center text-xs font-semibold bg-purple-500 hover:bg-purple-600 text-white rounded-xl transition duration-200"
+                  className="flex-1 py-2.5 text-center text-xs font-semibold bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition duration-200"
                 >
                   📖 {t('ressources.read')}
                 </button>
@@ -350,9 +350,9 @@ export function RessourcesApprentissage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-fade-in">
           <div className="relative w-full max-w-4xl max-h-[85vh] bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-white/8 shadow-2xl flex flex-col animate-dropdown">
             {/* Header */}
-            <div className="p-6 border-b border-slate-100 dark:border-white/5 flex items-center justify-between bg-gradient-to-r from-purple-500/10 to-indigo-500/5 rounded-t-[2rem]">
+            <div className="p-6 border-b border-slate-100 dark:border-white/5 flex items-center justify-between bg-gradient-to-r from-blue-500/10 to-indigo-500/5 rounded-t-[2rem]">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-purple-500 dark:text-purple-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-500 dark:text-blue-400">
                   {readerResource.categorie}
                 </span>
                 <h2 className="text-xl font-black text-slate-900 dark:text-white mt-1 leading-tight">{readerResource.titre}</h2>

@@ -46,7 +46,7 @@ export function EnseignantDetail() {
         <div>
           <h1 className="text-3xl font-bold text-slate-900">{enseignant.prenom} {enseignant.nom}</h1>
           {enseignant.etablissement && (
-            <p className="text-base text-purple-600 dark:text-purple-400 font-bold mt-1">
+            <p className="text-base text-blue-600 dark:text-blue-400 font-bold mt-1">
               🏫 Établissement : {enseignant.etablissement}
             </p>
           )}

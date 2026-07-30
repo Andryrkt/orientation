@@ -20,7 +20,7 @@ const DOMAINE_COLORS: Record<string, { gradient: string; glow: string; text: str
   'sciences-technologies': { gradient: 'from-blue-500 to-indigo-500', glow: 'rgba(99,102,241,0.3)', text: '#818cf8', bgLight: 'rgba(59,130,246,0.15)' },
   'sante-medecine': { gradient: 'from-rose-500 to-pink-500', glow: 'rgba(244,63,94,0.3)', text: '#fb7185', bgLight: 'rgba(244,63,94,0.15)' },
   'economie-gestion': { gradient: 'from-amber-500 to-orange-500', glow: 'rgba(245,158,11,0.3)', text: '#fbbf24', bgLight: 'rgba(245,158,11,0.15)' },
-  'droit-sciences-politiques': { gradient: 'from-purple-500 to-violet-500', glow: 'rgba(139,92,246,0.3)', text: '#c084fc', bgLight: 'rgba(139,92,246,0.15)' },
+  'droit-sciences-politiques': { gradient: 'from-sky-500 to-blue-500', glow: 'rgba(56,189,248,0.3)', text: '#38bdf8', bgLight: 'rgba(56,189,248,0.15)' },
   'lettres-sciences-humaines': { gradient: 'from-teal-500 to-emerald-500', glow: 'rgba(20,184,166,0.3)', text: '#34d399', bgLight: 'rgba(20,184,166,0.15)' },
   'arts-communication': { gradient: 'from-fuchsia-500 to-pink-500', glow: 'rgba(217,70,239,0.3)', text: '#e879f9', bgLight: 'rgba(217,70,239,0.15)' },
 };
@@ -34,7 +34,7 @@ function TagList({ items }: { items: string[] }) {
       {items.map((item) => (
         <span 
           key={item} 
-          className="px-3 py-1 bg-slate-200/50 dark:bg-white/5 border border-slate-300/50 dark:border-white/8 rounded-full text-xs text-slate-700 dark:text-slate-300 font-semibold hover:border-purple-500 dark:hover:border-purple-500/30 hover:text-slate-950 dark:hover:text-white transition-colors"
+          className="px-3 py-1 bg-slate-200/50 dark:bg-white/5 border border-slate-300/50 dark:border-white/8 rounded-full text-xs text-slate-700 dark:text-slate-300 font-semibold hover:border-blue-500 dark:hover:border-blue-500/30 hover:text-slate-950 dark:hover:text-white transition-colors"
         >
           {item}
         </span>
@@ -206,7 +206,7 @@ function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalair
 interface SkillProps {
   title: string;
   items: string[];
-  color?: 'cyan' | 'purple' | 'pink';
+  color?: 'cyan' | 'blue' | 'pink';
   id?: string;
 }
 function VisualSkillBars({ title, items, color = 'cyan', id }: SkillProps) {
@@ -218,7 +218,7 @@ function VisualSkillBars({ title, items, color = 'cyan', id }: SkillProps) {
 
   const colorConfig = {
     cyan: { bar: 'from-cyan-500 to-indigo-500', glow: 'rgba(34,211,238,0.2)', text: 'text-cyan-400' },
-    purple: { bar: 'from-purple-500 to-indigo-500', glow: 'rgba(168,85,247,0.2)', text: 'text-purple-400' },
+    blue: { bar: 'from-blue-500 to-indigo-500', glow: 'rgba(0,163,255,0.2)', text: 'text-blue-400' },
     pink: { bar: 'from-pink-500 to-rose-500', glow: 'rgba(236,72,153,0.2)', text: 'text-pink-400' },
   }[color];
 
@@ -274,14 +274,14 @@ function JaugeSalaire({ min, max, source, id }: SalaireProps) {
           </div>
           <div className="text-right">
             <p className="text-[10px] uppercase font-black tracking-wider text-slate-500">Maximum</p>
-            <p className="text-lg font-black text-purple-600 dark:text-purple-300">{max.toLocaleString('fr-FR')} Ar</p>
+            <p className="text-lg font-black text-blue-600 dark:text-blue-300">{max.toLocaleString('fr-FR')} Ar</p>
           </div>
         </div>
 
         <div className="relative pt-1">
           <div className="h-3 w-full bg-white/5 rounded-full relative overflow-hidden">
             <div 
-              className="absolute h-full rounded-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 shadow-[0_0_15px_rgba(168,85,247,0.4)]"
+              className="absolute h-full rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 shadow-[0_0_15px_rgba(0,163,255,0.4)]"
               style={{
                 left: '15%',
                 right: '15%'
@@ -314,7 +314,7 @@ export function MetierDetail() {
 
   if (isLoading) return (
     <div className="flex items-center justify-center gap-3 text-slate-400 py-16">
-      <div className="w-5 h-5 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" />
+      <div className="w-5 h-5 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
       Chargement de la fiche métier...
     </div>
   );
@@ -387,11 +387,11 @@ export function MetierDetail() {
 
           {/* Témoignage si existant */}
           {hasTemoignage && (
-            <div className="p-6 rounded-2xl border bg-purple-500/5 border-purple-500/15 dark:border-purple-500/20 relative overflow-hidden">
+            <div className="p-6 rounded-2xl border bg-blue-500/5 border-blue-500/15 dark:border-blue-500/20 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-20 pointer-events-none"
-                style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.4) 0%, transparent 70%)' }} />
+                style={{ background: 'radial-gradient(circle, rgba(0,163,255,0.4) 0%, transparent 70%)' }} />
               
-              <h3 className="font-bold text-purple-600 dark:text-purple-300 text-sm mb-3 flex items-center gap-2">
+              <h3 className="font-bold text-blue-600 dark:text-blue-300 text-sm mb-3 flex items-center gap-2">
                 💬 Témoignage de {metier.temoignagePrenom || 'Professionnel'}
                 {metier.temoignageAnneesExperience != null &&
                   ` (${metier.temoignageAnneesExperience} ans d'exp.)`}
@@ -403,13 +403,13 @@ export function MetierDetail() {
               )}
               {metier.temoignageCePlait && (
                 <p className="text-slate-600 dark:text-slate-400 text-xs mb-1.5">
-                  <span className="font-semibold text-purple-600 dark:text-purple-400">Ce qui plaît : </span>
+                  <span className="font-semibold text-blue-600 dark:text-blue-400">Ce qui plaît : </span>
                   {metier.temoignageCePlait}
                 </p>
               )}
               {metier.temoignageConseil && (
                 <p className="text-slate-600 dark:text-slate-400 text-xs">
-                  <span className="font-semibold text-purple-600 dark:text-purple-400">Conseil : </span>
+                  <span className="font-semibold text-blue-600 dark:text-blue-400">Conseil : </span>
                   {metier.temoignageConseil}
                 </p>
               )}
@@ -466,7 +466,7 @@ export function MetierDetail() {
           <VisualSkillBars 
             title="🧠 Profil &amp; Traits de Personnalité"
             items={metier.traitsPersonnalite}
-            color="purple"
+            color="blue"
             id="section-personnalite"
           />
         )}
@@ -563,7 +563,7 @@ export function MetierDetail() {
               <Link
                 key={m.id}
                 to={`/metiers/${m.slug}`}
-                className="px-4 py-2 bg-slate-200/50 dark:bg-white/5 border border-slate-300/50 dark:border-white/8 rounded-full text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-purple-500/20 hover:border-purple-500/30 hover:text-slate-950 dark:hover:text-white transition-all duration-200"
+                className="px-4 py-2 bg-slate-200/50 dark:bg-white/5 border border-slate-300/50 dark:border-white/8 rounded-full text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-blue-500/20 hover:border-blue-500/30 hover:text-slate-950 dark:hover:text-white transition-all duration-200"
               >
                 {m.nom}
               </Link>

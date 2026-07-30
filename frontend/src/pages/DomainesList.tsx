@@ -8,7 +8,7 @@ const DOMAINE_THEMES = [
   { gradient: 'from-emerald-500 to-teal-500', glow: 'rgba(16,185,129,0.25)', text: '#34d399', icon: '🌱' },
   { gradient: 'from-rose-500 to-pink-500', glow: 'rgba(244,63,94,0.25)', text: '#fb7185', icon: '🏥' },
   { gradient: 'from-amber-500 to-orange-500', glow: 'rgba(245,158,11,0.25)', text: '#fbbf24', icon: '📊' },
-  { gradient: 'from-purple-500 to-violet-500', glow: 'rgba(139,92,246,0.25)', text: '#c084fc', icon: '⚖️' },
+  { gradient: 'from-sky-500 to-blue-500', glow: 'rgba(56,189,248,0.25)', text: '#38bdf8', icon: '⚖️' },
   { gradient: 'from-cyan-500 to-sky-500', glow: 'rgba(6,182,212,0.25)', text: '#22d3ee', icon: '🎨' },
 ];
 
@@ -23,15 +23,15 @@ export function DomainesList() {
       {/* ── Banner ── */}
       <section className="relative overflow-hidden px-6 py-12 sm:py-16 rounded-[2rem] mb-8"
         style={{
-          background: 'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(129,140,248,0.08) 50%, rgba(10,8,24,0.4) 100%)',
-          border: '1px solid rgba(139,92,246,0.15)',
+          background: 'linear-gradient(135deg, rgba(0,163,255,0.12) 0%, rgba(0,82,255,0.08) 50%, rgba(10,8,24,0.4) 100%)',
+          border: '1px solid rgba(0,163,255,0.15)',
           backdropFilter: 'blur(10px)',
         }}>
         <div className="glow-orb w-72 h-72 -top-20 -right-20"
-          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(0,163,255,0.15) 0%, transparent 70%)' }} />
         <div className="relative z-10 max-w-2xl">
           <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-4"
-            style={{ background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.3)', color: '#c084fc' }}>
+            style={{ background: 'rgba(0,163,255,0.15)', border: '1px solid rgba(0,163,255,0.3)', color: '#00A3FF' }}>
             🎓 Domaines de formation
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">
@@ -46,7 +46,7 @@ export function DomainesList() {
       {/* ── Loading ── */}
       {isLoading && (
         <div className="flex items-center gap-3 text-slate-400 py-8">
-          <div className="w-5 h-5 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" />
+          <div className="w-5 h-5 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
           Chargement...
         </div>
       )}
@@ -86,7 +86,7 @@ export function DomainesList() {
                 {theme.icon}
               </div>
 
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors duration-200">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors duration-200">
                 {d.nom}
               </h3>
               <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-5">{d.description}</p>

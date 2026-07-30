@@ -43,14 +43,14 @@ export function Profil() {
     <div className="max-w-lg mx-auto">
       <h1 className="page-title">{t('profile.title')}</h1>
 
-      <div className="mb-6 p-5 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white shadow-md relative overflow-hidden">
+      <div className="mb-6 p-5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-white shadow-md relative overflow-hidden">
         <div className="absolute right-0 bottom-0 opacity-10 transform translate-y-2 translate-x-2">
           <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24">
             <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
           </svg>
         </div>
         <h3 className="text-lg font-bold">{t('profile.cv_generator_title')}</h3>
-        <p className="text-xs text-purple-100 mt-1 leading-relaxed">
+        <p className="text-xs text-blue-100 mt-1 leading-relaxed">
           {t('profile.cv_generator_desc')}
         </p>
         <Link

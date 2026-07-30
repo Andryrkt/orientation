@@ -21,7 +21,7 @@ const DOMAINE_COLORS: Record<string, { gradient: string; glow: string; text: str
   'sciences-technologies': { gradient: 'from-blue-500 to-indigo-500', glow: 'rgba(99,102,241,0.3)', text: '#818cf8' },
   'sante-medecine': { gradient: 'from-rose-500 to-pink-500', glow: 'rgba(244,63,94,0.3)', text: '#fb7185' },
   'economie-gestion': { gradient: 'from-amber-500 to-orange-500', glow: 'rgba(245,158,11,0.3)', text: '#fbbf24' },
-  'droit-sciences-politiques': { gradient: 'from-purple-500 to-violet-500', glow: 'rgba(139,92,246,0.3)', text: '#c084fc' },
+  'droit-sciences-politiques': { gradient: 'from-sky-500 to-blue-500', glow: 'rgba(56,189,248,0.3)', text: '#38bdf8' },
   'lettres-sciences-humaines': { gradient: 'from-teal-500 to-emerald-500', glow: 'rgba(20,184,166,0.3)', text: '#34d399' },
   'arts-communication': { gradient: 'from-fuchsia-500 to-pink-500', glow: 'rgba(217,70,239,0.3)', text: '#e879f9' },
 };
@@ -130,7 +130,7 @@ export function MetiersList() {
       {/* ── Loading / Empty ── */}
       {isLoading && (
         <div className="flex items-center gap-3 text-slate-400 py-8">
-          <div className="w-5 h-5 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" />
+          <div className="w-5 h-5 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
           Chargement...
         </div>
       )}
@@ -196,7 +196,7 @@ export function MetiersList() {
               {/* Contenu textuel inférieur */}
               <div className="p-5 space-y-3">
                 {/* Title */}
-                <h3 className="text-base font-bold text-white group-hover:text-purple-300 transition-colors duration-200 line-clamp-1">
+                <h3 className="text-base font-bold text-white group-hover:text-blue-300 transition-colors duration-200 line-clamp-1">
                   {m.nom}
                 </h3>
                 

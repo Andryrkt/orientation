@@ -256,7 +256,7 @@ export function CvGenerator() {
           <button
             onClick={fetchSuggestion}
             disabled={suggesting}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium text-sm shadow-md transition duration-300 hover:scale-[1.02] disabled:opacity-70"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium text-sm shadow-md transition duration-300 hover:scale-[1.02] disabled:opacity-70"
           >
             {suggesting ? 'Génération...' : '🤖 Suggestion Automatique'}
           </button>
@@ -340,7 +340,7 @@ export function CvGenerator() {
                   placeholder="https://example.com/photo.jpg"
                   value={photo}
                   onChange={(e) => setPhoto(e.target.value)}
-                  className="flex-1 text-sm border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                  className="flex-1 text-sm border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                 />
                 {photo && (
                   <img src={photo} alt="Aperçu" className="w-10 h-10 rounded-full object-cover border border-slate-200" />
