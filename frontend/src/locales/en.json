@@ -88,16 +88,16 @@
     },
     "steps": {
       "step1": {
-        "title": "Explore",
-        "desc": "Browse jobs, domains, and universities in Madagascar."
+        "title": "Identify your interests",
+        "desc": "Through our orientation test."
       },
       "step2": {
-        "title": "Answer the questionnaire",
-        "desc": "Identify your interests with our RIASEC orientation test."
+        "title": "Find the job",
+        "desc": "That suits you."
       },
       "step3": {
-        "title": "Decide",
-        "desc": "Compare your results, talk to a coach, and make your choice."
+        "title": "Find an institution",
+        "desc": "University, training center, etc. to reach your career goal."
       }
     },
     "riasec_teaser": {

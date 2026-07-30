@@ -88,16 +88,16 @@
     },
     "steps": {
       "step1": {
-        "title": "Explore",
-        "desc": "Parcours les métiers, domaines et universités à Madagascar."
+        "title": "Identifie tes intérêts",
+        "desc": "Grâce à notre test d'orientation."
       },
       "step2": {
-        "title": "Réponds au questionnaire",
-        "desc": "Identifie tes intérêts grâce à notre test d'orientation RIASEC."
+        "title": "Trouve le métier",
+        "desc": "Qui te convient."
       },
       "step3": {
-        "title": "Décide",
-        "desc": "Compare tes résultats, échange avec un coach et fais ton choix."
+        "title": "Trouve un établissement",
+        "desc": "Université, centre de formation, etc. pour atteindre ton objectif de métier."
       }
     },
     "riasec_teaser": {

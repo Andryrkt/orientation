@@ -88,16 +88,16 @@
     },
     "steps": {
       "step1": {
-        "title": "Karohy",
-        "desc": "Hijery ireo asa, sehatra ary oniversite eto Madagasikara."
+        "title": "Fantaro ny zavatra tianao",
+        "desc": "Amin'ny alalan'ny fizahana RIASEC."
       },
       "step2": {
-        "title": "Valio ny fanontaniana",
-        "desc": "Fantaro ny zavatra tianao amin'ny alalan'ny fizahana RIASEC."
+        "title": "Tadiavo ny asa",
+        "desc": "Mifanaraka aminao indrindra."
       },
       "step3": {
-        "title": "Safidio",
-        "desc": "Ampitahao ny vokatry ny fizahanao, miresaha amin'ny mpanoro hevitra ary safidio."
+        "title": "Mitadiava sekoly",
+        "desc": "Oniversite, ivon-toeram-piofanana, sns., mba hahatratrarana ny tanjonao ara-kasa."
       }
     },
     "riasec_teaser": {
