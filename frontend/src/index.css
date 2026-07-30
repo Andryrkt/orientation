@@ -43,7 +43,7 @@
   }
 
   ::selection {
-    background: rgba(168, 85, 247, 0.3);
+    background: rgba(0, 163, 255, 0.3);
     color: #f1f5f9;
   }
 }
@@ -61,7 +61,7 @@
   }
   @keyframes border-shimmer {
     0% { border-color: rgba(255, 255, 255, 0.08); }
-    50% { border-color: rgba(168, 85, 247, 0.4); }
+    50% { border-color: rgba(0, 163, 255, 0.4); }
     100% { border-color: rgba(255, 255, 255, 0.08); }
   }
   @keyframes text-shine {
@@ -102,12 +102,12 @@
 
   /* ── Buttons ── */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-all duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-purple focus-visible:ring-offset-2 focus-visible:ring-offset-dark-800 disabled:opacity-40 disabled:pointer-events-none active:scale-[0.97] hover:scale-[1.02];
+    @apply inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-all duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-dark-800 disabled:opacity-40 disabled:pointer-events-none active:scale-[0.97] hover:scale-[1.02];
   }
   .btn-primary {
     @apply btn text-white px-5 py-2.5 relative overflow-hidden;
-    background: linear-gradient(135deg, #a855f7, #818cf8);
-    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.35);
+    background: linear-gradient(135deg, #1A5EAA, #00A3FF);
+    box-shadow: 0 4px 20px rgba(0, 163, 255, 0.35);
   }
   .btn-primary::after {
     content: '';
@@ -124,8 +124,8 @@
     animation: shimmer-slide 4s ease-in-out infinite;
   }
   .btn-primary:hover {
-    box-shadow: 0 0 30px rgba(168, 85, 247, 0.6), 0 0 50px rgba(129, 140, 248, 0.3);
-    background: linear-gradient(135deg, #9333ea, #6366f1);
+    box-shadow: 0 0 30px rgba(0, 163, 255, 0.6), 0 0 50px rgba(26, 94, 170, 0.3);
+    background: linear-gradient(135deg, #134074, #0052FF);
   }
   
   .btn-secondary {
@@ -142,13 +142,13 @@
   }
   .btn-secondary:hover {
     background: rgba(15, 23, 42, 0.08);
-    border-color: rgba(168, 85, 247, 0.3);
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.08);
+    border-color: rgba(0, 163, 255, 0.3);
+    box-shadow: 0 0 20px rgba(0, 163, 255, 0.08);
   }
   .dark .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(168, 85, 247, 0.5);
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+    border-color: rgba(0, 163, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 163, 255, 0.15);
   }
 
   /* ── Cards ── */
@@ -167,14 +167,14 @@
   }
   .card:hover {
     background: rgba(255, 255, 255, 0.9);
-    border-color: rgba(168, 85, 247, 0.25);
+    border-color: rgba(0, 163, 255, 0.25);
     transform: translateY(-6px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05), 0 0 25px rgba(168, 85, 247, 0.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05), 0 0 25px rgba(0, 163, 255, 0.05);
   }
   .dark .card:hover {
     background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(168, 85, 247, 0.35);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(168, 85, 247, 0.15);
+    border-color: rgba(0, 163, 255, 0.35);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 163, 255, 0.15);
   }
 
   /* ── Glass Card (premium) ── */
@@ -210,13 +210,13 @@
   }
   .field-input:focus {
     background: #ffffff;
-    border-color: rgba(168, 85, 247, 0.6);
-    box-shadow: 0 0 15px rgba(168, 85, 247, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 163, 255, 0.6);
+    box-shadow: 0 0 15px rgba(0, 163, 255, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.05);
   }
   .dark .field-input:focus {
     background: rgba(15, 12, 41, 0.8);
-    border-color: rgba(168, 85, 247, 0.6);
-    box-shadow: 0 0 15px rgba(168, 85, 247, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.4);
+    border-color: rgba(0, 163, 255, 0.6);
+    box-shadow: 0 0 15px rgba(0, 163, 255, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.4);
   }
   .field-input option {
     background: #ffffff;
@@ -239,20 +239,20 @@
   /* ── Eyebrow label ── */
   .eyebrow {
     @apply inline-block text-xs font-semibold tracking-wide uppercase;
-    color: #c084fc;
+    color: #00A3FF;
   }
 
   /* ── Badge ── */
   .badge {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-    background: rgba(168, 85, 247, 0.15);
-    color: #c084fc;
-    border: 1px solid rgba(168, 85, 247, 0.25);
+    background: rgba(0, 163, 255, 0.15);
+    color: #00A3FF;
+    border: 1px solid rgba(0, 163, 255, 0.25);
   }
 
   /* ── Gradient text ── */
   .gradient-text {
-    background: linear-gradient(135deg, #c084fc, #818cf8, #22d3ee, #c084fc);
+    background: linear-gradient(135deg, #1A5EAA, #00A3FF, #00F0FF, #1A5EAA);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

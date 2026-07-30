@@ -38,13 +38,13 @@ export function NavDropdown({ label, items, align = 'left', active }: NavDropdow
         onClick={() => setOpen((o) => !o)}
         className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
           isActive
-            ? 'bg-neon-purple/20 text-purple-300 border border-purple-500/30'
+            ? 'bg-blue-500/10 text-blue-400 border border-blue-500/30'
             : 'text-slate-300 hover:text-white hover:bg-white/8'
         }`}
       >
         {label}
         <svg
-          className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? 'rotate-180 text-purple-400' : 'text-slate-500'}`}
+          className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? 'rotate-180 text-blue-400' : 'text-slate-500'}`}
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -59,10 +59,10 @@ export function NavDropdown({ label, items, align = 'left', active }: NavDropdow
         <div
           className={`absolute mt-2 min-w-[220px] py-2 z-20 rounded-2xl animate-dropdown ${align === 'right' ? 'right-0' : 'left-0'}`}
           style={{
-            background: 'rgba(15, 12, 41, 0.92)',
+            background: 'rgba(10, 8, 24, 0.95)',
             backdropFilter: 'blur(20px)',
             border: '1px solid rgba(255,255,255,0.08)',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(168,85,247,0.1)',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(0,163,255,0.1)',
           }}
         >
           {items.map((item) =>
@@ -74,7 +74,7 @@ export function NavDropdown({ label, items, align = 'left', active }: NavDropdow
                 className={({ isActive }) =>
                   `block mx-2 px-3.5 py-2 text-sm font-medium rounded-xl transition-all ${
                     isActive
-                      ? 'bg-purple-500/20 text-purple-300'
+                      ? 'bg-blue-500/20 text-blue-400'
                       : 'text-slate-300 hover:bg-white/8 hover:text-white'
                   }`
                 }

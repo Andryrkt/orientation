@@ -212,7 +212,7 @@ function MiniRiasecTeaser() {
                 onClick={() => setSelectedProfile(index)}
                 className={`text-left p-5 rounded-2xl border transition-all duration-300 relative overflow-hidden group ${
                   isSelected 
-                    ? 'border-purple-500/40 bg-purple-500/5' 
+                    ? 'border-blue-500/40 bg-blue-500/5' 
                     : theme === 'dark' 
                       ? 'border-white/5 bg-white/2 hover:border-white/10 hover:bg-white/4' 
                       : 'border-slate-200 bg-slate-50 hover:border-slate-350 hover:bg-slate-100/50'
@@ -224,7 +224,7 @@ function MiniRiasecTeaser() {
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-2xl">{profile.icon}</span>
                   <div>
-                    <h3 className="font-bold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors">
+                    <h3 className="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">
                       {profile.type}
                     </h3>
                     <span className="text-[10px] uppercase font-bold tracking-wider opacity-60 text-slate-500 dark:text-slate-400">Type {profile.letter}</span>
@@ -237,7 +237,7 @@ function MiniRiasecTeaser() {
         </div>
 
         {selectedProfile !== null && (
-          <div className="mt-8 p-6 rounded-2xl border bg-black/10 dark:bg-white/3 border-purple-500/20 animate-dropdown">
+          <div className="mt-8 p-6 rounded-2xl border bg-black/10 dark:bg-white/3 border-blue-500/20 animate-dropdown">
             <div className={`absolute top-4 right-6 text-6xl sm:text-7xl font-black select-none pointer-events-none ${
               theme === 'dark' ? 'text-white/5' : 'text-slate-900/5'
             }`}>
@@ -292,8 +292,8 @@ export function Home() {
       desc: t('home.features.jobs.desc'),
       to: '/metiers',
       icon: IconBriefcase,
-      gradient: 'from-purple-500 to-indigo-500',
-      glow: 'rgba(168,85,247,0.25)',
+      gradient: 'from-blue-600 to-cyan-500',
+      glow: 'rgba(0,163,255,0.25)',
       badge: t('home.features.jobs.badge'),
     },
     {
@@ -363,22 +363,22 @@ export function Home() {
       <section className="relative overflow-hidden -mx-4 px-4 pt-20 pb-24 text-center">
         {/* Background glows */}
         <div className="glow-orb w-[600px] h-[600px] -top-48 left-1/2 -translate-x-1/2 animate-pulse-glow"
-          style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.18) 0%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(0,163,255,0.18) 0%, transparent 70%)' }} />
         <div className="glow-orb w-80 h-80 top-10 -left-20 animate-float-slow"
-          style={{ background: 'radial-gradient(circle, rgba(129,140,248,0.12) 0%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(0,82,255,0.12) 0%, transparent 70%)' }} />
         <div className="glow-orb w-80 h-80 top-10 -right-20 animate-float-slow"
-          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.1) 0%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(0,240,255,0.1) 0%, transparent 70%)' }} />
 
         <div className="relative z-10 max-w-4xl mx-auto">
           {/* Pill badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 text-sm font-semibold transition-all duration-300 hover:border-purple-500/50"
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 text-sm font-semibold transition-all duration-300 hover:border-blue-500/50"
             style={{
-              background: 'rgba(168,85,247,0.12)',
-              border: '1px solid rgba(168,85,247,0.25)',
-              color: '#c084fc',
-              boxShadow: '0 0 15px rgba(168,85,247,0.1)',
+              background: 'rgba(0,163,255,0.12)',
+              border: '1px solid rgba(0,163,255,0.25)',
+              color: '#00A3FF',
+              boxShadow: '0 0 15px rgba(0,163,255,0.1)',
             }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
             {t('footer.copyright')}
           </div>
 
@@ -413,7 +413,7 @@ export function Home() {
             {STATS.map((s) => (
               <div key={s.label} className="text-center">
                 <p className="text-3xl font-black text-slate-900 dark:text-white mb-0.5">{s.value}</p>
-                <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#a78bfa' }}>{s.label}</p>
+                <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#00A3FF' }}>{s.label}</p>
               </div>
             ))}
           </div>
@@ -447,15 +447,15 @@ export function Home() {
         <div className="relative grid sm:grid-cols-3 gap-8 lg:gap-12">
           {/* Connector line */}
           <div className="hidden sm:block absolute top-8 left-[16%] right-[16%] h-px"
-            style={{ background: 'linear-gradient(90deg, transparent, rgba(168,85,247,0.3), rgba(129,140,248,0.3), transparent)' }} />
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(0,82,255,0.3), rgba(0,240,255,0.3), transparent)' }} />
 
           {STEPS.map((step, i) => (
             <div key={step.title} className="text-center group">
               <div
                 className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 text-xl font-black text-white group-hover:scale-110 transition-transform duration-300"
                 style={{
-                  background: i === 0 ? 'linear-gradient(135deg,#a855f7,#818cf8)' : i === 1 ? 'linear-gradient(135deg,#818cf8,#22d3ee)' : 'linear-gradient(135deg,#22d3ee,#34d399)',
-                  boxShadow: `0 4px 20px rgba(168,85,247,${0.3 - i * 0.05})`,
+                  background: i === 0 ? 'linear-gradient(135deg,#0052FF,#00A3FF)' : i === 1 ? 'linear-gradient(135deg,#00A3FF,#00F0FF)' : 'linear-gradient(135deg,#00F0FF,#34d399)',
+                  boxShadow: `0 4px 20px rgba(0,163,255,${0.3 - i * 0.05})`,
                 }}
               >
                 {step.num}
@@ -471,17 +471,17 @@ export function Home() {
       <section className="relative overflow-hidden -mx-4 px-6 py-20 rounded-[2.5rem] text-center">
         {/* Background */}
         <div className="absolute inset-0 -z-10"
-          style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.15) 0%, rgba(129,140,248,0.1) 50%, rgba(34,211,238,0.1) 100%)' }} />
+          style={{ background: 'linear-gradient(135deg, rgba(0,82,255,0.15) 0%, rgba(0,163,255,0.1) 50%, rgba(0,240,255,0.1) 100%)' }} />
         <div className="absolute inset-0 -z-10"
           style={{ background: 'rgba(10,8,24,0.5)', backdropFilter: 'blur(2px)' }} />
-        <div style={{ border: '1px solid rgba(168,85,247,0.15)' }}
+        <div style={{ border: '1px solid rgba(0,82,255,0.15)' }}
           className="absolute inset-0 -z-10 rounded-[2.5rem]" />
 
         {/* Glows */}
         <div className="glow-orb w-80 h-80 -top-20 left-1/4"
-          style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(0,82,255,0.2) 0%, transparent 70%)' }} />
         <div className="glow-orb w-80 h-80 -bottom-20 right-1/4"
-          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.15) 0%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(0,240,255,0.15) 0%, transparent 70%)' }} />
 
         <div className="relative z-10 max-w-2xl mx-auto">
           <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-5 tracking-tight">

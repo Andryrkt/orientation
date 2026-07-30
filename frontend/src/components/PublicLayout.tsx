@@ -9,13 +9,13 @@ import { Logo } from './Logo';
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
     isActive
-      ? 'bg-neon-purple/20 text-purple-300 border border-purple-500/30'
+      ? 'bg-blue-500/10 text-blue-400 border border-blue-500/30'
       : 'text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/8'
   }`;
 
 const mobileLinkClass = ({ isActive }: { isActive: boolean }) =>
   `block px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
-    isActive ? 'bg-neon-purple/20 text-purple-300' : 'text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/8'
+    isActive ? 'bg-blue-500/10 text-blue-400' : 'text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/8'
   }`;
 
 export function PublicLayout() {
@@ -96,7 +96,7 @@ export function PublicLayout() {
             <div className="relative">
               <button
                 onClick={() => setLangOpen(!langOpen)}
-                className="flex items-center gap-1 px-2.5 py-2 rounded-xl text-slate-500 hover:text-purple-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-purple-300 dark:hover:bg-white/8 transition-all duration-200 text-sm font-semibold ml-1"
+                className="flex items-center gap-1 px-2.5 py-2 rounded-xl text-slate-500 hover:text-blue-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-blue-400 dark:hover:bg-white/8 transition-all duration-200 text-sm font-semibold ml-1"
                 aria-label="Changer de langue"
                 title="Changer de langue"
               >
@@ -133,7 +133,7 @@ export function PublicLayout() {
                         }}
                         className={`flex w-full items-center px-3 py-1.5 text-xs text-left font-bold transition-all duration-150 rounded-lg ${
                           i18n.language === lang.code
-                            ? 'text-purple-500 bg-purple-500/10'
+                            ? 'text-blue-600 bg-blue-500/10 dark:text-blue-400'
                             : 'text-slate-600 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-white/8 hover:text-slate-800 dark:hover:text-white'
                         }`}
                       >
@@ -148,7 +148,7 @@ export function PublicLayout() {
             {/* Commutateur de thème (Desktop) */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-xl text-slate-500 hover:text-purple-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-purple-300 dark:hover:bg-white/8 transition-all duration-200 ml-1"
+              className="p-2 rounded-xl text-slate-500 hover:text-blue-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-blue-400 dark:hover:bg-white/8 transition-all duration-200 ml-1"
               aria-label={t('nav.theme')}
               title={t('nav.theme')}
             >
@@ -201,7 +201,7 @@ export function PublicLayout() {
                         }}
                         className={`flex w-full items-center px-3 py-1.5 text-xs text-left font-bold transition-all duration-150 rounded-lg ${
                           i18n.language === lang.code
-                            ? 'text-purple-500 bg-purple-500/10'
+                            ? 'text-blue-600 bg-blue-500/10 dark:text-blue-400'
                             : 'text-slate-600 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-white/8 hover:text-slate-800 dark:hover:text-white'
                         }`}
                       >
@@ -331,7 +331,7 @@ export function PublicLayout() {
             <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
               {ORIENTATION_ITEMS.map((item) => (
                 <li key={item.to}>
-                  <Link to={item.to} className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{item.label}</Link>
+                  <Link to={item.to} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{item.label}</Link>
                 </li>
               ))}
             </ul>
@@ -341,14 +341,14 @@ export function PublicLayout() {
             <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
               {OPPORTUNITES_ITEMS.map((item) => (
                 <li key={item.to}>
-                  <Link to={item.to} className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{item.label}</Link>
+                  <Link to={item.to} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{item.label}</Link>
                 </li>
               ))}
               <li>
-                <Link to="/blog" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.blog')}</Link>
+                <Link to="/blog" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.blog')}</Link>
               </li>
               <li>
-                <Link to="/guide" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.user_guide')}</Link>
+                <Link to="/guide" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.user_guide')}</Link>
               </li>
             </ul>
           </div>
@@ -357,15 +357,15 @@ export function PublicLayout() {
             <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
               {user ? (
                 <>
-                  <li><Link to="/favoris" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.my_favorites')}</Link></li>
-                  <li><Link to="/tickets" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.support_tickets')}</Link></li>
-                  <li><Link to="/profil" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.my_profile')}</Link></li>
-                  <li><Link to="/mon-cv" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.my_cv')}</Link></li>
+                  <li><Link to="/favoris" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.my_favorites')}</Link></li>
+                  <li><Link to="/tickets" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.support_tickets')}</Link></li>
+                  <li><Link to="/profil" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.my_profile')}</Link></li>
+                  <li><Link to="/mon-cv" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.my_cv')}</Link></li>
                 </>
               ) : (
                 <>
-                  <li><Link to="/login" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.login')}</Link></li>
-                  <li><Link to="/register" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.register')}</Link></li>
+                  <li><Link to="/login" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.login')}</Link></li>
+                  <li><Link to="/register" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.register')}</Link></li>
                 </>
               )}
             </ul>
