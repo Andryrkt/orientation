@@ -568,3 +568,22 @@ model FaqItem {
 
   @@map("faq_items")
 }
+
+enum ContactStatut {
+  NOUVEAU
+  LU
+  TRAITE
+}
+
+model ContactMessage {
+  id        String        @id @default(uuid())
+  nom       String
+  email     String
+  sujet     String
+  message   String        @db.Text
+  statut    ContactStatut @default(NOUVEAU)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("contact_messages")
+}

@@ -1,5 +1,19 @@
 import { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  CheckCircle2,
+  GraduationCap,
+  Handshake,
+  Headset,
+  Lightbulb,
+  Loader2,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
+  Send,
+} from 'lucide-react';
+import { api } from '../lib/api';
 
 type FormState = {
   nom: string;
@@ -10,25 +24,31 @@ type FormState = {
 
 const CONTACT_INFO = [
   {
-    icon: '📍',
+    icon: MapPin,
     title: 'Adresse',
     lines: ['Analamanga, Antananarivo, Madagascar', 'Lot IVT 173 Tsaramasay'],
   },
   {
-    icon: '📧',
+    icon: Mail,
     title: 'E-mail',
     lines: ['contact@avenirassure.mg', 'support@avenirassure.mg'],
   },
   {
-    icon: '📞',
+    icon: Phone,
     title: 'Téléphone',
     lines: ['+261 34 20 685 10', 'Lun – Ven, 8h – 17h'],
   },
   {
-    icon: '💬',
+    icon: MessageCircle,
     title: 'Réseaux sociaux',
     lines: ['facebook.com/avenirassure', '@avenirassure'],
   },
+];
+
+const TEAM = [
+  { icon: Headset, name: 'Équipe Support', role: 'Problèmes techniques & Comptes', delay: '0ms' },
+  { icon: GraduationCap, name: 'Équipe Orientation', role: 'Conseils & Parcours académiques', delay: '80ms' },
+  { icon: Handshake, name: 'Équipe Partenariats', role: 'Collaborations & Institutions', delay: '160ms' },
 ];
 
 export function Contact() {
@@ -36,14 +56,20 @@ export function Contact() {
   const [form, setForm] = useState<FormState>({ nom: '', email: '', sujet: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
-    // Simulation d'envoi (à connecter au backend si nécessaire)
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
-    setSubmitted(true);
+    setError(null);
+    try {
+      await api.post('/contact', form);
+      setSubmitted(true);
+    } catch {
+      setError("Une erreur est survenue lors de l'envoi. Veuillez réessayer.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -76,7 +102,7 @@ export function Contact() {
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-5"
             style={{ background: 'rgba(0,163,255,0.15)', border: '1px solid rgba(0,163,255,0.3)', color: '#00A3FF' }}
           >
-            ✉️ Contactez-nous
+            <Mail className="w-3.5 h-3.5" strokeWidth={2.5} /> Contactez-nous
           </span>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight">
             On est là pour vous{' '}
@@ -100,10 +126,10 @@ export function Contact() {
             {submitted ? (
               <div className="text-center py-10 animate-fade-in">
                 <div
-                  className="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6"
+                  className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6"
                   style={{ background: 'linear-gradient(135deg, #0052FF, #00A3FF)' }}
                 >
-                  ✅
+                  <CheckCircle2 className="w-10 h-10 text-white" strokeWidth={2} />
                 </div>
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-3">
                   Message envoyé !
@@ -190,6 +216,10 @@ export function Contact() {
                     <p className="text-xs text-slate-400 mt-1.5 text-right">{form.message.length} / 20 min.</p>
                   </div>
 
+                  {error && (
+                    <p className="text-sm text-rose-500 font-medium">{error}</p>
+                  )}
+
                   <button
                     type="submit"
                     disabled={loading}
@@ -197,11 +227,14 @@ export function Contact() {
                   >
                     {loading ? (
                       <span className="flex items-center justify-center gap-2">
-                        <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                        <Loader2 className="w-4 h-4 animate-spin" />
                         Envoi en cours…
                       </span>
                     ) : (
-                      '📨 Envoyer le message'
+                      <span className="flex items-center justify-center gap-2">
+                        <Send className="w-4 h-4" />
+                        Envoyer le message
+                      </span>
                     )}
                   </button>
                 </form>
@@ -218,10 +251,10 @@ export function Contact() {
               className="glass-card p-6 flex items-start gap-4 group hover:-translate-y-1 transition-transform duration-300"
             >
               <div
-                className="w-11 h-11 rounded-xl flex items-center justify-center text-xl shrink-0"
+                className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
                 style={{ background: 'linear-gradient(135deg, rgba(0,82,255,0.15), rgba(0,163,255,0.15))' }}
               >
-                {info.icon}
+                <info.icon className="w-5 h-5 text-blue-600 dark:text-blue-400" strokeWidth={2} />
               </div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-blue-500 dark:text-blue-400 mb-1">
@@ -241,8 +274,8 @@ export function Contact() {
             className="glass-card p-6"
             style={{ background: 'linear-gradient(135deg, rgba(0,82,255,0.08), rgba(0,163,255,0.06))' }}
           >
-            <p className="text-xs font-bold uppercase tracking-wider text-blue-500 dark:text-blue-400 mb-2">
-              💡 Consultez notre FAQ
+            <p className="text-xs font-bold uppercase tracking-wider text-blue-500 dark:text-blue-400 mb-2 flex items-center gap-1.5">
+              <Lightbulb className="w-3.5 h-3.5" strokeWidth={2.5} /> Consultez notre FAQ
             </p>
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
               Avant de nous écrire, vous trouverez peut-être la réponse dans notre guide d'utilisation.
@@ -264,21 +297,17 @@ export function Contact() {
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Des professionnels dévoués à votre orientation</p>
         </div>
         <div className="grid sm:grid-cols-3 gap-5">
-          {[
-            { emoji: '👩‍💼', name: 'Équipe Support', role: 'Problèmes techniques & Comptes', delay: '0ms' },
-            { emoji: '🎓', name: 'Équipe Orientation', role: 'Conseils & Parcours académiques', delay: '80ms' },
-            { emoji: '🤝', name: 'Équipe Partenariats', role: 'Collaborations & Institutions', delay: '160ms' },
-          ].map((member) => (
+          {TEAM.map((member) => (
             <div
               key={member.name}
               className="glass-card p-6 text-center hover:-translate-y-1 transition-transform duration-300"
               style={{ animationDelay: member.delay }}
             >
               <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4"
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
                 style={{ background: 'linear-gradient(135deg, rgba(0,82,255,0.15), rgba(0,163,255,0.15))' }}
               >
-                {member.emoji}
+                <member.icon className="w-7 h-7 text-blue-600 dark:text-blue-400" strokeWidth={1.75} />
               </div>
               <p className="font-bold text-slate-900 dark:text-white text-sm">{member.name}</p>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{member.role}</p>

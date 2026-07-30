@@ -46,6 +46,7 @@ const groups: { title?: string; links: { to: string; label: string; end?: boolea
     links: [
       { to: '/admin/utilisateurs', label: 'Utilisateurs' },
       { to: '/admin/tickets', label: 'Tickets / Support' },
+      { to: '/admin/contact-messages', label: 'Messages de contact' },
     ],
   },
 ];

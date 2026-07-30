@@ -24,6 +24,7 @@ import { RessourcesModule } from './ressources/ressources.module';
 import { EnseignantsModule } from './enseignants/enseignants.module';
 import { HealthModule } from './health/health.module';
 import { FaqModule } from './faq/faq.module';
+import { ContactModule } from './contact/contact.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { FaqModule } from './faq/faq.module';
     EnseignantsModule,
     HealthModule,
     FaqModule,
+    ContactModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

@@ -56,6 +56,7 @@ import { TicketDetailAdmin } from './pages/admin/TicketDetailAdmin';
 import { RessourcesAdmin } from './pages/admin/RessourcesAdmin';
 import { EnseignantsAdmin } from './pages/admin/EnseignantsAdmin';
 import { FaqAdmin } from './pages/admin/FaqAdmin';
+import { ContactMessagesAdmin } from './pages/admin/ContactMessagesAdmin';
 
 export default function App() {
   return (
@@ -120,6 +121,7 @@ export default function App() {
           <Route path="tickets" element={<TicketsAdmin />} />
           <Route path="tickets/:id" element={<TicketDetailAdmin />} />
           <Route path="faq" element={<FaqAdmin />} />
+          <Route path="contact-messages" element={<ContactMessagesAdmin />} />
         </Route>
       </Route>
 
