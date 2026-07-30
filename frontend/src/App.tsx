@@ -32,6 +32,7 @@ import { Favoris } from './pages/Favoris';
 import { RessourcesApprentissage } from './pages/RessourcesApprentissage';
 import { NotFound } from './pages/NotFound';
 import { GuideUtilisateur } from './pages/GuideUtilisateur';
+import { Contact } from './pages/Contact';
 import { Dashboard } from './pages/admin/Dashboard';
 import { DomainesAdmin } from './pages/admin/DomainesAdmin';
 import { MetiersAdmin } from './pages/admin/MetiersAdmin';
@@ -80,6 +81,7 @@ export default function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="guide" element={<GuideUtilisateur />} />
+        <Route path="contact" element={<Contact />} />
         <Route element={<ProtectedRoute />}>
           <Route path="profil" element={<Profil />} />
           <Route path="mon-cv" element={<CvGenerator />} />
