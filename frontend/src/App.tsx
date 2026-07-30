@@ -33,6 +33,7 @@ import { RessourcesApprentissage } from './pages/RessourcesApprentissage';
 import { NotFound } from './pages/NotFound';
 import { GuideUtilisateur } from './pages/GuideUtilisateur';
 import { Contact } from './pages/Contact';
+import { FAQ } from './pages/FAQ';
 import { Dashboard } from './pages/admin/Dashboard';
 import { DomainesAdmin } from './pages/admin/DomainesAdmin';
 import { MetiersAdmin } from './pages/admin/MetiersAdmin';
@@ -54,6 +55,7 @@ import { TicketsAdmin } from './pages/admin/TicketsAdmin';
 import { TicketDetailAdmin } from './pages/admin/TicketDetailAdmin';
 import { RessourcesAdmin } from './pages/admin/RessourcesAdmin';
 import { EnseignantsAdmin } from './pages/admin/EnseignantsAdmin';
+import { FaqAdmin } from './pages/admin/FaqAdmin';
 
 export default function App() {
   return (
@@ -82,6 +84,7 @@ export default function App() {
         <Route path="register" element={<Register />} />
         <Route path="guide" element={<GuideUtilisateur />} />
         <Route path="contact" element={<Contact />} />
+        <Route path="faq" element={<FAQ />} />
         <Route element={<ProtectedRoute />}>
           <Route path="profil" element={<Profil />} />
           <Route path="mon-cv" element={<CvGenerator />} />
@@ -116,6 +119,7 @@ export default function App() {
           <Route path="utilisateurs" element={<UtilisateursAdmin />} />
           <Route path="tickets" element={<TicketsAdmin />} />
           <Route path="tickets/:id" element={<TicketDetailAdmin />} />
+          <Route path="faq" element={<FaqAdmin />} />
         </Route>
       </Route>
 

@@ -75,6 +75,7 @@ export function PublicLayout() {
             <NavDropdown label={t('nav.orientation')} items={ORIENTATION_ITEMS} />
             <NavDropdown label={t('nav.opportunities')} items={OPPORTUNITES_ITEMS} />
             <NavLink to="/blog" className={navLinkClass}>{t('nav.blog')}</NavLink>
+            <NavLink to="/faq" className={navLinkClass}>{t('nav.faq')}</NavLink>
             <NavLink to="/contact" className={navLinkClass}>{t('nav.contact')}</NavLink>
             {user && (
               <NavLink to="/ressources" className={navLinkClass}>{t('nav.ressources')}</NavLink>
@@ -259,7 +260,7 @@ export function PublicLayout() {
               boxShadow: theme === 'dark' ? '0 20px 40px rgba(0, 0, 0, 0.5)' : '0 20px 40px rgba(15, 23, 42, 0.08)',
             }}
           >
-            {[...ORIENTATION_ITEMS, ...OPPORTUNITES_ITEMS, { to: '/blog', label: t('nav.blog') }, { to: '/contact', label: t('nav.contact') }].map(
+            {[...ORIENTATION_ITEMS, ...OPPORTUNITES_ITEMS, { to: '/blog', label: t('nav.blog') }, { to: '/faq', label: t('nav.faq') }, { to: '/contact', label: t('nav.contact') }].map(
               (item) => (
                 <NavLink key={item.to} to={item.to} className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
                   {item.label}
@@ -350,6 +351,9 @@ export function PublicLayout() {
               </li>
               <li>
                 <Link to="/guide" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.user_guide')}</Link>
+              </li>
+              <li>
+                <Link to="/faq" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.faq')}</Link>
               </li>
               <li>
                 <Link to="/contact" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.contact')}</Link>

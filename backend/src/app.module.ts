@@ -23,6 +23,7 @@ import { TicketsModule } from './tickets/tickets.module';
 import { RessourcesModule } from './ressources/ressources.module';
 import { EnseignantsModule } from './enseignants/enseignants.module';
 import { HealthModule } from './health/health.module';
+import { FaqModule } from './faq/faq.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { HealthModule } from './health/health.module';
     RessourcesModule,
     EnseignantsModule,
     HealthModule,
+    FaqModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },
