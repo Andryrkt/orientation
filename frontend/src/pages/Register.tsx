@@ -97,6 +97,7 @@ export function Register() {
               className="field-input"
               value={form.telephone}
               onChange={(e) => setForm({ ...form, telephone: e.target.value })}
+              required
             />
           </div>
 
@@ -179,7 +180,7 @@ export function Register() {
 
         <p className="text-sm text-slate-600 dark:text-slate-400 mt-6 text-center">
           {t('register.login_prompt')}{' '}
-          <Link to="/login" className="text-purple-600 dark:text-purple-400 font-semibold hover:text-purple-500 dark:hover:text-purple-300 transition-colors">
+          <Link to="/login" className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-500 dark:hover:text-blue-300 transition-colors">
             {t('register.login_link')}
           </Link>
         </p>

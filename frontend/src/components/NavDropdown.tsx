@@ -13,29 +13,35 @@ interface NavDropdownProps {
 export function NavDropdown({ label, items, align = 'left', active }: NavDropdownProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
 
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
+  // Fermer quand on navigue vers une nouvelle route
   useEffect(() => {
     setOpen(false);
   }, [location.pathname]);
+
+  const handleMouseEnter = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    // Petit délai pour laisser le temps de glisser vers le menu
+    closeTimer.current = setTimeout(() => setOpen(false), 120);
+  };
 
   const isActive =
     active ?? items.some((item) => 'to' in item && location.pathname.startsWith(item.to));
 
   return (
-    <div ref={ref} className="relative">
+    <div
+      ref={ref}
+      className="relative"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <button
-        onClick={() => setOpen((o) => !o)}
         className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
           isActive
             ? 'bg-blue-500/10 text-blue-400 border border-blue-500/30'
