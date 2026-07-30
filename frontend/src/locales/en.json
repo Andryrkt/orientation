@@ -21,7 +21,9 @@
     "coaches": "Coaches",
     "internships": "Internships",
     "scholarships": "Scholarships",
-    "ressources": "Learning & Docs"
+    "ressources": "Learning & Docs",
+    "teachers": "Teachers",
+    "user_guide": "User Guide"
   },
   "footer": {
     "description": "The reference platform for academic, university, and professional guidance in Madagascar.",
@@ -37,7 +39,110 @@
     "explore_btn": "Explore Jobs",
     "take_test_btn": "Take the Test",
     "explore_section_title": "Explore Guidance",
-    "explore_section_desc": "Access local resources to make the best decisions."
+    "explore_section_desc": "Access local resources to make the best decisions.",
+    "explore_section_eyebrow": "Explore",
+    "how_it_works_eyebrow": "How it works",
+    "how_it_works_title": "Three steps to your decision",
+    "how_it_works_subtitle": "A simple, progressive, and effective support.",
+    "cta_title": "Ready to discover your path?",
+    "cta_desc": "Create your free account to access the complete orientation questionnaire, save your favorites, and get in touch with our coaches.",
+    "cta_btn_register": "Create a free account",
+    "cta_btn_explore": "Explore universities",
+    "stats": {
+      "free": "Free",
+      "domains": "Domains",
+      "jobs": "Job profiles",
+      "local": "Local content"
+    },
+    "features": {
+      "jobs": {
+        "title": "Jobs",
+        "desc": "Explore jobs, their opportunities, and required skills.",
+        "badge": "15+ profiles"
+      },
+      "domains": {
+        "title": "Domains",
+        "desc": "Browse main study fields and their branches.",
+        "badge": "6 domains"
+      },
+      "universities": {
+        "title": "Universities",
+        "desc": "Find Higher Education institutions and programs in Madagascar.",
+        "badge": "4+ universities"
+      },
+      "training_centers": {
+        "title": "Training Centers",
+        "desc": "Discover specialized training centers and institutes near you.",
+        "badge": "Pro courses"
+      },
+      "coaches": {
+        "title": "Coaches",
+        "desc": "Interact with orientation coaches to refine your choice.",
+        "badge": "Guidance support"
+      },
+      "blog": {
+        "title": "Blog & Tips",
+        "desc": "Articles and testimonials to help you choose your path.",
+        "badge": "Tips"
+      }
+    },
+    "steps": {
+      "step1": {
+        "title": "Explore",
+        "desc": "Browse jobs, domains, and universities in Madagascar."
+      },
+      "step2": {
+        "title": "Answer the questionnaire",
+        "desc": "Identify your interests with our RIASEC orientation test."
+      },
+      "step3": {
+        "title": "Decide",
+        "desc": "Compare your results, talk to a coach, and make your choice."
+      }
+    },
+    "riasec_teaser": {
+      "eyebrow": "Practice Quiz",
+      "title": "What is your orientation profile?",
+      "desc": "Click on the activity that appeals to you most to discover an overview of your professional temperament.",
+      "profiles": {
+        "R": {
+          "type": "Realistic",
+          "activity": "Do DIY, build, farm or repair physical objects.",
+          "desc": "You like concrete action, outdoor or manual work. Careers in engineering, agriculture, logistics or technical fields will suit you perfectly!"
+        },
+        "I": {
+          "type": "Investigative",
+          "activity": "Solve puzzles, do research or analyze theories.",
+          "desc": "You are curious, analytical and you like to understand how things work. Careers in science, medicine, research or software development await you!"
+        },
+        "A": {
+          "type": "Artistic",
+          "activity": "Create, draw, imagine concepts, play music.",
+          "desc": "You have a strong imagination, you like originality and you need to express yourself freely. Explore careers in design, communication, fashion or journalism!"
+        },
+        "S": {
+          "type": "Social",
+          "activity": "Help others, advise, teach, heal.",
+          "desc": "You are people-oriented, you like to listen, help and transmit. The fields of teaching, social work, health or human resources are made for you!"
+        },
+        "E": {
+          "type": "Enterprising",
+          "activity": "Manage projects, convince, sell or negotiate.",
+          "desc": "You are dynamic, persuasive and you enjoy leadership and challenges. Look towards management, business, communication or business creation!"
+        },
+        "C": {
+          "type": "Conventional",
+          "activity": "Organize data, manage numbers or plan tasks.",
+          "desc": "You appreciate order, precision and methodology. Jobs in finance, administrative management, accounting or database management will please you!"
+        }
+      },
+      "result_title": "You are of type {{type}} ({{letter}})!",
+      "take_full_test_btn": "Take the complete orientation test",
+      "dominant_profile": "Dominant profile: ",
+      "riasec_model": "RIASEC personality model",
+      "match_indication": "Indicative match:",
+      "match_strong": "Strong"
+    }
   },
   "profile": {
     "title": "My Profile",
@@ -82,5 +187,41 @@
     "read": "Read course",
     "empty_msg": "No resources available for this category.",
     "modal_close": "Close"
+  },
+  "login": {
+    "eyebrow": "Member Access",
+    "title": "Login",
+    "subtitle": "Glad to see you back on Avenir assuré",
+    "email_label": "Email or Phone",
+    "password_label": "Password",
+    "submit_btn": "Log in",
+    "submitting_btn": "Logging in...",
+    "register_prompt": "Don't have an account?",
+    "register_link": "Register for free",
+    "invalid_credentials_error": "Invalid credentials.",
+    "show_password": "Show password",
+    "hide_password": "Hide password"
+  },
+  "register": {
+    "eyebrow": "Join us",
+    "title": "Register",
+    "subtitle": "Create your Avenir assuré account in just a few moments",
+    "firstname_label": "First Name",
+    "lastname_label": "Last Name",
+    "email_label": "Email",
+    "phone_label": "Phone (optional)",
+    "password_label": "Password",
+    "password_placeholder": "•••••••• (8 chars min.)",
+    "password_confirm_label": "Confirm Password",
+    "submit_btn": "Create My Account",
+    "submitting_btn": "Creating account...",
+    "login_prompt": "Already registered?",
+    "login_link": "Log in",
+    "password_mismatch_error": "Passwords do not match.",
+    "registration_error": "An error occurred during registration.",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "show_confirm_password": "Show confirm password",
+    "hide_confirm_password": "Hide confirm password"
   }
 }

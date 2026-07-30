@@ -32,7 +32,7 @@ export function PublicLayout() {
     { to: '/centres-formation', label: t('nav.training_centers') },
     { to: '/questionnaire', label: t('nav.questionnaire') },
     { to: '/coachs', label: t('nav.coaches') },
-    { to: '/enseignants', label: 'Enseignants' },
+    { to: '/enseignants', label: t('nav.teachers') },
   ];
 
   const OPPORTUNITES_ITEMS = [
@@ -348,7 +348,7 @@ export function PublicLayout() {
                 <Link to="/blog" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.blog')}</Link>
               </li>
               <li>
-                <Link to="/guide" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Guide d'utilisation</Link>
+                <Link to="/guide" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">{t('nav.user_guide')}</Link>
               </li>
             </ul>
           </div>

@@ -1,10 +1,12 @@
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/auth-context';
 
 export function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [form, setForm] = useState({ nom: '', prenom: '', email: '', telephone: '', password: '' });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -16,7 +18,7 @@ export function Register() {
     e.preventDefault();
     setError(null);
     if (form.password !== confirmPassword) {
-      setError('Les mots de passe ne correspondent pas.');
+      setError(t('register.password_mismatch_error'));
       return;
     }
     setLoading(true);
@@ -25,7 +27,7 @@ export function Register() {
       navigate('/');
     } catch (err) {
       const message = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
-      setError(message ?? 'Une erreur est survenue lors de l\'inscription.');
+      setError(message ?? t('register.registration_error'));
     } finally {
       setLoading(false);
     }
@@ -41,9 +43,9 @@ export function Register() {
 
       <div className="glass-card w-full max-w-lg p-8 sm:p-10 relative z-10">
         <div className="text-center mb-8">
-          <span className="eyebrow mb-2">Rejoignez-nous</span>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white">Inscription</h1>
-          <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">Créez votre compte Avenir assuré en quelques instants</p>
+          <span className="eyebrow mb-2">{t('register.eyebrow')}</span>
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white">{t('register.title')}</h1>
+          <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">{t('register.subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -55,7 +57,7 @@ export function Register() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Prénom</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.firstname_label')}</label>
               <input
                 className="field-input"
                 placeholder="ex: Jean"
@@ -65,7 +67,7 @@ export function Register() {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Nom</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.lastname_label')}</label>
               <input
                 className="field-input"
                 placeholder="ex: Rabe"
@@ -77,7 +79,7 @@ export function Register() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Email</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.email_label')}</label>
             <input
               type="email"
               placeholder="ex: jean.rabe@gmail.com"
@@ -89,7 +91,7 @@ export function Register() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Téléphone (optionnel)</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.phone_label')}</label>
             <input
               placeholder="ex: +261 34 00 000 00"
               className="field-input"
@@ -99,11 +101,11 @@ export function Register() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Mot de passe</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.password_label')}</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
-                placeholder="•••••••• (8 caractères min.)"
+                placeholder={t('register.password_placeholder')}
                 minLength={8}
                 className="field-input pr-10"
                 value={form.password}
@@ -114,7 +116,7 @@ export function Register() {
                 type="button"
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors focus:outline-none"
                 onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                aria-label={showPassword ? t('register.hide_password') : t('register.show_password')}
               >
                 {showPassword ? (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -131,7 +133,7 @@ export function Register() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Confirmation du mot de passe</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.password_confirm_label')}</label>
             <div className="relative">
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -145,7 +147,7 @@ export function Register() {
                 type="button"
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors focus:outline-none"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                aria-label={showConfirmPassword ? 'Masquer la confirmation du mot de passe' : 'Afficher la confirmation du mot de passe'}
+                aria-label={showConfirmPassword ? t('register.hide_confirm_password') : t('register.show_confirm_password')}
               >
                 {showConfirmPassword ? (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -169,16 +171,16 @@ export function Register() {
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
-                Création en cours...
+                {t('register.submitting_btn')}
               </span>
-            ) : 'Créer mon compte'}
+            ) : t('register.submit_btn')}
           </button>
         </form>
 
         <p className="text-sm text-slate-600 dark:text-slate-400 mt-6 text-center">
-          Déjà inscrit ?{' '}
+          {t('register.login_prompt')}{' '}
           <Link to="/login" className="text-purple-600 dark:text-purple-400 font-semibold hover:text-purple-500 dark:hover:text-purple-300 transition-colors">
-            Se connecter
+            {t('register.login_link')}
           </Link>
         </p>
       </div>

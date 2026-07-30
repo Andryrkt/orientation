@@ -1,10 +1,12 @@
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/auth-context';
 
 export function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [identifiant, setIdentifiant] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +21,7 @@ export function Login() {
       await login(identifiant, password);
       navigate('/');
     } catch {
-      setError('Identifiants invalides.');
+      setError(t('login.invalid_credentials_error'));
     } finally {
       setLoading(false);
     }
@@ -35,9 +37,9 @@ export function Login() {
 
       <div className="glass-card w-full max-w-md p-8 sm:p-10 relative z-10">
         <div className="text-center mb-8">
-          <span className="eyebrow mb-2">Accès membre</span>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white">Connexion</h1>
-          <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">Ravi de vous revoir sur Avenir assuré</p>
+          <span className="eyebrow mb-2">{t('login.eyebrow')}</span>
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white">{t('login.title')}</h1>
+          <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">{t('login.subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -48,7 +50,7 @@ export function Login() {
           )}
           
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Email ou téléphone</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('login.email_label')}</label>
             <input
               type="text"
               placeholder="ex: jean@avenirassure.mg"
@@ -60,7 +62,7 @@ export function Login() {
           </div>
           
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Mot de passe</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('login.password_label')}</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -74,7 +76,7 @@ export function Login() {
                 type="button"
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors focus:outline-none"
                 onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                aria-label={showPassword ? t('login.hide_password') : t('login.show_password')}
               >
                 {showPassword ? (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -83,7 +85,7 @@ export function Login() {
                 ) : (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542 7z" />
                   </svg>
                 )}
               </button>
@@ -98,16 +100,16 @@ export function Login() {
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
-                Connexion en cours...
+                {t('login.submitting_btn')}
               </span>
-            ) : 'Se connecter'}
+            ) : t('login.submit_btn')}
           </button>
         </form>
 
         <p className="text-sm text-slate-600 dark:text-slate-400 mt-6 text-center">
-          Pas encore de compte ?{' '}
+          {t('login.register_prompt')}{' '}
           <Link to="/register" className="text-purple-600 dark:text-purple-400 font-semibold hover:text-purple-500 dark:hover:text-purple-300 transition-colors">
-            S'inscrire gratuitement
+            {t('login.register_link')}
           </Link>
         </p>
       </div>

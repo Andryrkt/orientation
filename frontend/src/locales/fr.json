@@ -21,7 +21,9 @@
     "coaches": "Coachs",
     "internships": "Stages",
     "scholarships": "Bourses",
-    "ressources": "Apprentissage & Docs"
+    "ressources": "Apprentissage & Docs",
+    "teachers": "Enseignants",
+    "user_guide": "Guide d'utilisation"
   },
   "footer": {
     "description": "La plateforme de référence pour l'orientation scolaire, universitaire et professionnelle à Madagascar.",
@@ -37,7 +39,110 @@
     "explore_btn": "Explorer les métiers",
     "take_test_btn": "Passer le test",
     "explore_section_title": "Explore l'orientation",
-    "explore_section_desc": "Accède à des ressources locales pour faire les meilleurs choix."
+    "explore_section_desc": "Accède à des ressources locales pour faire les meilleurs choix.",
+    "explore_section_eyebrow": "Explore",
+    "how_it_works_eyebrow": "Comment ça marche",
+    "how_it_works_title": "Trois étapes vers ta décision",
+    "how_it_works_subtitle": "Un accompagnement simple, progressif et efficace.",
+    "cta_title": "Prêt à découvrir ta voie ?",
+    "cta_desc": "Créez votre compte gratuitement pour accéder au questionnaire d'orientation complet, enregistrer vos favoris et entrer en contact avec nos coachs.",
+    "cta_btn_register": "Créer un compte gratuit",
+    "cta_btn_explore": "Explorer les universités",
+    "stats": {
+      "free": "Gratuit",
+      "domains": "Domaines",
+      "jobs": "Fiches métiers",
+      "local": "Contenu local"
+    },
+    "features": {
+      "jobs": {
+        "title": "Métiers",
+        "desc": "Explore les métiers, leurs débouchés et les compétences requises.",
+        "badge": "15+ fiches"
+      },
+      "domains": {
+        "title": "Domaines",
+        "desc": "Parcours les grands domaines de formation et leurs filières.",
+        "badge": "6 domaines"
+      },
+      "universities": {
+        "title": "Universités",
+        "desc": "Trouve les établissements et parcours de formation à Madagascar.",
+        "badge": "4+ universités"
+      },
+      "training_centers": {
+        "title": "Centres de formation",
+        "desc": "Découvre les centres et instituts spécialisés près de chez toi.",
+        "badge": "Formations pro"
+      },
+      "coaches": {
+        "title": "Coachs",
+        "desc": "Échange avec des coachs d'orientation pour affiner ton choix.",
+        "badge": "Accompagnement"
+      },
+      "blog": {
+        "title": "Blog & conseils",
+        "desc": "Des articles et témoignages pour t'aider à choisir ta voie.",
+        "badge": "Conseils"
+      }
+    },
+    "steps": {
+      "step1": {
+        "title": "Explore",
+        "desc": "Parcours les métiers, domaines et universités à Madagascar."
+      },
+      "step2": {
+        "title": "Réponds au questionnaire",
+        "desc": "Identifie tes intérêts grâce à notre test d'orientation RIASEC."
+      },
+      "step3": {
+        "title": "Décide",
+        "desc": "Compare tes résultats, échange avec un coach et fais ton choix."
+      }
+    },
+    "riasec_teaser": {
+      "eyebrow": "Quiz d'essai",
+      "title": "Quel est ton profil d'orientation ?",
+      "desc": "Clique sur l'activité qui te plaît le plus pour découvrir un aperçu de ton tempérament professionnel.",
+      "profiles": {
+        "R": {
+          "type": "Réaliste",
+          "activity": "Bricoler, fabriquer, cultiver ou réparer des objets physiques.",
+          "desc": "Tu aimes le concret, l’action et le travail en extérieur ou manuel. Les métiers de l’ingénierie, de l’agriculture, de la logistique ou de la tech technique te conviendront parfaitement !"
+        },
+        "I": {
+          "type": "Investigateur",
+          "activity": "Résoudre des énigmes, faire de la recherche ou analyser des théories.",
+          "desc": "Tu es de nature curieuse, analytique et tu aimes comprendre le fonctionnement des choses. Les carrières scientifiques, médicales, de recherche ou de développement informatique t’attendent !"
+        },
+        "A": {
+          "type": "Artistique",
+          "activity": "Créer, dessiner, imaginer des concepts, jouer de la musique.",
+          "desc": "Tu possèdes une forte imagination, tu aimes l’originalité et tu as besoin de t’exprimer librement. Explore les métiers du design, de la communication, de la mode ou du journalisme !"
+        },
+        "S": {
+          "type": "Social",
+          "activity": "Aider les autres, conseiller, enseigner, soigner.",
+          "desc": "Tu es tourné vers l’humain, tu aimes écouter, aider et transmettre. Les domaines de l’enseignement, du social, de la santé ou des ressources humaines sont faits pour toi !"
+        },
+        "E": {
+          "type": "Entreprenant",
+          "activity": "Diriger des projets, convaincre, vendre ou négocier.",
+          "desc": "Tu es dynamique, persuasif et tu as le goût du leadership et des défis. Regarde du côté du management, du commerce, de la communication ou de la création d’entreprise !"
+        },
+        "C": {
+          "type": "Conventionnel",
+          "activity": "Organiser des données, gérer des chiffres ou planifier des tâches.",
+          "desc": "Tu apprécie l’ordre, la précision et la méthodologie. Les métiers de la finance, de la gestion administrative, de la comptabilité ou de la gestion de base de données te plairont !"
+        }
+      },
+      "result_title": "Tu es de type {{type}} ({{letter}}) !",
+      "take_full_test_btn": "Faire le test d'orientation complet",
+      "dominant_profile": "Profil dominant : ",
+      "riasec_model": "Modèle de personnalité RIASEC",
+      "match_indication": "Correspondance indicative :",
+      "match_strong": "Forte"
+    }
   },
   "profile": {
     "title": "Mon profil",
@@ -82,5 +187,41 @@
     "read": "Lire le cours",
     "empty_msg": "Aucune ressource disponible pour cette catégorie.",
     "modal_close": "Fermer"
+  },
+  "login": {
+    "eyebrow": "Accès membre",
+    "title": "Connexion",
+    "subtitle": "Ravi de vous revoir sur Avenir assuré",
+    "email_label": "Email ou téléphone",
+    "password_label": "Mot de passe",
+    "submit_btn": "Se connecter",
+    "submitting_btn": "Connexion en cours...",
+    "register_prompt": "Pas encore de compte ?",
+    "register_link": "S'inscrire gratuitement",
+    "invalid_credentials_error": "Identifiants invalides.",
+    "show_password": "Afficher le mot de passe",
+    "hide_password": "Masquer le mot de passe"
+  },
+  "register": {
+    "eyebrow": "Rejoignez-nous",
+    "title": "Inscription",
+    "subtitle": "Créez votre compte Avenir assuré en quelques instants",
+    "firstname_label": "Prénom",
+    "lastname_label": "Nom",
+    "email_label": "Email",
+    "phone_label": "Téléphone (optionnel)",
+    "password_label": "Mot de passe",
+    "password_placeholder": "•••••••• (8 caractères min.)",
+    "password_confirm_label": "Confirmation du mot de passe",
+    "submit_btn": "Créer mon compte",
+    "submitting_btn": "Création en cours...",
+    "login_prompt": "Déjà inscrit ?",
+    "login_link": "Se connecter",
+    "password_mismatch_error": "Les mots de passe ne correspondent pas.",
+    "registration_error": "Une erreur est survenue lors de l'inscription.",
+    "show_password": "Afficher le mot de passe",
+    "hide_password": "Masquer le mot de passe",
+    "show_confirm_password": "Afficher la confirmation du mot de passe",
+    "hide_confirm_password": "Masquer la confirmation du mot de passe"
   }
 }

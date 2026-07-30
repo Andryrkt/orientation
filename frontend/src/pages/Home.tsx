@@ -3,63 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../lib/theme-context';
 
-/* ── Données RIASEC pour le Teaser ── */
-const RIASEC_PROFILES = [
-  {
-    type: 'Réaliste',
-    letter: 'R',
-    activity: 'Bricoler, fabriquer, cultiver ou réparer des objets physiques.',
-    desc: 'Tu aimes le concret, l’action et le travail en extérieur ou manuel. Les métiers de l’ingénierie, de l’agriculture, de la logistique ou de la tech technique te conviendront parfaitement !',
-    color: 'from-blue-500 to-indigo-500',
-    glow: 'rgba(59, 130, 246, 0.3)',
-    icon: '🛠️'
-  },
-  {
-    type: 'Investigateur',
-    letter: 'I',
-    activity: 'Résoudre des énigmes, faire de la recherche ou analyser des théories.',
-    desc: 'Tu es de nature curieuse, analytique et tu aimes comprendre le fonctionnement des choses. Les carrières scientifiques, médicales, de recherche ou de développement informatique t’attendent !',
-    color: 'from-purple-500 to-indigo-500',
-    glow: 'rgba(168, 85, 247, 0.3)',
-    icon: '🔬'
-  },
-  {
-    type: 'Artistique',
-    letter: 'A',
-    activity: 'Créer, dessiner, imaginer des concepts, jouer de la musique.',
-    desc: 'Tu possèdes une forte imagination, tu aimes l’originalité et tu as besoin de t’exprimer librement. Explore les métiers du design, de la communication, de la mode ou du journalisme !',
-    color: 'from-pink-500 to-rose-500',
-    glow: 'rgba(236, 72, 153, 0.3)',
-    icon: '🎨'
-  },
-  {
-    type: 'Social',
-    letter: 'S',
-    activity: 'Enseigner, soigner, conseiller ou venir en aide aux autres.',
-    desc: 'Tu as le contact facile, tu es empathique et tu aimes te sentir utile. Les domaines de la santé, de l’éducation, des ressources humaines ou du social sont faits pour toi !',
-    color: 'from-emerald-500 to-teal-500',
-    glow: 'rgba(52, 211, 153, 0.3)',
-    icon: '🤝'
-  },
-  {
-    type: 'Entreprenant',
-    letter: 'E',
-    activity: 'Négocier, convaincre, diriger une équipe, lancer un projet.',
-    desc: 'Tu as l’esprit d’initiative, du leadership et le goût du challenge. Tu t’épanouiras dans le commerce, l’entrepreneuriat, le management de projet ou la finance !',
-    color: 'from-amber-500 to-orange-500',
-    glow: 'rgba(245, 158, 11, 0.3)',
-    icon: '🚀'
-  },
-  {
-    type: 'Conventionnel',
-    letter: 'C',
-    activity: 'Organiser des données, gérer un budget, planifier des tâches.',
-    desc: 'Tu évalues les détails, tu es méthodique, organisé et tu aimes la précision. Les carrières en comptabilité, en administration, en gestion ou en droit te correspondront très bien !',
-    color: 'from-cyan-500 to-teal-500',
-    glow: 'rgba(34, 211, 238, 0.3)',
-    icon: '📋'
-  }
-];
+
 
 /* ── Icônes SVG ── */
 function IconBriefcase() {
@@ -100,76 +44,7 @@ function IconDocument() {
   );
 }
 
-/* ── Data ── */
-const FEATURES = [
-  {
-    title: 'Métiers',
-    desc: 'Explore les métiers, leurs débouchés et les compétences requises.',
-    to: '/metiers',
-    icon: IconBriefcase,
-    gradient: 'from-purple-500 to-indigo-500',
-    glow: 'rgba(168,85,247,0.25)',
-    badge: '15+ fiches',
-  },
-  {
-    title: 'Domaines',
-    desc: 'Parcours les grands domaines de formation et leurs filières.',
-    to: '/domaines',
-    icon: IconAcademic,
-    gradient: 'from-indigo-500 to-cyan-500',
-    glow: 'rgba(129,140,248,0.25)',
-    badge: '6 domaines',
-  },
-  {
-    title: 'Universités',
-    desc: 'Trouve les établissements et parcours de formation à Madagascar.',
-    to: '/universites',
-    icon: IconBuilding,
-    gradient: 'from-cyan-500 to-teal-500',
-    glow: 'rgba(34,211,238,0.25)',
-    badge: '4+ universités',
-  },
-  {
-    title: 'Centres de formation',
-    desc: 'Découvre les centres et instituts spécialisés près de chez toi.',
-    to: '/centres-formation',
-    icon: IconBuilding,
-    gradient: 'from-pink-500 to-rose-500',
-    glow: 'rgba(236,72,153,0.25)',
-    badge: 'Formations pro',
-  },
-  {
-    title: 'Coachs',
-    desc: "Échange avec des coachs d'orientation pour affiner ton choix.",
-    to: '/coachs',
-    icon: IconUsers,
-    gradient: 'from-emerald-500 to-teal-500',
-    glow: 'rgba(52,211,153,0.25)',
-    badge: 'Accompagnement',
-  },
-  {
-    title: 'Blog & conseils',
-    desc: "Des articles et témoignages pour t'aider à choisir ta voie.",
-    to: '/blog',
-    icon: IconDocument,
-    gradient: 'from-amber-500 to-orange-500',
-    glow: 'rgba(251,191,36,0.25)',
-    badge: 'Conseils',
-  },
-];
 
-const STEPS = [
-  { title: 'Explore', desc: 'Parcours les métiers, domaines et universités à Madagascar.', num: '01' },
-  { title: 'Réponds au questionnaire', desc: "Identifie tes intérêts grâce à notre test d'orientation RIASEC.", num: '02' },
-  { title: 'Décide', desc: 'Compare tes résultats, échange avec un coach et fais ton choix.', num: '03' },
-];
-
-const STATS = [
-  { value: '100%', label: 'Gratuit', icon: '✦' },
-  { value: '6', label: 'Domaines', icon: '◈' },
-  { value: '15+', label: 'Fiches métiers', icon: '◉' },
-  { value: 'Mada.', label: 'Contenu local', icon: '◆' },
-];
 
 /* ── Feature Card ── */
 function FeatureCard({
@@ -241,6 +116,64 @@ function FeatureCard({
 function MiniRiasecTeaser() {
   const [selectedProfile, setSelectedProfile] = useState<number | null>(null);
   const { theme } = useTheme();
+  const { t } = useTranslation();
+
+  const profiles = [
+    {
+      type: t('home.riasec_teaser.profiles.R.type'),
+      letter: 'R',
+      activity: t('home.riasec_teaser.profiles.R.activity'),
+      desc: t('home.riasec_teaser.profiles.R.desc'),
+      color: 'from-blue-500 to-indigo-500',
+      glow: 'rgba(59, 130, 246, 0.3)',
+      icon: '🛠️'
+    },
+    {
+      type: t('home.riasec_teaser.profiles.I.type'),
+      letter: 'I',
+      activity: t('home.riasec_teaser.profiles.I.activity'),
+      desc: t('home.riasec_teaser.profiles.I.desc'),
+      color: 'from-purple-500 to-indigo-500',
+      glow: 'rgba(168, 85, 247, 0.3)',
+      icon: '🔬'
+    },
+    {
+      type: t('home.riasec_teaser.profiles.A.type'),
+      letter: 'A',
+      activity: t('home.riasec_teaser.profiles.A.activity'),
+      desc: t('home.riasec_teaser.profiles.A.desc'),
+      color: 'from-pink-500 to-rose-500',
+      glow: 'rgba(236, 72, 153, 0.3)',
+      icon: '🎨'
+    },
+    {
+      type: t('home.riasec_teaser.profiles.S.type'),
+      letter: 'S',
+      activity: t('home.riasec_teaser.profiles.S.activity'),
+      desc: t('home.riasec_teaser.profiles.S.desc'),
+      color: 'from-emerald-500 to-teal-500',
+      glow: 'rgba(52, 211, 153, 0.3)',
+      icon: '🤝'
+    },
+    {
+      type: t('home.riasec_teaser.profiles.E.type'),
+      letter: 'E',
+      activity: t('home.riasec_teaser.profiles.E.activity'),
+      desc: t('home.riasec_teaser.profiles.E.desc'),
+      color: 'from-amber-500 to-orange-500',
+      glow: 'rgba(245, 158, 11, 0.3)',
+      icon: '🚀'
+    },
+    {
+      type: t('home.riasec_teaser.profiles.C.type'),
+      letter: 'C',
+      activity: t('home.riasec_teaser.profiles.C.activity'),
+      desc: t('home.riasec_teaser.profiles.C.desc'),
+      color: 'from-cyan-500 to-teal-500',
+      glow: 'rgba(34, 211, 238, 0.3)',
+      icon: '📋'
+    }
+  ];
 
   return (
     <section className="relative overflow-hidden p-8 sm:p-12 rounded-[2.5rem] border"
@@ -254,28 +187,28 @@ function MiniRiasecTeaser() {
       {selectedProfile !== null && (
         <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full opacity-60 pointer-events-none transition-all duration-1000 animate-pulse-glow"
           style={{
-            background: `radial-gradient(circle, ${RIASEC_PROFILES[selectedProfile].glow} 0%, transparent 70%)`
+            background: `radial-gradient(circle, ${profiles[selectedProfile].glow} 0%, transparent 70%)`
           }}
         />
       )}
       
       <div className="relative z-10 max-w-4xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <span className="eyebrow mb-2">Quiz d'essai</span>
+          <span className="eyebrow mb-2">{t('home.riasec_teaser.eyebrow')}</span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Quel est ton profil d'orientation ?
+            {t('home.riasec_teaser.title')}
           </h2>
           <p className="text-slate-600 dark:text-slate-400 mt-3 text-sm sm:text-base">
-            Clique sur l'activité qui te plaît le plus pour découvrir un aperçu de ton tempérament professionnel.
+            {t('home.riasec_teaser.desc')}
           </p>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          {RIASEC_PROFILES.map((profile, index) => {
+          {profiles.map((profile, index) => {
             const isSelected = selectedProfile === index;
             return (
               <button
-                key={profile.type}
+                key={profile.letter}
                 onClick={() => setSelectedProfile(index)}
                 className={`text-left p-5 rounded-2xl border transition-all duration-300 relative overflow-hidden group ${
                   isSelected 
@@ -304,40 +237,38 @@ function MiniRiasecTeaser() {
         </div>
 
         {selectedProfile !== null && (
-          <div className={`p-6 sm:p-8 rounded-2xl border animate-dropdown relative overflow-hidden ${
-            theme === 'dark' ? 'border-white/8 bg-white/2' : 'border-slate-200 bg-white'
-          }`}>
+          <div className="mt-8 p-6 rounded-2xl border bg-black/10 dark:bg-white/3 border-purple-500/20 animate-dropdown">
             <div className={`absolute top-4 right-6 text-6xl sm:text-7xl font-black select-none pointer-events-none ${
               theme === 'dark' ? 'text-white/5' : 'text-slate-900/5'
             }`}>
-              {RIASEC_PROFILES[selectedProfile].letter}
+              {profiles[selectedProfile].letter}
             </div>
             
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-4">
-              <span className={`w-12 h-12 rounded-xl bg-gradient-to-br ${RIASEC_PROFILES[selectedProfile].color} flex items-center justify-center text-2xl`}>
-                {RIASEC_PROFILES[selectedProfile].icon}
+              <span className={`w-12 h-12 rounded-xl bg-gradient-to-br ${profiles[selectedProfile].color} flex items-center justify-center text-2xl`}>
+                {profiles[selectedProfile].icon}
               </span>
               <div>
                 <h4 className="text-lg font-bold text-slate-800 dark:text-white">
-                  Profil dominant : <span className="gradient-text">{RIASEC_PROFILES[selectedProfile].type}</span>
+                  {t('home.riasec_teaser.dominant_profile')}<span className="gradient-text">{profiles[selectedProfile].type}</span>
                 </h4>
-                <p className="text-xs text-slate-500">Modèle de personnalité RIASEC</p>
+                <p className="text-xs text-slate-500">{t('home.riasec_teaser.riasec_model')}</p>
               </div>
             </div>
 
             <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mb-6">
-              {RIASEC_PROFILES[selectedProfile].desc}
+              {profiles[selectedProfile].desc}
             </p>
 
             <div className={`flex flex-wrap items-center justify-between gap-4 pt-4 border-t ${
               theme === 'dark' ? 'border-white/5' : 'border-slate-100'
             }`}>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-500">Correspondance indicative :</span>
-                <span className="badge">Forte</span>
+                <span className="text-xs text-slate-500">{t('home.riasec_teaser.match_indication')}</span>
+                <span className="badge">{t('home.riasec_teaser.match_strong')}</span>
               </div>
               <Link to="/questionnaire" className="btn-primary py-2.5 px-5 text-xs shimmer-btn">
-                Faire le test d'orientation complet
+                {t('home.riasec_teaser.take_full_test_btn')}
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
@@ -354,6 +285,77 @@ function MiniRiasecTeaser() {
 export function Home() {
   const { theme } = useTheme();
   const { t } = useTranslation();
+
+  const FEATURES = [
+    {
+      title: t('home.features.jobs.title'),
+      desc: t('home.features.jobs.desc'),
+      to: '/metiers',
+      icon: IconBriefcase,
+      gradient: 'from-purple-500 to-indigo-500',
+      glow: 'rgba(168,85,247,0.25)',
+      badge: t('home.features.jobs.badge'),
+    },
+    {
+      title: t('home.features.domains.title'),
+      desc: t('home.features.domains.desc'),
+      to: '/domaines',
+      icon: IconAcademic,
+      gradient: 'from-indigo-500 to-cyan-500',
+      glow: 'rgba(129,140,248,0.25)',
+      badge: t('home.features.domains.badge'),
+    },
+    {
+      title: t('home.features.universities.title'),
+      desc: t('home.features.universities.desc'),
+      to: '/universites',
+      icon: IconBuilding,
+      gradient: 'from-cyan-500 to-teal-500',
+      glow: 'rgba(34,211,238,0.25)',
+      badge: t('home.features.universities.badge'),
+    },
+    {
+      title: t('home.features.training_centers.title'),
+      desc: t('home.features.training_centers.desc'),
+      to: '/centres-formation',
+      icon: IconBuilding,
+      gradient: 'from-pink-500 to-rose-500',
+      glow: 'rgba(236,72,153,0.25)',
+      badge: t('home.features.training_centers.badge'),
+    },
+    {
+      title: t('home.features.coaches.title'),
+      desc: t('home.features.coaches.desc'),
+      to: '/coachs',
+      icon: IconUsers,
+      gradient: 'from-emerald-500 to-teal-500',
+      glow: 'rgba(52,211,153,0.25)',
+      badge: t('home.features.coaches.badge'),
+    },
+    {
+      title: t('home.features.blog.title'),
+      desc: t('home.features.blog.desc'),
+      to: '/blog',
+      icon: IconDocument,
+      gradient: 'from-amber-500 to-orange-500',
+      glow: 'rgba(251,191,36,0.25)',
+      badge: t('home.features.blog.badge'),
+    },
+  ];
+
+  const STEPS = [
+    { title: t('home.steps.step1.title'), desc: t('home.steps.step1.desc'), num: '01' },
+    { title: t('home.steps.step2.title'), desc: t('home.steps.step2.desc'), num: '02' },
+    { title: t('home.steps.step3.title'), desc: t('home.steps.step3.desc'), num: '03' },
+  ];
+
+  const STATS = [
+    { value: '100%', label: t('home.stats.free'), icon: '✦' },
+    { value: '6', label: t('home.stats.domains'), icon: '◈' },
+    { value: '15+', label: t('home.stats.jobs'), icon: '◉' },
+    { value: 'Mada.', label: t('home.stats.local'), icon: '◆' },
+  ];
+
   return (
     <div className="space-y-24 pb-12">
 
@@ -421,7 +423,7 @@ export function Home() {
       {/* ── Features Grid ── */}
       <section>
         <div className="section-header">
-          <span className="eyebrow mb-2">Explore</span>
+          <span className="eyebrow mb-2">{t('home.explore_section_eyebrow')}</span>
           <h2 className="section-title">{t('home.explore_section_title')}</h2>
           <p className="section-subtitle">{t('home.explore_section_desc')}</p>
         </div>
@@ -438,9 +440,9 @@ export function Home() {
       {/* ── Steps ── */}
       <section>
         <div className="section-header">
-          <span className="eyebrow mb-2">Comment ça marche</span>
-          <h2 className="section-title">Trois étapes vers ta décision</h2>
-          <p className="section-subtitle">Un accompagnement simple, progressif et efficace.</p>
+          <span className="eyebrow mb-2">{t('home.how_it_works_eyebrow')}</span>
+          <h2 className="section-title">{t('home.how_it_works_title')}</h2>
+          <p className="section-subtitle">{t('home.how_it_works_subtitle')}</p>
         </div>
         <div className="relative grid sm:grid-cols-3 gap-8 lg:gap-12">
           {/* Connector line */}
@@ -483,18 +485,17 @@ export function Home() {
 
         <div className="relative z-10 max-w-2xl mx-auto">
           <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-5 tracking-tight">
-            Prêt à découvrir <span className="gradient-text font-black">ta voie</span> ?
+            {t('home.cta_title')}
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-400 mb-10 leading-relaxed">
-            Créez votre compte gratuitement pour accéder au questionnaire d'orientation complet,
-            enregistrer vos favoris et entrer en contact avec nos coachs.
+            {t('home.cta_desc')}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/register" className="btn-primary px-8 py-4 text-base">
-              Créer un compte gratuit
+              {t('home.cta_btn_register')}
             </Link>
             <Link to="/universites" className="btn-secondary px-8 py-4 text-base">
-              Explorer les universités
+              {t('home.cta_btn_explore')}
             </Link>
           </div>
         </div>

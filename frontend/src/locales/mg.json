@@ -21,7 +21,9 @@
     "coaches": "Mpanoro hevitra",
     "internships": "Stages / Fampiharana",
     "scholarships": "Vatsim-pianarana",
-    "ressources": "Fianarana & Docs"
+    "ressources": "Fianarana & Docs",
+    "teachers": "Mpampianatra",
+    "user_guide": "Torolalana fampiasana"
   },
   "footer": {
     "description": "Ny sehatra fakan-kevitra ho an'ny fizahan-dalana amin'ny fianarana, an-danin'ny oniversite ary ny asa eto Madagasikara.",
@@ -36,8 +38,111 @@
     "hero_desc": "Jereo ireo lalam-piofanana, ataovy ny fizahana RIASEC ary tadiavo ny asanao.",
     "explore_btn": "Hizaha ireo asa",
     "take_test_btn": "Hanao ny fizahana",
-    "explore_section_title": "Karohy ny momba ny orientation",
-    "explore_section_desc": "Mahazoa loharano eto an-toerana hahafahana misafidy tsara."
+    "explore_section_title": "Karohy ny momba ny fizahan-dalana",
+    "explore_section_desc": "Mahazoa loharano eto an-toerana hahafahana misafidy tsara.",
+    "explore_section_eyebrow": "Hitady",
+    "how_it_works_eyebrow": "Fomba fiasa",
+    "how_it_works_title": "Dingana telo mankany amin'ny safidinao",
+    "how_it_works_subtitle": "Fanampiana tsotra, miandalana ary mahomby.",
+    "cta_title": "Vonona hitady ny lalanao ve ianao?",
+    "cta_desc": "Mamoròna kaonty maimaim-poana mba hahazoana ny fizahana feno, hitahirizana ny tianao ary hifandraisana amin'ireo mpanoro hevitra.",
+    "cta_btn_register": "Mamorona kaonty maimaim-poana",
+    "cta_btn_explore": "Hizaha ireo oniversite",
+    "stats": {
+      "free": "Maimaim-poana",
+      "domains": "Sehatra",
+      "jobs": "Taratasy momba ny asa",
+      "local": "Loharano eto an-toerana"
+    },
+    "features": {
+      "jobs": {
+        "title": "Ireo Asa",
+        "desc": "Hizaha ireo asa sy ny fahaizana ilaina.",
+        "badge": "Taratasy 15+"
+      },
+      "domains": {
+        "title": "Ireo Sehatra",
+        "desc": "Hijery ireo sehatra lehibe sy lalam-piofanana.",
+        "badge": "Sehatra 6"
+      },
+      "universities": {
+        "title": "Ireo Oniversite",
+        "desc": "Tadiavo ireo sekoly sy lalam-piofanana eto Madagasikara.",
+        "badge": "Oniversite 4+"
+      },
+      "training_centers": {
+        "title": "Ivon-toeram-piofanana",
+        "desc": "Karohy ireo ivon-toerana manakaiky anao.",
+        "badge": "Fampiofanana"
+      },
+      "coaches": {
+        "title": "Mpanoro hevitra",
+        "desc": "Miresaha amin'ny mpanoro hevitra mba handrafetana ny safidinao.",
+        "badge": "Fanampiana"
+      },
+      "blog": {
+        "title": "Blog / Torohevitra",
+        "desc": "Torohevitra sy fijoroana vavolombelona hanampy anao hisafidy.",
+        "badge": "Torohevitra"
+      }
+    },
+    "steps": {
+      "step1": {
+        "title": "Karohy",
+        "desc": "Hijery ireo asa, sehatra ary oniversite eto Madagasikara."
+      },
+      "step2": {
+        "title": "Valio ny fanontaniana",
+        "desc": "Fantaro ny zavatra tianao amin'ny alalan'ny fizahana RIASEC."
+      },
+      "step3": {
+        "title": "Safidio",
+        "desc": "Ampitahao ny vokatry ny fizahanao, miresaha amin'ny mpanoro hevitra ary safidio."
+      }
+    },
+    "riasec_teaser": {
+      "eyebrow": "Fizahana andrana",
+      "title": "Inona ny mombamomba ny fizahan-dalanao?",
+      "desc": "Tsindrio ny hetsika mahaliana anao indrindra mba hahitana ny toetranao ara-kasa.",
+      "profiles": {
+        "R": {
+          "type": "Réaliste (Mavitrika)",
+          "activity": "Mikarakara, manamboatra, mamboly na manamboatra zavatra azo tsapain-tanana.",
+          "desc": "Tianao ny zavatra mivaingana, ny hetsika ary ny asa any ivelany na ny tanana. Ny asa amin'ny injeniera, ny fambolena, ny logistika na ny teknika no mety aminao!"
+        },
+        "I": {
+          "type": "Investigateur (Mpikaroka)",
+          "activity": "Mamaha puzles, manao fikarohana na manadihady teoria.",
+          "desc": "Te hahafantatra zava-baovao ianao, tia mandinika ary te hahatakatra ny fomba fiasan'ny zavatra. Ny asa amin'ny siansa, ny fitsaboana, ny fikarohana na ny fampandrosoana rindrambaiko no miandry anao!"
+        },
+        "A": {
+          "type": "Artistique (Mpamorona)",
+          "activity": "Mamorona, manao sary, misaina hevitra vaovao, mitendry zavamaneno.",
+          "desc": "Manana sary an-tsaina matanjaka ianao, tia ny maha-izy azy manokana ary mila maneho hevitra malalaka. Karohy ny asa amin'ny design, ny serasera, ny lamaody na ny asa fanaovan-gazety!"
+        },
+        "S": {
+          "type": "Social (Saro-pady)",
+          "activity": "Manampy ny hafa, manoro hevitra, mampianatra, mitsabo.",
+          "desc": "Mifantoka amin'ny maha-olona ianao, tia mihaino, manampy ary mampita fahalalana. Ny sehatry ny fampianarana, ny sosialy, ny fahasalamana na ny fitantanana olona no natao ho anao!"
+        },
+        "E": {
+          "type": "Entreprenant (Mpandraharaha)",
+          "activity": "Mitantana tetikasa, mandresy lahatra, mivarotra na mifampiraharaha.",
+          "desc": "Mavitrika ianao, mahay mandresy lahatra ary tia mitarika sy miatrika fanamby. Jereo ny fitantanana, ny varotra, ny serasera na ny famoronana orinasa!"
+        },
+        "C": {
+          "type": "Conventionnel (Milamina)",
+          "activity": "Mandamina angon-drakitra, mitantana tarehimarika na mandamina asa.",
+          "desc": "Tia filaminana, fahitsiana ary fomba fiasa maty paika ianao. Ny asa amin'ny fitantanam-bola, ny fitantanana taratasy, ny kaonty na ny fitantanana angon-drakitra no hahafinaritra anao!"
+        }
+      },
+      "result_title": "Karazana {{type}} ({{letter}}) ianao !",
+      "take_full_test_btn": "Hanao ny fizahana feno",
+      "dominant_profile": "Ny mombamomba anao indrindra : ",
+      "riasec_model": "Modely toetra RIASEC",
+      "match_indication": "Mifanaraka tsara :",
+      "match_strong": "Eny"
+    }
   },
   "profile": {
     "title": "Ny mombamomba ahy",
@@ -65,7 +170,7 @@
     "tab_learning": "Sehatry ny Fianarana",
     "tab_docs": "Sehatry ny Tahirin-kevitra",
     "select_level_prompt": "Farito ny ambaratonga fianaranao",
-    "select_level_desc": "Mba hanolorana anao ny tahirin-kevitra sy ny lesona mifanaraka indriveau, safidio ny ambaratonganao ankehitriny :",
+    "select_level_desc": "Mba hanolorana anao ny tahirin-kevitra sy ny lesona mifanaraka indrindra amin'ny ambaratonga misy anao, safidio ny ambaratonganao ankehitriny :",
     "level_lycee": "Lisea / Fanomanana BACC",
     "level_lycee_desc": "Hahazoana lesona teorika, fampiharana, boky fianarana ary ireo laza adina efa lasa tamin'ny BACC.",
     "level_bachelier": "Nahazo BACC vao haingana",
@@ -77,10 +182,46 @@
     "search_placeholder": "Hitady lesona, lohahevitra, modely...",
     "category_all": "Rehetra",
     "duration": "Faharetany : {{duration}}",
-    "pages": "Pajy : {{pages}}",
+    "pages": "Pejy : {{pages}}",
     "download": "Hampidina",
     "read": "Hovakiana ny lesona",
     "empty_msg": "Tsy misy loharano azo ampiasaina amin'ity sokajy ity.",
     "modal_close": "Hanakatona"
+  },
+  "login": {
+    "eyebrow": "Fidirana mpikambana",
+    "title": "Hiditra",
+    "subtitle": "Faly mahita anao indray ato amin'ny Avenir assuré",
+    "email_label": "Email na telefaonina",
+    "password_label": "Teny miafina",
+    "submit_btn": "Hiditra",
+    "submitting_btn": "Eo am-pidirana...",
+    "register_prompt": "Tsy mbola manana kaonty ?",
+    "register_link": "Hisoratra anarana maimaim-poana",
+    "invalid_credentials_error": "Tsy mety ny solonanarana na teny miafina.",
+    "show_password": "Hampiseho ny teny miafina",
+    "hide_password": "Hanafina ny teny miafina"
+  },
+  "register": {
+    "eyebrow": "Hiara-hiasa",
+    "title": "Hisoratra anarana",
+    "subtitle": "Mamoròna ny kaontinao Avenir assuré ao anatin'ny segondra vitsy",
+    "firstname_label": "Fanampiny",
+    "lastname_label": "Anarana",
+    "email_label": "Email",
+    "phone_label": "Telefaonina (tsara raha misy)",
+    "password_label": "Teny miafina",
+    "password_placeholder": "•••••••• (8 litera farafahakeliny)",
+    "password_confirm_label": "Hanamarina ny teny miafina",
+    "submit_btn": "Hamorona kaonty",
+    "submitting_btn": "Eo am-pisoratana anarana...",
+    "login_prompt": "Efa nisoratra anarana ve ?",
+    "login_link": "Hiditra",
+    "password_mismatch_error": "Tsy mitovy ny teny miafina roa.",
+    "registration_error": "Nisy tsy nety ny fisoratana anarana.",
+    "show_password": "Hampiseho ny teny miafina",
+    "hide_password": "Hanafina ny teny miafina",
+    "show_confirm_password": "Hampiseho ny fanamarinana teny miafina",
+    "hide_confirm_password": "Hanafina ny fanamarinana teny miafina"
   }
 }
