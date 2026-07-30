@@ -37,7 +37,7 @@ export function Login() {
         <div className="text-center mb-8">
           <span className="eyebrow mb-2">Accès membre</span>
           <h1 className="text-3xl font-black text-slate-900 dark:text-white">Connexion</h1>
-          <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">Ravi de vous revoir sur OrientMad</p>
+          <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">Ravi de vous revoir sur Avenir assuré</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -51,7 +51,7 @@ export function Login() {
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Email ou téléphone</label>
             <input
               type="text"
-              placeholder="ex: jean@orientmad.mg"
+              placeholder="ex: jean@avenirassure.mg"
               className="field-input"
               value={identifiant}
               onChange={(e) => setIdentifiant(e.target.value)}

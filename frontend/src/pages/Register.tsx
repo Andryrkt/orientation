@@ -43,7 +43,7 @@ export function Register() {
         <div className="text-center mb-8">
           <span className="eyebrow mb-2">Rejoignez-nous</span>
           <h1 className="text-3xl font-black text-slate-900 dark:text-white">Inscription</h1>
-          <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">Créez votre compte OrientMad en quelques instants</p>
+          <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">Créez votre compte Avenir assuré en quelques instants</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">

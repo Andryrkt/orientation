@@ -33,8 +33,8 @@ async function bootstrap() {
 
   if (process.env.SWAGGER_ENABLED !== 'false') {
     const config = new DocumentBuilder()
-      .setTitle('OrientMad API')
-      .setDescription("API de la plateforme d'orientation OrientMad")
+      .setTitle('Avenir assuré API')
+      .setDescription("API de la plateforme d'orientation Avenir assuré")
       .setVersion('1.0')
       .addBearerAuth()
       .build();
@@ -44,6 +44,6 @@ async function bootstrap() {
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
-  console.log(`OrientMad API demarree sur le port ${port}`);
+  console.log(`Avenir assuré API démarrée sur le port ${port}`);
 }
 bootstrap();

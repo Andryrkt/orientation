@@ -384,7 +384,7 @@ export function Home() {
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
             <span className="text-slate-900 dark:text-white">{t('home.hero_title_gradient')}</span>
             <br />
-            <span className="gradient-text animate-text-shine">OrientMad</span>
+            <span className="gradient-text animate-text-shine">Avenir assuré</span>
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">

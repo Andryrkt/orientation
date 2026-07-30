@@ -1,4 +1,5 @@
 import { useTheme } from '../lib/theme-context';
+import { Logo } from '../components/Logo';
 
 export function GuideUtilisateur() {
   const { theme } = useTheme();
@@ -14,17 +15,12 @@ export function GuideUtilisateur() {
           borderColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(15, 23, 42, 0.08)',
         }}
       >
-        <span
-          className="w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-black text-white mx-auto mb-4"
-          style={{ background: 'linear-gradient(135deg, #a855f7, #818cf8)' }}
-        >
-          OM
-        </span>
+        <Logo size="lg" iconOnly className="justify-center mb-4" />
         <h1 className="text-3xl font-extrabold tracking-tight text-slate-800 dark:text-white mb-2">
-          Guide de l'Utilisateur — OrientMad
+          Guide de l'Utilisateur — Avenir assuré
         </h1>
         <p className="text-slate-500 dark:text-slate-400">
-          Découvrez comment naviguer et utiliser au mieux l'application d'orientation OrientMad.
+          Découvrez comment naviguer et utiliser au mieux l'application d'orientation Avenir assuré.
         </p>
       </div>
 
@@ -40,7 +36,7 @@ export function GuideUtilisateur() {
         >
           <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-4">1. Présentation Générale</h2>
           <p className="text-slate-600 dark:text-slate-350 leading-relaxed mb-4">
-            <strong>OrientMad</strong> est une application web d'orientation scolaire, universitaire et professionnelle conçue spécifiquement pour Madagascar. Elle a pour objectif de guider les élèves, étudiants et jeunes professionnels dans la construction de leur parcours d'avenir.
+            <strong>Avenir assuré</strong> est une application web d'orientation scolaire, universitaire et professionnelle conçue spécifiquement pour Madagascar. Elle a pour objectif de guider les élèves, étudiants et jeunes professionnels dans la construction de leur parcours d'avenir.
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5">
@@ -154,7 +150,7 @@ export function GuideUtilisateur() {
         >
           <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-4">4. Espace Administration (Back-Office)</h2>
           <p className="text-sm text-slate-650 dark:text-slate-350 leading-relaxed mb-4">
-            Les administrateurs d'OrientMad disposent d'un panel d'administration complet accessible sur l'URL <code>/admin</code>.
+            Les administrateurs d'Avenir assuré disposent d'un panel d'administration complet accessible sur l'URL <code>/admin</code>.
           </p>
           <div className="space-y-2.5 text-sm text-slate-500 dark:text-slate-400">
             <div className="flex gap-2">

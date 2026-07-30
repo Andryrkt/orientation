@@ -1,6 +1,6 @@
-# Déploiement — OrientMad
+# Déploiement — Avenir assuré
 
-Ce guide décrit comment déployer OrientMad en production avec Docker Compose. Il est
+Ce guide décrit comment déployer Avenir assuré en production avec Docker Compose. Il est
 volontairement générique (pas d'hébergeur précis) : à adapter selon la plateforme choisie
 (VPS, PaaS, etc.).
 
@@ -51,7 +51,7 @@ proxy (Traefik) et le TLS (Let's Encrypt) — pas besoin d'installer Caddy/Nginx
    - Secrets régénérés (`POSTGRES_PASSWORD`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`,
      `DATABASE_URL` cohérent avec le mot de passe Postgres choisi).
 3. **Routage Traefik** : `docker-compose.prod.yml` déclare directement les labels Traefik
-   (`traefik.enable`, routers `orientmad-frontend`/`orientmad-api`, `entrypoints=websecure`,
+   (`traefik.enable`, routers `avenirassure-frontend`/`avenirassure-api`, `entrypoints=websecure`,
    `tls.certResolver=letsencrypt`) et rejoint le réseau externe `dokploy-network` — pas
    besoin de configurer l'onglet Domains de Dokploy en plus. Si tu changes de domaine, mets
    à jour les règles `Host(...)` dans les labels du fichier.
@@ -94,7 +94,7 @@ prod** (contrairement au mode dev).
 
 ## 5. Compte administrateur / données initiales
 
-Le script `backend/prisma/seed.ts` crée un compte admin (`admin@orientmad.mg`) **mais
+Le script `backend/prisma/seed.ts` crée un compte admin (`admin@avenirassure.mg`) **mais
 insère aussi des données de démonstration** (métiers, université, articles de blog, coachs
 et enseignants fictifs avec des emails `@test.mg`). Il est idempotent (peut être relancé
 sans dupliquer), mais ne le lance pas tel quel en production si tu ne veux pas de ce

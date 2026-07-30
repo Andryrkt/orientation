@@ -1,12 +1,12 @@
-# Guide de l'Utilisateur et d'Administration — OrientMad
+# Guide de l'Utilisateur et d'Administration — Avenir assuré
 
-Ce guide détaille le fonctionnement d'**OrientMad**, l'application web d'orientation scolaire, universitaire et professionnelle à Madagascar. Il est divisé en deux parties : une partie pour les utilisateurs (étudiants, visiteurs) et une partie pour les gestionnaires (administrateurs).
+Ce guide détaille le fonctionnement d'**Avenir assuré**, l'application web d'orientation scolaire, universitaire et professionnelle à Madagascar. Il est divisé en deux parties : une partie pour les utilisateurs (étudiants, visiteurs) et une partie pour les gestionnaires (administrateurs).
 
 ---
 
 ## 1. Présentation Générale
 
-**OrientMad** a pour but d'aider les élèves, étudiants et jeunes professionnels malgaches à construire leur parcours d'avenir. L'application regroupe :
+**Avenir assuré** a pour but d'aider les élèves, étudiants et jeunes professionnels malgaches à construire leur parcours d'avenir. L'application regroupe :
 - Des fiches métiers détaillées et adaptées au marché de l'emploi à Madagascar.
 - Un annuaire complet des établissements d'enseignement supérieur (universités publiques et privées, instituts) avec leurs mentions et parcours.
 - Un espace d'orientation avec profil utilisateur et sauvegarde de favoris.
@@ -55,7 +55,7 @@ Ce guide détaille le fonctionnement d'**OrientMad**, l'application web d'orient
 ### 4.1. Accès au Panel Admin
 Les administrateurs peuvent se connecter avec leurs identifiants puis se rendre sur l'URL `http://localhost:5174/admin` (ou via le bouton "Administration" dans le menu de navigation).
 
-*(Données d'accès par défaut en développement : `admin@orientmad.mg` / `Admin123!`)*
+*(Données d'accès par défaut en développement : `admin@avenirassure.mg` / `Admin123!`)*
 
 ### 4.2. Gestion des Domaines et Métiers
 L'administrateur peut restructurer les référentiels métiers :

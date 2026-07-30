@@ -49,10 +49,10 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=dokploy-network"
-      - "traefik.http.routers.orientmad-api.rule=Host(`api.avenirassure.mg`)"
-      - "traefik.http.routers.orientmad-api.entrypoints=websecure"
-      - "traefik.http.routers.orientmad-api.tls.certResolver=letsencrypt"
-      - "traefik.http.services.orientmad-api.loadbalancer.server.port=3000"
+      - "traefik.http.routers.avenirassure-api.rule=Host(`api.avenirassure.mg`)"
+      - "traefik.http.routers.avenirassure-api.entrypoints=websecure"
+      - "traefik.http.routers.avenirassure-api.tls.certResolver=letsencrypt"
+      - "traefik.http.services.avenirassure-api.loadbalancer.server.port=3000"
 
   frontend:
     build:
@@ -70,10 +70,10 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=dokploy-network"
-      - "traefik.http.routers.orientmad-frontend.rule=Host(`avenirassure.mg`)"
-      - "traefik.http.routers.orientmad-frontend.entrypoints=websecure"
-      - "traefik.http.routers.orientmad-frontend.tls.certResolver=letsencrypt"
-      - "traefik.http.services.orientmad-frontend.loadbalancer.server.port=80"
+      - "traefik.http.routers.avenirassure-frontend.rule=Host(`avenirassure.mg`)"
+      - "traefik.http.routers.avenirassure-frontend.entrypoints=websecure"
+      - "traefik.http.routers.avenirassure-frontend.tls.certResolver=letsencrypt"
+      - "traefik.http.services.avenirassure-frontend.loadbalancer.server.port=80"
 
 networks:
   default:

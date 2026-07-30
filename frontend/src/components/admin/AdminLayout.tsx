@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../../lib/auth-context';
+import { Logo } from '../Logo';
 
 const groups: { title?: string; links: { to: string; label: string; end?: boolean }[] }[] = [
   {
@@ -54,8 +55,11 @@ export function AdminLayout() {
   return (
     <div className="min-h-screen flex">
       <aside className="w-64 bg-brand-900 text-white flex flex-col">
-        <div className="h-16 flex items-center px-6 text-lg font-bold border-b border-brand-800">
-          <Link to="/">OrientMad Admin</Link>
+        <div className="h-16 flex items-center px-6 border-b border-brand-800">
+          <Link to="/" className="flex items-center gap-1.5 hover:opacity-90 transition-opacity">
+            <Logo size="sm" />
+            <span className="text-xs text-brand-300 font-semibold uppercase tracking-wider mt-0.5 ml-1">Admin</span>
+          </Link>
         </div>
         <nav className="flex-1 py-4 overflow-y-auto">
           {groups.map((group, i) => (

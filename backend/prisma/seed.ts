@@ -4,15 +4,66 @@ import * as bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  const adminEmail = 'admin@orientmad.mg';
+  const adminEmail = 'admin@avenirassure.mg';
   const adminPassword = 'Admin123!';
+
+  // Mettre à jour l'ancien administrateur s'il existe pour éviter la violation de clé étrangère (auteur de blogs, etc.)
+  const oldAdmin = await prisma.utilisateur.findFirst({
+    where: {
+      OR: [
+        { email: 'admin@orientmad.mg' },
+        { telephone: '+261340000000' }
+      ]
+    }
+  });
+
+  if (oldAdmin) {
+    await prisma.utilisateur.update({
+      where: { id: oldAdmin.id },
+      data: {
+        email: adminEmail,
+        prenom: 'Avenir assuré',
+      }
+    });
+  }
+
+  // Mettre à jour les anciens coachs pour changer leur e-mail sans casser les clés étrangères
+  const coach1 = await prisma.coach.findFirst({
+    where: {
+      OR: [
+        { email: 'herimanana.coach@orientmad.mg' },
+        { email: 'herimanana.coach@avenirassure.mg' }
+      ]
+    }
+  });
+  if (coach1) {
+    await prisma.coach.update({
+      where: { id: coach1.id },
+      data: { email: 'herimanana.coach@avenirassure.mg' }
+    });
+  }
+
+  const coach2 = await prisma.coach.findFirst({
+    where: {
+      OR: [
+        { email: 'fanja.coach@orientmad.mg' },
+        { email: 'fanja.coach@avenirassure.mg' }
+      ]
+    }
+  });
+  if (coach2) {
+    await prisma.coach.update({
+      where: { id: coach2.id },
+      data: { email: 'fanja.coach@avenirassure.mg' }
+    });
+  }
 
   const existingAdmin = await prisma.utilisateur.findUnique({ where: { email: adminEmail } });
   if (!existingAdmin) {
     await prisma.utilisateur.create({
       data: {
         nom: 'Admin',
-        prenom: 'OrientMad',
+        prenom: 'Avenir assuré',
         email: adminEmail,
         telephone: '+261340000000',
         password: await bcrypt.hash(adminPassword, 10),
@@ -290,7 +341,7 @@ async function main() {
     {
       nom: 'Rakoto',
       prenom: 'Herimanana',
-      email: 'herimanana.coach@orientmad.mg',
+      email: 'herimanana.coach@avenirassure.mg',
       specialites: ['Orientation scolaire', 'CV et lettre de motivation'],
       experience: "10 ans d'accompagnement de jeunes lyceens et etudiants a Madagascar.",
       bio: 'Coach certifie en orientation, ancien conseiller pedagogique.',
@@ -298,7 +349,7 @@ async function main() {
     {
       nom: 'Andriamampionona',
       prenom: 'Fanja',
-      email: 'fanja.coach@orientmad.mg',
+      email: 'fanja.coach@avenirassure.mg',
       specialites: ['Entrepreneuriat', 'Bourses d\'etudes'],
       experience: "8 ans d'experience dans l'accompagnement de projets entrepreneuriaux etudiants.",
       bio: "Consultante en developpement de carriere, specialiste des bourses internationales.",

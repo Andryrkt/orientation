@@ -1,12 +1,12 @@
-# Documentation Technique — OrientMad
+# Documentation Technique — Avenir assuré
 
-Cette documentation s'adresse aux développeurs intervenant sur le projet **OrientMad**. Elle décrit l'architecture globale, le modèle de données, le processus d'installation et de développement, ainsi que la suite de tests.
+Cette documentation s'adresse aux développeurs intervenant sur le projet **Avenir assuré**. Elle décrit l'architecture globale, le modèle de données, le processus d'installation et de développement, ainsi que la suite de tests.
 
 ---
 
 ## 1. Stack Technique
 
-L'application OrientMad repose sur une stack moderne et robuste :
+L'application Avenir assuré repose sur une stack moderne et robuste :
 
 - **Infrastructure & Conteneurs** : Docker & docker-compose.
 - **Backend (API)** :
@@ -26,7 +26,7 @@ L'application OrientMad repose sur une stack moderne et robuste :
 ## 2. Structure du Dépôt
 
 ```
-orientmad/
+avenirassure/
 ├── docker-compose.yml       # Configuration multi-conteneurs Docker
 ├── backend/                 # API NestJS + Prisma
 │   ├── prisma/              # Schéma de base de données, migrations et seeds

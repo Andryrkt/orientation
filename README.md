@@ -1,8 +1,8 @@
-# OrientMad — Web V1
+# Avenir assuré — Web V1
 
 Application web d'orientation scolaire, universitaire et professionnelle à Madagascar.
 Cette V1 couvre le socle (auth, profils, domaines, métiers, universités/mentions/parcours,
-back-office admin). Voir `OrientMad_Cahier_des_charges.pdf` pour le périmètre complet et la
+back-office admin). Voir `Avenir_assure_Cahier_des_charges.pdf` pour le périmètre complet et la
 roadmap (stages, bourses, coachs, blog, questionnaire d'orientation, appli mobile Flutter).
 
 ## Stack
@@ -31,7 +31,7 @@ peuplée avec des données de démonstration (domaines, métiers, une universit�
 compte administrateur :
 
 ```
-Email    : admin@orientmad.mg
+Email    : admin@avenirassure.mg
 Mot de passe : Admin123!
 ```
 

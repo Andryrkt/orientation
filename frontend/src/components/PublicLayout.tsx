@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/auth-context';
 import { useTheme } from '../lib/theme-context';
 import { NavDropdown, NavDropdownItem } from './NavDropdown';
+import { Logo } from './Logo';
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
@@ -66,17 +67,8 @@ export function PublicLayout() {
               : '0 10px 30px -10px rgba(15, 23, 42, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.8)',
           }}
         >
-          <Link to="/" className="flex items-center gap-2.5 text-lg font-extrabold text-slate-800 dark:text-white hover:opacity-90 transition-opacity">
-            <span
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black text-white"
-              style={{
-                background: 'linear-gradient(135deg, #a855f7, #818cf8)',
-                boxShadow: '0 4px 14px rgba(168, 85, 247, 0.4)',
-              }}
-            >
-              OM
-            </span>
-            <span className="gradient-text font-black tracking-tight animate-text-shine">OrientMad</span>
+          <Link to="/" className="hover:opacity-90 transition-opacity">
+            <Logo size="md" />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
@@ -327,14 +319,8 @@ export function PublicLayout() {
       >
         <div className="max-w-6xl mx-auto px-4 py-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <div className="flex items-center gap-2 text-base font-extrabold text-slate-800 dark:text-white mb-3">
-              <span
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black text-white"
-                style={{ background: 'linear-gradient(135deg, #a855f7, #818cf8)' }}
-              >
-                OM
-              </span>
-              <span className="gradient-text animate-text-shine">OrientMad</span>
+            <div className="mb-3">
+              <Logo size="sm" />
             </div>
             <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
               {t('footer.description')}

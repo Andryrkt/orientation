@@ -5,7 +5,7 @@ import * as bcrypt from 'bcryptjs';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 
-describe('OrientMad API (e2e)', () => {
+describe('Avenir assuré API (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   const suffix = `${Date.now()}`;
