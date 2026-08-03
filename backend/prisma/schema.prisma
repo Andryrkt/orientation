@@ -51,7 +51,8 @@ model Utilisateur {
   prenom           String
   email            String    @unique
   telephone        String?   @unique
-  password         String
+  password         String?
+  googleId         String?   @unique
   role             Role      @default(STUDENT)
   emailVerifiedAt  DateTime?
   refreshTokenHash String?

@@ -225,5 +225,11 @@
     "hide_password": "Hide password",
     "show_confirm_password": "Show confirm password",
     "hide_confirm_password": "Hide confirm password"
+  },
+  "auth": {
+    "or_continue_with": "or continue with",
+    "continue_with_google": "Continue with Google",
+    "google_failed": "Google authentication failed.",
+    "google_script_error": "Failed to load Google service."
   }
 }

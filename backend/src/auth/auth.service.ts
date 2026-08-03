@@ -7,6 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
+import { OAuth2Client } from 'google-auth-library';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -89,9 +90,70 @@ export class AuthService {
     const user = await this.prisma.utilisateur.findFirst({
       where: { OR: [{ email: dto.identifiant }, { telephone: dto.identifiant }] },
     });
-    if (!user || !(await bcrypt.compare(dto.password, user.password))) {
+    if (!user || !user.password || !(await bcrypt.compare(dto.password, user.password))) {
       throw new UnauthorizedException('Identifiants invalides');
     }
+    const tokens = await this.issueTokens(user.id, user.role);
+    return { user: this.toPublicUser(user), ...tokens };
+  }
+
+  async googleLogin(idToken: string) {
+    const googleClientId = this.config.get<string>('GOOGLE_CLIENT_ID');
+    let payload;
+
+    try {
+      const client = new OAuth2Client(googleClientId);
+      const ticket = await client.verifyIdToken({
+        idToken,
+        audience: googleClientId || undefined,
+      });
+      payload = ticket.getPayload();
+    } catch (err) {
+      console.error('[GoogleAuth] Erreur de verification du token Google:', err);
+      throw new UnauthorizedException('Jeton Google invalide ou expire');
+    }
+
+    if (!payload || !payload.email) {
+      throw new UnauthorizedException('Impossible d\'extraire l\'adresse email du jeton Google');
+    }
+
+    const { email, sub: googleId, given_name, family_name, name, picture } = payload;
+    const prenom = given_name || name || 'Utilisateur';
+    const nom = family_name || '';
+
+    let user = await this.prisma.utilisateur.findFirst({
+      where: {
+        OR: [{ googleId }, { email }],
+      },
+    });
+
+    if (user) {
+      if (!user.googleId || !user.emailVerifiedAt) {
+        user = await this.prisma.utilisateur.update({
+          where: { id: user.id },
+          data: {
+            googleId: user.googleId ?? googleId,
+            emailVerifiedAt: user.emailVerifiedAt ?? new Date(),
+          },
+        });
+      }
+    } else {
+      user = await this.prisma.utilisateur.create({
+        data: {
+          email,
+          nom,
+          prenom,
+          googleId,
+          emailVerifiedAt: new Date(),
+          profil: {
+            create: {
+              photo: picture || null,
+            },
+          },
+        },
+      });
+    }
+
     const tokens = await this.issueTokens(user.id, user.role);
     return { user: this.toPublicUser(user), ...tokens };
   }

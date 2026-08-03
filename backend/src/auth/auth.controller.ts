@@ -16,6 +16,7 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { GoogleAuthDto } from './dto/google-auth.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
@@ -56,6 +57,15 @@ export class AuthController {
   @Post('login')
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const { refreshToken, ...result } = await this.authService.login(dto);
+    this.setRefreshCookie(res, refreshToken);
+    return result;
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('google')
+  async googleLogin(@Body() dto: GoogleAuthDto, @Res({ passthrough: true }) res: Response) {
+    const { refreshToken, ...result } = await this.authService.googleLogin(dto.idToken);
     this.setRefreshCookie(res, refreshToken);
     return result;
   }

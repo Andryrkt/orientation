@@ -2,9 +2,10 @@ import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/auth-context';
+import { GoogleLoginButton } from '../components/GoogleLoginButton';
 
 export function Register() {
-  const { register } = useAuth();
+  const { register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [form, setForm] = useState({ nom: '', prenom: '', email: '', telephone: '', password: '' });
@@ -33,6 +34,19 @@ export function Register() {
     }
   }
 
+  async function handleGoogleSuccess(idToken: string) {
+    setError(null);
+    setLoading(true);
+    try {
+      await loginWithGoogle(idToken);
+      navigate('/');
+    } catch {
+      setError(t('auth.google_failed', 'Échec de la connexion avec Google.'));
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="relative min-h-[70vh] flex items-center justify-center px-4 py-8">
       {/* Background glow orbs */}
@@ -46,6 +60,21 @@ export function Register() {
           <span className="eyebrow mb-2">{t('register.eyebrow')}</span>
           <h1 className="text-3xl font-black text-slate-900 dark:text-white">{t('register.title')}</h1>
           <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">{t('register.subtitle')}</p>
+        </div>
+
+        {/* Bouton Inscription via Google */}
+        <div className="mb-6">
+          <GoogleLoginButton
+            onSuccess={handleGoogleSuccess}
+            onError={(msg) => setError(msg)}
+            disabled={loading}
+          />
+          <div className="relative my-6 flex items-center justify-center">
+            <div className="border-t border-slate-200 dark:border-slate-800 w-full" />
+            <span className="bg-white dark:bg-slate-900 px-3 text-xs uppercase text-slate-600 dark:text-slate-400 font-medium tracking-wider relative z-10 shrink-0">
+              {t('auth.or_continue_with', 'ou continuez avec')}
+            </span>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">

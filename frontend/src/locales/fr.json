@@ -225,5 +225,11 @@
     "hide_password": "Masquer le mot de passe",
     "show_confirm_password": "Afficher la confirmation du mot de passe",
     "hide_confirm_password": "Masquer la confirmation du mot de passe"
+  },
+  "auth": {
+    "or_continue_with": "ou continuez avec",
+    "continue_with_google": "Continuer avec Google",
+    "google_failed": "Échec de l'authentification avec Google.",
+    "google_script_error": "Impossible de charger le service Google."
   }
 }

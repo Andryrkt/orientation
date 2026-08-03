@@ -225,5 +225,11 @@
     "hide_password": "Hanafina ny teny miafina",
     "show_confirm_password": "Hampiseho ny fanamarinana teny miafina",
     "hide_confirm_password": "Hanafina ny fanamarinana teny miafina"
+  },
+  "auth": {
+    "or_continue_with": "na hiditra amin'ny",
+    "continue_with_google": "Hiditra amin'ny Google",
+    "google_failed": "Tsy nahomby ny fidirana amin'ny Google.",
+    "google_script_error": "Tsy afaka nampiditra ny tolotra Google."
   }
 }
