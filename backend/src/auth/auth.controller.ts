@@ -17,6 +17,7 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { GoogleAuthDto } from './dto/google-auth.dto';
+import { SendOtpDto } from './dto/send-otp.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
@@ -45,6 +46,13 @@ export class AuthController {
   }
 
   @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('send-whatsapp-otp')
+  async sendWhatsAppOtp(@Body() dto: SendOtpDto) {
+    return this.authService.sendWhatsAppOtp(dto.telephone);
+  }
+
+  @Public()
   @Post('register')
   async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
     const { refreshToken, ...result } = await this.authService.register(dto);
@@ -65,7 +73,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('google')
   async googleLogin(@Body() dto: GoogleAuthDto, @Res({ passthrough: true }) res: Response) {
-    const result = await this.authService.googleLogin(dto.idToken, dto.telephone);
+    const result = await this.authService.googleLogin(dto.idToken, dto.telephone, dto.otpCode);
     if ('requiresPhone' in result && result.requiresPhone) {
       return result;
     }

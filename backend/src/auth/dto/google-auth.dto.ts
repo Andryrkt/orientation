@@ -17,4 +17,12 @@ export class GoogleAuthDto {
   @IsOptional()
   @IsString()
   telephone?: string;
+
+  @ApiPropertyOptional({
+    description: 'Code OTP reçu par WhatsApp pour valider le téléphone (6 chiffres)',
+    example: '849201',
+  })
+  @IsOptional()
+  @IsString()
+  otpCode?: string;
 }

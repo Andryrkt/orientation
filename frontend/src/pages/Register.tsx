@@ -6,7 +6,7 @@ import { GoogleLoginButton } from '../components/GoogleLoginButton';
 import { PhoneRequiredModal } from '../components/PhoneRequiredModal';
 
 export function Register() {
-  const { register, loginWithGoogle } = useAuth();
+  const { register, loginWithGoogle, sendWhatsAppOtp } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [form, setForm] = useState({ nom: '', prenom: '', email: '', telephone: '', password: '' });
@@ -60,11 +60,11 @@ export function Register() {
     }
   }
 
-  async function handlePhoneSubmit(telephone: string) {
+  async function handlePhoneSubmit(telephone: string, otpCode: string) {
     if (!pendingGoogleToken) return;
     setLoading(true);
     try {
-      await loginWithGoogle(pendingGoogleToken, telephone);
+      await loginWithGoogle(pendingGoogleToken, telephone, otpCode);
       setShowPhoneModal(false);
       navigate('/');
     } finally {
@@ -244,6 +244,7 @@ export function Register() {
         isOpen={showPhoneModal}
         email={googleUserData?.email}
         prenom={googleUserData?.prenom}
+        onSendOtp={sendWhatsAppOtp}
         onSubmit={handlePhoneSubmit}
         onClose={() => setShowPhoneModal(false)}
         loading={loading}

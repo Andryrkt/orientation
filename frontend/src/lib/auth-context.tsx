@@ -14,7 +14,8 @@ interface AuthContextValue {
   user: User | null;
   loading: boolean;
   login: (identifiant: string, password: string) => Promise<void>;
-  loginWithGoogle: (idToken: string, telephone?: string) => Promise<GoogleLoginResult | void>;
+  loginWithGoogle: (idToken: string, telephone?: string, otpCode?: string) => Promise<GoogleLoginResult | void>;
+  sendWhatsAppOtp: (telephone: string) => Promise<{ devCode?: string }>;
   register: (data: { nom: string; prenom: string; email: string; telephone?: string; password: string }) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -52,8 +53,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await loadCurrentUser();
   }
 
-  async function loginWithGoogle(idToken: string, telephone?: string) {
-    const res = await api.post('/auth/google', { idToken, telephone });
+  async function sendWhatsAppOtp(telephone: string) {
+    const res = await api.post('/auth/send-whatsapp-otp', { telephone });
+    return res.data;
+  }
+
+  async function loginWithGoogle(idToken: string, telephone?: string, otpCode?: string) {
+    const res = await api.post('/auth/google', { idToken, telephone, otpCode });
     if (res.data?.requiresPhone) {
       return {
         requiresPhone: true,
@@ -79,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, loginWithGoogle, register, logout, refreshUser: loadCurrentUser }}>
+    <AuthContext.Provider value={{ user, loading, login, loginWithGoogle, sendWhatsAppOtp, register, logout, refreshUser: loadCurrentUser }}>
       {children}
     </AuthContext.Provider>
   );

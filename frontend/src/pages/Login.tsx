@@ -6,7 +6,7 @@ import { GoogleLoginButton } from '../components/GoogleLoginButton';
 import { PhoneRequiredModal } from '../components/PhoneRequiredModal';
 
 export function Login() {
-  const { login, loginWithGoogle } = useAuth();
+  const { login, loginWithGoogle, sendWhatsAppOtp } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [identifiant, setIdentifiant] = useState('');
@@ -54,11 +54,11 @@ export function Login() {
     }
   }
 
-  async function handlePhoneSubmit(telephone: string) {
+  async function handlePhoneSubmit(telephone: string, otpCode: string) {
     if (!pendingGoogleToken) return;
     setLoading(true);
     try {
-      await loginWithGoogle(pendingGoogleToken, telephone);
+      await loginWithGoogle(pendingGoogleToken, telephone, otpCode);
       setShowPhoneModal(false);
       navigate('/');
     } finally {
@@ -172,6 +172,7 @@ export function Login() {
         isOpen={showPhoneModal}
         email={googleUserData?.email}
         prenom={googleUserData?.prenom}
+        onSendOtp={sendWhatsAppOtp}
         onSubmit={handlePhoneSubmit}
         onClose={() => setShowPhoneModal(false)}
         loading={loading}
