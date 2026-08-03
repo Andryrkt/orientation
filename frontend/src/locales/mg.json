@@ -230,6 +230,17 @@
     "or_continue_with": "na hiditra amin'ny",
     "continue_with_google": "Hiditra amin'ny Google",
     "google_failed": "Tsy nahomby ny fidirana amin'ny Google.",
-    "google_script_error": "Tsy afaka nampiditra ny tolotra Google."
+    "google_script_error": "Tsy afaka nampiditra ny tolotra Google.",
+    "phone_modal_title": "Mila ny laharan-telefaonina",
+    "welcome_google": "Tongasoa",
+    "phone_modal_subtitle": "Mba hametrahana ny kaontinao Google (",
+    "phone_modal_subtitle_end": "), mba ampidiro ny laharan-telefaoninao.",
+    "phone_label": "Laharan-telefaonina",
+    "phone_modal_hint": "Hampiasaina hifandraisana aminao sy hiarovana ny kaontinao ity laharana ity.",
+    "phone_required_error": "Ampidiro ny laharan-telefaoninao.",
+    "phone_submit_error": "Nisy tsy nety teo am-pampidirana.",
+    "modal_cancel": "Hanafoana",
+    "modal_confirm": "Hamorona ny kaonty",
+    "modal_submitting": "Eo am-panamarinana..."
   }
 }

@@ -97,7 +97,7 @@ export class AuthService {
     return { user: this.toPublicUser(user), ...tokens };
   }
 
-  async googleLogin(idToken: string) {
+  async googleLogin(idToken: string, telephone?: string) {
     const googleClientId = this.config.get<string>('GOOGLE_CLIENT_ID');
     let payload;
 
@@ -127,22 +127,48 @@ export class AuthService {
       },
     });
 
-    if (user) {
-      if (!user.googleId || !user.emailVerifiedAt) {
-        user = await this.prisma.utilisateur.update({
-          where: { id: user.id },
-          data: {
-            googleId: user.googleId ?? googleId,
-            emailVerifiedAt: user.emailVerifiedAt ?? new Date(),
-          },
-        });
+    const cleanPhone = telephone?.trim();
+
+    // Si l'utilisateur n'existe pas ou n'a pas encore de numéro de téléphone enregistré
+    if (!user || !user.telephone) {
+      if (!cleanPhone) {
+        return {
+          requiresPhone: true,
+          email,
+          prenom,
+          nom,
+        };
       }
+
+      // Vérifier si ce numéro de téléphone est déjà utilisé par un autre compte
+      const existingPhoneUser = await this.prisma.utilisateur.findFirst({
+        where: {
+          telephone: cleanPhone,
+          ...(user ? { NOT: { id: user.id } } : {}),
+        },
+      });
+
+      if (existingPhoneUser) {
+        throw new ConflictException('Un compte existe déjà avec ce numéro de téléphone');
+      }
+    }
+
+    if (user) {
+      user = await this.prisma.utilisateur.update({
+        where: { id: user.id },
+        data: {
+          googleId: user.googleId ?? googleId,
+          emailVerifiedAt: user.emailVerifiedAt ?? new Date(),
+          ...(cleanPhone ? { telephone: cleanPhone } : {}),
+        },
+      });
     } else {
       user = await this.prisma.utilisateur.create({
         data: {
           email,
           nom,
           prenom,
+          telephone: cleanPhone,
           googleId,
           emailVerifiedAt: new Date(),
           profil: {

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/auth-context';
 import { GoogleLoginButton } from '../components/GoogleLoginButton';
+import { PhoneRequiredModal } from '../components/PhoneRequiredModal';
 
 export function Register() {
   const { register, loginWithGoogle } = useAuth();
@@ -14,6 +15,11 @@ export function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Modale téléphone requis
+  const [pendingGoogleToken, setPendingGoogleToken] = useState<string | null>(null);
+  const [googleUserData, setGoogleUserData] = useState<{ email?: string; prenom?: string } | null>(null);
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -38,10 +44,29 @@ export function Register() {
     setError(null);
     setLoading(true);
     try {
-      await loginWithGoogle(idToken);
+      const res = await loginWithGoogle(idToken);
+      if (res && res.requiresPhone) {
+        setPendingGoogleToken(idToken);
+        setGoogleUserData({ email: res.email, prenom: res.prenom });
+        setShowPhoneModal(true);
+        return;
+      }
       navigate('/');
-    } catch {
-      setError(t('auth.google_failed', 'Échec de la connexion avec Google.'));
+    } catch (err) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      setError(msg ?? t('auth.google_failed', 'Échec de la connexion avec Google.'));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handlePhoneSubmit(telephone: string) {
+    if (!pendingGoogleToken) return;
+    setLoading(true);
+    try {
+      await loginWithGoogle(pendingGoogleToken, telephone);
+      setShowPhoneModal(false);
+      navigate('/');
     } finally {
       setLoading(false);
     }
@@ -214,6 +239,15 @@ export function Register() {
           </Link>
         </p>
       </div>
+
+      <PhoneRequiredModal
+        isOpen={showPhoneModal}
+        email={googleUserData?.email}
+        prenom={googleUserData?.prenom}
+        onSubmit={handlePhoneSubmit}
+        onClose={() => setShowPhoneModal(false)}
+        loading={loading}
+      />
     </div>
   );
 }

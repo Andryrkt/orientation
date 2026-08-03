@@ -230,6 +230,17 @@
     "or_continue_with": "ou continuez avec",
     "continue_with_google": "Continuer avec Google",
     "google_failed": "Échec de l'authentification avec Google.",
-    "google_script_error": "Impossible de charger le service Google."
+    "google_script_error": "Impossible de charger le service Google.",
+    "phone_modal_title": "Numéro de téléphone requis",
+    "welcome_google": "Bienvenue",
+    "phone_modal_subtitle": "Pour finaliser votre inscription avec Google (",
+    "phone_modal_subtitle_end": "), veuillez renseigner votre numéro de téléphone.",
+    "phone_label": "Numéro de téléphone",
+    "phone_modal_hint": "Ce numéro servira à vous contacter et sécuriser votre compte.",
+    "phone_required_error": "Veuillez saisir votre numéro de téléphone.",
+    "phone_submit_error": "Une erreur est survenue lors de l'enregistrement.",
+    "modal_cancel": "Annuler",
+    "modal_confirm": "Finaliser l'inscription",
+    "modal_submitting": "Validation..."
   }
 }

@@ -3,11 +3,18 @@ import { api } from './api';
 import { setAccessToken } from './tokenStore';
 import { User } from './types';
 
+export interface GoogleLoginResult {
+  requiresPhone?: boolean;
+  email?: string;
+  prenom?: string;
+  nom?: string;
+}
+
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
   login: (identifiant: string, password: string) => Promise<void>;
-  loginWithGoogle: (idToken: string) => Promise<void>;
+  loginWithGoogle: (idToken: string, telephone?: string) => Promise<GoogleLoginResult | void>;
   register: (data: { nom: string; prenom: string; email: string; telephone?: string; password: string }) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -45,8 +52,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await loadCurrentUser();
   }
 
-  async function loginWithGoogle(idToken: string) {
-    const res = await api.post('/auth/google', { idToken });
+  async function loginWithGoogle(idToken: string, telephone?: string) {
+    const res = await api.post('/auth/google', { idToken, telephone });
+    if (res.data?.requiresPhone) {
+      return {
+        requiresPhone: true,
+        email: res.data.email,
+        prenom: res.data.prenom,
+        nom: res.data.nom,
+      };
+    }
     setAccessToken(res.data.accessToken);
     await loadCurrentUser();
   }

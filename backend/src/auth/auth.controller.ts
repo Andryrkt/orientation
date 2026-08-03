@@ -65,9 +65,13 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('google')
   async googleLogin(@Body() dto: GoogleAuthDto, @Res({ passthrough: true }) res: Response) {
-    const { refreshToken, ...result } = await this.authService.googleLogin(dto.idToken);
+    const result = await this.authService.googleLogin(dto.idToken, dto.telephone);
+    if ('requiresPhone' in result && result.requiresPhone) {
+      return result;
+    }
+    const { refreshToken, ...userResult } = result as { refreshToken: string; user: unknown; accessToken: string };
     this.setRefreshCookie(res, refreshToken);
-    return result;
+    return userResult;
   }
 
   @Public()
