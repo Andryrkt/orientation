@@ -49,6 +49,13 @@ const groups: { title?: string; links: { to: string; label: string; end?: boolea
       { to: '/admin/contact-messages', label: 'Messages de contact' },
     ],
   },
+  {
+    title: 'Points de vente',
+    links: [
+      { to: '/admin/points-de-vente', label: 'Points de vente' },
+      { to: '/admin/saisies-journalieres', label: 'Saisies journalières' },
+    ],
+  },
 ];
 
 export function AdminLayout() {

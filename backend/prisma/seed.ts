@@ -1,4 +1,4 @@
-import { PrismaClient, NiveauMention, Role } from '@prisma/client';
+import { PrismaClient, NiveauMention, Role, Periode } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -73,6 +73,104 @@ async function main() {
       },
     });
     console.log(`Compte admin cree : ${adminEmail} / ${adminPassword}`);
+  }
+
+  const secretairePassword = 'Secretaire123!';
+  const NB_JOURS_HISTORIQUE = 7;
+
+  const pointsDeVenteData: {
+    nom: string;
+    ville: string;
+    adresse: string;
+    actif?: boolean;
+    secretaire: { email: string; nom: string; prenom: string; telephone: string };
+  }[] = [
+    {
+      nom: 'Point de vente Analakely',
+      ville: 'Antananarivo',
+      adresse: 'Rue Ravelojaona',
+      secretaire: { email: 'secretaire@avenirassure.mg', nom: 'Secretaire', prenom: 'Analakely', telephone: '+261340000099' },
+    },
+    {
+      nom: 'Point de vente Isotry',
+      ville: 'Antananarivo',
+      adresse: 'Marché Isotry',
+      secretaire: { email: 'secretaire.isotry@avenirassure.mg', nom: 'Rasoamanana', prenom: 'Voahangy', telephone: '+261340000101' },
+    },
+    {
+      nom: 'Point de vente Toamasina Centre',
+      ville: 'Toamasina',
+      adresse: 'Boulevard Joffre',
+      secretaire: { email: 'secretaire.toamasina@avenirassure.mg', nom: 'Randria', prenom: 'Fabrice', telephone: '+261340000102' },
+    },
+    {
+      nom: 'Point de vente Mahajanga',
+      ville: 'Mahajanga',
+      adresse: 'Avenue Marodoka',
+      actif: false,
+      secretaire: { email: 'secretaire.mahajanga@avenirassure.mg', nom: 'Rakotoson', prenom: 'Hanta', telephone: '+261340000103' },
+    },
+  ];
+
+  for (const [index, pdvData] of pointsDeVenteData.entries()) {
+    const existingPdv = await prisma.pointDeVente.findFirst({ where: { nom: pdvData.nom } });
+    const pointDeVente = existingPdv
+      ? await prisma.pointDeVente.update({
+          where: { id: existingPdv.id },
+          data: { adresse: pdvData.adresse, ville: pdvData.ville, actif: pdvData.actif ?? true },
+        })
+      : await prisma.pointDeVente.create({
+          data: { nom: pdvData.nom, adresse: pdvData.adresse, ville: pdvData.ville, actif: pdvData.actif ?? true },
+        });
+
+    const existingSecretaire = await prisma.utilisateur.findUnique({ where: { email: pdvData.secretaire.email } });
+    const secretaire = existingSecretaire
+      ? await prisma.utilisateur.update({
+          where: { id: existingSecretaire.id },
+          data: { pointDeVenteId: pointDeVente.id, role: Role.SECRETAIRE },
+        })
+      : await prisma.utilisateur.create({
+          data: {
+            nom: pdvData.secretaire.nom,
+            prenom: pdvData.secretaire.prenom,
+            email: pdvData.secretaire.email,
+            telephone: pdvData.secretaire.telephone,
+            password: await bcrypt.hash(secretairePassword, 10),
+            role: Role.SECRETAIRE,
+            emailVerifiedAt: new Date(),
+            pointDeVenteId: pointDeVente.id,
+            profil: { create: {} },
+          },
+        });
+    if (!existingSecretaire) {
+      console.log(`Compte secretaire cree : ${pdvData.secretaire.email} / ${secretairePassword}`);
+    }
+
+    // Historique des saisies journalieres (les N derniers jours, hors aujourd'hui)
+    for (let jourOffset = 1; jourOffset <= NB_JOURS_HISTORIQUE; jourOffset++) {
+      const date = new Date();
+      date.setUTCDate(date.getUTCDate() - jourOffset);
+      date.setUTCHours(0, 0, 0, 0);
+
+      for (const periode of [Periode.MIDI, Periode.APRES_MIDI]) {
+        const base = 90000 + index * 25000 + jourOffset * 3000 + (periode === Periode.APRES_MIDI ? 40000 : 0);
+        const montantGagne = base;
+        const montantDepense = Math.round(base * 0.15);
+
+        await prisma.saisieJournaliere.upsert({
+          where: { pointDeVenteId_date_periode: { pointDeVenteId: pointDeVente.id, date, periode } },
+          update: {},
+          create: {
+            pointDeVenteId: pointDeVente.id,
+            date,
+            periode,
+            montantGagne,
+            montantDepense,
+            saisiParId: secretaire.id,
+          },
+        });
+      }
+    }
   }
 
   const domainesData = [

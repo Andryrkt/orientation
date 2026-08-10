@@ -21,11 +21,29 @@
     "coaches": "Coaches",
     "internships": "Internships",
     "scholarships": "Scholarships",
+    "budget": "Student Budget",
     "ressources": "Learning & Docs",
     "teachers": "Teachers",
     "user_guide": "User Guide",
     "contact": "Contact",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "saisieJournaliere": "Daily Entry"
+  },
+  "saisieJournaliere": {
+    "title": "Daily Entry",
+    "subtitle": "Record your point of sale's revenue and expenses",
+    "pointDeVente": "Point of sale",
+    "midi": "Midday",
+    "apresMidi": "Afternoon",
+    "montantGagne": "Amount earned (Ar)",
+    "montantDepense": "Amount spent (Ar)",
+    "submit": "Save",
+    "edit": "Edit",
+    "alreadySubmitted": "Already submitted",
+    "notSubmitted": "Not submitted yet",
+    "noPointDeVente": "You are not assigned to any point of sale. Contact an administrator.",
+    "submitSuccess": "Entry saved successfully",
+    "cancel": "Cancel"
   },
   "footer": {
     "description": "The reference platform for academic, university, and professional guidance in Madagascar.",

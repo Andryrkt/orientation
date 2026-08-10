@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
 import { Paginated, Role, User } from '../../lib/types';
 
-const ROLES: Role[] = ['VISITOR', 'STUDENT', 'COACH', 'ADMIN'];
+const ROLES: Role[] = ['VISITOR', 'STUDENT', 'COACH', 'TEACHER', 'SECRETAIRE', 'ADMIN'];
 
 export function UtilisateursAdmin() {
   const queryClient = useQueryClient();

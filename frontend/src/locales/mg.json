@@ -21,11 +21,29 @@
     "coaches": "Mpanoro hevitra",
     "internships": "Stages / Fampiharana",
     "scholarships": "Vatsim-pianarana",
+    "budget": "Tetibolan'ny mpianatra",
     "ressources": "Fianarana & Docs",
     "teachers": "Mpampianatra",
     "user_guide": "Torolalana fampiasana",
     "contact": "Fifandraisana",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "saisieJournaliere": "Fidirana isan'andro"
+  },
+  "saisieJournaliere": {
+    "title": "Fidirana isan'andro",
+    "subtitle": "Soraty ny vola azo sy ny fandaniana ao amin'ny toeram-pivarotanao",
+    "pointDeVente": "Toeram-pivarotana",
+    "midi": "Mitatao-vovonana",
+    "apresMidi": "Tolakandro",
+    "montantGagne": "Vola azo (Ar)",
+    "montantDepense": "Vola lany (Ar)",
+    "submit": "Tehirizo",
+    "edit": "Ovay",
+    "alreadySubmitted": "Efa voasoratra",
+    "notSubmitted": "Mbola tsy voasoratra",
+    "noPointDeVente": "Tsy misy toeram-pivarotana voatendry ho anao. Mifandraisa amin'ny admin.",
+    "submitSuccess": "Voatahiry soa aman-tsara",
+    "cancel": "Aoka"
   },
   "footer": {
     "description": "Ny sehatra fakan-kevitra ho an'ny fizahan-dalana amin'ny fianarana, an-danin'ny oniversite ary ny asa eto Madagasikara.",

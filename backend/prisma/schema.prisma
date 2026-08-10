@@ -14,6 +14,12 @@ enum Role {
   COACH
   TEACHER
   ADMIN
+  SECRETAIRE
+}
+
+enum Periode {
+  MIDI
+  APRES_MIDI
 }
 
 enum NiveauMention {
@@ -72,6 +78,10 @@ model Utilisateur {
   avisEnseignants      EnseignantAvis[]
   tickets              Ticket[]
   ticketMessages       TicketMessage[]
+
+  pointDeVenteId      String?
+  pointDeVente        PointDeVente?       @relation("SecretairesPointDeVente", fields: [pointDeVenteId], references: [id], onDelete: SetNull)
+  saisiesJournalieres SaisieJournaliere[]
 
   @@map("utilisateurs")
 }
@@ -598,4 +608,36 @@ model OtpVerification {
   createdAt DateTime @default(now())
 
   @@map("otp_verifications")
+}
+
+model PointDeVente {
+  id        String   @id @default(uuid())
+  nom       String
+  adresse   String?
+  ville     String?
+  actif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  secretaires Utilisateur[]       @relation("SecretairesPointDeVente")
+  saisies     SaisieJournaliere[]
+
+  @@map("points_de_vente")
+}
+
+model SaisieJournaliere {
+  id             String       @id @default(uuid())
+  pointDeVenteId String
+  pointDeVente   PointDeVente @relation(fields: [pointDeVenteId], references: [id], onDelete: Cascade)
+  date           DateTime     @db.Date
+  periode        Periode
+  montantGagne   Int          @default(0)
+  montantDepense Int          @default(0)
+  saisiParId     String?
+  saisiPar       Utilisateur? @relation(fields: [saisiParId], references: [id], onDelete: SetNull)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([pointDeVenteId, date, periode])
+  @@map("saisies_journalieres")
 }

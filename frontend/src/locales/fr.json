@@ -21,11 +21,29 @@
     "coaches": "Coachs",
     "internships": "Stages",
     "scholarships": "Bourses",
+    "budget": "Budget étudiant",
     "ressources": "Apprentissage & Docs",
     "teachers": "Enseignants",
     "user_guide": "Guide d'utilisation",
     "contact": "Contact",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "saisieJournaliere": "Saisie du jour"
+  },
+  "saisieJournaliere": {
+    "title": "Saisie journalière",
+    "subtitle": "Enregistrez les recettes et dépenses de votre point de vente",
+    "pointDeVente": "Point de vente",
+    "midi": "Midi",
+    "apresMidi": "Après-midi",
+    "montantGagne": "Montant gagné (Ar)",
+    "montantDepense": "Montant dépensé (Ar)",
+    "submit": "Enregistrer",
+    "edit": "Modifier",
+    "alreadySubmitted": "Déjà saisi",
+    "notSubmitted": "Pas encore saisi",
+    "noPointDeVente": "Aucun point de vente ne vous est assigné. Contactez un administrateur.",
+    "submitSuccess": "Saisie enregistrée avec succès",
+    "cancel": "Annuler"
   },
   "footer": {
     "description": "La plateforme de référence pour l'orientation scolaire, universitaire et professionnelle à Madagascar.",
