@@ -641,3 +641,15 @@ model SaisieJournaliere {
   @@unique([pointDeVenteId, date, periode])
   @@map("saisies_journalieres")
 }
+
+model DepenseGlobale {
+  id          String   @id @default(uuid())
+  date        DateTime @db.Date
+  categorie   String
+  montant     Int
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("depenses_globales")
+}

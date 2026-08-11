@@ -54,6 +54,16 @@ export interface ResumeSemaine {
   totalDepense: number;
 }
 
+export interface DepenseGlobale {
+  id: string;
+  date: string;
+  categorie: string;
+  montant: number;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ExperienceCv {
   poste: string;
   entreprise: string;

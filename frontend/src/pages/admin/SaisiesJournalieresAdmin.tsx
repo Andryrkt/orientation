@@ -1,17 +1,20 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../lib/api';
+import { formatMontant } from '../../lib/format';
 import { Paginated, PointDeVente, ResumeSaisiePointDeVente, ResumeSemaine, SaisieJournaliere } from '../../lib/types';
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10);
 }
 
-const PERIODE_LABELS: Record<string, string> = { MIDI: 'Midi', APRES_MIDI: 'Après-midi' };
-
-function formatMontant(n: number) {
-  return `${n.toLocaleString('fr-FR')} Ar`;
+function ilYA30JoursIso() {
+  const date = new Date();
+  date.setDate(date.getDate() - 30);
+  return date.toISOString().slice(0, 10);
 }
+
+const PERIODE_LABELS: Record<string, string> = { MIDI: 'Midi', APRES_MIDI: 'Après-midi' };
 
 function formatSemaine(debut: string, fin: string) {
   const optionsCourt: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' };
@@ -23,7 +26,7 @@ function formatSemaine(debut: string, fin: string) {
 
 export function SaisiesJournalieresAdmin() {
   const [tab, setTab] = useState<'resume' | 'historique'>('resume');
-  const [dateFrom, setDateFrom] = useState(todayIso());
+  const [dateFrom, setDateFrom] = useState(ilYA30JoursIso());
   const [dateTo, setDateTo] = useState(todayIso());
   const [pointDeVenteId, setPointDeVenteId] = useState('');
   const [page, setPage] = useState(1);
@@ -66,8 +69,17 @@ export function SaisiesJournalieresAdmin() {
     enabled: tab === 'resume',
   });
 
+  const { data: depensesGlobales, isLoading: loadingDepensesGlobales } = useQuery({
+    queryKey: ['admin-depenses-globales-total', dateFrom, dateTo],
+    queryFn: async () =>
+      (await api.get<{ total: number }>('/admin/depenses-globales/total', { params: { dateFrom, dateTo } })).data,
+    enabled: tab === 'resume',
+  });
+
   const totalGagne = resume?.reduce((sum, r) => sum + r.totalGagne, 0) ?? 0;
-  const totalDepense = resume?.reduce((sum, r) => sum + r.totalDepense, 0) ?? 0;
+  const totalDepensePointsDeVente = resume?.reduce((sum, r) => sum + r.totalDepense, 0) ?? 0;
+  const totalDepensesGlobales = depensesGlobales?.total ?? 0;
+  const soldeNetEntreprise = totalGagne - totalDepensePointsDeVente - totalDepensesGlobales;
 
   return (
     <div>
@@ -128,18 +140,24 @@ export function SaisiesJournalieresAdmin() {
 
       {tab === 'resume' && (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <p className="text-sm text-slate-500">Total gagné (période)</p>
+              <p className="text-sm text-slate-500">Total gagné (points de vente)</p>
               <p className="text-3xl font-bold text-emerald-600 mt-1">{formatMontant(totalGagne)}</p>
             </div>
             <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <p className="text-sm text-slate-500">Total dépensé (période)</p>
-              <p className="text-3xl font-bold text-red-600 mt-1">{formatMontant(totalDepense)}</p>
+              <p className="text-sm text-slate-500">Dépensé (points de vente)</p>
+              <p className="text-3xl font-bold text-red-600 mt-1">{formatMontant(totalDepensePointsDeVente)}</p>
             </div>
             <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <p className="text-sm text-slate-500">Solde net</p>
-              <p className="text-3xl font-bold text-brand-700 mt-1">{formatMontant(totalGagne - totalDepense)}</p>
+              <p className="text-sm text-slate-500">Dépenses globales</p>
+              <p className="text-3xl font-bold text-red-600 mt-1">
+                {loadingDepensesGlobales ? '…' : formatMontant(totalDepensesGlobales)}
+              </p>
+            </div>
+            <div className="bg-white rounded-lg border border-slate-200 p-6">
+              <p className="text-sm text-slate-500">Solde net entreprise</p>
+              <p className="text-3xl font-bold text-brand-700 mt-1">{formatMontant(soldeNetEntreprise)}</p>
             </div>
           </div>
 

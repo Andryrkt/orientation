@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle2, Loader2, Store } from 'lucide-react';
 import { api } from '../lib/api';
+import { formatMontant } from '../lib/format';
 import { Periode, PointDeVente, SaisieAujourdhui } from '../lib/types';
 
 const PERIODES: { value: Periode; labelKey: string; key: 'midi' | 'apresMidi' }[] = [
@@ -55,11 +56,15 @@ function PeriodeCard({ periode, labelKey, statut }: { periode: Periode; labelKey
           <dl className="space-y-2 text-sm mb-4">
             <div className="flex justify-between">
               <dt className="text-slate-500 dark:text-slate-400">{t('saisieJournaliere.montantGagne')}</dt>
-              <dd className="font-bold text-slate-900 dark:text-white">{statut.montantGagne?.toLocaleString('fr-FR')} Ar</dd>
+              <dd className="font-bold text-slate-900 dark:text-white">
+                {statut.montantGagne !== undefined ? formatMontant(statut.montantGagne) : ''}
+              </dd>
             </div>
             <div className="flex justify-between">
               <dt className="text-slate-500 dark:text-slate-400">{t('saisieJournaliere.montantDepense')}</dt>
-              <dd className="font-bold text-slate-900 dark:text-white">{statut.montantDepense?.toLocaleString('fr-FR')} Ar</dd>
+              <dd className="font-bold text-slate-900 dark:text-white">
+                {statut.montantDepense !== undefined ? formatMontant(statut.montantDepense) : ''}
+              </dd>
             </div>
           </dl>
           <button

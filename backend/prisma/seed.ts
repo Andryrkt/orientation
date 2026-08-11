@@ -173,6 +173,18 @@ async function main() {
     }
   }
 
+  const depensesGlobalesData = [
+    { date: new Date('2026-08-05T00:00:00Z'), categorie: 'Loyer', montant: 500000, description: 'Loyer bureau Analakely' },
+    { date: new Date('2026-08-07T00:00:00Z'), categorie: 'Salaires', montant: 800000, description: null },
+  ];
+
+  for (const d of depensesGlobalesData) {
+    const existing = await prisma.depenseGlobale.findFirst({ where: { categorie: d.categorie, date: d.date } });
+    if (!existing) {
+      await prisma.depenseGlobale.create({ data: d });
+    }
+  }
+
   const domainesData = [
     { nom: 'Sciences et Technologies', slug: 'sciences-technologies', description: 'Mathematiques, physique, informatique, ingenierie.', icone: 'flask', ordre: 1, riasecCodes: ['R', 'I'] },
     { nom: 'Sante', slug: 'sante', description: 'Medecine, pharmacie, soins infirmiers.', icone: 'heart-pulse', ordre: 2, riasecCodes: ['I', 'S'] },

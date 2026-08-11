@@ -61,6 +61,7 @@ import { FaqAdmin } from './pages/admin/FaqAdmin';
 import { ContactMessagesAdmin } from './pages/admin/ContactMessagesAdmin';
 import { PointsDeVenteAdmin } from './pages/admin/PointsDeVenteAdmin';
 import { SaisiesJournalieresAdmin } from './pages/admin/SaisiesJournalieresAdmin';
+import { DepensesGlobalesAdmin } from './pages/admin/DepensesGlobalesAdmin';
 
 export default function App() {
   return (
@@ -132,6 +133,7 @@ export default function App() {
           <Route path="contact-messages" element={<ContactMessagesAdmin />} />
           <Route path="points-de-vente" element={<PointsDeVenteAdmin />} />
           <Route path="saisies-journalieres" element={<SaisiesJournalieresAdmin />} />
+          <Route path="depenses-globales" element={<DepensesGlobalesAdmin />} />
         </Route>
       </Route>
 
