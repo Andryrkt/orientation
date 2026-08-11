@@ -16,10 +16,12 @@ export class CreateMouvementDto {
   @Min(0)
   montant: number;
 
-  @ApiProperty()
+  // Obligatoire sauf si le détail d'inscription est renseigné (voir SaisiesJournalieresService.ajouterMouvement)
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsString()
   @MinLength(1)
-  note: string;
+  note?: string;
 
   // Détails d'inscription (optionnels, pertinents uniquement pour un mouvement de type GAGNE)
   @ApiProperty({ required: false })

@@ -67,6 +67,10 @@ export class SaisiesJournalieresService {
   }
 
   async ajouterMouvement(utilisateurId: string, dto: CreateMouvementDto) {
+    const detailInscriptionRenseigne = !!(dto.nom || dto.prenom || dto.contact || dto.numeroRecu || dto.filiereIds?.length);
+    if (!dto.note?.trim() && !detailInscriptionRenseigne) {
+      throw new BadRequestException('La note est obligatoire');
+    }
     if (dto.reduction && dto.reduction > 0 && !dto.noteReduction?.trim()) {
       throw new BadRequestException('Une note est obligatoire lorsqu\'une réduction est saisie');
     }

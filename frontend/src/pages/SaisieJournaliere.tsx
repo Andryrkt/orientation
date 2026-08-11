@@ -38,6 +38,7 @@ function MouvementsWidget({
   const [noteReduction, setNoteReduction] = useState('');
 
   const inscriptionActive = type === 'GAGNE' && detailsOuverts;
+  const detailInscriptionRenseigne = inscriptionActive && !!(nom.trim() || prenom.trim() || contact.trim() || numeroRecu.trim() || filiereIds.length > 0);
   const sommeFilieres = filieres?.filter((f) => filiereIds.includes(f.id)).reduce((s, f) => s + f.prix, 0) ?? 0;
   const montantTotalCalcule = sommeFilieres + (droitInscription ?? 0) - (Number(reduction) || 0);
   const resteAPayer = montantTotalCalcule - (Number(montant) || 0);
@@ -62,7 +63,7 @@ function MouvementsWidget({
         periode,
         type,
         montant: Number(montant),
-        note,
+        note: note.trim() || undefined,
         ...(inscriptionActive
           ? {
               nom: nom.trim() || undefined,
@@ -92,7 +93,7 @@ function MouvementsWidget({
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!montant || !note.trim()) return;
+    if (!montant || (!note.trim() && !detailInscriptionRenseigne)) return;
     if (inscriptionActive && Number(reduction) > 0 && !noteReduction.trim()) return;
     ajouterMutation.mutate();
   }
@@ -170,7 +171,7 @@ function MouvementsWidget({
             value={note}
             onChange={(e) => setNote(e.target.value)}
             className="field-input text-xs py-1.5 flex-1 min-w-[100px]"
-            required
+            required={!detailInscriptionRenseigne}
           />
           <button type="submit" disabled={ajouterMutation.isPending} className="btn-secondary text-xs py-1.5 px-3">
             {t('saisieJournaliere.mouvementsAdd')}
