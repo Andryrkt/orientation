@@ -185,6 +185,32 @@ async function main() {
     }
   }
 
+  const investissementsData = [
+    {
+      date: new Date('2026-08-01T00:00:00Z'),
+      bailleur: 'Fondation Tsara',
+      montant: 2000000,
+      type: 'DON' as const,
+      statut: 'RECU' as const,
+      description: 'Subvention de démarrage',
+    },
+    {
+      date: new Date('2026-08-15T00:00:00Z'),
+      bailleur: 'Banque Mikro',
+      montant: 3000000,
+      type: 'PRET' as const,
+      statut: 'PROMIS' as const,
+      description: 'Prêt en attente de déblocage',
+    },
+  ];
+
+  for (const inv of investissementsData) {
+    const existing = await prisma.investissement.findFirst({ where: { bailleur: inv.bailleur, date: inv.date } });
+    if (!existing) {
+      await prisma.investissement.create({ data: inv });
+    }
+  }
+
   const domainesData = [
     { nom: 'Sciences et Technologies', slug: 'sciences-technologies', description: 'Mathematiques, physique, informatique, ingenierie.', icone: 'flask', ordre: 1, riasecCodes: ['R', 'I'] },
     { nom: 'Sante', slug: 'sante', description: 'Medecine, pharmacie, soins infirmiers.', icone: 'heart-pulse', ordre: 2, riasecCodes: ['I', 'S'] },

@@ -64,6 +64,21 @@ export interface DepenseGlobale {
   updatedAt: string;
 }
 
+export type TypeInvestissement = 'DON' | 'PRET' | 'APPORT_CAPITAL';
+export type StatutInvestissement = 'PROMIS' | 'RECU';
+
+export interface Investissement {
+  id: string;
+  date: string;
+  bailleur: string;
+  montant: number;
+  type: TypeInvestissement;
+  statut: StatutInvestissement;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ExperienceCv {
   poste: string;
   entreprise: string;

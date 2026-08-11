@@ -62,6 +62,8 @@ import { ContactMessagesAdmin } from './pages/admin/ContactMessagesAdmin';
 import { PointsDeVenteAdmin } from './pages/admin/PointsDeVenteAdmin';
 import { SaisiesJournalieresAdmin } from './pages/admin/SaisiesJournalieresAdmin';
 import { DepensesGlobalesAdmin } from './pages/admin/DepensesGlobalesAdmin';
+import { InvestissementsAdmin } from './pages/admin/InvestissementsAdmin';
+import { FinancesDashboard } from './pages/admin/FinancesDashboard';
 
 export default function App() {
   return (
@@ -131,9 +133,11 @@ export default function App() {
           <Route path="tickets/:id" element={<TicketDetailAdmin />} />
           <Route path="faq" element={<FaqAdmin />} />
           <Route path="contact-messages" element={<ContactMessagesAdmin />} />
+          <Route path="finances" element={<FinancesDashboard />} />
           <Route path="points-de-vente" element={<PointsDeVenteAdmin />} />
           <Route path="saisies-journalieres" element={<SaisiesJournalieresAdmin />} />
           <Route path="depenses-globales" element={<DepensesGlobalesAdmin />} />
+          <Route path="investissements" element={<InvestissementsAdmin />} />
         </Route>
       </Route>
 

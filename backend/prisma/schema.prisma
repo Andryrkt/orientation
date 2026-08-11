@@ -653,3 +653,28 @@ model DepenseGlobale {
 
   @@map("depenses_globales")
 }
+
+enum TypeInvestissement {
+  DON
+  PRET
+  APPORT_CAPITAL
+}
+
+enum StatutInvestissement {
+  PROMIS
+  RECU
+}
+
+model Investissement {
+  id          String               @id @default(uuid())
+  date        DateTime             @db.Date
+  bailleur    String
+  montant     Int
+  type        TypeInvestissement   @default(APPORT_CAPITAL)
+  statut      StatutInvestissement @default(RECU)
+  description String?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  @@map("investissements")
+}

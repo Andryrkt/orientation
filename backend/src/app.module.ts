@@ -29,6 +29,7 @@ import { ContactModule } from './contact/contact.module';
 import { PointsDeVenteModule } from './points-de-vente/points-de-vente.module';
 import { SaisiesJournalieresModule } from './saisies-journalieres/saisies-journalieres.module';
 import { DepensesGlobalesModule } from './depenses-globales/depenses-globales.module';
+import { InvestissementsModule } from './investissements/investissements.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { DepensesGlobalesModule } from './depenses-globales/depenses-globales.mo
     PointsDeVenteModule,
     SaisiesJournalieresModule,
     DepensesGlobalesModule,
+    InvestissementsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

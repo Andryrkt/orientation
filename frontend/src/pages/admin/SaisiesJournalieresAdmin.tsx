@@ -69,17 +69,8 @@ export function SaisiesJournalieresAdmin() {
     enabled: tab === 'resume',
   });
 
-  const { data: depensesGlobales, isLoading: loadingDepensesGlobales } = useQuery({
-    queryKey: ['admin-depenses-globales-total', dateFrom, dateTo],
-    queryFn: async () =>
-      (await api.get<{ total: number }>('/admin/depenses-globales/total', { params: { dateFrom, dateTo } })).data,
-    enabled: tab === 'resume',
-  });
-
   const totalGagne = resume?.reduce((sum, r) => sum + r.totalGagne, 0) ?? 0;
-  const totalDepensePointsDeVente = resume?.reduce((sum, r) => sum + r.totalDepense, 0) ?? 0;
-  const totalDepensesGlobales = depensesGlobales?.total ?? 0;
-  const soldeNetEntreprise = totalGagne - totalDepensePointsDeVente - totalDepensesGlobales;
+  const totalDepense = resume?.reduce((sum, r) => sum + r.totalDepense, 0) ?? 0;
 
   return (
     <div>
@@ -140,24 +131,18 @@ export function SaisiesJournalieresAdmin() {
 
       {tab === 'resume' && (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
             <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <p className="text-sm text-slate-500">Total gagné (points de vente)</p>
+              <p className="text-sm text-slate-500">Total gagné (période)</p>
               <p className="text-3xl font-bold text-emerald-600 mt-1">{formatMontant(totalGagne)}</p>
             </div>
             <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <p className="text-sm text-slate-500">Dépensé (points de vente)</p>
-              <p className="text-3xl font-bold text-red-600 mt-1">{formatMontant(totalDepensePointsDeVente)}</p>
+              <p className="text-sm text-slate-500">Total dépensé (période)</p>
+              <p className="text-3xl font-bold text-red-600 mt-1">{formatMontant(totalDepense)}</p>
             </div>
             <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <p className="text-sm text-slate-500">Dépenses globales</p>
-              <p className="text-3xl font-bold text-red-600 mt-1">
-                {loadingDepensesGlobales ? '…' : formatMontant(totalDepensesGlobales)}
-              </p>
-            </div>
-            <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <p className="text-sm text-slate-500">Solde net entreprise</p>
-              <p className="text-3xl font-bold text-brand-700 mt-1">{formatMontant(soldeNetEntreprise)}</p>
+              <p className="text-sm text-slate-500">Solde net</p>
+              <p className="text-3xl font-bold text-brand-700 mt-1">{formatMontant(totalGagne - totalDepense)}</p>
             </div>
           </div>
 

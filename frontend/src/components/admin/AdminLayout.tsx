@@ -54,9 +54,11 @@ const groups: { title?: string; links: { to: string; label: string; end?: boolea
   {
     title: 'Finances',
     links: [
+      { to: '/admin/finances', label: 'Tableau de bord', end: true },
       { to: '/admin/points-de-vente', label: 'Points de vente' },
       { to: '/admin/saisies-journalieres', label: 'Saisies journalières' },
       { to: '/admin/depenses-globales', label: 'Dépenses globales' },
+      { to: '/admin/investissements', label: 'Investissements' },
     ],
   },
 ];
