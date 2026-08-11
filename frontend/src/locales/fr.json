@@ -43,7 +43,18 @@
     "notSubmitted": "Pas encore saisi",
     "noPointDeVente": "Aucun point de vente ne vous est assigné. Contactez un administrateur.",
     "submitSuccess": "Saisie enregistrée avec succès",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "mouvements": "Suivi au fil de la journée",
+    "mouvementsHint": "Notez vos gains et dépenses au fur et à mesure, sans attendre. Ceci sert d'aide-mémoire et ne remplace pas le total ci-dessus.",
+    "mouvementsAdd": "Ajouter",
+    "mouvementsType": "Type",
+    "mouvementsTypeGagne": "Gagné",
+    "mouvementsTypeDepense": "Dépensé",
+    "mouvementsMontant": "Montant (Ar)",
+    "mouvementsNote": "Note (optionnel)",
+    "mouvementsEmpty": "Aucun mouvement saisi pour l'instant",
+    "mouvementsTotal": "Total saisi",
+    "mouvementsDelete": "Supprimer"
   },
   "footer": {
     "description": "La plateforme de référence pour l'orientation scolaire, universitaire et professionnelle à Madagascar.",

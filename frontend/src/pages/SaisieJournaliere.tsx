@@ -1,17 +1,125 @@
 import { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CheckCircle2, Loader2, Store } from 'lucide-react';
+import { CheckCircle2, Loader2, Store, Trash2 } from 'lucide-react';
 import { api } from '../lib/api';
 import { formatMontant } from '../lib/format';
-import { Periode, PointDeVente, SaisieAujourdhui } from '../lib/types';
+import { MouvementsAujourdhui, MouvementsPeriode, Periode, PointDeVente, SaisieAujourdhui, TypeMouvement } from '../lib/types';
 
 const PERIODES: { value: Periode; labelKey: string; key: 'midi' | 'apresMidi' }[] = [
   { value: 'MIDI', labelKey: 'saisieJournaliere.midi', key: 'midi' },
   { value: 'APRES_MIDI', labelKey: 'saisieJournaliere.apresMidi', key: 'apresMidi' },
 ];
 
-function PeriodeCard({ periode, labelKey, statut }: { periode: Periode; labelKey: string; statut: { soumis: boolean; montantGagne?: number; montantDepense?: number } }) {
+function MouvementsWidget({ periode, mouvements }: { periode: Periode; mouvements?: MouvementsPeriode }) {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const [type, setType] = useState<TypeMouvement>('GAGNE');
+  const [montant, setMontant] = useState('');
+  const [note, setNote] = useState('');
+
+  const ajouterMutation = useMutation({
+    mutationFn: () =>
+      api.post('/saisies-journalieres/mouvements', { periode, type, montant: Number(montant), note: note || undefined }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['mouvements-aujourdhui'] });
+      setMontant('');
+      setNote('');
+    },
+  });
+
+  const supprimerMutation = useMutation({
+    mutationFn: (id: string) => api.delete(`/saisies-journalieres/mouvements/${id}`),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['mouvements-aujourdhui'] }),
+  });
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (!montant) return;
+    ajouterMutation.mutate();
+  }
+
+  return (
+    <details className="mt-4 border-t border-slate-200 dark:border-slate-700 pt-4">
+      <summary className="cursor-pointer text-sm font-semibold text-slate-600 dark:text-slate-300">
+        {t('saisieJournaliere.mouvements')}
+      </summary>
+      <p className="text-xs text-slate-400 mt-2 mb-3">{t('saisieJournaliere.mouvementsHint')}</p>
+
+      {mouvements && mouvements.items.length > 0 && (
+        <div className="space-y-1.5 mb-3 max-h-40 overflow-y-auto">
+          {mouvements.items.map((m) => (
+            <div key={m.id} className="flex items-center justify-between text-xs bg-slate-100 dark:bg-white/5 rounded-md px-2.5 py-1.5">
+              <span className={m.type === 'GAGNE' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}>
+                {m.type === 'GAGNE' ? '+' : '−'} {formatMontant(m.montant)}
+                {m.note ? ` · ${m.note}` : ''}
+              </span>
+              <button
+                type="button"
+                onClick={() => supprimerMutation.mutate(m.id)}
+                className="text-slate-400 hover:text-rose-500 transition-colors"
+                aria-label={t('saisieJournaliere.mouvementsDelete')}
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      {(!mouvements || mouvements.items.length === 0) && (
+        <p className="text-xs text-slate-400 mb-3">{t('saisieJournaliere.mouvementsEmpty')}</p>
+      )}
+
+      {mouvements && mouvements.items.length > 0 && (
+        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3">
+          {t('saisieJournaliere.mouvementsTotal')} : +{formatMontant(mouvements.totalGagne)} / −{formatMontant(mouvements.totalDepense)}
+        </p>
+      )}
+
+      <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-2">
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value as TypeMouvement)}
+          className="field-input text-xs py-1.5 w-auto"
+        >
+          <option value="GAGNE">{t('saisieJournaliere.mouvementsTypeGagne')}</option>
+          <option value="DEPENSE">{t('saisieJournaliere.mouvementsTypeDepense')}</option>
+        </select>
+        <input
+          type="number"
+          min={0}
+          placeholder={t('saisieJournaliere.mouvementsMontant')}
+          value={montant}
+          onChange={(e) => setMontant(e.target.value)}
+          className="field-input text-xs py-1.5 w-28"
+          required
+        />
+        <input
+          type="text"
+          placeholder={t('saisieJournaliere.mouvementsNote')}
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          className="field-input text-xs py-1.5 flex-1 min-w-[100px]"
+        />
+        <button type="submit" disabled={ajouterMutation.isPending} className="btn-secondary text-xs py-1.5 px-3">
+          {t('saisieJournaliere.mouvementsAdd')}
+        </button>
+      </form>
+    </details>
+  );
+}
+
+function PeriodeCard({
+  periode,
+  labelKey,
+  statut,
+  mouvements,
+}: {
+  periode: Periode;
+  labelKey: string;
+  statut: { soumis: boolean; montantGagne?: number; montantDepense?: number };
+  mouvements?: MouvementsPeriode;
+}) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [editing, setEditing] = useState(false);
@@ -129,6 +237,8 @@ function PeriodeCard({ periode, labelKey, statut }: { periode: Periode; labelKey
           </div>
         </form>
       )}
+
+      <MouvementsWidget periode={periode} mouvements={mouvements} />
     </div>
   );
 }
@@ -144,6 +254,12 @@ export function SaisieJournaliere() {
   const { data: aujourdhui, isLoading: loadingAujourdhui } = useQuery({
     queryKey: ['saisie-aujourdhui'],
     queryFn: async () => (await api.get<SaisieAujourdhui>('/saisies-journalieres/today')).data,
+    enabled: !!pointDeVente,
+  });
+
+  const { data: mouvementsAujourdhui } = useQuery({
+    queryKey: ['mouvements-aujourdhui'],
+    queryFn: async () => (await api.get<MouvementsAujourdhui>('/saisies-journalieres/mouvements/aujourdhui')).data,
     enabled: !!pointDeVente,
   });
 
@@ -174,7 +290,13 @@ export function SaisieJournaliere() {
       ) : (
         <div className="grid sm:grid-cols-2 gap-6">
           {PERIODES.map((p) => (
-            <PeriodeCard key={p.value} periode={p.value} labelKey={p.labelKey} statut={aujourdhui[p.key]} />
+            <PeriodeCard
+              key={p.value}
+              periode={p.value}
+              labelKey={p.labelKey}
+              statut={aujourdhui[p.key]}
+              mouvements={mouvementsAujourdhui?.[p.key]}
+            />
           ))}
         </div>
       )}

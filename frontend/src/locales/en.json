@@ -43,7 +43,18 @@
     "notSubmitted": "Not submitted yet",
     "noPointDeVente": "You are not assigned to any point of sale. Contact an administrator.",
     "submitSuccess": "Entry saved successfully",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "mouvements": "Track throughout the day",
+    "mouvementsHint": "Log your earnings and expenses as they happen, without waiting. This is a memory aid and does not replace the total above.",
+    "mouvementsAdd": "Add",
+    "mouvementsType": "Type",
+    "mouvementsTypeGagne": "Earned",
+    "mouvementsTypeDepense": "Spent",
+    "mouvementsMontant": "Amount (Ar)",
+    "mouvementsNote": "Note (optional)",
+    "mouvementsEmpty": "No entry logged yet",
+    "mouvementsTotal": "Total logged",
+    "mouvementsDelete": "Delete"
   },
   "footer": {
     "description": "The reference platform for academic, university, and professional guidance in Madagascar.",

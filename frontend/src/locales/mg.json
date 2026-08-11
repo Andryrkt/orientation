@@ -43,7 +43,18 @@
     "notSubmitted": "Mbola tsy voasoratra",
     "noPointDeVente": "Tsy misy toeram-pivarotana voatendry ho anao. Mifandraisa amin'ny admin.",
     "submitSuccess": "Voatahiry soa aman-tsara",
-    "cancel": "Aoka"
+    "cancel": "Aoka",
+    "mouvements": "Fanaraha-maso mandritra ny andro",
+    "mouvementsHint": "Soraty tsikelikely ny vola azo sy ny fandaniana, tsy mila miandry. Fanampiana fahatsiarovana ihany ity, tsy misolo ny totaly eo ambony.",
+    "mouvementsAdd": "Ampio",
+    "mouvementsType": "Karazana",
+    "mouvementsTypeGagne": "Azo",
+    "mouvementsTypeDepense": "Lany",
+    "mouvementsMontant": "Vola (Ar)",
+    "mouvementsNote": "Fanamarihana (tsy voatery)",
+    "mouvementsEmpty": "Mbola tsy misy voasoratra",
+    "mouvementsTotal": "Totaly voasoratra",
+    "mouvementsDelete": "Fafao"
   },
   "footer": {
     "description": "Ny sehatra fakan-kevitra ho an'ny fizahan-dalana amin'ny fianarana, an-danin'ny oniversite ary ny asa eto Madagasikara.",

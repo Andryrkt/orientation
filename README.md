@@ -37,6 +37,14 @@ Mot de passe : Admin123!
 
 Connecte-toi avec ce compte puis rends-toi sur `/admin` pour accéder au back-office.
 
+Un compte secrétaire de démonstration est également créé (rattaché au point de vente
+« Point de vente Analakely ») pour tester la saisie journalière sur `/saisie-journaliere` :
+
+```
+Email    : secretaire@avenirassure.mg
+Mot de passe : Secretaire123!
+```
+
 ## Développement
 
 Les dossiers `backend/` et `frontend/` sont montés en volume dans les conteneurs Docker :

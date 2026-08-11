@@ -38,6 +38,33 @@ export interface SaisieJournaliere {
   saisiPar?: { id: string; nom: string; prenom: string } | null;
   createdAt: string;
   updatedAt: string;
+  mouvementsGagne?: number | null;
+  mouvementsDepense?: number | null;
+}
+
+export type TypeMouvement = 'GAGNE' | 'DEPENSE';
+
+export interface MouvementCaisse {
+  id: string;
+  pointDeVenteId: string;
+  date: string;
+  periode: Periode;
+  type: TypeMouvement;
+  montant: number;
+  note: string | null;
+  saisiParId: string | null;
+  createdAt: string;
+}
+
+export interface MouvementsPeriode {
+  items: MouvementCaisse[];
+  totalGagne: number;
+  totalDepense: number;
+}
+
+export interface MouvementsAujourdhui {
+  midi: MouvementsPeriode;
+  apresMidi: MouvementsPeriode;
 }
 
 export interface ResumeSaisiePointDeVente {

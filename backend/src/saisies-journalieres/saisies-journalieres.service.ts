@@ -1,11 +1,12 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Periode } from '@prisma/client';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Periode, TypeMouvement } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { PointsDeVenteService } from '../points-de-vente/points-de-vente.service';
 import { dateDuJourMadagascar, lundiDeLaSemaine } from '../common/utils/date.util';
 import { SubmitSaisieDto } from './dto/submit-saisie.dto';
 import { UpdateSaisieDto } from './dto/update-saisie.dto';
 import { QuerySaisiesDto } from './dto/query-saisies.dto';
+import { CreateMouvementDto } from './dto/create-mouvement.dto';
 
 @Injectable()
 export class SaisiesJournalieresService {
@@ -63,6 +64,55 @@ export class SaisiesJournalieresService {
     };
   }
 
+  async ajouterMouvement(utilisateurId: string, dto: CreateMouvementDto) {
+    const pointDeVenteId = await this.pointDeVenteDuSecretaire(utilisateurId);
+    const date = dateDuJourMadagascar();
+    return this.prisma.mouvementCaisse.create({
+      data: {
+        pointDeVenteId,
+        date,
+        periode: dto.periode,
+        type: dto.type,
+        montant: dto.montant,
+        note: dto.note,
+        saisiParId: utilisateurId,
+      },
+    });
+  }
+
+  async mouvementsAujourdhui(utilisateurId: string) {
+    const pointDeVenteId = await this.pointDeVenteDuSecretaire(utilisateurId);
+    const date = dateDuJourMadagascar();
+    const mouvements = await this.prisma.mouvementCaisse.findMany({
+      where: { pointDeVenteId, date },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    const parPeriode = (periode: Periode) => {
+      const items = mouvements.filter((m) => m.periode === periode);
+      return {
+        items,
+        totalGagne: items.filter((m) => m.type === TypeMouvement.GAGNE).reduce((s, m) => s + m.montant, 0),
+        totalDepense: items.filter((m) => m.type === TypeMouvement.DEPENSE).reduce((s, m) => s + m.montant, 0),
+      };
+    };
+
+    return { midi: parPeriode(Periode.MIDI), apresMidi: parPeriode(Periode.APRES_MIDI) };
+  }
+
+  async supprimerMouvement(utilisateurId: string, id: string) {
+    const mouvement = await this.prisma.mouvementCaisse.findUnique({ where: { id } });
+    if (!mouvement) throw new NotFoundException(`Mouvement #${id} introuvable`);
+    if (mouvement.saisiParId !== utilisateurId) {
+      throw new ForbiddenException("Vous ne pouvez supprimer que vos propres mouvements");
+    }
+    const aujourdhui = dateDuJourMadagascar();
+    if (mouvement.date.getTime() !== aujourdhui.getTime()) {
+      throw new ForbiddenException("Seuls les mouvements du jour même peuvent être supprimés");
+    }
+    return this.prisma.mouvementCaisse.delete({ where: { id } });
+  }
+
   async findAllAdmin(query: QuerySaisiesDto) {
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
@@ -92,7 +142,31 @@ export class SaisiesJournalieresService {
       this.prisma.saisieJournaliere.count({ where }),
     ]);
 
-    return { items, total, page, limit };
+    const mouvements = items.length
+      ? await this.prisma.mouvementCaisse.groupBy({
+          by: ['pointDeVenteId', 'date', 'periode', 'type'],
+          where: {
+            OR: items.map((s) => ({ pointDeVenteId: s.pointDeVenteId, date: s.date, periode: s.periode })),
+          },
+          _sum: { montant: true },
+        })
+      : [];
+
+    const itemsAvecMouvements = items.map((s) => {
+      const gagne = mouvements.find(
+        (m) => m.pointDeVenteId === s.pointDeVenteId && m.date.getTime() === s.date.getTime() && m.periode === s.periode && m.type === TypeMouvement.GAGNE,
+      );
+      const depense = mouvements.find(
+        (m) => m.pointDeVenteId === s.pointDeVenteId && m.date.getTime() === s.date.getTime() && m.periode === s.periode && m.type === TypeMouvement.DEPENSE,
+      );
+      return {
+        ...s,
+        mouvementsGagne: gagne?._sum.montant ?? null,
+        mouvementsDepense: depense?._sum.montant ?? null,
+      };
+    });
+
+    return { items: itemsAvecMouvements, total, page, limit };
   }
 
   async resumeAdmin(query: { dateFrom?: string; dateTo?: string; pointDeVenteId?: string }) {

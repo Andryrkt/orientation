@@ -82,6 +82,7 @@ model Utilisateur {
   pointDeVenteId      String?
   pointDeVente        PointDeVente?       @relation("SecretairesPointDeVente", fields: [pointDeVenteId], references: [id], onDelete: SetNull)
   saisiesJournalieres SaisieJournaliere[]
+  mouvementsCaisse    MouvementCaisse[]
 
   @@map("utilisateurs")
 }
@@ -621,6 +622,7 @@ model PointDeVente {
 
   secretaires Utilisateur[]       @relation("SecretairesPointDeVente")
   saisies     SaisieJournaliere[]
+  mouvements  MouvementCaisse[]
 
   @@map("points_de_vente")
 }
@@ -640,6 +642,27 @@ model SaisieJournaliere {
 
   @@unique([pointDeVenteId, date, periode])
   @@map("saisies_journalieres")
+}
+
+enum TypeMouvement {
+  GAGNE
+  DEPENSE
+}
+
+model MouvementCaisse {
+  id             String        @id @default(uuid())
+  pointDeVenteId String
+  pointDeVente   PointDeVente  @relation(fields: [pointDeVenteId], references: [id], onDelete: Cascade)
+  date           DateTime      @db.Date
+  periode        Periode
+  type           TypeMouvement
+  montant        Int
+  note           String?
+  saisiParId     String?
+  saisiPar       Utilisateur?  @relation(fields: [saisiParId], references: [id], onDelete: SetNull)
+  createdAt      DateTime      @default(now())
+
+  @@map("mouvements_caisse")
 }
 
 model DepenseGlobale {
