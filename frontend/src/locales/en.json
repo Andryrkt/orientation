@@ -51,7 +51,7 @@
     "mouvementsTypeGagne": "Earned",
     "mouvementsTypeDepense": "Spent",
     "mouvementsMontant": "Amount (Ar)",
-    "mouvementsNote": "Note (optional)",
+    "mouvementsNote": "Note (required)",
     "mouvementsEmpty": "No entry logged yet",
     "mouvementsTotal": "Total logged",
     "mouvementsDelete": "Delete"

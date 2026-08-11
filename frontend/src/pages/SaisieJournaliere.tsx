@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle2, Loader2, Store, Trash2 } from 'lucide-react';
 import { api } from '../lib/api';
 import { formatMontant } from '../lib/format';
+import { MontantInput } from '../components/MontantInput';
 import { MouvementsAujourdhui, MouvementsPeriode, Periode, PointDeVente, SaisieAujourdhui, TypeMouvement } from '../lib/types';
 
 const PERIODES: { value: Periode; labelKey: string; key: 'midi' | 'apresMidi' }[] = [
@@ -20,7 +21,7 @@ function MouvementsWidget({ periode, mouvements }: { periode: Periode; mouvement
 
   const ajouterMutation = useMutation({
     mutationFn: () =>
-      api.post('/saisies-journalieres/mouvements', { periode, type, montant: Number(montant), note: note || undefined }),
+      api.post('/saisies-journalieres/mouvements', { periode, type, montant: Number(montant), note }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['mouvements-aujourdhui'] });
       setMontant('');
@@ -35,7 +36,7 @@ function MouvementsWidget({ periode, mouvements }: { periode: Periode; mouvement
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!montant) return;
+    if (!montant || !note.trim()) return;
     ajouterMutation.mutate();
   }
 
@@ -85,12 +86,10 @@ function MouvementsWidget({ periode, mouvements }: { periode: Periode; mouvement
           <option value="GAGNE">{t('saisieJournaliere.mouvementsTypeGagne')}</option>
           <option value="DEPENSE">{t('saisieJournaliere.mouvementsTypeDepense')}</option>
         </select>
-        <input
-          type="number"
-          min={0}
+        <MontantInput
           placeholder={t('saisieJournaliere.mouvementsMontant')}
           value={montant}
-          onChange={(e) => setMontant(e.target.value)}
+          onChange={setMontant}
           className="field-input text-xs py-1.5 w-28"
           required
         />
@@ -100,6 +99,7 @@ function MouvementsWidget({ periode, mouvements }: { periode: Periode; mouvement
           value={note}
           onChange={(e) => setNote(e.target.value)}
           className="field-input text-xs py-1.5 flex-1 min-w-[100px]"
+          required
         />
         <button type="submit" disabled={ajouterMutation.isPending} className="btn-secondary text-xs py-1.5 px-3">
           {t('saisieJournaliere.mouvementsAdd')}
@@ -192,27 +192,13 @@ function PeriodeCard({
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
               {t('saisieJournaliere.montantGagne')}
             </label>
-            <input
-              type="number"
-              min={0}
-              className="field-input"
-              value={montantGagne}
-              onChange={(e) => setMontantGagne(e.target.value)}
-              required
-            />
+            <MontantInput className="field-input" value={montantGagne} onChange={setMontantGagne} required />
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
               {t('saisieJournaliere.montantDepense')}
             </label>
-            <input
-              type="number"
-              min={0}
-              className="field-input"
-              value={montantDepense}
-              onChange={(e) => setMontantDepense(e.target.value)}
-              required
-            />
+            <MontantInput className="field-input" value={montantDepense} onChange={setMontantDepense} required />
           </div>
           {error && <p className="text-sm text-rose-500 font-medium">{error}</p>}
           <div className="flex gap-2">

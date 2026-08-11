@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Periode, TypeMouvement } from '@prisma/client';
-import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { IsEnum, IsInt, IsString, Min, MinLength } from 'class-validator';
 
 export class CreateMouvementDto {
   @ApiProperty({ enum: Periode })
@@ -16,8 +16,8 @@ export class CreateMouvementDto {
   @Min(0)
   montant: number;
 
-  @ApiProperty({ required: false })
-  @IsOptional()
+  @ApiProperty()
   @IsString()
-  note?: string;
+  @MinLength(1)
+  note: string;
 }

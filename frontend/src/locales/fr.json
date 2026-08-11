@@ -51,7 +51,7 @@
     "mouvementsTypeGagne": "Gagné",
     "mouvementsTypeDepense": "Dépensé",
     "mouvementsMontant": "Montant (Ar)",
-    "mouvementsNote": "Note (optionnel)",
+    "mouvementsNote": "Note (obligatoire)",
     "mouvementsEmpty": "Aucun mouvement saisi pour l'instant",
     "mouvementsTotal": "Total saisi",
     "mouvementsDelete": "Supprimer"
