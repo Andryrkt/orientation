@@ -59,6 +59,7 @@ const groups: { title?: string; links: { to: string; label: string; end?: boolea
       { to: '/admin/saisies-journalieres', label: 'Saisies journalières' },
       { to: '/admin/depenses-globales', label: 'Dépenses globales' },
       { to: '/admin/investissements', label: 'Investissements' },
+      { to: '/admin/filieres', label: 'Filières' },
     ],
   },
 ];

@@ -54,7 +54,19 @@
     "mouvementsNote": "Note (required)",
     "mouvementsEmpty": "No entry logged yet",
     "mouvementsTotal": "Total logged",
-    "mouvementsDelete": "Delete"
+    "mouvementsDelete": "Delete",
+    "mouvementsDetailsInscription": "Registration details (optional)",
+    "mouvementsNom": "Last name",
+    "mouvementsPrenom": "First name",
+    "mouvementsContact": "Contact",
+    "mouvementsNumeroRecu": "Receipt number",
+    "mouvementsFiliere": "Program / Major",
+    "mouvementsMontantTotal": "Total amount (Ar)",
+    "mouvementsMontantPaye": "Amount paid (Ar)",
+    "mouvementsResteAPayer": "Remaining balance",
+    "mouvementsDroitInscription": "Registration fee",
+    "mouvementsReduction": "Discount (Ar)",
+    "mouvementsNoteReduction": "Discount reason (required)"
   },
   "footer": {
     "description": "The reference platform for academic, university, and professional guidance in Madagascar.",

@@ -44,6 +44,15 @@ export interface SaisieJournaliere {
 
 export type TypeMouvement = 'GAGNE' | 'DEPENSE';
 
+export interface Filiere {
+  id: string;
+  nom: string;
+  prix: number;
+  actif: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface MouvementCaisse {
   id: string;
   pointDeVenteId: string;
@@ -54,6 +63,22 @@ export interface MouvementCaisse {
   note: string | null;
   saisiParId: string | null;
   createdAt: string;
+  nom: string | null;
+  prenom: string | null;
+  contact: string | null;
+  numeroRecu: string | null;
+  filieres: Filiere[];
+  montantRestant: number | null;
+  montantTotal: number | null;
+  droitInscription: number | null;
+  reduction: number | null;
+  noteReduction: string | null;
+}
+
+export interface DroitInscription {
+  id: string;
+  montant: number;
+  updatedAt: string;
 }
 
 export interface MouvementsPeriode {

@@ -30,6 +30,8 @@ import { PointsDeVenteModule } from './points-de-vente/points-de-vente.module';
 import { SaisiesJournalieresModule } from './saisies-journalieres/saisies-journalieres.module';
 import { DepensesGlobalesModule } from './depenses-globales/depenses-globales.module';
 import { InvestissementsModule } from './investissements/investissements.module';
+import { FilieresModule } from './filieres/filieres.module';
+import { DroitInscriptionModule } from './droit-inscription/droit-inscription.module';
 
 @Module({
   imports: [
@@ -62,6 +64,8 @@ import { InvestissementsModule } from './investissements/investissements.module'
     SaisiesJournalieresModule,
     DepensesGlobalesModule,
     InvestissementsModule,
+    FilieresModule,
+    DroitInscriptionModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

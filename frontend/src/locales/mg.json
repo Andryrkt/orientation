@@ -54,7 +54,19 @@
     "mouvementsNote": "Fanamarihana (tsy maintsy)",
     "mouvementsEmpty": "Mbola tsy misy voasoratra",
     "mouvementsTotal": "Totaly voasoratra",
-    "mouvementsDelete": "Fafao"
+    "mouvementsDelete": "Fafao",
+    "mouvementsDetailsInscription": "Antsipirihan'ny fisoratana anarana (tsy voatery)",
+    "mouvementsNom": "Anarana",
+    "mouvementsPrenom": "Fanampin'anarana",
+    "mouvementsContact": "Fifandraisana",
+    "mouvementsNumeroRecu": "Laharan'ny reçu",
+    "mouvementsFiliere": "Sokajy fianarana",
+    "mouvementsMontantTotal": "Vola totaliny (Ar)",
+    "mouvementsMontantPaye": "Vola efa naloa (Ar)",
+    "mouvementsResteAPayer": "Vola mbola aloa",
+    "mouvementsDroitInscription": "Sarany fisoratana anarana",
+    "mouvementsReduction": "Fihenam-bidy (Ar)",
+    "mouvementsNoteReduction": "Antony fihenam-bidy (tsy maintsy)"
   },
   "footer": {
     "description": "Ny sehatra fakan-kevitra ho an'ny fizahan-dalana amin'ny fianarana, an-danin'ny oniversite ary ny asa eto Madagasikara.",

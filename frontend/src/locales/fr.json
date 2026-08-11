@@ -54,7 +54,19 @@
     "mouvementsNote": "Note (obligatoire)",
     "mouvementsEmpty": "Aucun mouvement saisi pour l'instant",
     "mouvementsTotal": "Total saisi",
-    "mouvementsDelete": "Supprimer"
+    "mouvementsDelete": "Supprimer",
+    "mouvementsDetailsInscription": "Détails d'inscription (optionnel)",
+    "mouvementsNom": "Nom",
+    "mouvementsPrenom": "Prénom",
+    "mouvementsContact": "Contact",
+    "mouvementsNumeroRecu": "Numéro de reçu",
+    "mouvementsFiliere": "Filière",
+    "mouvementsMontantTotal": "Montant total (Ar)",
+    "mouvementsMontantPaye": "Montant payé (Ar)",
+    "mouvementsResteAPayer": "Reste à payer",
+    "mouvementsDroitInscription": "Droit d'inscription",
+    "mouvementsReduction": "Réduction (Ar)",
+    "mouvementsNoteReduction": "Motif de la réduction (obligatoire)"
   },
   "footer": {
     "description": "La plateforme de référence pour l'orientation scolaire, universitaire et professionnelle à Madagascar.",

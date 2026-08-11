@@ -662,7 +662,40 @@ model MouvementCaisse {
   saisiPar       Utilisateur?  @relation(fields: [saisiParId], references: [id], onDelete: SetNull)
   createdAt      DateTime      @default(now())
 
+  // Détails d'inscription (optionnels, pertinents uniquement pour un mouvement de type GAGNE)
+  nom              String?
+  prenom           String?
+  contact          String?
+  numeroRecu       String?
+  filieres         Filiere[]
+  droitInscription Int?
+  reduction        Int?
+  noteReduction    String?
+  montantTotal     Int?
+  montantRestant   Int?
+
   @@map("mouvements_caisse")
+}
+
+model Filiere {
+  id        String   @id @default(uuid())
+  nom       String
+  prix      Int
+  actif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  mouvements MouvementCaisse[]
+
+  @@map("filieres")
+}
+
+model DroitInscription {
+  id        String   @id @default(uuid())
+  montant   Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@map("droit_inscription")
 }
 
 model DepenseGlobale {

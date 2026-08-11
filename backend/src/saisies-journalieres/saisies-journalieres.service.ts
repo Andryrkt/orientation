@@ -2,6 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { Periode, TypeMouvement } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { PointsDeVenteService } from '../points-de-vente/points-de-vente.service';
+import { DroitInscriptionService } from '../droit-inscription/droit-inscription.service';
 import { dateDuJourMadagascar, lundiDeLaSemaine } from '../common/utils/date.util';
 import { SubmitSaisieDto } from './dto/submit-saisie.dto';
 import { UpdateSaisieDto } from './dto/update-saisie.dto';
@@ -13,6 +14,7 @@ export class SaisiesJournalieresService {
   constructor(
     private prisma: PrismaService,
     private pointsDeVenteService: PointsDeVenteService,
+    private droitInscriptionService: DroitInscriptionService,
   ) {}
 
   private async pointDeVenteDuSecretaire(utilisateurId: string) {
@@ -65,8 +67,14 @@ export class SaisiesJournalieresService {
   }
 
   async ajouterMouvement(utilisateurId: string, dto: CreateMouvementDto) {
+    if (dto.reduction && dto.reduction > 0 && !dto.noteReduction?.trim()) {
+      throw new BadRequestException('Une note est obligatoire lorsqu\'une réduction est saisie');
+    }
+
     const pointDeVenteId = await this.pointDeVenteDuSecretaire(utilisateurId);
     const date = dateDuJourMadagascar();
+    const droitInscription = dto.type === TypeMouvement.GAGNE ? (await this.droitInscriptionService.get()).montant : null;
+
     return this.prisma.mouvementCaisse.create({
       data: {
         pointDeVenteId,
@@ -76,7 +84,18 @@ export class SaisiesJournalieresService {
         montant: dto.montant,
         note: dto.note,
         saisiParId: utilisateurId,
+        nom: dto.nom,
+        prenom: dto.prenom,
+        contact: dto.contact,
+        numeroRecu: dto.numeroRecu,
+        montantRestant: dto.montantRestant,
+        montantTotal: dto.montantTotal,
+        droitInscription,
+        reduction: dto.reduction,
+        noteReduction: dto.noteReduction,
+        ...(dto.filiereIds?.length ? { filieres: { connect: dto.filiereIds.map((id) => ({ id })) } } : {}),
       },
+      include: { filieres: true },
     });
   }
 
@@ -86,6 +105,7 @@ export class SaisiesJournalieresService {
     const mouvements = await this.prisma.mouvementCaisse.findMany({
       where: { pointDeVenteId, date },
       orderBy: { createdAt: 'asc' },
+      include: { filieres: true },
     });
 
     const parPeriode = (periode: Periode) => {
