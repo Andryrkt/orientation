@@ -1,11 +1,11 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CalendarDays, CheckCircle2, Loader2, Store, Trash2 } from 'lucide-react';
+import { CalendarDays, CheckCircle2, Loader2, Search, Store, Trash2 } from 'lucide-react';
 import { api } from '../lib/api';
 import { formatMontant } from '../lib/format';
 import { MontantInput } from '../components/MontantInput';
-import { DroitInscription, Filiere, InscriptionFiliereSuivi, MouvementsAujourdhui, MouvementsPeriode, Periode, PointDeVente, SaisieAujourdhui, TypeMouvement } from '../lib/types';
+import { DroitInscription, Filiere, InscriptionFiliereSuivi, MouvementCaisse, MouvementsAujourdhui, MouvementsPeriode, Periode, PointDeVente, SaisieAujourdhui, TypeMouvement } from '../lib/types';
 
 const PERIODES: { value: Periode; labelKey: string; key: 'midi' | 'apresMidi' }[] = [
   { value: 'MIDI', labelKey: 'saisieJournaliere.midi', key: 'midi' },
@@ -61,6 +61,28 @@ function MouvementsWidget({
   const [filiereIds, setFiliereIds] = useState<string[]>([]);
   const [reduction, setReduction] = useState('');
   const [noteReduction, setNoteReduction] = useState('');
+  const [recherche, setRecherche] = useState('');
+  const [rechercheDebattue, setRechercheDebattue] = useState('');
+
+  useEffect(() => {
+    const minuteur = setTimeout(() => setRechercheDebattue(recherche.trim()), 300);
+    return () => clearTimeout(minuteur);
+  }, [recherche]);
+
+  const { data: resultatsRecherche } = useQuery({
+    queryKey: ['recherche-etudiants', rechercheDebattue],
+    queryFn: async () => (await api.get<MouvementCaisse[]>('/saisies-journalieres/mouvements/recherche', { params: { q: rechercheDebattue } })).data,
+    enabled: rechercheDebattue.length >= 2,
+  });
+
+  function dupliquer(m: MouvementCaisse) {
+    setNom(m.nom ?? '');
+    setPrenom(m.prenom ?? '');
+    setContact(m.contact ?? '');
+    setFiliereIds(m.filieresInscrites.map((fi) => fi.filiereId));
+    setNumeroRecu('');
+    setRecherche('');
+  }
 
   const inscriptionActive = type === 'GAGNE' && detailsOuverts;
   const detailInscriptionRenseigne = inscriptionActive && !!(nom.trim() || prenom.trim() || contact.trim() || numeroRecu.trim() || filiereIds.length > 0);
@@ -219,6 +241,42 @@ function MouvementsWidget({
             </button>
             {detailsOuverts && (
               <div className="grid grid-cols-2 gap-2 mt-2">
+                <div className="col-span-2 relative">
+                  <div className="relative">
+                    <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder={t('saisieJournaliere.rechercherEtudiant')}
+                      value={recherche}
+                      onChange={(e) => setRecherche(e.target.value)}
+                      className="field-input text-xs py-1.5 pl-7 w-full"
+                    />
+                  </div>
+                  {rechercheDebattue.length >= 2 && (
+                    <div className="mt-1 border border-slate-300 dark:border-slate-600 rounded-md max-h-40 overflow-y-auto">
+                      {resultatsRecherche?.length ? (
+                        resultatsRecherche.map((m) => (
+                          <div key={m.id} className="flex items-center justify-between gap-2 px-2 py-1.5 text-xs border-b last:border-b-0 border-slate-200 dark:border-slate-700">
+                            <span className="text-slate-600 dark:text-slate-300">
+                              {[m.prenom, m.nom].filter(Boolean).join(' ')}
+                              {m.filieresInscrites.length > 0 ? ` · ${m.filieresInscrites.map((fi) => fi.filiere.nom).join(' + ')}` : ''}
+                              {m.numeroRecu ? ` · Reçu ${m.numeroRecu}` : ''}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => dupliquer(m)}
+                              className="text-blue-600 dark:text-blue-400 font-semibold hover:underline shrink-0"
+                            >
+                              {t('saisieJournaliere.dupliquer')}
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-xs text-slate-400 px-2 py-1.5">{t('saisieJournaliere.rechercheAucunResultat')}</p>
+                      )}
+                    </div>
+                  )}
+                </div>
                 <input
                   type="text"
                   placeholder={t('saisieJournaliere.mouvementsNom')}

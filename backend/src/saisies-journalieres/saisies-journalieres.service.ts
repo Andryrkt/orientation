@@ -130,6 +130,29 @@ export class SaisiesJournalieresService {
     return { midi: parPeriode(Periode.MIDI), apresMidi: parPeriode(Periode.APRES_MIDI) };
   }
 
+  // Permet à la secrétaire de retrouver un étudiant déjà inscrit (par nom, prénom ou numéro de
+  // reçu) pour dupliquer son inscription lors d'un renouvellement (nouvelle filière, nouveau reçu).
+  async rechercherEtudiants(utilisateurId: string, q: string) {
+    const pointDeVenteId = await this.pointDeVenteDuSecretaire(utilisateurId);
+    const recherche = q?.trim();
+    if (!recherche) return [];
+    return this.prisma.mouvementCaisse.findMany({
+      where: {
+        pointDeVenteId,
+        type: TypeMouvement.GAGNE,
+        nom: { not: null },
+        OR: [
+          { nom: { contains: recherche, mode: 'insensitive' } },
+          { prenom: { contains: recherche, mode: 'insensitive' } },
+          { numeroRecu: { contains: recherche, mode: 'insensitive' } },
+        ],
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 10,
+      include: { filieresInscrites: { include: { filiere: true } } },
+    });
+  }
+
   // Les dates de début/fin de cours se rattachent à une paire (mouvement, filière) : un même
   // étudiant inscrit dans plusieurs filières peut avoir un calendrier différent pour chacune.
   async filieresInscritesSuivi(utilisateurId: string) {

@@ -47,6 +47,13 @@ export class SaisiesJournalieresController {
 
   @UseGuards(RolesGuard)
   @Roles(Role.SECRETAIRE)
+  @Get('saisies-journalieres/mouvements/recherche')
+  rechercherEtudiants(@CurrentUser() user: { id: string }, @Query('q') q: string) {
+    return this.saisiesJournalieresService.rechercherEtudiants(user.id, q);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(Role.SECRETAIRE)
   @Delete('saisies-journalieres/mouvements/:id')
   supprimerMouvement(@CurrentUser() user: { id: string }, @Param('id') id: string) {
     return this.saisiesJournalieresService.supprimerMouvement(user.id, id);
