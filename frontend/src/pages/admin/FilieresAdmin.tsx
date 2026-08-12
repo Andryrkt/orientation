@@ -85,23 +85,23 @@ function MontantsFiliereModal({ filiere, onClose }: { filiere: Filiere; onClose:
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-30 p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-slate-900 rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-slate-800">Montants — {filiere.nom}</h2>
-            <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+            <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">Montants — {filiere.nom}</h2>
+            <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
               ✕
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-3 border-b border-slate-100 pb-4">
+          <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
                 Nouveau montant (Ar)
               </label>
               <MontantInput value={montant} onChange={setMontant} className="field-input w-40" required />
             </div>
-            <label className="flex items-center gap-1.5 text-sm text-slate-600 pb-2">
+            <label className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400 pb-2">
               <input type="checkbox" checked={activerADepot} onChange={(e) => setActiverADepot(e.target.checked)} />
               Activer immédiatement
             </label>
@@ -114,11 +114,11 @@ function MontantsFiliereModal({ filiere, onClose }: { filiere: Filiere; onClose:
           {!isLoading && montants?.length === 0 && (
             <p className="text-sm text-slate-400">Aucun montant enregistré.</p>
           )}
-          <ul className="divide-y divide-slate-100">
+          <ul className="divide-y divide-slate-100 dark:divide-slate-800">
             {montants?.map((m) => (
               <li key={m.id} className="flex items-center justify-between py-2.5">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-slate-700">{formatMontant(m.montant)}</span>
+                  <span className="font-medium text-slate-700 dark:text-slate-300">{formatMontant(m.montant)}</span>
                   {m.actif && (
                     <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
                       Actif
@@ -130,7 +130,7 @@ function MontantsFiliereModal({ filiere, onClose }: { filiere: Filiere; onClose:
                     <button
                       onClick={() => activerMutation.mutate(m.id)}
                       disabled={activerMutation.isPending}
-                      className="text-brand-600 hover:underline text-sm"
+                      className="text-brand-600 dark:text-brand-400 hover:underline text-sm"
                     >
                       Activer
                     </button>
@@ -139,7 +139,7 @@ function MontantsFiliereModal({ filiere, onClose }: { filiere: Filiere; onClose:
                     <button
                       onClick={() => removeMutation.mutate(m.id)}
                       disabled={removeMutation.isPending}
-                      className="text-red-600 hover:underline text-sm"
+                      className="text-red-600 dark:text-red-400 hover:underline text-sm"
                     >
                       Supprimer
                     </button>

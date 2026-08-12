@@ -121,7 +121,7 @@ export function AdminResourcePage<T extends { id: string }>({
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-slate-800">{title}</h1>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{title}</h1>
         <button
           onClick={openCreate}
           className="px-4 py-2 bg-brand-600 text-white rounded-md text-sm font-medium hover:bg-brand-700"
@@ -130,9 +130,9 @@ export function AdminResourcePage<T extends { id: string }>({
         </button>
       </div>
 
-      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+      <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left text-slate-500">
+          <thead className="bg-slate-50 dark:bg-slate-800/60 text-left text-slate-500 dark:text-slate-400">
             <tr>
               {columns.map((col) => (
                 <th key={col.key} className="px-4 py-3 font-medium">
@@ -142,7 +142,7 @@ export function AdminResourcePage<T extends { id: string }>({
               <th className="px-4 py-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {isLoading && (
               <tr>
                 <td colSpan={columns.length + 1} className="px-4 py-6 text-center text-slate-400">
@@ -158,22 +158,22 @@ export function AdminResourcePage<T extends { id: string }>({
               </tr>
             )}
             {data?.items.map((item) => (
-              <tr key={item.id} className="hover:bg-slate-50">
+              <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
                 {columns.map((col) => (
-                  <td key={col.key} className="px-4 py-3 text-slate-700">
+                  <td key={col.key} className="px-4 py-3 text-slate-700 dark:text-slate-300">
                     {col.render ? col.render(item) : String((item as Record<string, unknown>)[col.key] ?? '')}
                   </td>
                 ))}
                 <td className="px-4 py-3 text-right whitespace-nowrap">
                   <button
                     onClick={() => openEdit(item)}
-                    className="text-brand-600 hover:underline mr-3"
+                    className="text-brand-600 dark:text-brand-400 hover:underline mr-3"
                   >
                     Modifier
                   </button>
                   <button
                     onClick={() => handleDelete(item)}
-                    className="text-red-600 hover:underline"
+                    className="text-red-600 dark:text-red-400 hover:underline"
                   >
                     Supprimer
                   </button>
@@ -186,22 +186,22 @@ export function AdminResourcePage<T extends { id: string }>({
 
       {showForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-20 p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <h2 className="text-lg font-bold text-slate-800">
+              <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
                 {editing ? 'Modifier' : 'Ajouter'} — {title}
               </h2>
               {error && (
-                <div className="bg-red-50 text-red-700 text-sm rounded-md px-3 py-2">{error}</div>
+                <div className="bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">{error}</div>
               )}
               {fields.map((field) => (
                 <div key={field.name}>
-                  <label className="block text-sm font-medium text-slate-600 mb-1">
+                  <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
                     {field.label}
                   </label>
                   {field.type === 'wysiwyg' ? (
                     <div>
-                      <div className="border border-slate-300 rounded-md overflow-hidden bg-white text-slate-800">
+                      <div className="border border-slate-300 dark:border-slate-700 rounded-md overflow-hidden bg-white text-slate-800">
                         <div className="bg-slate-50 border-b border-slate-200 px-3 py-1.5 flex justify-between items-center text-xs text-slate-500">
                           <span>Éditeur de texte riche</span>
                           <button
@@ -263,7 +263,7 @@ export function AdminResourcePage<T extends { id: string }>({
                     </div>
                   ) : field.type === 'textarea' ? (
                     <textarea
-                      className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm text-slate-800"
+                      className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-md px-3 py-2 text-sm text-slate-800 dark:text-slate-100"
                       rows={3}
                       required={field.required}
                       value={(values[field.name] as string) ?? ''}
@@ -271,7 +271,7 @@ export function AdminResourcePage<T extends { id: string }>({
                     />
                   ) : field.type === 'select' ? (
                     <select
-                      className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+                      className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-3 py-2 text-sm"
                       required={field.required}
                       value={(values[field.name] as string) ?? ''}
                       onChange={(e) => setValues({ ...values, [field.name]: e.target.value })}
@@ -286,7 +286,7 @@ export function AdminResourcePage<T extends { id: string }>({
                   ) : (
                     <input
                       type={field.type}
-                      className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+                      className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-3 py-2 text-sm"
                       required={field.required}
                       value={(values[field.name] as string | number) ?? ''}
                       onChange={(e) =>
@@ -303,7 +303,7 @@ export function AdminResourcePage<T extends { id: string }>({
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-sm rounded-md text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 text-sm rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
                   Annuler
                 </button>

@@ -109,12 +109,12 @@ export function FinancesDashboard() {
     <div>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Tableau de bord Finances</h1>
-          <p className="text-sm text-slate-500 mt-1">Vue d'ensemble consolidée sur la période sélectionnée</p>
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Tableau de bord Finances</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Vue d'ensemble consolidée sur la période sélectionnée</p>
         </div>
         <div className="flex items-center gap-2 text-sm flex-wrap">
           <select
-            className="border border-slate-300 rounded-md px-2 py-1"
+            className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1"
             value={pointDeVenteId}
             onChange={(e) => setPointDeVenteId(e.target.value)}
           >
@@ -126,17 +126,17 @@ export function FinancesDashboard() {
               </option>
             ))}
           </select>
-          <label className="text-slate-500">Du</label>
+          <label className="text-slate-500 dark:text-slate-400">Du</label>
           <input
             type="date"
-            className="border border-slate-300 rounded-md px-2 py-1"
+            className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
           />
-          <label className="text-slate-500">au</label>
+          <label className="text-slate-500 dark:text-slate-400">au</label>
           <input
             type="date"
-            className="border border-slate-300 rounded-md px-2 py-1"
+            className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
           />
@@ -158,20 +158,20 @@ export function FinancesDashboard() {
 
       <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Résultat d'exploitation</p>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
-          <p className="text-sm text-slate-500">Recettes ventes</p>
+        <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-6">
+          <p className="text-sm text-slate-500 dark:text-slate-400">Recettes ventes</p>
           <p className="text-3xl font-bold text-emerald-600 mt-1">{chargement ? '…' : formatMontant(totalGagneVentes)}</p>
         </div>
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
-          <p className="text-sm text-slate-500">Dépenses ventes</p>
+        <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-6">
+          <p className="text-sm text-slate-500 dark:text-slate-400">Dépenses ventes</p>
           <p className="text-3xl font-bold text-red-600 mt-1">{chargement ? '…' : formatMontant(totalDepenseVentes)}</p>
         </div>
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
-          <p className="text-sm text-slate-500">Dépenses globales</p>
+        <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-6">
+          <p className="text-sm text-slate-500 dark:text-slate-400">Dépenses globales</p>
           <p className="text-3xl font-bold text-red-600 mt-1">{chargement ? '…' : formatMontant(totalDepensesGlobales)}</p>
         </div>
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
-          <p className="text-sm text-slate-500">Solde net entreprise</p>
+        <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-6">
+          <p className="text-sm text-slate-500 dark:text-slate-400">Solde net entreprise</p>
           <p className="text-3xl font-bold text-brand-700 mt-1">{chargement ? '…' : formatMontant(soldeNetEntreprise)}</p>
         </div>
       </div>
@@ -179,8 +179,8 @@ export function FinancesDashboard() {
       <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
         Financement externe — hors résultat d'exploitation
       </p>
-      <div className="bg-white rounded-lg border border-slate-200 p-6 max-w-sm mb-8">
-        <p className="text-sm text-slate-500">Investissements reçus (période)</p>
+      <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-6 max-w-sm mb-8">
+        <p className="text-sm text-slate-500 dark:text-slate-400">Investissements reçus (période)</p>
         <p className="text-3xl font-bold text-blue-600 mt-1">
           {loadingInvestissements ? '…' : formatMontant(totalInvestissements)}
         </p>
@@ -195,10 +195,10 @@ export function FinancesDashboard() {
           <Link
             key={r.to}
             to={r.to}
-            className="bg-white rounded-lg border border-slate-200 p-5 hover:border-brand-400 hover:shadow-sm transition-all"
+            className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-5 hover:border-brand-400 hover:shadow-sm transition-all"
           >
-            <p className="font-semibold text-slate-800">{r.label}</p>
-            <p className="text-sm text-slate-500 mt-1">{r.description}</p>
+            <p className="font-semibold text-slate-800 dark:text-slate-100">{r.label}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{r.description}</p>
           </Link>
         ))}
       </div>
