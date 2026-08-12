@@ -32,6 +32,7 @@
   "saisieJournaliere": {
     "title": "Fidirana isan'andro",
     "subtitle": "Soraty ny vola azo sy ny fandaniana ao amin'ny toeram-pivarotanao",
+    "todayLabel": "Androany",
     "pointDeVente": "Toeram-pivarotana",
     "midi": "Mitatao-vovonana",
     "apresMidi": "Tolakandro",
@@ -66,7 +67,16 @@
     "mouvementsResteAPayer": "Vola mbola aloa",
     "mouvementsDroitInscription": "Sarany fisoratana anarana",
     "mouvementsReduction": "Fihenam-bidy (Ar)",
-    "mouvementsNoteReduction": "Antony fihenam-bidy (tsy maintsy)"
+    "mouvementsNoteReduction": "Antony fihenam-bidy (tsy maintsy)",
+    "etudiantsSansDateDebut": "Fanaraha-maso ny daty fianarana",
+    "etudiantsSansDateDebutHint": "Farito ny daty fanombohana na/ary ny daty fiafarana ho an'ny sokajy fianarana tsirairay an'ny mpianatra voasoratra anarana amin'ny toeram-pivarotanao.",
+    "inscritLe": "Voasoratra anarana tamin'ny",
+    "dateDebut": "Daty fanombohana",
+    "dateFin": "Daty fiafarana",
+    "enregistrer": "Tehirizo",
+    "duree4Semaines": "Herinandro 4",
+    "duree5Semaines": "Herinandro 5",
+    "duree1Mois": "Volana 1"
   },
   "footer": {
     "description": "Ny sehatra fakan-kevitra ho an'ny fizahan-dalana amin'ny fianarana, an-danin'ny oniversite ary ny asa eto Madagasikara.",

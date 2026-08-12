@@ -32,6 +32,7 @@
   "saisieJournaliere": {
     "title": "Saisie journalière",
     "subtitle": "Enregistrez les recettes et dépenses de votre point de vente",
+    "todayLabel": "Aujourd'hui",
     "pointDeVente": "Point de vente",
     "midi": "Midi",
     "apresMidi": "Après-midi",
@@ -66,7 +67,16 @@
     "mouvementsResteAPayer": "Reste à payer",
     "mouvementsDroitInscription": "Droit d'inscription",
     "mouvementsReduction": "Réduction (Ar)",
-    "mouvementsNoteReduction": "Motif de la réduction (obligatoire)"
+    "mouvementsNoteReduction": "Motif de la réduction (obligatoire)",
+    "etudiantsSansDateDebut": "Suivi des dates de cours",
+    "etudiantsSansDateDebutHint": "Renseignez la date de début et/ou de fin de cours pour chaque filière des étudiants inscrits sur votre point de vente.",
+    "inscritLe": "Inscrit le",
+    "dateDebut": "Date de début",
+    "dateFin": "Date de fin",
+    "enregistrer": "Enregistrer",
+    "duree4Semaines": "4 semaines",
+    "duree5Semaines": "5 semaines",
+    "duree1Mois": "1 mois"
   },
   "footer": {
     "description": "La plateforme de référence pour l'orientation scolaire, universitaire et professionnelle à Madagascar.",

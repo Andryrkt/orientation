@@ -1,16 +1,41 @@
 import { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CheckCircle2, Loader2, Store, Trash2 } from 'lucide-react';
+import { CalendarDays, CheckCircle2, Loader2, Store, Trash2 } from 'lucide-react';
 import { api } from '../lib/api';
 import { formatMontant } from '../lib/format';
 import { MontantInput } from '../components/MontantInput';
-import { DroitInscription, Filiere, MouvementsAujourdhui, MouvementsPeriode, Periode, PointDeVente, SaisieAujourdhui, TypeMouvement } from '../lib/types';
+import { DroitInscription, Filiere, InscriptionFiliereSuivi, MouvementsAujourdhui, MouvementsPeriode, Periode, PointDeVente, SaisieAujourdhui, TypeMouvement } from '../lib/types';
 
 const PERIODES: { value: Periode; labelKey: string; key: 'midi' | 'apresMidi' }[] = [
   { value: 'MIDI', labelKey: 'saisieJournaliere.midi', key: 'midi' },
   { value: 'APRES_MIDI', labelKey: 'saisieJournaliere.apresMidi', key: 'apresMidi' },
 ];
+
+// "date" est une chaîne YYYY-MM-DD sans heure : construire la date à partir des composantes locales
+// pour éviter un décalage de jour si `new Date(dateStr)` était interprété en UTC.
+function formatDateAffichage(dateStr: string) {
+  const [annee, mois, jour] = dateStr.split('-').map(Number);
+  const date = new Date(annee, mois - 1, jour);
+  const texte = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  return texte.charAt(0).toUpperCase() + texte.slice(1);
+}
+
+type DureeRaccourci = '4_SEMAINES' | '5_SEMAINES' | '1_MOIS';
+
+// Calcule une date au format YYYY-MM-DD à partir d'une date de départ + une durée, en construisant
+// les dates via leurs composantes locales pour éviter tout décalage de fuseau horaire.
+function ajouterDuree(dateDebutStr: string, duree: DureeRaccourci): string {
+  const [annee, mois, jour] = dateDebutStr.split('-').map(Number);
+  const date = new Date(annee, mois - 1, jour);
+  if (duree === '4_SEMAINES') date.setDate(date.getDate() + 28);
+  else if (duree === '5_SEMAINES') date.setDate(date.getDate() + 35);
+  else date.setMonth(date.getMonth() + 1);
+  const y = date.getFullYear();
+  const m = (date.getMonth() + 1).toString().padStart(2, '0');
+  const d = date.getDate().toString().padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
 
 function MouvementsWidget({
   periode,
@@ -80,6 +105,7 @@ function MouvementsWidget({
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['mouvements-aujourdhui'] });
+      queryClient.invalidateQueries({ queryKey: ['filieres-inscrites-suivi'] });
       setMontant('');
       setNote('');
       resetDetails();
@@ -88,12 +114,16 @@ function MouvementsWidget({
 
   const supprimerMutation = useMutation({
     mutationFn: (id: string) => api.delete(`/saisies-journalieres/mouvements/${id}`),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['mouvements-aujourdhui'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['mouvements-aujourdhui'] });
+      queryClient.invalidateQueries({ queryKey: ['filieres-inscrites-suivi'] });
+    },
   });
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!montant || (!note.trim() && !detailInscriptionRenseigne)) return;
+    if (detailInscriptionRenseigne && (!nom.trim() || !prenom.trim())) return;
     if (inscriptionActive && Number(reduction) > 0 && !noteReduction.trim()) return;
     ajouterMutation.mutate();
   }
@@ -112,10 +142,10 @@ function MouvementsWidget({
               <span className={m.type === 'GAGNE' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}>
                 {m.type === 'GAGNE' ? '+' : '−'} {formatMontant(m.montant)}
                 {m.note ? ` · ${m.note}` : ''}
-                {(m.nom || m.prenom || m.filieres.length > 0 || m.montantTotal != null) && (
+                {(m.nom || m.prenom || m.filieresInscrites.length > 0 || m.montantTotal != null) && (
                   <span className="block text-slate-500 dark:text-slate-400 mt-0.5">
                     {[m.prenom, m.nom].filter(Boolean).join(' ')}
-                    {m.filieres.length > 0 ? ` · ${m.filieres.map((f) => f.nom).join(' + ')}` : ''}
+                    {m.filieresInscrites.length > 0 ? ` · ${m.filieresInscrites.map((fi) => fi.filiere.nom).join(' + ')}` : ''}
                     {m.numeroRecu ? ` · Reçu ${m.numeroRecu}` : ''}
                     {m.montantTotal != null
                       ? ` · ${formatMontant(m.montant)} / ${formatMontant(m.montantTotal)}${m.montantRestant != null ? ` (reste ${formatMontant(m.montantRestant)})` : ''}`
@@ -195,6 +225,7 @@ function MouvementsWidget({
                   value={nom}
                   onChange={(e) => setNom(e.target.value)}
                   className="field-input text-xs py-1.5"
+                  required={detailInscriptionRenseigne}
                 />
                 <input
                   type="text"
@@ -202,6 +233,7 @@ function MouvementsWidget({
                   value={prenom}
                   onChange={(e) => setPrenom(e.target.value)}
                   className="field-input text-xs py-1.5"
+                  required={detailInscriptionRenseigne}
                 />
                 <input
                   type="text"
@@ -403,6 +435,115 @@ function PeriodeCard({
   );
 }
 
+const RACCOURCIS_DUREE: { value: DureeRaccourci; labelKey: string }[] = [
+  { value: '4_SEMAINES', labelKey: 'saisieJournaliere.duree4Semaines' },
+  { value: '5_SEMAINES', labelKey: 'saisieJournaliere.duree5Semaines' },
+  { value: '1_MOIS', labelKey: 'saisieJournaliere.duree1Mois' },
+];
+
+function LigneSuiviInscription({ insc }: { insc: InscriptionFiliereSuivi }) {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  // Pré-rempli si déjà enregistré côté serveur ; sinon l'utilisateur peut saisir les deux dates
+  // (début et fin) en une seule fois avant même d'avoir sauvegardé la date de début.
+  const [dateDebut, setDateDebut] = useState(insc.dateDebutCours?.slice(0, 10) ?? '');
+  const [dateFin, setDateFin] = useState(insc.dateFinCours?.slice(0, 10) ?? '');
+
+  const mutation = useMutation({
+    mutationFn: () =>
+      api.patch(`/saisies-journalieres/filieres-inscrites/${insc.id}/dates-cours`, {
+        dateDebutCours: dateDebut || undefined,
+        dateFinCours: dateFin || undefined,
+      }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['filieres-inscrites-suivi'] }),
+  });
+
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-2 bg-slate-100 dark:bg-white/5 rounded-md px-3 py-2 text-sm">
+      <div>
+        <span className="font-semibold text-slate-800 dark:text-slate-100">
+          {[insc.mouvement.prenom, insc.mouvement.nom].filter(Boolean).join(' ')}
+        </span>
+        <span className="text-slate-500 dark:text-slate-400"> · {insc.filiere.nom}</span>
+        {insc.mouvement.numeroRecu && <span className="text-slate-500 dark:text-slate-400"> · Reçu {insc.mouvement.numeroRecu}</span>}
+        <span className="block text-xs text-slate-400 mt-0.5">
+          {t('saisieJournaliere.inscritLe')} {formatDateAffichage(insc.mouvement.date.slice(0, 10))}
+        </span>
+      </div>
+
+      <div className="flex flex-wrap items-start gap-1.5">
+        <div className="flex flex-col items-start">
+          <input
+            type="date"
+            value={dateDebut}
+            onChange={(ev) => setDateDebut(ev.target.value)}
+            title={t('saisieJournaliere.dateDebut')}
+            className="field-input text-xs py-1.5 w-auto"
+          />
+          {/* Le champ natif affiche le format de la langue du navigateur (parfois mm/jj/aaaa) : ce
+              texte donne toujours une lecture sans ambiguïté de la date réellement sélectionnée. */}
+          {dateDebut && <span className="text-[10px] text-slate-400 mt-0.5 whitespace-nowrap">{formatDateAffichage(dateDebut)}</span>}
+        </div>
+        {RACCOURCIS_DUREE.map((r) => (
+          <button
+            key={r.value}
+            type="button"
+            disabled={!dateDebut}
+            onClick={() => setDateFin(ajouterDuree(dateDebut, r.value))}
+            className="text-xs px-2 py-1 rounded-md bg-slate-200 dark:bg-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-white/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {t(r.labelKey)}
+          </button>
+        ))}
+        <div className="flex flex-col items-start">
+          <input
+            type="date"
+            value={dateFin}
+            onChange={(ev) => setDateFin(ev.target.value)}
+            title={t('saisieJournaliere.dateFin')}
+            className="field-input text-xs py-1.5 w-auto"
+          />
+          {dateFin && <span className="text-[10px] text-slate-400 mt-0.5 whitespace-nowrap">{formatDateAffichage(dateFin)}</span>}
+        </div>
+        <button
+          type="button"
+          disabled={!dateDebut || mutation.isPending}
+          onClick={() => mutation.mutate()}
+          className="btn-secondary text-xs py-1.5 px-3"
+        >
+          {t('saisieJournaliere.enregistrer')}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function EtudiantsSansDateDebut() {
+  const { t } = useTranslation();
+
+  // Chaque ligne est une inscription (étudiant, filière) : un même étudiant inscrit dans plusieurs
+  // filières peut apparaître plusieurs fois, une par filière dont la date de début ou de fin manque.
+  const { data: inscriptions, isLoading } = useQuery({
+    queryKey: ['filieres-inscrites-suivi'],
+    queryFn: async () => (await api.get<InscriptionFiliereSuivi[]>('/saisies-journalieres/filieres-inscrites/suivi')).data,
+  });
+
+  if (isLoading) return null;
+  if (!inscriptions || inscriptions.length === 0) return null;
+
+  return (
+    <div className="glass-card p-6 mt-6">
+      <h2 className="text-lg font-black text-slate-900 dark:text-white mb-1">{t('saisieJournaliere.etudiantsSansDateDebut')}</h2>
+      <p className="text-xs text-slate-400 mb-4">{t('saisieJournaliere.etudiantsSansDateDebutHint')}</p>
+      <div className="space-y-2">
+        {inscriptions.map((insc) => (
+          <LigneSuiviInscription key={insc.id} insc={insc} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function SaisieJournaliere() {
   const { t } = useTranslation();
 
@@ -452,8 +593,15 @@ export function SaisieJournaliere() {
       <div className="mb-8">
         <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">{t('saisieJournaliere.title')}</h1>
         <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">{t('saisieJournaliere.subtitle')}</p>
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400">
-          <Store className="w-4 h-4" /> {pointDeVente.nom}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400">
+            <Store className="w-4 h-4" /> {pointDeVente.nom}
+          </div>
+          {aujourdhui && (
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+              <CalendarDays className="w-4 h-4" /> {t('saisieJournaliere.todayLabel')} — {formatDateAffichage(aujourdhui.date)}
+            </div>
+          )}
         </div>
       </div>
 
@@ -474,6 +622,8 @@ export function SaisieJournaliere() {
           ))}
         </div>
       )}
+
+      <EtudiantsSansDateDebut />
     </div>
   );
 }

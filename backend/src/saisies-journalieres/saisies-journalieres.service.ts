@@ -8,6 +8,7 @@ import { SubmitSaisieDto } from './dto/submit-saisie.dto';
 import { UpdateSaisieDto } from './dto/update-saisie.dto';
 import { QuerySaisiesDto } from './dto/query-saisies.dto';
 import { CreateMouvementDto } from './dto/create-mouvement.dto';
+import { UpdateDatesCoursDto } from './dto/update-dates-cours.dto';
 
 @Injectable()
 export class SaisiesJournalieresService {
@@ -68,6 +69,9 @@ export class SaisiesJournalieresService {
 
   async ajouterMouvement(utilisateurId: string, dto: CreateMouvementDto) {
     const detailInscriptionRenseigne = !!(dto.nom || dto.prenom || dto.contact || dto.numeroRecu || dto.filiereIds?.length);
+    if (detailInscriptionRenseigne && (!dto.nom?.trim() || !dto.prenom?.trim())) {
+      throw new BadRequestException('Le nom et le prénom sont obligatoires pour enregistrer une inscription');
+    }
     if (!dto.note?.trim() && !detailInscriptionRenseigne) {
       throw new BadRequestException('La note est obligatoire');
     }
@@ -97,9 +101,11 @@ export class SaisiesJournalieresService {
         droitInscription,
         reduction: dto.reduction,
         noteReduction: dto.noteReduction,
-        ...(dto.filiereIds?.length ? { filieres: { connect: dto.filiereIds.map((id) => ({ id })) } } : {}),
+        ...(dto.filiereIds?.length
+          ? { filieresInscrites: { create: dto.filiereIds.map((filiereId) => ({ filiereId })) } }
+          : {}),
       },
-      include: { filieres: true },
+      include: { filieresInscrites: { include: { filiere: true } } },
     });
   }
 
@@ -109,7 +115,7 @@ export class SaisiesJournalieresService {
     const mouvements = await this.prisma.mouvementCaisse.findMany({
       where: { pointDeVenteId, date },
       orderBy: { createdAt: 'asc' },
-      include: { filieres: true },
+      include: { filieresInscrites: { include: { filiere: true } } },
     });
 
     const parPeriode = (periode: Periode) => {
@@ -122,6 +128,51 @@ export class SaisiesJournalieresService {
     };
 
     return { midi: parPeriode(Periode.MIDI), apresMidi: parPeriode(Periode.APRES_MIDI) };
+  }
+
+  // Les dates de début/fin de cours se rattachent à une paire (mouvement, filière) : un même
+  // étudiant inscrit dans plusieurs filières peut avoir un calendrier différent pour chacune.
+  async filieresInscritesSuivi(utilisateurId: string) {
+    const pointDeVenteId = await this.pointDeVenteDuSecretaire(utilisateurId);
+    return this.prisma.inscriptionFiliere.findMany({
+      where: {
+        OR: [{ dateDebutCours: null }, { dateFinCours: null }],
+        mouvement: { pointDeVenteId, type: TypeMouvement.GAGNE, nom: { not: null } },
+      },
+      orderBy: { mouvement: { createdAt: 'desc' } },
+      include: { filiere: true, mouvement: true },
+    });
+  }
+
+  private async trouverInscriptionDuPointDeVente(utilisateurId: string, id: string) {
+    const pointDeVenteId = await this.pointDeVenteDuSecretaire(utilisateurId);
+    const inscription = await this.prisma.inscriptionFiliere.findUnique({ where: { id }, include: { mouvement: true } });
+    if (!inscription) throw new NotFoundException(`Inscription filière #${id} introuvable`);
+    if (inscription.mouvement.pointDeVenteId !== pointDeVenteId) {
+      throw new ForbiddenException("Cette inscription n'appartient pas à votre point de vente");
+    }
+    return inscription;
+  }
+
+  // La date de début et la date de fin peuvent être envoyées ensemble (ex: étudiant dont aucune
+  // des deux dates n'est encore connue) ou séparément (ex: compléter la date de fin plus tard).
+  async definirDatesCoursFiliere(utilisateurId: string, id: string, dto: UpdateDatesCoursDto) {
+    if (!dto.dateDebutCours && !dto.dateFinCours) {
+      throw new BadRequestException('Au moins une date doit être renseignée');
+    }
+    const inscription = await this.trouverInscriptionDuPointDeVente(utilisateurId, id);
+    const dateDebutResolue = dto.dateDebutCours ?? inscription.dateDebutCours;
+    if (dto.dateFinCours && !dateDebutResolue) {
+      throw new BadRequestException('La date de début de cours doit être renseignée avant la date de fin');
+    }
+    return this.prisma.inscriptionFiliere.update({
+      where: { id },
+      data: {
+        ...(dto.dateDebutCours ? { dateDebutCours: new Date(dto.dateDebutCours) } : {}),
+        ...(dto.dateFinCours ? { dateFinCours: new Date(dto.dateFinCours) } : {}),
+      },
+      include: { filiere: true, mouvement: true },
+    });
   }
 
   async supprimerMouvement(utilisateurId: string, id: string) {

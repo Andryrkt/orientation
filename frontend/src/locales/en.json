@@ -32,6 +32,7 @@
   "saisieJournaliere": {
     "title": "Daily Entry",
     "subtitle": "Record your point of sale's revenue and expenses",
+    "todayLabel": "Today",
     "pointDeVente": "Point of sale",
     "midi": "Midday",
     "apresMidi": "Afternoon",
@@ -66,7 +67,16 @@
     "mouvementsResteAPayer": "Remaining balance",
     "mouvementsDroitInscription": "Registration fee",
     "mouvementsReduction": "Discount (Ar)",
-    "mouvementsNoteReduction": "Discount reason (required)"
+    "mouvementsNoteReduction": "Discount reason (required)",
+    "etudiantsSansDateDebut": "Course date tracking",
+    "etudiantsSansDateDebutHint": "Set the start and/or end date for each program of students enrolled at your point of sale.",
+    "inscritLe": "Enrolled on",
+    "dateDebut": "Start date",
+    "dateFin": "End date",
+    "enregistrer": "Save",
+    "duree4Semaines": "4 weeks",
+    "duree5Semaines": "5 weeks",
+    "duree1Mois": "1 month"
   },
   "footer": {
     "description": "The reference platform for academic, university, and professional guidance in Madagascar.",

@@ -9,6 +9,7 @@ import { SubmitSaisieDto } from './dto/submit-saisie.dto';
 import { UpdateSaisieDto } from './dto/update-saisie.dto';
 import { QuerySaisiesDto } from './dto/query-saisies.dto';
 import { CreateMouvementDto } from './dto/create-mouvement.dto';
+import { UpdateDatesCoursDto } from './dto/update-dates-cours.dto';
 
 @ApiTags('saisies-journalieres')
 @ApiBearerAuth()
@@ -49,6 +50,24 @@ export class SaisiesJournalieresController {
   @Delete('saisies-journalieres/mouvements/:id')
   supprimerMouvement(@CurrentUser() user: { id: string }, @Param('id') id: string) {
     return this.saisiesJournalieresService.supprimerMouvement(user.id, id);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(Role.SECRETAIRE)
+  @Get('saisies-journalieres/filieres-inscrites/suivi')
+  filieresInscritesSuivi(@CurrentUser() user: { id: string }) {
+    return this.saisiesJournalieresService.filieresInscritesSuivi(user.id);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(Role.SECRETAIRE)
+  @Patch('saisies-journalieres/filieres-inscrites/:id/dates-cours')
+  definirDatesCoursFiliere(
+    @CurrentUser() user: { id: string },
+    @Param('id') id: string,
+    @Body() dto: UpdateDatesCoursDto,
+  ) {
+    return this.saisiesJournalieresService.definirDatesCoursFiliere(user.id, id, dto);
   }
 
   @UseGuards(RolesGuard)

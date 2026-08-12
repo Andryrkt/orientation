@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateFiliereDto } from './dto/create-filiere.dto';
 import { UpdateFiliereDto } from './dto/update-filiere.dto';
@@ -33,6 +33,12 @@ export class FilieresService {
 
   async remove(id: string) {
     await this.findOne(id);
+    const inscriptions = await this.prisma.inscriptionFiliere.count({ where: { filiereId: id } });
+    if (inscriptions > 0) {
+      throw new BadRequestException(
+        'Impossible de supprimer cette filière : des étudiants y sont déjà inscrits. Désactivez-la plutôt.',
+      );
+    }
     return this.prisma.filiere.delete({ where: { id } });
   }
 }

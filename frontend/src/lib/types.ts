@@ -53,6 +53,17 @@ export interface Filiere {
   updatedAt: string;
 }
 
+// Une date de début de cours se rattache à la paire (mouvement, filière), pas au mouvement seul :
+// un même étudiant inscrit dans plusieurs filières peut démarrer chacune à une date différente.
+export interface InscriptionFiliere {
+  id: string;
+  mouvementId: string;
+  filiereId: string;
+  filiere: Filiere;
+  dateDebutCours: string | null;
+  dateFinCours: string | null;
+}
+
 export interface MouvementCaisse {
   id: string;
   pointDeVenteId: string;
@@ -67,12 +78,16 @@ export interface MouvementCaisse {
   prenom: string | null;
   contact: string | null;
   numeroRecu: string | null;
-  filieres: Filiere[];
+  filieresInscrites: InscriptionFiliere[];
   montantRestant: number | null;
   montantTotal: number | null;
   droitInscription: number | null;
   reduction: number | null;
   noteReduction: string | null;
+}
+
+export interface InscriptionFiliereSuivi extends InscriptionFiliere {
+  mouvement: MouvementCaisse;
 }
 
 export interface DroitInscription {

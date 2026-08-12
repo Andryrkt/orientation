@@ -667,7 +667,7 @@ model MouvementCaisse {
   prenom           String?
   contact          String?
   numeroRecu       String?
-  filieres         Filiere[]
+  filieresInscrites InscriptionFiliere[]
   droitInscription Int?
   reduction        Int?
   noteReduction    String?
@@ -685,9 +685,25 @@ model Filiere {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  mouvements MouvementCaisse[]
+  inscriptions InscriptionFiliere[]
 
   @@map("filieres")
+}
+
+// Table de jonction explicite (plutôt qu'une m2m implicite) car chaque filière suivie par un même
+// étudiant peut démarrer à une date différente : la date de début de cours se rattache à la paire
+// (mouvement, filière), pas au mouvement seul.
+model InscriptionFiliere {
+  id             String          @id @default(uuid())
+  mouvementId    String
+  mouvement      MouvementCaisse @relation(fields: [mouvementId], references: [id], onDelete: Cascade)
+  filiereId      String
+  filiere        Filiere         @relation(fields: [filiereId], references: [id], onDelete: Restrict)
+  dateDebutCours DateTime?       @db.Date
+  dateFinCours   DateTime?       @db.Date
+
+  @@unique([mouvementId, filiereId])
+  @@map("inscriptions_filieres")
 }
 
 model DroitInscription {
