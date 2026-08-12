@@ -218,7 +218,15 @@
     "bio": "Bio",
     "interests": "Intérêts (séparés par des virgules)",
     "save_btn": "Enregistrer",
-    "saving_btn": "Enregistrement..."
+    "saving_btn": "Enregistrement...",
+    "change_password_title": "Changer le mot de passe",
+    "current_password": "Mot de passe actuel",
+    "new_password": "Nouveau mot de passe",
+    "confirm_password": "Confirmer le nouveau mot de passe",
+    "change_password_btn": "Changer le mot de passe",
+    "password_updated_msg": "Mot de passe mis à jour.",
+    "password_mismatch": "Les mots de passe ne correspondent pas.",
+    "password_error": "Une erreur est survenue."
   },
   "ressources": {
     "title": "Espace d'Apprentissage & Documents",

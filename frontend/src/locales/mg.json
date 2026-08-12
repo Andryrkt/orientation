@@ -218,7 +218,15 @@
     "bio": "Mombamomba fohy (Bio)",
     "interests": "Ny zavatra mahaliana (sarahina amin'ny faingo)",
     "save_btn": "Tehirizina",
-    "saving_btn": "Eo am-pitehirizana..."
+    "saving_btn": "Eo am-pitehirizana...",
+    "change_password_title": "Manova ny teny miafina",
+    "current_password": "Teny miafina ankehitriny",
+    "new_password": "Teny miafina vaovao",
+    "confirm_password": "Hamarino ny teny miafina vaovao",
+    "change_password_btn": "Manova ny teny miafina",
+    "password_updated_msg": "Voavao ny teny miafina.",
+    "password_mismatch": "Tsy mitovy ny teny miafina roa.",
+    "password_error": "Nisy olana nitranga."
   },
   "ressources": {
     "title": "Sehatry ny Fianarana & Tahirin-kevitra",

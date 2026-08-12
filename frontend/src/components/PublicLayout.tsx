@@ -41,16 +41,23 @@ export function PublicLayout() {
     { to: '/budget', label: t('nav.budget') },
   ];
 
+  const isEmploye = user?.role === 'SECRETAIRE' || user?.role === 'MODERATEUR' || user?.role === 'MODERATEUR_FINANCE';
+
   const userItems: NavDropdownItem[] = user
-    ? [
-        { to: '/ressources', label: t('nav.ressources') },
-        { to: '/favoris', label: t('nav.my_favorites') },
-        { to: '/mes-resultats', label: t('nav.my_results') },
-        { to: '/tickets', label: t('nav.support_tickets') },
-        { to: '/profil', label: t('nav.my_profile') },
-        { to: '/mon-cv', label: t('nav.my_cv') },
-        { label: t('nav.logout'), onClick: () => logout() },
-      ]
+    ? isEmploye
+      ? [
+          { to: '/profil', label: t('nav.my_profile') },
+          { label: t('nav.logout'), onClick: () => logout() },
+        ]
+      : [
+          { to: '/ressources', label: t('nav.ressources') },
+          { to: '/favoris', label: t('nav.my_favorites') },
+          { to: '/mes-resultats', label: t('nav.my_results') },
+          { to: '/tickets', label: t('nav.support_tickets') },
+          { to: '/profil', label: t('nav.my_profile') },
+          { to: '/mon-cv', label: t('nav.my_cv') },
+          { label: t('nav.logout'), onClick: () => logout() },
+        ]
     : [];
 
   return (
@@ -73,12 +80,16 @@ export function PublicLayout() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
-            <NavDropdown label={t('nav.orientation')} items={ORIENTATION_ITEMS} />
-            <NavDropdown label={t('nav.opportunities')} items={OPPORTUNITES_ITEMS} />
-            <NavLink to="/blog" className={navLinkClass}>{t('nav.blog')}</NavLink>
-            <NavLink to="/faq" className={navLinkClass}>{t('nav.faq')}</NavLink>
-            <NavLink to="/contact" className={navLinkClass}>{t('nav.contact')}</NavLink>
-            {user && (
+            {!isEmploye && (
+              <>
+                <NavDropdown label={t('nav.orientation')} items={ORIENTATION_ITEMS} />
+                <NavDropdown label={t('nav.opportunities')} items={OPPORTUNITES_ITEMS} />
+                <NavLink to="/blog" className={navLinkClass}>{t('nav.blog')}</NavLink>
+                <NavLink to="/faq" className={navLinkClass}>{t('nav.faq')}</NavLink>
+                <NavLink to="/contact" className={navLinkClass}>{t('nav.contact')}</NavLink>
+              </>
+            )}
+            {user && !isEmploye && (
               <NavLink to="/ressources" className={navLinkClass}>{t('nav.ressources')}</NavLink>
             )}
             {user?.role === 'ADMIN' && (
@@ -267,13 +278,14 @@ export function PublicLayout() {
               boxShadow: theme === 'dark' ? '0 20px 40px rgba(0, 0, 0, 0.5)' : '0 20px 40px rgba(15, 23, 42, 0.08)',
             }}
           >
-            {[...ORIENTATION_ITEMS, ...OPPORTUNITES_ITEMS, { to: '/blog', label: t('nav.blog') }, { to: '/faq', label: t('nav.faq') }, { to: '/contact', label: t('nav.contact') }].map(
-              (item) => (
-                <NavLink key={item.to} to={item.to} className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
-                  {item.label}
-                </NavLink>
-              ),
-            )}
+            {!isEmploye &&
+              [...ORIENTATION_ITEMS, ...OPPORTUNITES_ITEMS, { to: '/blog', label: t('nav.blog') }, { to: '/faq', label: t('nav.faq') }, { to: '/contact', label: t('nav.contact') }].map(
+                (item) => (
+                  <NavLink key={item.to} to={item.to} className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
+                    {item.label}
+                  </NavLink>
+                ),
+              )}
             {user?.role === 'ADMIN' && (
               <NavLink to="/admin" className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
                 {t('nav.backoffice')}
@@ -345,54 +357,69 @@ export function PublicLayout() {
               {t('footer.description')}
             </p>
           </div>
-          <div>
-            <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">{t('footer.orientation')}</h4>
-            <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
-              {ORIENTATION_ITEMS.map((item) => (
-                <li key={item.to}>
-                  <Link to={item.to} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{item.label}</Link>
+          {!isEmploye && (
+            <div>
+              <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">{t('footer.orientation')}</h4>
+              <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
+                {ORIENTATION_ITEMS.map((item) => (
+                  <li key={item.to}>
+                    <Link to={item.to} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{item.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {!isEmploye && (
+            <div>
+              <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">{t('footer.opportunities')}</h4>
+              <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
+                {OPPORTUNITES_ITEMS.map((item) => (
+                  <li key={item.to}>
+                    <Link to={item.to} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{item.label}</Link>
+                  </li>
+                ))}
+                <li>
+                  <Link to="/blog" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.blog')}</Link>
                 </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">{t('footer.opportunities')}</h4>
-            <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
-              {OPPORTUNITES_ITEMS.map((item) => (
-                <li key={item.to}>
-                  <Link to={item.to} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{item.label}</Link>
+                <li>
+                  <Link to="/guide" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.user_guide')}</Link>
                 </li>
-              ))}
-              <li>
-                <Link to="/blog" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.blog')}</Link>
-              </li>
-              <li>
-                <Link to="/guide" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.user_guide')}</Link>
-              </li>
-              <li>
-                <Link to="/faq" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.faq')}</Link>
-              </li>
-              <li>
-                <Link to="/contact" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.contact')}</Link>
-              </li>
-            </ul>
-          </div>
+                <li>
+                  <Link to="/faq" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.faq')}</Link>
+                </li>
+                <li>
+                  <Link to="/contact" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.contact')}</Link>
+                </li>
+              </ul>
+            </div>
+          )}
           <div>
             <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">{t('footer.account')}</h4>
             <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
-              {user ? (
+              {user && isEmploye && (
+                <>
+                  {user.role === 'SECRETAIRE' && (
+                    <li><Link to="/saisie-journaliere" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.saisieJournaliere')}</Link></li>
+                  )}
+                  {(user.role === 'MODERATEUR' || user.role === 'MODERATEUR_FINANCE') && (
+                    <li><Link to="/moderation" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Modération</Link></li>
+                  )}
+                  <li><Link to="/profil" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.my_profile')}</Link></li>
+                </>
+              )}
+              {!user ? (
+                <>
+                  <li><Link to="/login" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.login')}</Link></li>
+                  <li><Link to="/register" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.register')}</Link></li>
+                </>
+              ) : !isEmploye ? (
                 <>
                   <li><Link to="/favoris" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.my_favorites')}</Link></li>
                   <li><Link to="/tickets" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.support_tickets')}</Link></li>
                   <li><Link to="/profil" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.my_profile')}</Link></li>
                   <li><Link to="/mon-cv" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.my_cv')}</Link></li>
                 </>
-              ) : (
-                <>
-                  <li><Link to="/login" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.login')}</Link></li>
-                  <li><Link to="/register" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.register')}</Link></li>
-                </>
-              )}
+              ) : null}
             </ul>
           </div>
         </div>

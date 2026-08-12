@@ -1,9 +1,10 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { CreateEmployeDto } from './dto/create-employe.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -53,6 +54,20 @@ export class UsersService {
       },
     });
     return this.findMe(userId);
+  }
+
+  async changePassword(userId: string, dto: ChangePasswordDto) {
+    const user = await this.prisma.utilisateur.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('Utilisateur introuvable');
+    if (!user.password) {
+      throw new BadRequestException('Ce compte ne possède pas encore de mot de passe. Utilisez "Mot de passe oublié" pour en définir un.');
+    }
+    if (!(await bcrypt.compare(dto.currentPassword, user.password))) {
+      throw new UnauthorizedException('Mot de passe actuel incorrect');
+    }
+    const password = await bcrypt.hash(dto.newPassword, 10);
+    await this.prisma.utilisateur.update({ where: { id: userId }, data: { password, refreshTokenHash: null } });
+    return { message: 'Mot de passe mis à jour' };
   }
 
   async getCvSuggestion(userId: string) {

@@ -218,7 +218,15 @@
     "bio": "Bio",
     "interests": "Interests (comma separated)",
     "save_btn": "Save Changes",
-    "saving_btn": "Saving..."
+    "saving_btn": "Saving...",
+    "change_password_title": "Change password",
+    "current_password": "Current password",
+    "new_password": "New password",
+    "confirm_password": "Confirm new password",
+    "change_password_btn": "Change password",
+    "password_updated_msg": "Password updated successfully.",
+    "password_mismatch": "Passwords do not match.",
+    "password_error": "Something went wrong."
   },
   "ressources": {
     "title": "Learning & Documents Hub",

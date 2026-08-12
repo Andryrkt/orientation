@@ -19,6 +19,7 @@ import { UsersService } from './users.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UpdateUserRoleDto } from './dto/update-user-role.dto';
 import { CreateEmployeDto } from './dto/create-employe.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @ApiBearerAuth()
 @ApiTags('users')
@@ -39,6 +40,11 @@ export class UsersController {
   @Patch('users/me')
   updateMe(@CurrentUser() user: { id: string }, @Body() dto: UpdateProfileDto) {
     return this.usersService.updateMe(user.id, dto);
+  }
+
+  @Patch('users/me/password')
+  changePassword(@CurrentUser() user: { id: string }, @Body() dto: ChangePasswordDto) {
+    return this.usersService.changePassword(user.id, dto);
   }
 
   @UseGuards(RolesGuard)
