@@ -242,6 +242,7 @@
     "register_prompt": "Pas encore de compte ?",
     "register_link": "S'inscrire gratuitement",
     "invalid_credentials_error": "Identifiants invalides.",
+    "server_unreachable_error": "Le serveur est momentanément indisponible. Merci de réessayer dans quelques instants.",
     "show_password": "Afficher le mot de passe",
     "hide_password": "Masquer le mot de passe"
   },

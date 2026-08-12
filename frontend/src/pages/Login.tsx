@@ -27,8 +27,14 @@ export function Login() {
     try {
       await login(identifiant, password);
       navigate('/');
-    } catch {
-      setError(t('login.invalid_credentials_error'));
+    } catch (err) {
+      const response = (err as { response?: { data?: { message?: string | string[] } } })?.response;
+      if (!response) {
+        // Pas de réponse du serveur (backend indisponible, ex: conteneur en cours de redémarrage) — à ne pas confondre avec un mauvais mot de passe
+        setError(t('login.server_unreachable_error'));
+      } else {
+        setError(t('login.invalid_credentials_error'));
+      }
     } finally {
       setLoading(false);
     }

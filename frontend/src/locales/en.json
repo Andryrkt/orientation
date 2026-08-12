@@ -242,6 +242,7 @@
     "register_prompt": "Don't have an account?",
     "register_link": "Register for free",
     "invalid_credentials_error": "Invalid credentials.",
+    "server_unreachable_error": "The server is temporarily unavailable. Please try again in a moment.",
     "show_password": "Show password",
     "hide_password": "Hide password"
   },

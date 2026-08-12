@@ -242,6 +242,7 @@
     "register_prompt": "Tsy mbola manana kaonty ?",
     "register_link": "Hisoratra anarana maimaim-poana",
     "invalid_credentials_error": "Tsy mety ny solonanarana na teny miafina.",
+    "server_unreachable_error": "Tsy azo tratrarina vonjimaika ny serveur. Andramo indray afaka kelikely.",
     "show_password": "Hampiseho ny teny miafina",
     "hide_password": "Hanafina ny teny miafina"
   },
