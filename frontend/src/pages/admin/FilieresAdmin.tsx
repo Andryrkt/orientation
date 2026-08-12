@@ -220,7 +220,8 @@ export function FilieresAdmin() {
           actif: item.actif ? 'true' : 'false',
         })}
         toPayload={(values) => ({
-          ...values,
+          nom: values.nom,
+          prix: values.prix,
           dateConcours: values.dateConcours || null,
           actif: values.actif === 'true',
         })}

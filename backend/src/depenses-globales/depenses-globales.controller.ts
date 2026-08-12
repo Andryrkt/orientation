@@ -10,7 +10,7 @@ import { UpdateDepenseGlobaleDto } from './dto/update-depense-globale.dto';
 @ApiTags('depenses-globales')
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
-@Roles(Role.ADMIN)
+@Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
 @Controller()
 export class DepensesGlobalesController {
   constructor(private depensesGlobalesService: DepensesGlobalesService) {}

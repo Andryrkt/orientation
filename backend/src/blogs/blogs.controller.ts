@@ -104,7 +104,7 @@ export class BlogsController {
 
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR)
   @Get('admin/blog-commentaires')
   listCommentsForModeration(@Query() query: QueryCommentaireDto) {
     return this.blogsService.listCommentsForModeration(query);
@@ -112,7 +112,7 @@ export class BlogsController {
 
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR)
   @Patch('admin/blog-commentaires/:id')
   moderateComment(@Param('id') id: string, @Body() dto: UpdateCommentaireStatutDto) {
     return this.blogsService.moderateComment(id, dto.statut);
@@ -120,7 +120,7 @@ export class BlogsController {
 
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR)
   @Delete('admin/blog-commentaires/:id')
   removeComment(@Param('id') id: string) {
     return this.blogsService.removeComment(id);

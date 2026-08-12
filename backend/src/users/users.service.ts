@@ -1,7 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Role } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { CreateEmployeDto } from './dto/create-employe.dto';
 
 @Injectable()
 export class UsersService {
@@ -154,6 +156,30 @@ export class UsersService {
       this.prisma.utilisateur.count(),
     ]);
     return { items, total, page, limit };
+  }
+
+  async createEmploye(dto: CreateEmployeDto) {
+    const existing = await this.prisma.utilisateur.findFirst({
+      where: { OR: [{ email: dto.email }, ...(dto.telephone ? [{ telephone: dto.telephone }] : [])] },
+    });
+    if (existing) {
+      throw new ConflictException('Un compte existe déjà avec cet email ou ce téléphone');
+    }
+
+    const password = await bcrypt.hash(dto.password, 10);
+    return this.prisma.utilisateur.create({
+      data: {
+        nom: dto.nom,
+        prenom: dto.prenom,
+        email: dto.email,
+        telephone: dto.telephone,
+        password,
+        role: dto.role,
+        emailVerifiedAt: new Date(),
+        profil: { create: {} },
+      },
+      select: this.userSelect,
+    });
   }
 
   async updateRole(id: string, role: Role) {

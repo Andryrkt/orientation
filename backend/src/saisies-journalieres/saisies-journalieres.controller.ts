@@ -78,14 +78,14 @@ export class SaisiesJournalieresController {
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Get('admin/saisies-journalieres')
   findAllAdmin(@Query() query: QuerySaisiesDto) {
     return this.saisiesJournalieresService.findAllAdmin(query);
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Get('admin/saisies-journalieres/resume')
   resumeAdmin(
     @Query('dateFrom') dateFrom?: string,
@@ -96,7 +96,7 @@ export class SaisiesJournalieresController {
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Get('admin/saisies-journalieres/resume-semaine')
   resumeParSemaine(
     @Query('dateFrom') dateFrom?: string,
@@ -107,7 +107,7 @@ export class SaisiesJournalieresController {
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Patch('admin/saisies-journalieres/:id')
   updateAdmin(@Param('id') id: string, @Body() dto: UpdateSaisieDto) {
     return this.saisiesJournalieresService.updateAdmin(id, dto);

@@ -1,4 +1,4 @@
-export type Role = 'VISITOR' | 'STUDENT' | 'COACH' | 'TEACHER' | 'ADMIN' | 'SECRETAIRE';
+export type Role = 'VISITOR' | 'STUDENT' | 'COACH' | 'TEACHER' | 'ADMIN' | 'SECRETAIRE' | 'MODERATEUR' | 'MODERATEUR_FINANCE';
 
 export interface PointDeVente {
   id: string;

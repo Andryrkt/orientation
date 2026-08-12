@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Patch,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 import { UsersService } from './users.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UpdateUserRoleDto } from './dto/update-user-role.dto';
+import { CreateEmployeDto } from './dto/create-employe.dto';
 
 @ApiBearerAuth()
 @ApiTags('users')
@@ -44,6 +46,13 @@ export class UsersController {
   @Get('admin/users')
   findAll(@Query() query: PaginationQueryDto) {
     return this.usersService.findAll(query.page ?? 1, query.limit ?? 20);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Post('admin/users')
+  createEmploye(@Body() dto: CreateEmployeDto) {
+    return this.usersService.createEmploye(dto);
   }
 
   @UseGuards(RolesGuard)

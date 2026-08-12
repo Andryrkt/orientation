@@ -9,7 +9,9 @@ export class FilieresService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateFiliereDto) {
-    const filiere = await this.prisma.filiere.create({ data: dto });
+    const filiere = await this.prisma.filiere.create({
+      data: { ...dto, dateConcours: dto.dateConcours ? new Date(dto.dateConcours) : undefined },
+    });
     // Le prix initial constitue le premier montant actif de l'historique.
     await this.prisma.filiereMontant.create({
       data: { filiereId: filiere.id, montant: dto.prix, actif: true },
@@ -34,7 +36,13 @@ export class FilieresService {
 
   async update(id: string, dto: UpdateFiliereDto) {
     await this.findOne(id);
-    return this.prisma.filiere.update({ where: { id }, data: dto });
+    return this.prisma.filiere.update({
+      where: { id },
+      data: {
+        ...dto,
+        dateConcours: dto.dateConcours !== undefined ? (dto.dateConcours ? new Date(dto.dateConcours) : null) : undefined,
+      },
+    });
   }
 
   async remove(id: string) {

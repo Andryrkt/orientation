@@ -87,6 +87,9 @@ export function PublicLayout() {
             {user?.role === 'SECRETAIRE' && (
               <NavLink to="/saisie-journaliere" className={navLinkClass}>{t('nav.saisieJournaliere')}</NavLink>
             )}
+            {user?.role === 'MODERATEUR' && (
+              <NavLink to="/moderation" className={navLinkClass}>Modération</NavLink>
+            )}
             {user ? (
               <NavDropdown label={`${user.prenom} ${user.nom}`} items={userItems} align="right" />
             ) : (
@@ -279,6 +282,11 @@ export function PublicLayout() {
             {user?.role === 'SECRETAIRE' && (
               <NavLink to="/saisie-journaliere" className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
                 {t('nav.saisieJournaliere')}
+              </NavLink>
+            )}
+            {user?.role === 'MODERATEUR' && (
+              <NavLink to="/moderation" className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
+                Modération
               </NavLink>
             )}
             <div className="pt-2.5 mt-2.5" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>

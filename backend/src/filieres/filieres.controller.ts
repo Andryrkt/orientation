@@ -22,56 +22,56 @@ export class FilieresController {
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Post('admin/filieres')
   create(@Body() dto: CreateFiliereDto) {
     return this.filieresService.create(dto);
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Get('admin/filieres')
   findAllAdmin() {
     return this.filieresService.findAllAdmin();
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Patch('admin/filieres/:id')
   update(@Param('id') id: string, @Body() dto: UpdateFiliereDto) {
     return this.filieresService.update(id, dto);
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Delete('admin/filieres/:id')
   remove(@Param('id') id: string) {
     return this.filieresService.remove(id);
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Get('admin/filieres/:id/montants')
   findMontants(@Param('id') id: string) {
     return this.filieresService.findMontants(id);
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Post('admin/filieres/:id/montants')
   createMontant(@Param('id') id: string, @Body() dto: CreateFiliereMontantDto) {
     return this.filieresService.createMontant(id, dto);
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Patch('admin/filieres/:id/montants/:montantId/activer')
   activerMontant(@Param('id') id: string, @Param('montantId') montantId: string) {
     return this.filieresService.activerMontant(id, montantId);
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Delete('admin/filieres/:id/montants/:montantId')
   removeMontant(@Param('id') id: string, @Param('montantId') montantId: string) {
     return this.filieresService.removeMontant(id, montantId);

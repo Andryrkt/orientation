@@ -10,7 +10,7 @@ import { UpdateInvestissementDto } from './dto/update-investissement.dto';
 @ApiTags('investissements')
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
-@Roles(Role.ADMIN)
+@Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
 @Controller()
 export class InvestissementsController {
   constructor(private investissementsService: InvestissementsService) {}

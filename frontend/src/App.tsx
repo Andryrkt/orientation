@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { PublicLayout } from './components/PublicLayout';
 import { AdminLayout } from './components/admin/AdminLayout';
-import { ProtectedRoute, AdminRoute, SecretaireRoute } from './components/ProtectedRoute';
+import { ProtectedRoute, AdminRoute, AdminStrictRoute, SecretaireRoute, ModerateurRoute } from './components/ProtectedRoute';
 import { Home } from './pages/Home';
 import { MetiersList } from './pages/MetiersList';
 import { MetierDetail } from './pages/MetierDetail';
@@ -109,31 +109,36 @@ export default function App() {
         <Route element={<SecretaireRoute />}>
           <Route path="saisie-journaliere" element={<SaisieJournaliere />} />
         </Route>
+        <Route element={<ModerateurRoute />}>
+          <Route path="moderation" element={<BlogCommentairesAdmin />} />
+        </Route>
       </Route>
 
       <Route element={<AdminRoute />}>
         <Route path="admin" element={<AdminLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="domaines" element={<DomainesAdmin />} />
-          <Route path="metiers" element={<MetiersAdmin />} />
-          <Route path="universites" element={<UniversitesAdmin />} />
-          <Route path="mentions" element={<MentionsAdmin />} />
-          <Route path="parcours" element={<ParcoursAdmin />} />
-          <Route path="stages" element={<StagesAdmin />} />
-          <Route path="bourses" element={<BoursesAdmin />} />
-          <Route path="blogs" element={<BlogsAdmin />} />
-          <Route path="blog-commentaires" element={<BlogCommentairesAdmin />} />
-          <Route path="ressources" element={<RessourcesAdmin />} />
-          <Route path="questionnaires" element={<QuestionnairesAdmin />} />
-          <Route path="questionnaires/:id" element={<QuestionnaireBuilder />} />
-          <Route path="coachs" element={<CoachsAdmin />} />
-          <Route path="enseignants" element={<EnseignantsAdmin />} />
-          <Route path="centres-formation" element={<CentresFormationAdmin />} />
-          <Route path="utilisateurs" element={<UtilisateursAdmin />} />
-          <Route path="tickets" element={<TicketsAdmin />} />
-          <Route path="tickets/:id" element={<TicketDetailAdmin />} />
-          <Route path="faq" element={<FaqAdmin />} />
-          <Route path="contact-messages" element={<ContactMessagesAdmin />} />
+          <Route element={<AdminStrictRoute />}>
+            <Route index element={<Dashboard />} />
+            <Route path="domaines" element={<DomainesAdmin />} />
+            <Route path="metiers" element={<MetiersAdmin />} />
+            <Route path="universites" element={<UniversitesAdmin />} />
+            <Route path="mentions" element={<MentionsAdmin />} />
+            <Route path="parcours" element={<ParcoursAdmin />} />
+            <Route path="stages" element={<StagesAdmin />} />
+            <Route path="bourses" element={<BoursesAdmin />} />
+            <Route path="blogs" element={<BlogsAdmin />} />
+            <Route path="blog-commentaires" element={<BlogCommentairesAdmin />} />
+            <Route path="ressources" element={<RessourcesAdmin />} />
+            <Route path="questionnaires" element={<QuestionnairesAdmin />} />
+            <Route path="questionnaires/:id" element={<QuestionnaireBuilder />} />
+            <Route path="coachs" element={<CoachsAdmin />} />
+            <Route path="enseignants" element={<EnseignantsAdmin />} />
+            <Route path="centres-formation" element={<CentresFormationAdmin />} />
+            <Route path="utilisateurs" element={<UtilisateursAdmin />} />
+            <Route path="tickets" element={<TicketsAdmin />} />
+            <Route path="tickets/:id" element={<TicketDetailAdmin />} />
+            <Route path="faq" element={<FaqAdmin />} />
+            <Route path="contact-messages" element={<ContactMessagesAdmin />} />
+          </Route>
           <Route path="finances" element={<FinancesDashboard />} />
           <Route path="points-de-vente" element={<PointsDeVenteAdmin />} />
           <Route path="saisies-journalieres" element={<SaisiesJournalieresAdmin />} />

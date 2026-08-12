@@ -66,12 +66,15 @@ const groups: { title?: string; links: { to: string; label: string; end?: boolea
 ];
 
 export function AdminLayout() {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [groupesFermes, setGroupesFermes] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(groups.filter((g) => g.title).map((g) => [g.title!, true])),
   );
   const [sidebarOuvert, setSidebarOuvert] = useState(() => localStorage.getItem('admin-sidebar-ouvert') !== 'false');
+
+  // Un modérateur finance n'a accès qu'à la section Finances du back-office.
+  const visibleGroups = user?.role === 'MODERATEUR_FINANCE' ? groups.filter((g) => g.title === 'Finances') : groups;
 
   function toggleGroupe(titre: string) {
     setGroupesFermes((prev) => ({ ...prev, [titre]: !prev[titre] }));
@@ -106,7 +109,7 @@ export function AdminLayout() {
           </button>
         </div>
         <nav className="flex-1 py-4 overflow-y-auto w-64">
-          {groups.map((group, i) => {
+          {visibleGroups.map((group, i) => {
             const ouvert = !group.title || !groupesFermes[group.title];
             return (
               <div key={group.title ?? i} className={i > 0 ? 'mt-4' : undefined}>

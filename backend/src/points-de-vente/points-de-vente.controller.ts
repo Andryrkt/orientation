@@ -23,56 +23,56 @@ export class PointsDeVenteController {
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Post('admin/points-de-vente')
   create(@Body() dto: CreatePointDeVenteDto) {
     return this.pointsDeVenteService.create(dto);
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Get('admin/points-de-vente')
   findAllAdmin() {
     return this.pointsDeVenteService.findAllAdmin();
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Get('admin/points-de-vente/:id')
   findOne(@Param('id') id: string) {
     return this.pointsDeVenteService.findOne(id);
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Patch('admin/points-de-vente/:id')
   update(@Param('id') id: string, @Body() dto: UpdatePointDeVenteDto) {
     return this.pointsDeVenteService.update(id, dto);
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Patch('admin/points-de-vente/:id/deactivate')
   deactivate(@Param('id') id: string) {
     return this.pointsDeVenteService.setActif(id, false);
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Patch('admin/points-de-vente/:id/reactivate')
   reactivate(@Param('id') id: string) {
     return this.pointsDeVenteService.setActif(id, true);
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Post('admin/points-de-vente/:id/secretaires')
   assignSecretaire(@Param('id') id: string, @Body() dto: AssignSecretaireDto) {
     return this.pointsDeVenteService.assignSecretaire(id, dto.utilisateurId);
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Delete('admin/points-de-vente/:id/secretaires/:utilisateurId')
   unassignSecretaire(@Param('id') id: string, @Param('utilisateurId') utilisateurId: string) {
     return this.pointsDeVenteService.unassignSecretaire(id, utilisateurId);

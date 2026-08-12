@@ -13,14 +13,14 @@ export class DroitInscriptionController {
   constructor(private droitInscriptionService: DroitInscriptionService) {}
 
   @UseGuards(RolesGuard)
-  @Roles(Role.SECRETAIRE, Role.ADMIN)
+  @Roles(Role.SECRETAIRE, Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Get('droit-inscription')
   get() {
     return this.droitInscriptionService.get();
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Patch('admin/droit-inscription')
   update(@Body() dto: UpdateDroitInscriptionDto) {
     return this.droitInscriptionService.update(dto);
