@@ -38,6 +38,7 @@ export function PublicLayout() {
   const OPPORTUNITES_ITEMS = [
     { to: '/stages', label: t('nav.internships') },
     { to: '/bourses', label: t('nav.scholarships') },
+    { to: '/budget', label: t('nav.budget') },
   ];
 
   const userItems: NavDropdownItem[] = user
@@ -82,6 +83,9 @@ export function PublicLayout() {
             )}
             {user?.role === 'ADMIN' && (
               <NavLink to="/admin" className={navLinkClass}>{t('nav.backoffice')}</NavLink>
+            )}
+            {user?.role === 'SECRETAIRE' && (
+              <NavLink to="/saisie-journaliere" className={navLinkClass}>{t('nav.saisieJournaliere')}</NavLink>
             )}
             {user ? (
               <NavDropdown label={`${user.prenom} ${user.nom}`} items={userItems} align="right" />
@@ -270,6 +274,11 @@ export function PublicLayout() {
             {user?.role === 'ADMIN' && (
               <NavLink to="/admin" className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
                 {t('nav.backoffice')}
+              </NavLink>
+            )}
+            {user?.role === 'SECRETAIRE' && (
+              <NavLink to="/saisie-journaliere" className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
+                {t('nav.saisieJournaliere')}
               </NavLink>
             )}
             <div className="pt-2.5 mt-2.5" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>

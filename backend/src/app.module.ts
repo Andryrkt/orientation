@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { PrismaModule } from './prisma/prisma.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
@@ -25,10 +26,17 @@ import { EnseignantsModule } from './enseignants/enseignants.module';
 import { HealthModule } from './health/health.module';
 import { FaqModule } from './faq/faq.module';
 import { ContactModule } from './contact/contact.module';
+import { PointsDeVenteModule } from './points-de-vente/points-de-vente.module';
+import { SaisiesJournalieresModule } from './saisies-journalieres/saisies-journalieres.module';
+import { DepensesGlobalesModule } from './depenses-globales/depenses-globales.module';
+import { InvestissementsModule } from './investissements/investissements.module';
+import { FilieresModule } from './filieres/filieres.module';
+import { DroitInscriptionModule } from './droit-inscription/droit-inscription.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ScheduleModule.forRoot(),
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
     PrismaModule,
     AuthModule,
@@ -52,6 +60,12 @@ import { ContactModule } from './contact/contact.module';
     HealthModule,
     FaqModule,
     ContactModule,
+    PointsDeVenteModule,
+    SaisiesJournalieresModule,
+    DepensesGlobalesModule,
+    InvestissementsModule,
+    FilieresModule,
+    DroitInscriptionModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

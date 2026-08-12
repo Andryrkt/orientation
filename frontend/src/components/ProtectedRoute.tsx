@@ -15,3 +15,11 @@ export function AdminRoute() {
   if (user.role !== 'ADMIN') return <Navigate to="/" replace />;
   return <Outlet />;
 }
+
+export function SecretaireRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="p-8 text-center text-slate-500">Chargement...</div>;
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role !== 'SECRETAIRE') return <Navigate to="/" replace />;
+  return <Outlet />;
+}

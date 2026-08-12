@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { PublicLayout } from './components/PublicLayout';
 import { AdminLayout } from './components/admin/AdminLayout';
-import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute';
+import { ProtectedRoute, AdminRoute, SecretaireRoute } from './components/ProtectedRoute';
 import { Home } from './pages/Home';
 import { MetiersList } from './pages/MetiersList';
 import { MetierDetail } from './pages/MetierDetail';
@@ -12,6 +12,7 @@ import { StagesList } from './pages/StagesList';
 import { StageDetail } from './pages/StageDetail';
 import { BoursesList } from './pages/BoursesList';
 import { BourseDetail } from './pages/BourseDetail';
+import { BudgetSimulator } from './pages/BudgetSimulator';
 import { BlogsList } from './pages/BlogsList';
 import { BlogDetail } from './pages/BlogDetail';
 import { QuestionnairesList } from './pages/QuestionnairesList';
@@ -34,6 +35,7 @@ import { NotFound } from './pages/NotFound';
 import { GuideUtilisateur } from './pages/GuideUtilisateur';
 import { Contact } from './pages/Contact';
 import { FAQ } from './pages/FAQ';
+import { SaisieJournaliere } from './pages/SaisieJournaliere';
 import { Dashboard } from './pages/admin/Dashboard';
 import { DomainesAdmin } from './pages/admin/DomainesAdmin';
 import { MetiersAdmin } from './pages/admin/MetiersAdmin';
@@ -57,6 +59,12 @@ import { RessourcesAdmin } from './pages/admin/RessourcesAdmin';
 import { EnseignantsAdmin } from './pages/admin/EnseignantsAdmin';
 import { FaqAdmin } from './pages/admin/FaqAdmin';
 import { ContactMessagesAdmin } from './pages/admin/ContactMessagesAdmin';
+import { PointsDeVenteAdmin } from './pages/admin/PointsDeVenteAdmin';
+import { SaisiesJournalieresAdmin } from './pages/admin/SaisiesJournalieresAdmin';
+import { DepensesGlobalesAdmin } from './pages/admin/DepensesGlobalesAdmin';
+import { InvestissementsAdmin } from './pages/admin/InvestissementsAdmin';
+import { FinancesDashboard } from './pages/admin/FinancesDashboard';
+import { FilieresAdmin } from './pages/admin/FilieresAdmin';
 
 export default function App() {
   return (
@@ -74,6 +82,7 @@ export default function App() {
         <Route path="stages/:id" element={<StageDetail />} />
         <Route path="bourses" element={<BoursesList />} />
         <Route path="bourses/:id" element={<BourseDetail />} />
+        <Route path="budget" element={<BudgetSimulator />} />
         <Route path="blog" element={<BlogsList />} />
         <Route path="blog/:slug" element={<BlogDetail />} />
         <Route path="questionnaire" element={<QuestionnairesList />} />
@@ -96,6 +105,9 @@ export default function App() {
           <Route path="mes-resultats" element={<QuestionnaireHistorique />} />
           <Route path="tickets" element={<Tickets />} />
           <Route path="tickets/:id" element={<TicketDetail />} />
+        </Route>
+        <Route element={<SecretaireRoute />}>
+          <Route path="saisie-journaliere" element={<SaisieJournaliere />} />
         </Route>
       </Route>
 
@@ -122,6 +134,12 @@ export default function App() {
           <Route path="tickets/:id" element={<TicketDetailAdmin />} />
           <Route path="faq" element={<FaqAdmin />} />
           <Route path="contact-messages" element={<ContactMessagesAdmin />} />
+          <Route path="finances" element={<FinancesDashboard />} />
+          <Route path="points-de-vente" element={<PointsDeVenteAdmin />} />
+          <Route path="saisies-journalieres" element={<SaisiesJournalieresAdmin />} />
+          <Route path="depenses-globales" element={<DepensesGlobalesAdmin />} />
+          <Route path="investissements" element={<InvestissementsAdmin />} />
+          <Route path="filieres" element={<FilieresAdmin />} />
         </Route>
       </Route>
 

@@ -1,4 +1,150 @@
-export type Role = 'VISITOR' | 'STUDENT' | 'COACH' | 'ADMIN';
+export type Role = 'VISITOR' | 'STUDENT' | 'COACH' | 'TEACHER' | 'ADMIN' | 'SECRETAIRE';
+
+export interface PointDeVente {
+  id: string;
+  nom: string;
+  adresse: string | null;
+  ville: string | null;
+  actif: boolean;
+  createdAt: string;
+  updatedAt: string;
+  secretaires?: { id: string; nom: string; prenom: string; email: string; telephone: string | null }[];
+}
+
+export interface SaisiePeriodeStatut {
+  soumis: boolean;
+  montantGagne?: number;
+  montantDepense?: number;
+}
+
+export interface SaisieAujourdhui {
+  pointDeVenteId: string;
+  date: string;
+  midi: SaisiePeriodeStatut;
+  apresMidi: SaisiePeriodeStatut;
+}
+
+export type Periode = 'MIDI' | 'APRES_MIDI';
+
+export interface SaisieJournaliere {
+  id: string;
+  pointDeVenteId: string;
+  pointDeVente?: { id: string; nom: string; ville: string | null };
+  date: string;
+  periode: Periode;
+  montantGagne: number;
+  montantDepense: number;
+  saisiParId: string | null;
+  saisiPar?: { id: string; nom: string; prenom: string } | null;
+  createdAt: string;
+  updatedAt: string;
+  mouvementsGagne?: number | null;
+  mouvementsDepense?: number | null;
+}
+
+export type TypeMouvement = 'GAGNE' | 'DEPENSE';
+
+export interface Filiere {
+  id: string;
+  nom: string;
+  prix: number;
+  actif: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Une date de début de cours se rattache à la paire (mouvement, filière), pas au mouvement seul :
+// un même étudiant inscrit dans plusieurs filières peut démarrer chacune à une date différente.
+export interface InscriptionFiliere {
+  id: string;
+  mouvementId: string;
+  filiereId: string;
+  filiere: Filiere;
+  dateDebutCours: string | null;
+  dateFinCours: string | null;
+}
+
+export interface MouvementCaisse {
+  id: string;
+  pointDeVenteId: string;
+  date: string;
+  periode: Periode;
+  type: TypeMouvement;
+  montant: number;
+  note: string | null;
+  saisiParId: string | null;
+  createdAt: string;
+  nom: string | null;
+  prenom: string | null;
+  contact: string | null;
+  numeroRecu: string | null;
+  filieresInscrites: InscriptionFiliere[];
+  montantRestant: number | null;
+  montantTotal: number | null;
+  droitInscription: number | null;
+  reduction: number | null;
+  noteReduction: string | null;
+}
+
+export interface InscriptionFiliereSuivi extends InscriptionFiliere {
+  mouvement: MouvementCaisse;
+}
+
+export interface DroitInscription {
+  id: string;
+  montant: number;
+  updatedAt: string;
+}
+
+export interface MouvementsPeriode {
+  items: MouvementCaisse[];
+  totalGagne: number;
+  totalDepense: number;
+}
+
+export interface MouvementsAujourdhui {
+  midi: MouvementsPeriode;
+  apresMidi: MouvementsPeriode;
+}
+
+export interface ResumeSaisiePointDeVente {
+  pointDeVente: { id: string; nom: string; ville: string | null };
+  totalGagne: number;
+  totalDepense: number;
+  manquantAujourdhui: Periode[];
+}
+
+export interface ResumeSemaine {
+  semaineDebut: string;
+  semaineFin: string;
+  totalGagne: number;
+  totalDepense: number;
+}
+
+export interface DepenseGlobale {
+  id: string;
+  date: string;
+  categorie: string;
+  montant: number;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type TypeInvestissement = 'DON' | 'PRET' | 'APPORT_CAPITAL';
+export type StatutInvestissement = 'PROMIS' | 'RECU';
+
+export interface Investissement {
+  id: string;
+  date: string;
+  bailleur: string;
+  montant: number;
+  type: TypeInvestissement;
+  statut: StatutInvestissement;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface ExperienceCv {
   poste: string;
