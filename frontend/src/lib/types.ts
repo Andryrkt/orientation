@@ -48,9 +48,18 @@ export interface Filiere {
   id: string;
   nom: string;
   prix: number;
+  dateConcours: string | null;
   actif: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface FiliereMontant {
+  id: string;
+  filiereId: string;
+  montant: number;
+  actif: boolean;
+  createdAt: string;
 }
 
 // Une date de début de cours se rattache à la paire (mouvement, filière), pas au mouvement seul :

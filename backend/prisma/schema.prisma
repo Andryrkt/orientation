@@ -678,16 +678,31 @@ model MouvementCaisse {
 }
 
 model Filiere {
-  id        String   @id @default(uuid())
-  nom       String
-  prix      Int
-  actif     Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String    @id @default(uuid())
+  nom          String
+  prix         Int
+  dateConcours DateTime? @db.Date
+  actif        Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   inscriptions InscriptionFiliere[]
+  montants     FiliereMontant[]
 
   @@map("filieres")
+}
+
+// Historique des montants proposés pour une filière : un seul est actif à la fois,
+// c'est celui-ci qui est reflété sur Filiere.prix.
+model FiliereMontant {
+  id        String   @id @default(uuid())
+  filiereId String
+  filiere   Filiere  @relation(fields: [filiereId], references: [id], onDelete: Cascade)
+  montant   Int
+  actif     Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("filiere_montants")
 }
 
 // Table de jonction explicite (plutôt qu'une m2m implicite) car chaque filière suivie par un même

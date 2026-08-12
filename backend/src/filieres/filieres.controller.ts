@@ -6,6 +6,7 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { FilieresService } from './filieres.service';
 import { CreateFiliereDto } from './dto/create-filiere.dto';
 import { UpdateFiliereDto } from './dto/update-filiere.dto';
+import { CreateFiliereMontantDto } from './dto/create-filiere-montant.dto';
 
 @ApiTags('filieres')
 @ApiBearerAuth()
@@ -46,5 +47,33 @@ export class FilieresController {
   @Delete('admin/filieres/:id')
   remove(@Param('id') id: string) {
     return this.filieresService.remove(id);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Get('admin/filieres/:id/montants')
+  findMontants(@Param('id') id: string) {
+    return this.filieresService.findMontants(id);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Post('admin/filieres/:id/montants')
+  createMontant(@Param('id') id: string, @Body() dto: CreateFiliereMontantDto) {
+    return this.filieresService.createMontant(id, dto);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Patch('admin/filieres/:id/montants/:montantId/activer')
+  activerMontant(@Param('id') id: string, @Param('montantId') montantId: string) {
+    return this.filieresService.activerMontant(id, montantId);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Delete('admin/filieres/:id/montants/:montantId')
+  removeMontant(@Param('id') id: string, @Param('montantId') montantId: string) {
+    return this.filieresService.removeMontant(id, montantId);
   }
 }

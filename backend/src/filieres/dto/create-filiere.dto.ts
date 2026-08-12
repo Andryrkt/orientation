@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsInt, IsOptional, IsString, Min, MinLength } from 'class-validator';
+import { IsBoolean, IsDateString, IsInt, IsOptional, IsString, Min, MinLength } from 'class-validator';
 
 export class CreateFiliereDto {
   @ApiProperty()
@@ -11,6 +11,11 @@ export class CreateFiliereDto {
   @IsInt()
   @Min(0)
   prix: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsDateString()
+  dateConcours?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
