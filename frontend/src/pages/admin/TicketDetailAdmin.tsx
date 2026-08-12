@@ -116,7 +116,7 @@ export function TicketDetailAdmin() {
   if (error || !ticket) {
     return (
       <div className="max-w-3xl mx-auto text-center py-12 space-y-4">
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+        <div className="bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 px-4 py-3 rounded-md text-sm">
           {error || 'Ticket introuvable.'}
         </div>
         <Link to="/admin/tickets" className="btn-secondary px-5 py-2.5 rounded-xl font-bold inline-block">
@@ -129,35 +129,35 @@ export function TicketDetailAdmin() {
   return (
     <div className="space-y-6">
       {/* Fil d'Ariane */}
-      <div className="flex items-center gap-2 text-sm text-slate-500">
-        <Link to="/admin/tickets" className="hover:text-brand-600 transition-colors font-medium">
+      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+        <Link to="/admin/tickets" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors font-medium">
           Tickets / Support
         </Link>
         <span>/</span>
-        <span className="text-slate-800 font-semibold">Traiter le ticket</span>
+        <span className="text-slate-800 dark:text-slate-100 font-semibold">Traiter le ticket</span>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6 items-start">
         {/* Discussion */}
-        <div className="md:col-span-2 space-y-4 flex flex-col h-[600px] bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
-          <div className="px-6 py-4 border-b border-slate-100 shrink-0">
-            <h2 className="text-lg font-bold text-slate-900 line-clamp-1">{ticket.sujet}</h2>
+        <div className="md:col-span-2 space-y-4 flex flex-col h-[600px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden shadow-sm">
+          <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 line-clamp-1">{ticket.sujet}</h2>
             <div className="text-xs text-slate-400 mt-0.5">
               Par {ticket.utilisateur?.prenom} {ticket.utilisateur?.nom} le {new Date(ticket.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0 bg-slate-50/30">
+          <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0 bg-slate-50/30 dark:bg-slate-950/30">
             {/* Description initiale */}
             <div className="flex gap-3">
-              <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0 uppercase">
+              <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-xs shrink-0 uppercase">
                 {ticket.utilisateur?.prenom?.[0] || 'U'}
               </div>
               <div className="space-y-1">
-                <div className="text-xs font-semibold text-slate-500">
+                <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                   {ticket.utilisateur?.prenom} {ticket.utilisateur?.nom} <span className="font-normal text-slate-400">(Auteur)</span>
                 </div>
-                <div className="bg-white border border-slate-200/80 text-slate-800 rounded-2xl rounded-tl-none px-4 py-3 text-sm max-w-md whitespace-pre-line shadow-sm">
+                <div className="bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-2xl rounded-tl-none px-4 py-3 text-sm max-w-md whitespace-pre-line shadow-sm">
                   {ticket.description || <span className="italic text-slate-400">Pas de description fournie.</span>}
                 </div>
               </div>
@@ -170,19 +170,19 @@ export function TicketDetailAdmin() {
               return (
                 <div key={message.id} className={`flex gap-3 ${!isUser ? 'justify-end' : ''}`}>
                   {isUser && (
-                    <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0 uppercase">
+                    <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-xs shrink-0 uppercase">
                       {message.auteur?.prenom?.[0] || 'U'}
                     </div>
                   )}
                   <div className={`space-y-1 ${!isUser ? 'text-right' : ''}`}>
-                    <div className="text-xs font-semibold text-slate-500">
+                    <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                       {!isUser ? `Support (${message.auteur?.prenom})` : `${message.auteur?.prenom} ${message.auteur?.nom}`}
                     </div>
                     <div
                       className={`text-sm rounded-2xl px-4 py-2.5 max-w-md whitespace-pre-line shadow-sm border ${
                         !isUser
                           ? 'bg-brand-600 text-white border-brand-500 rounded-tr-none text-left'
-                          : 'bg-white border-slate-250 text-slate-800 rounded-tl-none'
+                          : 'bg-white dark:bg-slate-800 border-slate-250 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-tl-none'
                       }`}
                     >
                       {message.message}
@@ -197,9 +197,9 @@ export function TicketDetailAdmin() {
             <div ref={chatBottomRef} />
           </div>
 
-          <div className="p-4 border-t border-slate-100 bg-white shrink-0">
+          <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
             {ticket.statut === 'FERME' ? (
-              <div className="text-center text-sm font-medium text-slate-500 py-2">
+              <div className="text-center text-sm font-medium text-slate-500 dark:text-slate-400 py-2">
                 Ce ticket est fermé. Vous ne pouvez plus répondre. Modifiez son statut pour le rouvrir.
               </div>
             ) : (
@@ -209,7 +209,7 @@ export function TicketDetailAdmin() {
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Écrivez votre réponse en tant que Support..."
-                  className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
                 />
                 <button
                   type="submit"
@@ -227,17 +227,17 @@ export function TicketDetailAdmin() {
 
         {/* Panneau latéral d'actions */}
         <div className="space-y-4">
-          <div className="bg-white border border-slate-200 rounded-lg p-6 shadow-sm space-y-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 shadow-sm space-y-4">
             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">Actions & Paramètres</h3>
 
             {/* Statut */}
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-slate-500">Statut du ticket</label>
+              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400">Statut du ticket</label>
               <select
                 value={ticket.statut}
                 disabled={updating}
                 onChange={(e) => handleUpdateStatus(e.target.value as TicketStatut)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-md px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-700 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-brand-500"
               >
                 <option value="OUVERT">Ouvert</option>
                 <option value="EN_COURS">En cours</option>
@@ -248,12 +248,12 @@ export function TicketDetailAdmin() {
 
             {/* Priorité */}
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-slate-500">Priorité</label>
+              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400">Priorité</label>
               <select
                 value={ticket.priorite}
                 disabled={updating}
                 onChange={(e) => handleUpdatePriority(e.target.value as TicketPriorite)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-md px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-700 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-brand-500"
               >
                 <option value="BASSE">Basse</option>
                 <option value="MOYENNE">Moyenne</option>
@@ -261,7 +261,7 @@ export function TicketDetailAdmin() {
               </select>
             </div>
 
-            <div className="pt-4 border-t border-slate-100 text-xs text-slate-400 space-y-2">
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400 space-y-2">
               <div>
                 <strong>Auteur :</strong> {ticket.utilisateur?.prenom} {ticket.utilisateur?.nom} ({ticket.utilisateur?.email})
               </div>

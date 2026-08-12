@@ -64,18 +64,18 @@ export function TicketsAdmin() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-slate-800">Gestion des Tickets / Support</h1>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Gestion des Tickets / Support</h1>
       </div>
 
       {/* Filtres */}
-      <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-col sm:flex-row items-center gap-4">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 shadow-sm flex flex-col sm:flex-row items-center gap-4">
         <div className="flex-1 w-full">
           <input
             type="text"
             placeholder="Rechercher par sujet ou description..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="w-full bg-slate-50 dark:bg-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
           />
         </div>
 
@@ -84,7 +84,7 @@ export function TicketsAdmin() {
             <select
               value={statutFilter}
               onChange={(e) => setStatutFilter(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
+              className="bg-slate-50 dark:bg-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
             >
               <option value="">Tous les statuts</option>
               <option value="OUVERT">Ouverts</option>
@@ -98,7 +98,7 @@ export function TicketsAdmin() {
             <select
               value={prioriteFilter}
               onChange={(e) => setPrioriteFilter(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
+              className="bg-slate-50 dark:bg-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
             >
               <option value="">Toutes les priorités</option>
               <option value="BASSE">Priorité Basse</option>
@@ -110,15 +110,15 @@ export function TicketsAdmin() {
       </div>
 
       {error && (
-        <div className="bg-red-50 text-red-700 px-4 py-3 rounded-md border border-red-200 text-sm">
+        <div className="bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 px-4 py-3 rounded-md border border-red-200 dark:border-red-900 text-sm">
           {error}
         </div>
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto shadow-sm">
+      <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 overflow-x-auto shadow-sm">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left text-slate-500">
+          <thead className="bg-slate-50 dark:bg-slate-800/60 text-left text-slate-500 dark:text-slate-400">
             <tr>
               <th className="px-6 py-3 font-medium">Auteur</th>
               <th className="px-6 py-3 font-medium">Catégorie</th>
@@ -129,7 +129,7 @@ export function TicketsAdmin() {
               <th className="px-6 py-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {loading ? (
               <tr>
                 <td colSpan={7} className="px-6 py-8 text-center text-slate-400">
@@ -144,14 +144,14 @@ export function TicketsAdmin() {
               </tr>
             ) : (
               tickets.map((t) => (
-                <tr key={t.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
+                <tr key={t.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                  <td className="px-6 py-4 font-medium text-slate-800 dark:text-slate-100 whitespace-nowrap">
                     {t.utilisateur?.prenom} {t.utilisateur?.nom}
                   </td>
-                  <td className="px-6 py-4 text-slate-500 uppercase tracking-wider text-xs font-semibold">
+                  <td className="px-6 py-4 text-slate-500 dark:text-slate-400 uppercase tracking-wider text-xs font-semibold">
                     {t.categorie}
                   </td>
-                  <td className="px-6 py-4 max-w-xs truncate text-slate-700 font-medium">
+                  <td className="px-6 py-4 max-w-xs truncate text-slate-700 dark:text-slate-300 font-medium">
                     {t.sujet}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -164,7 +164,7 @@ export function TicketsAdmin() {
                       {PRIORITE_LABELS[t.priorite]}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-slate-500 whitespace-nowrap">
+                  <td className="px-6 py-4 text-slate-500 dark:text-slate-400 whitespace-nowrap">
                     {new Date(t.updatedAt).toLocaleDateString('fr-FR', {
                       day: 'numeric',
                       month: 'short',
@@ -176,7 +176,7 @@ export function TicketsAdmin() {
                   <td className="px-6 py-4 text-right whitespace-nowrap">
                     <Link
                       to={`/admin/tickets/${t.id}`}
-                      className="text-brand-600 hover:text-brand-800 font-semibold hover:underline"
+                      className="text-brand-600 dark:text-brand-400 hover:text-brand-800 dark:hover:text-brand-300 font-semibold hover:underline"
                     >
                       Traiter →
                     </Link>

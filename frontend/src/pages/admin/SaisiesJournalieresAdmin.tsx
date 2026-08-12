@@ -135,10 +135,10 @@ export function SaisiesJournalieresAdmin() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <h1 className="text-2xl font-bold text-slate-800">Saisies journalières</h1>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Saisies journalières</h1>
         <div className="flex items-center gap-2 text-sm flex-wrap">
           <select
-            className="border border-slate-300 rounded-md px-2 py-1"
+            className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1"
             value={pointDeVenteId}
             onChange={(e) => {
               setPointDeVenteId(e.target.value);
@@ -153,28 +153,28 @@ export function SaisiesJournalieresAdmin() {
               </option>
             ))}
           </select>
-          <label className="text-slate-500">Du</label>
+          <label className="text-slate-500 dark:text-slate-400">Du</label>
           <input
             type="date"
-            className="border border-slate-300 rounded-md px-2 py-1"
+            className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1"
             value={dateFrom}
             onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
           />
-          <label className="text-slate-500">au</label>
+          <label className="text-slate-500 dark:text-slate-400">au</label>
           <input
             type="date"
-            className="border border-slate-300 rounded-md px-2 py-1"
+            className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1"
             value={dateTo}
             onChange={(e) => { setDateTo(e.target.value); setPage(1); }}
           />
         </div>
       </div>
 
-      <div className="flex gap-1 mb-6 border-b border-slate-200">
+      <div className="flex gap-1 mb-6 border-b border-slate-200 dark:border-slate-800">
         <button
           onClick={() => setTab('resume')}
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px ${
-            tab === 'resume' ? 'border-brand-600 text-brand-700' : 'border-transparent text-slate-500 hover:text-slate-700'
+            tab === 'resume' ? 'border-brand-600 text-brand-700 dark:text-brand-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
           }`}
         >
           Résumé
@@ -182,7 +182,7 @@ export function SaisiesJournalieresAdmin() {
         <button
           onClick={() => setTab('historique')}
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px ${
-            tab === 'historique' ? 'border-brand-600 text-brand-700' : 'border-transparent text-slate-500 hover:text-slate-700'
+            tab === 'historique' ? 'border-brand-600 text-brand-700 dark:text-brand-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
           }`}
         >
           Historique détaillé
@@ -192,23 +192,23 @@ export function SaisiesJournalieresAdmin() {
       {tab === 'resume' && (
         <>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <p className="text-sm text-slate-500">Total gagné (période)</p>
+            <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-6">
+              <p className="text-sm text-slate-500 dark:text-slate-400">Total gagné (période)</p>
               <p className="text-3xl font-bold text-emerald-600 mt-1">{formatMontant(totalGagne)}</p>
             </div>
-            <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <p className="text-sm text-slate-500">Total dépensé (période)</p>
+            <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-6">
+              <p className="text-sm text-slate-500 dark:text-slate-400">Total dépensé (période)</p>
               <p className="text-3xl font-bold text-red-600 mt-1">{formatMontant(totalDepense)}</p>
             </div>
-            <div className="bg-white rounded-lg border border-slate-200 p-6">
-              <p className="text-sm text-slate-500">Solde net</p>
+            <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-6">
+              <p className="text-sm text-slate-500 dark:text-slate-400">Solde net</p>
               <p className="text-3xl font-bold text-brand-700 mt-1">{formatMontant(totalGagne - totalDepense)}</p>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-left text-slate-500">
+              <thead className="bg-slate-50 dark:bg-slate-800/60 text-left text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="px-4 py-3 font-medium">Point de vente</th>
                   <th className="px-4 py-3 font-medium">Ville</th>
@@ -218,7 +218,7 @@ export function SaisiesJournalieresAdmin() {
                   <th className="px-4 py-3 font-medium">Saisie du jour manquante</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {loadingResume && (
                   <tr><td colSpan={6} className="px-4 py-6 text-center text-slate-400">Chargement...</td></tr>
                 )}
@@ -226,12 +226,12 @@ export function SaisiesJournalieresAdmin() {
                   <tr><td colSpan={6} className="px-4 py-6 text-center text-slate-400">Aucun point de vente actif</td></tr>
                 )}
                 {resume?.map((r) => (
-                  <tr key={r.pointDeVente.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 text-slate-700 font-medium">{r.pointDeVente.nom}</td>
-                    <td className="px-4 py-3 text-slate-700">{r.pointDeVente.ville ?? '—'}</td>
+                  <tr key={r.pointDeVente.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300 font-medium">{r.pointDeVente.nom}</td>
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300">{r.pointDeVente.ville ?? '—'}</td>
                     <td className="px-4 py-3 text-emerald-600 font-medium">{formatMontant(r.totalGagne)}</td>
                     <td className="px-4 py-3 text-red-600 font-medium">{formatMontant(r.totalDepense)}</td>
-                    <td className="px-4 py-3 text-slate-700 font-medium">
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300 font-medium">
                       {formatMontant(r.totalGagne - r.totalDepense)}
                     </td>
                     <td className="px-4 py-3">
@@ -249,9 +249,9 @@ export function SaisiesJournalieresAdmin() {
             </table>
           </div>
 
-          <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto mt-6">
+          <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 overflow-x-auto mt-6">
             <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-left text-slate-500">
+              <thead className="bg-slate-50 dark:bg-slate-800/60 text-left text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="px-4 py-3 font-medium">Semaine</th>
                   <th className="px-4 py-3 font-medium">Total gagné</th>
@@ -259,7 +259,7 @@ export function SaisiesJournalieresAdmin() {
                   <th className="px-4 py-3 font-medium">Solde</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {loadingSemaine && (
                   <tr><td colSpan={4} className="px-4 py-6 text-center text-slate-400">Chargement...</td></tr>
                 )}
@@ -267,11 +267,11 @@ export function SaisiesJournalieresAdmin() {
                   <tr><td colSpan={4} className="px-4 py-6 text-center text-slate-400">Aucune saisie</td></tr>
                 )}
                 {totauxParSemaine?.map((s) => (
-                  <tr key={s.semaineDebut} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 text-slate-700 font-medium">{formatSemaine(s.semaineDebut, s.semaineFin)}</td>
+                  <tr key={s.semaineDebut} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300 font-medium">{formatSemaine(s.semaineDebut, s.semaineFin)}</td>
                     <td className="px-4 py-3 text-emerald-600 font-medium">{formatMontant(s.totalGagne)}</td>
                     <td className="px-4 py-3 text-red-600 font-medium">{formatMontant(s.totalDepense)}</td>
-                    <td className="px-4 py-3 text-slate-700 font-medium">{formatMontant(s.totalGagne - s.totalDepense)}</td>
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300 font-medium">{formatMontant(s.totalGagne - s.totalDepense)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -282,9 +282,9 @@ export function SaisiesJournalieresAdmin() {
 
       {tab === 'historique' && (
         <>
-          <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-left text-slate-500">
+              <thead className="bg-slate-50 dark:bg-slate-800/60 text-left text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="px-4 py-3 font-medium" />
                   <th className="px-4 py-3 font-medium">Date</th>
@@ -295,7 +295,7 @@ export function SaisiesJournalieresAdmin() {
                   <th className="px-4 py-3 font-medium">Solde (jour)</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {loadingHistorique && (
                   <tr><td colSpan={7} className="px-4 py-6 text-center text-slate-400">Chargement...</td></tr>
                 )}
@@ -306,27 +306,27 @@ export function SaisiesJournalieresAdmin() {
                   const ouvert = journeesOuvertes.has(j.cle);
                   return (
                     <Fragment key={j.cle}>
-                      <tr onClick={() => toggleJournee(j.cle)} className="hover:bg-slate-50 cursor-pointer">
+                      <tr onClick={() => toggleJournee(j.cle)} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer">
                         <td className="px-4 py-3 text-slate-400">
                           {ouvert ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                         </td>
-                        <td className="px-4 py-3 text-slate-700">
+                        <td className="px-4 py-3 text-slate-700 dark:text-slate-300">
                           {new Date(j.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                         </td>
-                        <td className="px-4 py-3 text-slate-700 font-medium">{j.pointDeVente?.nom ?? '—'}</td>
-                        <td className="px-4 py-3 text-slate-500 text-xs">
+                        <td className="px-4 py-3 text-slate-700 dark:text-slate-300 font-medium">{j.pointDeVente?.nom ?? '—'}</td>
+                        <td className="px-4 py-3 text-slate-500 dark:text-slate-400 text-xs">
                           {j.saisies.map((s) => PERIODE_LABELS[s.periode]).join(', ')}
                         </td>
                         <td className="px-4 py-3 text-emerald-600 font-medium">{formatMontant(j.totalGagne)}</td>
                         <td className="px-4 py-3 text-red-600 font-medium">{formatMontant(j.totalDepense)}</td>
-                        <td className="px-4 py-3 text-slate-700 font-medium">
+                        <td className="px-4 py-3 text-slate-700 dark:text-slate-300 font-medium">
                           {formatMontant(j.totalGagne - j.totalDepense)}
                         </td>
                       </tr>
                       {ouvert && (
                         <tr>
                           <td colSpan={7} className="p-0">
-                            <table className="w-full text-sm bg-slate-50">
+                            <table className="w-full text-sm bg-slate-50 dark:bg-slate-800/40">
                               <thead className="text-left text-slate-400">
                                 <tr>
                                   <th className="pl-12 pr-4 py-2 font-medium">Période</th>
@@ -337,16 +337,16 @@ export function SaisiesJournalieresAdmin() {
                                   <th className="px-4 py-2 font-medium">Contre-poids</th>
                                 </tr>
                               </thead>
-                              <tbody className="divide-y divide-slate-200">
+                              <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
                                 {j.saisies.map((s) => (
                                   <tr key={s.id}>
-                                    <td className="pl-12 pr-4 py-2 text-slate-600">{PERIODE_LABELS[s.periode]}</td>
+                                    <td className="pl-12 pr-4 py-2 text-slate-600 dark:text-slate-300">{PERIODE_LABELS[s.periode]}</td>
                                     <td className="px-4 py-2 text-emerald-600">{formatMontant(s.montantGagne)}</td>
                                     <td className="px-4 py-2 text-red-600">{formatMontant(s.montantDepense)}</td>
-                                    <td className="px-4 py-2 text-slate-600 font-medium">
+                                    <td className="px-4 py-2 text-slate-600 dark:text-slate-300 font-medium">
                                       {formatMontant(s.montantGagne - s.montantDepense)}
                                     </td>
-                                    <td className="px-4 py-2 text-slate-500">
+                                    <td className="px-4 py-2 text-slate-500 dark:text-slate-400">
                                       {s.saisiPar ? `${s.saisiPar.prenom} ${s.saisiPar.nom}` : '—'}
                                     </td>
                                     <td className="px-4 py-2">
@@ -366,22 +366,22 @@ export function SaisiesJournalieresAdmin() {
             </table>
 
             {historique && historique.total > historique.limit && (
-              <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100 text-sm">
-                <span className="text-slate-500">
+              <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100 dark:border-slate-800 text-sm">
+                <span className="text-slate-500 dark:text-slate-400">
                   Page {historique.page} sur {Math.ceil(historique.total / historique.limit)} ({historique.total} saisies)
                 </span>
                 <div className="flex gap-2">
                   <button
                     disabled={page <= 1}
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    className="px-3 py-1 rounded-md border border-slate-300 disabled:opacity-40"
+                    className="px-3 py-1 rounded-md border border-slate-300 dark:border-slate-700 dark:text-slate-300 disabled:opacity-40"
                   >
                     Précédent
                   </button>
                   <button
                     disabled={page >= Math.ceil(historique.total / historique.limit)}
                     onClick={() => setPage((p) => p + 1)}
-                    className="px-3 py-1 rounded-md border border-slate-300 disabled:opacity-40"
+                    className="px-3 py-1 rounded-md border border-slate-300 dark:border-slate-700 dark:text-slate-300 disabled:opacity-40"
                   >
                     Suivant
                   </button>

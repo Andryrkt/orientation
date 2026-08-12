@@ -28,12 +28,12 @@ function ReponseRow({ reponse, questionId }: { reponse: Reponse; questionId: str
   return (
     <div className="flex gap-2 items-center">
       <input
-        className="flex-1 border border-slate-300 rounded-md px-2 py-1.5 text-sm"
+        className="flex-1 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1.5 text-sm"
         value={texte}
         onChange={(e) => setTexte(e.target.value)}
       />
       <input
-        className="w-32 border border-slate-300 rounded-md px-2 py-1.5 text-sm"
+        className="w-32 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1.5 text-sm"
         placeholder="R:2, I:1"
         value={score}
         onChange={(e) => setScore(e.target.value)}
@@ -82,21 +82,21 @@ function QuestionCard({ question }: { question: Question }) {
   });
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-5 space-y-3">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 space-y-3">
       <div className="flex gap-2">
         <input
-          className="flex-1 border border-slate-300 rounded-md px-3 py-2 text-sm font-medium"
+          className="flex-1 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-3 py-2 text-sm font-medium"
           value={texte}
           onChange={(e) => setTexte(e.target.value)}
         />
         <input
           type="number"
-          className="w-16 border border-slate-300 rounded-md px-2 py-2 text-sm"
+          className="w-16 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-2 text-sm"
           value={ordre}
           onChange={(e) => setOrdre(e.target.valueAsNumber)}
         />
         <select
-          className="border border-slate-300 rounded-md px-2 py-2 text-sm"
+          className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-2 text-sm"
           value={type}
           onChange={(e) => setType(e.target.value as TypeQuestion)}
         >
@@ -108,9 +108,9 @@ function QuestionCard({ question }: { question: Question }) {
 
       {type === 'ECHELLE' && (
         <div className="flex items-center gap-2">
-          <label className="text-sm text-slate-500 shrink-0">Poids RIASEC (ex: R:1)</label>
+          <label className="text-sm text-slate-500 dark:text-slate-400 shrink-0">Poids RIASEC (ex: R:1)</label>
           <input
-            className="border border-slate-300 rounded-md px-2 py-1.5 text-sm w-40"
+            className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1.5 text-sm w-40"
             value={scoreDimensions}
             onChange={(e) => setScoreDimensions(e.target.value)}
           />
@@ -130,14 +130,14 @@ function QuestionCard({ question }: { question: Question }) {
       </div>
 
       {type === 'CHOIX_MULTIPLE' && (
-        <div className="border-t border-slate-100 pt-3 space-y-2">
-          <p className="text-xs font-medium text-slate-500 uppercase">Réponses</p>
+        <div className="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-2">
+          <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Réponses</p>
           {question.reponses.map((r) => (
             <ReponseRow key={r.id} reponse={r} questionId={question.id} />
           ))}
           <div className="flex gap-2">
             <input
-              className="flex-1 border border-slate-300 rounded-md px-2 py-1.5 text-sm"
+              className="flex-1 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1.5 text-sm"
               placeholder="Nouvelle réponse..."
               value={newReponseTexte}
               onChange={(e) => setNewReponseTexte(e.target.value)}
@@ -204,19 +204,19 @@ export function QuestionnaireBuilder() {
         ← Retour aux questionnaires
       </Link>
 
-      <div className="bg-white border border-slate-200 rounded-lg p-6 my-6 space-y-4">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 my-6 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">Titre</label>
+          <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Titre</label>
           <input
-            className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+            className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-3 py-2 text-sm"
             value={titre}
             onChange={(e) => setTitre(e.target.value)}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">Description</label>
+          <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Description</label>
           <textarea
-            className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+            className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-3 py-2 text-sm"
             rows={2}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -230,16 +230,16 @@ export function QuestionnaireBuilder() {
         </button>
       </div>
 
-      <h2 className="text-lg font-bold text-slate-800 mb-4">Questions</h2>
+      <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Questions</h2>
       <div className="space-y-4 mb-6">
         {questions.map((q) => (
           <QuestionCard key={q.id} question={q} />
         ))}
       </div>
 
-      <div className="bg-white border border-dashed border-slate-300 rounded-lg p-5 flex gap-2">
+      <div className="bg-white dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-700 rounded-lg p-5 flex gap-2">
         <input
-          className="flex-1 border border-slate-300 rounded-md px-3 py-2 text-sm"
+          className="flex-1 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-3 py-2 text-sm"
           placeholder="Texte de la nouvelle question..."
           value={newQuestionTexte}
           onChange={(e) => setNewQuestionTexte(e.target.value)}

@@ -38,7 +38,7 @@ export function BlogCommentairesAdmin() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Modération des commentaires</h1>
+      <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">Modération des commentaires</h1>
 
       <div className="flex gap-2 mb-6">
         {STATUTS.map((s) => (
@@ -48,7 +48,7 @@ export function BlogCommentairesAdmin() {
             className={`px-3 py-1.5 rounded-md text-sm font-medium border ${
               statut === s.value
                 ? 'bg-brand-600 text-white border-brand-600'
-                : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'
+                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'
             }`}
           >
             {s.label}
@@ -61,14 +61,14 @@ export function BlogCommentairesAdmin() {
 
       <div className="space-y-3">
         {data?.items.map((c) => (
-          <div key={c.id} className="bg-white border border-slate-200 rounded-lg p-4">
+          <div key={c.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-sm font-medium text-slate-800">
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-100">
                 {c.utilisateur?.prenom} {c.utilisateur?.nom}
                 {c.blog && (
                   <>
                     {' '}sur{' '}
-                    <Link to={`/blog/${c.blog.slug}`} className="text-brand-600 hover:underline">
+                    <Link to={`/blog/${c.blog.slug}`} className="text-brand-600 dark:text-brand-400 hover:underline">
                       {c.blog.titre}
                     </Link>
                   </>
@@ -76,7 +76,7 @@ export function BlogCommentairesAdmin() {
               </p>
               <span className="text-xs text-slate-400">{new Date(c.createdAt).toLocaleDateString('fr-FR')}</span>
             </div>
-            <p className="text-sm text-slate-600 mb-3">{c.contenu}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">{c.contenu}</p>
             <div className="flex gap-3 text-sm">
               {c.statut !== 'APPROUVE' && (
                 <button

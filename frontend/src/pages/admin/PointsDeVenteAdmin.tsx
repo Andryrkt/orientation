@@ -106,7 +106,7 @@ export function PointsDeVenteAdmin() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-slate-800">Points de vente</h1>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Points de vente</h1>
         <button
           onClick={openCreate}
           className="px-4 py-2 bg-brand-600 text-white rounded-md text-sm font-medium hover:bg-brand-700"
@@ -115,9 +115,9 @@ export function PointsDeVenteAdmin() {
         </button>
       </div>
 
-      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+      <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left text-slate-500">
+          <thead className="bg-slate-50 dark:bg-slate-800/60 text-left text-slate-500 dark:text-slate-400">
             <tr>
               <th className="px-4 py-3 font-medium">Nom</th>
               <th className="px-4 py-3 font-medium">Ville</th>
@@ -126,7 +126,7 @@ export function PointsDeVenteAdmin() {
               <th className="px-4 py-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {isLoading && (
               <tr>
                 <td colSpan={5} className="px-4 py-6 text-center text-slate-400">Chargement...</td>
@@ -139,19 +139,19 @@ export function PointsDeVenteAdmin() {
             )}
             {data?.items.map((pdv) => (
               <Fragment key={pdv.id}>
-                <tr className="hover:bg-slate-50">
-                  <td className="px-4 py-3 text-slate-700 font-medium">{pdv.nom}</td>
-                  <td className="px-4 py-3 text-slate-700">{pdv.ville ?? '—'}</td>
+                <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                  <td className="px-4 py-3 text-slate-700 dark:text-slate-300 font-medium">{pdv.nom}</td>
+                  <td className="px-4 py-3 text-slate-700 dark:text-slate-300">{pdv.ville ?? '—'}</td>
                   <td className="px-4 py-3">
                     <span
                       className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                        pdv.actif ? 'bg-emerald-500/10 text-emerald-600' : 'bg-slate-200 text-slate-500'
+                        pdv.actif ? 'bg-emerald-500/10 text-emerald-600' : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
                       }`}
                     >
                       {pdv.actif ? 'Actif' : 'Inactif'}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-slate-700">
+                  <td className="px-4 py-3 text-slate-700 dark:text-slate-300">
                     {pdv.secretaires && pdv.secretaires.length > 0
                       ? pdv.secretaires.map((s) => `${s.prenom} ${s.nom}`).join(', ')
                       : '—'}
@@ -159,16 +159,16 @@ export function PointsDeVenteAdmin() {
                   <td className="px-4 py-3 text-right whitespace-nowrap">
                     <button
                       onClick={() => setGererId(gererId === pdv.id ? null : pdv.id)}
-                      className="text-brand-600 hover:underline mr-3"
+                      className="text-brand-600 dark:text-brand-400 hover:underline mr-3"
                     >
                       Secrétaires
                     </button>
-                    <button onClick={() => openEdit(pdv)} className="text-brand-600 hover:underline mr-3">
+                    <button onClick={() => openEdit(pdv)} className="text-brand-600 dark:text-brand-400 hover:underline mr-3">
                       Modifier
                     </button>
                     <button
                       onClick={() => toggleActifMutation.mutate({ id: pdv.id, actif: !pdv.actif })}
-                      className="text-red-600 hover:underline"
+                      className="text-red-600 dark:text-red-400 hover:underline"
                     >
                       {pdv.actif ? 'Désactiver' : 'Réactiver'}
                     </button>
@@ -176,17 +176,17 @@ export function PointsDeVenteAdmin() {
                 </tr>
                 {gererId === pdv.id && (
                   <tr>
-                    <td colSpan={5} className="px-4 py-4 bg-slate-50">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                    <td colSpan={5} className="px-4 py-4 bg-slate-50 dark:bg-slate-800/40">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
                         Secrétaires assignées
                       </p>
                       <ul className="space-y-1 mb-3">
                         {(pdv.secretaires ?? []).map((s) => (
-                          <li key={s.id} className="flex items-center justify-between text-sm">
+                          <li key={s.id} className="flex items-center justify-between text-sm text-slate-700 dark:text-slate-300">
                             <span>{s.prenom} {s.nom} ({s.email})</span>
                             <button
                               onClick={() => unassignMutation.mutate({ id: pdv.id, utilisateurId: s.id })}
-                              className="text-red-600 hover:underline text-xs"
+                              className="text-red-600 dark:text-red-400 hover:underline text-xs"
                             >
                               Retirer
                             </button>
@@ -198,7 +198,7 @@ export function PointsDeVenteAdmin() {
                       </ul>
                       <div className="flex items-center gap-2">
                         <select
-                          className="border border-slate-300 rounded-md px-2 py-1 text-sm"
+                          className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1 text-sm"
                           value={nouvelleSecretaireId}
                           onChange={(e) => setNouvelleSecretaireId(e.target.value)}
                         >
@@ -233,33 +233,33 @@ export function PointsDeVenteAdmin() {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-20 p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-lg">
+          <div className="bg-white dark:bg-slate-900 rounded-lg shadow-xl w-full max-w-lg">
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <h2 className="text-lg font-bold text-slate-800">
+              <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
                 {editing ? 'Modifier' : 'Ajouter'} — Point de vente
               </h2>
-              {error && <div className="bg-red-50 text-red-700 text-sm rounded-md px-3 py-2">{error}</div>}
+              {error && <div className="bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">{error}</div>}
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-1">Nom</label>
+                <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Nom</label>
                 <input
-                  className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+                  className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-3 py-2 text-sm"
                   required
                   value={form.nom}
                   onChange={(e) => setForm({ ...form, nom: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-1">Adresse</label>
+                <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Adresse</label>
                 <input
-                  className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+                  className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-3 py-2 text-sm"
                   value={form.adresse}
                   onChange={(e) => setForm({ ...form, adresse: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-1">Ville</label>
+                <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Ville</label>
                 <input
-                  className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+                  className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-3 py-2 text-sm"
                   value={form.ville}
                   onChange={(e) => setForm({ ...form, ville: e.target.value })}
                 />
@@ -268,7 +268,7 @@ export function PointsDeVenteAdmin() {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-sm rounded-md text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 text-sm rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
                   Annuler
                 </button>
