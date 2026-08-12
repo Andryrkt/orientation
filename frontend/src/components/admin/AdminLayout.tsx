@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useAuth } from '../../lib/auth-context';
 import { useTheme } from '../../lib/theme-context';
 import { Logo } from '../Logo';
@@ -71,21 +71,41 @@ export function AdminLayout() {
   const [groupesFermes, setGroupesFermes] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(groups.filter((g) => g.title).map((g) => [g.title!, true])),
   );
+  const [sidebarOuvert, setSidebarOuvert] = useState(() => localStorage.getItem('admin-sidebar-ouvert') !== 'false');
 
   function toggleGroupe(titre: string) {
     setGroupesFermes((prev) => ({ ...prev, [titre]: !prev[titre] }));
   }
 
+  function toggleSidebar() {
+    setSidebarOuvert((prev) => {
+      localStorage.setItem('admin-sidebar-ouvert', String(!prev));
+      return !prev;
+    });
+  }
+
   return (
     <div className="min-h-screen flex">
-      <aside className="w-64 bg-brand-900 text-white flex flex-col">
-        <div className="h-16 flex items-center px-6 border-b border-brand-800">
+      <aside
+        className={`bg-brand-900 text-white flex flex-col shrink-0 overflow-hidden transition-all duration-300 ${
+          sidebarOuvert ? 'w-64' : 'w-0'
+        }`}
+      >
+        <div className="h-16 w-64 flex items-center justify-between px-6 border-b border-brand-800">
           <Link to="/" className="flex items-center gap-1.5 hover:opacity-90 transition-opacity">
             <Logo size="sm" />
             <span className="text-xs text-brand-300 font-semibold uppercase tracking-wider mt-0.5 ml-1">Admin</span>
           </Link>
+          <button
+            onClick={toggleSidebar}
+            className="text-brand-300 hover:text-white transition-colors"
+            aria-label="Réduire le menu"
+            title="Réduire le menu"
+          >
+            <PanelLeftClose className="w-4.5 h-4.5" />
+          </button>
         </div>
-        <nav className="flex-1 py-4 overflow-y-auto">
+        <nav className="flex-1 py-4 overflow-y-auto w-64">
           {groups.map((group, i) => {
             const ouvert = !group.title || !groupesFermes[group.title];
             return (
@@ -119,7 +139,7 @@ export function AdminLayout() {
             );
           })}
         </nav>
-        <div className="p-4 border-t border-brand-800 space-y-2">
+        <div className="p-4 border-t border-brand-800 space-y-2 w-64">
           <button
             onClick={toggleTheme}
             className="w-full flex items-center gap-2 text-sm text-brand-100 hover:text-white"
@@ -149,7 +169,18 @@ export function AdminLayout() {
           </button>
         </div>
       </aside>
-      <main className="flex-1 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 p-8 overflow-auto transition-colors duration-300">
+      <main className="flex-1 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 p-8 overflow-auto transition-colors duration-300 relative">
+        {!sidebarOuvert && (
+          <button
+            onClick={toggleSidebar}
+            className="mb-4 flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+            aria-label="Ouvrir le menu"
+            title="Ouvrir le menu"
+          >
+            <PanelLeftOpen className="w-4.5 h-4.5" />
+            Menu
+          </button>
+        )}
         <Outlet />
       </main>
     </div>
