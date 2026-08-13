@@ -57,6 +57,7 @@ const groups: { title?: string; links: { to: string; label: string; end?: boolea
     links: [
       { to: '/admin/finances', label: 'Tableau de bord', end: true },
       { to: '/admin/points-de-vente', label: 'Points de vente' },
+      { to: '/admin/etudiants', label: 'Étudiants' },
       { to: '/admin/saisies-journalieres', label: 'Saisies journalières' },
       { to: '/admin/depenses-globales', label: 'Dépenses globales' },
       { to: '/admin/investissements', label: 'Investissements' },

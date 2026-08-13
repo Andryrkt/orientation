@@ -60,6 +60,7 @@ import { EnseignantsAdmin } from './pages/admin/EnseignantsAdmin';
 import { FaqAdmin } from './pages/admin/FaqAdmin';
 import { ContactMessagesAdmin } from './pages/admin/ContactMessagesAdmin';
 import { PointsDeVenteAdmin } from './pages/admin/PointsDeVenteAdmin';
+import { EtudiantsAdmin } from './pages/admin/EtudiantsAdmin';
 import { SaisiesJournalieresAdmin } from './pages/admin/SaisiesJournalieresAdmin';
 import { DepensesGlobalesAdmin } from './pages/admin/DepensesGlobalesAdmin';
 import { InvestissementsAdmin } from './pages/admin/InvestissementsAdmin';
@@ -141,6 +142,7 @@ export default function App() {
           </Route>
           <Route path="finances" element={<FinancesDashboard />} />
           <Route path="points-de-vente" element={<PointsDeVenteAdmin />} />
+          <Route path="etudiants" element={<EtudiantsAdmin />} />
           <Route path="saisies-journalieres" element={<SaisiesJournalieresAdmin />} />
           <Route path="depenses-globales" element={<DepensesGlobalesAdmin />} />
           <Route path="investissements" element={<InvestissementsAdmin />} />

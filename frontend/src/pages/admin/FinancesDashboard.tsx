@@ -21,6 +21,7 @@ const DEPUIS_LE_DEBUT = '2000-01-01';
 
 const RACCOURCIS = [
   { to: '/admin/points-de-vente', label: 'Points de vente', description: 'Gérer les points de vente et leurs secrétaires' },
+  { to: '/admin/etudiants', label: 'Étudiants', description: 'Étudiants inscrits par les secrétaires' },
   { to: '/admin/saisies-journalieres', label: 'Saisies journalières', description: 'Recettes et dépenses des points de vente' },
   { to: '/admin/depenses-globales', label: 'Dépenses globales', description: "Charges de l'entreprise (loyer, salaires...)" },
   { to: '/admin/investissements', label: 'Investissements', description: 'Dons, prêts et apports reçus des bailleurs' },

@@ -8,6 +8,7 @@ import { SaisiesJournalieresService } from './saisies-journalieres.service';
 import { SubmitSaisieDto } from './dto/submit-saisie.dto';
 import { UpdateSaisieDto } from './dto/update-saisie.dto';
 import { QuerySaisiesDto } from './dto/query-saisies.dto';
+import { QueryEtudiantsDto } from './dto/query-etudiants.dto';
 import { CreateMouvementDto } from './dto/create-mouvement.dto';
 import { UpdateDatesCoursDto } from './dto/update-dates-cours.dto';
 
@@ -82,6 +83,13 @@ export class SaisiesJournalieresController {
   @Get('admin/saisies-journalieres')
   findAllAdmin(@Query() query: QuerySaisiesDto) {
     return this.saisiesJournalieresService.findAllAdmin(query);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
+  @Get('admin/etudiants')
+  findAllEtudiantsAdmin(@Query() query: QueryEtudiantsDto) {
+    return this.saisiesJournalieresService.findAllEtudiantsAdmin(query);
   }
 
   @UseGuards(RolesGuard)

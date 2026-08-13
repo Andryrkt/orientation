@@ -76,12 +76,14 @@ export interface InscriptionFiliere {
 export interface MouvementCaisse {
   id: string;
   pointDeVenteId: string;
+  pointDeVente?: { id: string; nom: string; ville: string | null };
   date: string;
   periode: Periode;
   type: TypeMouvement;
   montant: number;
   note: string | null;
   saisiParId: string | null;
+  saisiPar?: { id: string; nom: string; prenom: string } | null;
   createdAt: string;
   nom: string | null;
   prenom: string | null;

@@ -7,6 +7,7 @@ import { dateDuJourMadagascar, lundiDeLaSemaine } from '../common/utils/date.uti
 import { SubmitSaisieDto } from './dto/submit-saisie.dto';
 import { UpdateSaisieDto } from './dto/update-saisie.dto';
 import { QuerySaisiesDto } from './dto/query-saisies.dto';
+import { QueryEtudiantsDto } from './dto/query-etudiants.dto';
 import { CreateMouvementDto } from './dto/create-mouvement.dto';
 import { UpdateDatesCoursDto } from './dto/update-dates-cours.dto';
 
@@ -265,6 +266,44 @@ export class SaisiesJournalieresService {
     });
 
     return { items: itemsAvecMouvements, total, page, limit };
+  }
+
+  // Vue finance/admin des étudiants inscrits par les secrétaires (une ligne par mouvement GAGNE
+  // renseigné avec une identité), filtrable par secrétaire, point de vente et période.
+  async findAllEtudiantsAdmin(query: QueryEtudiantsDto) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+    const where = {
+      type: TypeMouvement.GAGNE,
+      nom: { not: null },
+      ...(query.pointDeVenteId ? { pointDeVenteId: query.pointDeVenteId } : {}),
+      ...(query.saisiParId ? { saisiParId: query.saisiParId } : {}),
+      ...(query.dateFrom || query.dateTo
+        ? {
+            date: {
+              ...(query.dateFrom ? { gte: new Date(query.dateFrom) } : {}),
+              ...(query.dateTo ? { lte: new Date(query.dateTo) } : {}),
+            },
+          }
+        : {}),
+    };
+
+    const [items, total] = await Promise.all([
+      this.prisma.mouvementCaisse.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+        include: {
+          pointDeVente: { select: { id: true, nom: true, ville: true } },
+          saisiPar: { select: { id: true, nom: true, prenom: true } },
+          filieresInscrites: { include: { filiere: { select: { id: true, nom: true } } } },
+        },
+      }),
+      this.prisma.mouvementCaisse.count({ where }),
+    ]);
+
+    return { items, total, page, limit };
   }
 
   async resumeAdmin(query: { dateFrom?: string; dateTo?: string; pointDeVenteId?: string }) {
