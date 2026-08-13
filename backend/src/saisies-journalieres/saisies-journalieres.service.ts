@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { Periode, TypeMouvement } from '@prisma/client';
+import { Periode, Prisma, TypeMouvement } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { PointsDeVenteService } from '../points-de-vente/points-de-vente.service';
 import { DroitInscriptionService } from '../droit-inscription/droit-inscription.service';
@@ -69,6 +69,10 @@ export class SaisiesJournalieresService {
   }
 
   async ajouterMouvement(utilisateurId: string, dto: CreateMouvementDto) {
+    if (dto.inscriptionParentId) {
+      return this.ajouterPaiementComplementaire(utilisateurId, dto);
+    }
+
     const detailInscriptionRenseigne = !!(dto.nom || dto.prenom || dto.contact || dto.numeroRecu || dto.filiereIds?.length);
     if (detailInscriptionRenseigne && (!dto.nom?.trim() || !dto.prenom?.trim())) {
       throw new BadRequestException('Le nom et le prénom sont obligatoires pour enregistrer une inscription');
@@ -110,6 +114,53 @@ export class SaisiesJournalieresService {
     });
   }
 
+  // Un étudiant qui revient payer son reste à payer génère un nouveau mouvement du jour (la caisse
+  // du jour doit refléter l'argent réellement encaissé ce jour-là), mais rattaché à l'inscription
+  // d'origine plutôt que traité comme une nouvelle inscription. Le solde restant est recalculé
+  // côté serveur (jamais fait confiance au client) pour rester juste même en cas de paiements
+  // concurrents.
+  private async ajouterPaiementComplementaire(utilisateurId: string, dto: CreateMouvementDto) {
+    const pointDeVenteId = await this.pointDeVenteDuSecretaire(utilisateurId);
+    const parent = await this.prisma.mouvementCaisse.findUnique({
+      where: { id: dto.inscriptionParentId },
+      include: { paiementsComplementaires: { select: { montant: true } } },
+    });
+    if (!parent) throw new NotFoundException(`Inscription #${dto.inscriptionParentId} introuvable`);
+    if (parent.pointDeVenteId !== pointDeVenteId) {
+      throw new ForbiddenException("Cette inscription n'appartient pas à votre point de vente");
+    }
+    if (parent.inscriptionParentId) {
+      throw new BadRequestException('Impossible de rattacher un paiement à un autre paiement complémentaire');
+    }
+    if (parent.montantTotal === null) {
+      throw new BadRequestException("Cette inscription n'a pas de montant total défini");
+    }
+
+    const dejaPaye = parent.montant + parent.paiementsComplementaires.reduce((s, p) => s + p.montant, 0);
+    const montantRestant = Math.max(0, parent.montantTotal - dejaPaye - dto.montant);
+    const date = dateDuJourMadagascar();
+
+    return this.prisma.mouvementCaisse.create({
+      data: {
+        pointDeVenteId,
+        date,
+        periode: dto.periode,
+        type: TypeMouvement.GAGNE,
+        montant: dto.montant,
+        note: dto.note?.trim() || 'Paiement complémentaire',
+        saisiParId: utilisateurId,
+        nom: parent.nom,
+        prenom: parent.prenom,
+        contact: parent.contact,
+        numeroRecu: dto.numeroRecu,
+        montantTotal: parent.montantTotal,
+        montantRestant,
+        inscriptionParentId: parent.id,
+      },
+      include: { filieresInscrites: { include: { filiere: true } } },
+    });
+  }
+
   async mouvementsAujourdhui(utilisateurId: string) {
     const pointDeVenteId = await this.pointDeVenteDuSecretaire(utilisateurId);
     const date = dateDuJourMadagascar();
@@ -132,16 +183,19 @@ export class SaisiesJournalieresService {
   }
 
   // Permet à la secrétaire de retrouver un étudiant déjà inscrit (par nom, prénom ou numéro de
-  // reçu) pour dupliquer son inscription lors d'un renouvellement (nouvelle filière, nouveau reçu).
+  // reçu) pour dupliquer son inscription lors d'un renouvellement (nouvelle filière, nouveau reçu),
+  // ou pour enregistrer un paiement complémentaire sur son solde restant. Ne renvoie que les
+  // inscriptions "racines" : les paiements complémentaires ne sont pas des étudiants à part entière.
   async rechercherEtudiants(utilisateurId: string, q: string) {
     const pointDeVenteId = await this.pointDeVenteDuSecretaire(utilisateurId);
     const recherche = q?.trim();
     if (!recherche) return [];
-    return this.prisma.mouvementCaisse.findMany({
+    const resultats = await this.prisma.mouvementCaisse.findMany({
       where: {
         pointDeVenteId,
         type: TypeMouvement.GAGNE,
         nom: { not: null },
+        inscriptionParentId: null,
         OR: [
           { nom: { contains: recherche, mode: 'insensitive' } },
           { prenom: { contains: recherche, mode: 'insensitive' } },
@@ -150,8 +204,23 @@ export class SaisiesJournalieresService {
       },
       orderBy: { createdAt: 'desc' },
       take: 10,
-      include: { filieresInscrites: { include: { filiere: true } } },
+      include: {
+        filieresInscrites: { include: { filiere: true } },
+        paiementsComplementaires: { select: { montant: true } },
+      },
     });
+    return resultats.map((m) => this.avecSoldeActuel(m));
+  }
+
+  // Calcule le total déjà payé et le solde restant "vivants" d'une inscription à partir de son
+  // propre montant et de ses paiements complémentaires, plutôt que de faire confiance au
+  // montantRestant figé au moment de la création (qui ne reflète que l'état à cette date-là).
+  private avecSoldeActuel<T extends { montant: number; montantTotal: number | null; paiementsComplementaires: { montant: number }[] }>(
+    m: T,
+  ) {
+    const montantPayeTotal = m.montant + m.paiementsComplementaires.reduce((s, p) => s + p.montant, 0);
+    const montantRestantActuel = m.montantTotal !== null ? Math.max(0, m.montantTotal - montantPayeTotal) : null;
+    return { ...m, montantPayeTotal, montantRestantActuel };
   }
 
   // Les dates de début/fin de cours se rattachent à une paire (mouvement, filière) : un même
@@ -270,14 +339,15 @@ export class SaisiesJournalieresService {
 
   // Vue finance/admin des étudiants inscrits par les secrétaires (une ligne par mouvement GAGNE
   // renseigné avec une identité), filtrable par secrétaire, point de vente et période.
-  async findAllEtudiantsAdmin(query: QueryEtudiantsDto) {
-    const page = query.page ?? 1;
-    const limit = query.limit ?? 20;
-    const where = {
+  private whereEtudiantsAdmin(query: QueryEtudiantsDto) {
+    const recherche = query.q?.trim();
+    return {
       type: TypeMouvement.GAGNE,
       nom: { not: null },
+      inscriptionParentId: null,
       ...(query.pointDeVenteId ? { pointDeVenteId: query.pointDeVenteId } : {}),
       ...(query.saisiParId ? { saisiParId: query.saisiParId } : {}),
+      ...(query.filiereId ? { filieresInscrites: { some: { filiereId: query.filiereId } } } : {}),
       ...(query.dateFrom || query.dateTo
         ? {
             date: {
@@ -286,24 +356,157 @@ export class SaisiesJournalieresService {
             },
           }
         : {}),
+      ...(recherche
+        ? {
+            OR: [
+              { nom: { contains: recherche, mode: 'insensitive' as const } },
+              { prenom: { contains: recherche, mode: 'insensitive' as const } },
+              { numeroRecu: { contains: recherche, mode: 'insensitive' as const } },
+            ],
+          }
+        : {}),
+    };
+  }
+
+  // Le statut de paiement et le filtre "renouvellement" dependent de valeurs calculees (solde
+  // agrege, nombre d'inscriptions homonymes) : impossible a traduire en clause SQL simple, donc on
+  // recupere tout l'ensemble filtre, on calcule, on filtre puis on pagine cote serveur en memoire.
+  async findAllEtudiantsAdmin(query: QueryEtudiantsDto) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+    const where = this.whereEtudiantsAdmin(query);
+    const include = {
+      pointDeVente: { select: { id: true, nom: true, ville: true } },
+      saisiPar: { select: { id: true, nom: true, prenom: true } },
+      filieresInscrites: { include: { filiere: { select: { id: true, nom: true } } } },
+      paiementsComplementaires: {
+        orderBy: { createdAt: 'asc' as const },
+        select: { id: true, date: true, montant: true, numeroRecu: true, saisiPar: { select: { id: true, nom: true, prenom: true } } },
+      },
     };
 
-    const [items, total] = await Promise.all([
-      this.prisma.mouvementCaisse.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
-        include: {
-          pointDeVente: { select: { id: true, nom: true, ville: true } },
-          saisiPar: { select: { id: true, nom: true, prenom: true } },
-          filieresInscrites: { include: { filiere: { select: { id: true, nom: true } } } },
-        },
-      }),
-      this.prisma.mouvementCaisse.count({ where }),
-    ]);
+    const filtragePostRequete = !!query.statut || !!query.renouvellement;
 
-    return { items, total, page, limit };
+    type MouvementAvecInclude = Prisma.MouvementCaisseGetPayload<{ include: typeof include }>;
+    let items: (MouvementAvecInclude & { montantPayeTotal: number; montantRestantActuel: number | null })[];
+    let total: number;
+
+    if (filtragePostRequete) {
+      const tous = (
+        await this.prisma.mouvementCaisse.findMany({ where, orderBy: { createdAt: 'desc' }, include })
+      ).map((m) => this.avecSoldeActuel(m));
+
+      let filtres = tous;
+      if (query.statut) {
+        filtres = filtres.filter((m) =>
+          query.statut === 'PAYE'
+            ? m.montantRestantActuel !== null && m.montantRestantActuel <= 0
+            : m.montantRestantActuel !== null && m.montantRestantActuel > 0,
+        );
+      }
+      if (query.renouvellement) {
+        const compte = await this.compterInscriptionsParNomPrenom(filtres);
+        filtres = filtres.filter((m) => (compte.get(`${m.nom}${m.prenom}`) ?? 1) > 1);
+      }
+
+      total = filtres.length;
+      items = filtres.slice((page - 1) * limit, page * limit);
+    } else {
+      const [bruts, count] = await Promise.all([
+        this.prisma.mouvementCaisse.findMany({ where, orderBy: { createdAt: 'desc' }, skip: (page - 1) * limit, take: limit, include }),
+        this.prisma.mouvementCaisse.count({ where }),
+      ]);
+      items = bruts.map((m) => this.avecSoldeActuel(m));
+      total = count;
+    }
+
+    const pairesNomPrenom = Array.from(
+      new Map(items.map((m) => [`${m.nom}${m.prenom}`, { nom: m.nom as string, prenom: m.prenom }])).values(),
+    );
+    const inscriptionsHomonymes = pairesNomPrenom.length
+      ? await this.prisma.mouvementCaisse.findMany({
+          where: { inscriptionParentId: null, type: TypeMouvement.GAGNE, OR: pairesNomPrenom },
+          orderBy: { date: 'desc' },
+          select: {
+            id: true,
+            nom: true,
+            prenom: true,
+            date: true,
+            numeroRecu: true,
+            filieresInscrites: { select: { filiere: { select: { nom: true } } } },
+          },
+        })
+      : [];
+
+    const itemsAvecRenouvellements = items.map((m) => {
+      const autresInscriptions = inscriptionsHomonymes
+        .filter((h) => h.id !== m.id && h.nom === m.nom && h.prenom === m.prenom)
+        .map((h) => ({
+          id: h.id,
+          date: h.date,
+          numeroRecu: h.numeroRecu,
+          filieres: h.filieresInscrites.map((fi) => fi.filiere.nom),
+        }));
+      return { ...m, autresInscriptions };
+    });
+
+    return { items: itemsAvecRenouvellements, total, page, limit };
+  }
+
+  private async compterInscriptionsParNomPrenom(records: { nom: string | null; prenom: string | null }[]) {
+    const paires = Array.from(
+      new Map(records.map((r) => [`${r.nom}${r.prenom}`, { nom: r.nom as string, prenom: r.prenom }])).values(),
+    );
+    if (!paires.length) return new Map<string, number>();
+    const groupes = await this.prisma.mouvementCaisse.groupBy({
+      by: ['nom', 'prenom'],
+      where: { inscriptionParentId: null, type: TypeMouvement.GAGNE, OR: paires },
+      _count: { _all: true },
+    });
+    return new Map(groupes.map((g) => [`${g.nom}${g.prenom}`, g._count._all]));
+  }
+
+  async resumeEtudiantsAdmin(query: QueryEtudiantsDto) {
+    const where = this.whereEtudiantsAdmin(query);
+    const records = await this.prisma.mouvementCaisse.findMany({
+      where,
+      select: { id: true, nom: true, prenom: true, montant: true, montantTotal: true, paiementsComplementaires: { select: { montant: true } } },
+    });
+
+    let payeCount = 0;
+    let resteAPayerCount = 0;
+    for (const r of records) {
+      if (r.montantTotal === null) continue;
+      const paye = r.montant + r.paiementsComplementaires.reduce((s, p) => s + p.montant, 0);
+      const restant = Math.max(0, r.montantTotal - paye);
+      if (restant <= 0) payeCount++;
+      else resteAPayerCount++;
+    }
+
+    const compte = await this.compterInscriptionsParNomPrenom(records);
+    const renouvellementsCount = records.filter((r) => (compte.get(`${r.nom}${r.prenom}`) ?? 1) > 1).length;
+
+    return { total: records.length, payeCount, resteAPayerCount, renouvellementsCount };
+  }
+
+  // Nombre d'étudiants inscrits par filière, selon les mêmes filtres (période, point de vente,
+  // secrétaire, recherche) que la liste — sert au filtre "Filières" de la vue admin.
+  async countParFiliereAdmin(query: QueryEtudiantsDto) {
+    const where = this.whereEtudiantsAdmin(query);
+    const groupes = await this.prisma.inscriptionFiliere.groupBy({
+      by: ['filiereId'],
+      where: { mouvement: where },
+      _count: { _all: true },
+    });
+    const filieres = await this.prisma.filiere.findMany({
+      where: { id: { in: groupes.map((g) => g.filiereId) } },
+      select: { id: true, nom: true },
+    });
+    const filiereNomParId = new Map(filieres.map((f) => [f.id, f.nom]));
+
+    return groupes
+      .map((g) => ({ filiereId: g.filiereId, filiereNom: filiereNomParId.get(g.filiereId) ?? '—', total: g._count._all }))
+      .sort((a, b) => b.total - a.total);
   }
 
   async resumeAdmin(query: { dateFrom?: string; dateTo?: string; pointDeVenteId?: string }) {

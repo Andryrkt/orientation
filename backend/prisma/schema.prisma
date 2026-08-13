@@ -676,6 +676,13 @@ model MouvementCaisse {
   montantTotal     Int?
   montantRestant   Int?
 
+  // Un étudiant qui revient payer le solde restant génère un nouveau mouvement (obligatoire pour
+  // que la caisse du jour reste juste) rattaché à l'inscription d'origine plutôt qu'une inscription
+  // séparée : le back-office finance peut ainsi afficher un seul étudiant avec son solde à jour.
+  inscriptionParentId     String?
+  inscriptionParent       MouvementCaisse?  @relation("PaiementsInscription", fields: [inscriptionParentId], references: [id], onDelete: Cascade)
+  paiementsComplementaires MouvementCaisse[] @relation("PaiementsInscription")
+
   @@map("mouvements_caisse")
 }
 

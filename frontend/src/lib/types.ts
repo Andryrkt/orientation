@@ -95,6 +95,32 @@ export interface MouvementCaisse {
   droitInscription: number | null;
   reduction: number | null;
   noteReduction: string | null;
+  // Un étudiant qui revient payer son reste à payer génère un paiement complémentaire rattaché à
+  // l'inscription d'origine plutôt qu'une inscription séparée.
+  inscriptionParentId: string | null;
+  paiementsComplementaires?: PaiementComplementaire[];
+  // Calculés côté serveur à partir du montant propre + des paiements complémentaires : à préférer
+  // à montantTotal/montantRestant (figés au moment de la création) pour connaître le solde actuel.
+  montantPayeTotal?: number;
+  montantRestantActuel?: number | null;
+  // Autres inscriptions (même nom/prénom) créées via "Dupliquer" — indépendantes de celle-ci,
+  // reliées uniquement pour l'affichage (pas de lien en base comme pour un paiement complémentaire).
+  autresInscriptions?: AutreInscription[];
+}
+
+export interface AutreInscription {
+  id: string;
+  date: string;
+  numeroRecu: string | null;
+  filieres: string[];
+}
+
+export interface PaiementComplementaire {
+  id: string;
+  date: string;
+  montant: number;
+  numeroRecu: string | null;
+  saisiPar?: { id: string; nom: string; prenom: string } | null;
 }
 
 export interface InscriptionFiliereSuivi extends InscriptionFiliere {
@@ -116,6 +142,19 @@ export interface MouvementsPeriode {
 export interface MouvementsAujourdhui {
   midi: MouvementsPeriode;
   apresMidi: MouvementsPeriode;
+}
+
+export interface ResumeEtudiantsFiliere {
+  filiereId: string;
+  filiereNom: string;
+  total: number;
+}
+
+export interface ResumeEtudiants {
+  total: number;
+  payeCount: number;
+  resteAPayerCount: number;
+  renouvellementsCount: number;
 }
 
 export interface ResumeSaisiePointDeVente {

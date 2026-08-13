@@ -94,6 +94,20 @@ export class SaisiesJournalieresController {
 
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
+  @Get('admin/etudiants/par-filiere')
+  countParFiliereAdmin(@Query() query: QueryEtudiantsDto) {
+    return this.saisiesJournalieresService.countParFiliereAdmin(query);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
+  @Get('admin/etudiants/resume')
+  resumeEtudiantsAdmin(@Query() query: QueryEtudiantsDto) {
+    return this.saisiesJournalieresService.resumeEtudiantsAdmin(query);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Get('admin/saisies-journalieres/resume')
   resumeAdmin(
     @Query('dateFrom') dateFrom?: string,

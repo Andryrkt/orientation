@@ -72,4 +72,11 @@ export class CreateMouvementDto {
   @IsOptional()
   @IsString()
   noteReduction?: string;
+
+  // Présent lorsque ce mouvement est un paiement complémentaire sur une inscription déjà
+  // existante (l'étudiant revient payer son reste à payer) plutôt qu'une nouvelle inscription.
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsUUID()
+  inscriptionParentId?: string;
 }
