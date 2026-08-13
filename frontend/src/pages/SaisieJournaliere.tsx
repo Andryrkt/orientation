@@ -69,6 +69,7 @@ function MouvementsWidget({
   // Inscription source d'une duplication (renouvellement) : simple aide visuelle, la nouvelle
   // inscription créée reste indépendante (pas de lien comme pour un paiement complémentaire).
   const [dupliqueDe, setDupliqueDe] = useState<MouvementCaisse | null>(null);
+  const [ajoutFiliereOuvert, setAjoutFiliereOuvert] = useState(false);
 
   useEffect(() => {
     const minuteur = setTimeout(() => setRechercheDebattue(recherche.trim()), 300);
@@ -110,9 +111,25 @@ function MouvementsWidget({
   const inscriptionActive = type === 'GAGNE' && detailsOuverts;
   const detailInscriptionRenseigne = inscriptionActive && !!(nom.trim() || prenom.trim() || contact.trim() || numeroRecu.trim() || filiereIds.length > 0);
   const sommeFilieres = filieres?.filter((f) => filiereIds.includes(f.id)).reduce((s, f) => s + f.prix, 0) ?? 0;
-  const montantTotalCalcule = paiementPour ? paiementPour.montantTotal ?? 0 : sommeFilieres + (droitInscription ?? 0) - (Number(reduction) || 0);
+  // Une filière déjà suivie via l'inscription d'origine ou un paiement complémentaire précédent
+  // (ajout de filière antérieur) ne doit pas être proposée une deuxième fois.
+  const filieresDejaInscritesIds = new Set([
+    ...(paiementPour?.filieresInscrites.map((fi) => fi.filiereId) ?? []),
+    ...(paiementPour?.paiementsComplementaires?.flatMap((p) => p.filieresInscrites?.map((fi) => fi.filiereId) ?? []) ?? []),
+  ]);
+  const filieresDisponiblesPourAjout = filieres?.filter((f) => !filieresDejaInscritesIds.has(f.id)) ?? [];
+  // Renouvellement d'un étudiant déjà inscrit ("Dupliquer") : le droit d'inscription n'est pas
+  // refacturé, une seule fois par étudiant.
+  const droitInscriptionApplicable = dupliqueDe ? 0 : droitInscription ?? 0;
+  const montantTotalCalcule = paiementPour
+    ? (paiementPour.montantTotal ?? 0) + sommeFilieres
+    : sommeFilieres + droitInscriptionApplicable - (Number(reduction) || 0);
+  // Solde tel que connu par le serveur avant ce paiement (les nouvelles filières cochées ne sont
+  // pas encore enregistrées) — distinct du solde final affiché une fois ce paiement pris en compte.
   const resteActuelAvantPaiement = paiementPour?.montantRestantActuel ?? 0;
-  const resteAPayer = paiementPour ? resteActuelAvantPaiement - (Number(montant) || 0) : montantTotalCalcule - (Number(montant) || 0);
+  const resteAPayer = paiementPour
+    ? resteActuelAvantPaiement + sommeFilieres - (Number(montant) || 0)
+    : montantTotalCalcule - (Number(montant) || 0);
 
   function resetDetails() {
     setNom('');
@@ -124,6 +141,7 @@ function MouvementsWidget({
     setNoteReduction('');
     setPaiementPour(null);
     setDupliqueDe(null);
+    setAjoutFiliereOuvert(false);
   }
 
   function toggleFiliere(id: string) {
@@ -141,6 +159,7 @@ function MouvementsWidget({
           ? {
               numeroRecu: numeroRecu.trim() || undefined,
               inscriptionParentId: paiementPour.id,
+              filiereIds: filiereIds.length ? filiereIds : undefined,
             }
           : inscriptionActive
           ? {
@@ -153,6 +172,7 @@ function MouvementsWidget({
               montantTotal: montantTotalCalcule,
               reduction: reduction ? Number(reduction) : undefined,
               noteReduction: reduction ? noteReduction.trim() : undefined,
+              sansDroitInscription: dupliqueDe ? true : undefined,
             }
           : {}),
       }),
@@ -296,6 +316,30 @@ function MouvementsWidget({
                   </button>
                 </div>
                 <p className="text-xs text-slate-400">{t('saisieJournaliere.paiementComplementaireHint')}</p>
+
+                {filieresDisponiblesPourAjout.length > 0 && (
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => setAjoutFiliereOuvert((o) => !o)}
+                      className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      {ajoutFiliereOuvert ? '▾' : '▸'} {t('saisieJournaliere.ajouterFiliere')}
+                    </button>
+                    {ajoutFiliereOuvert && (
+                      <div className="mt-1.5 space-y-1 max-h-32 overflow-y-auto border border-slate-300 dark:border-slate-600 rounded-md p-2">
+                        {filieresDisponiblesPourAjout.map((f) => (
+                          <label key={f.id} className="flex items-center gap-2 text-xs cursor-pointer">
+                            <input type="checkbox" checked={filiereIds.includes(f.id)} onChange={() => toggleFiliere(f.id)} />
+                            {f.nom} — {formatMontant(f.prix)}
+                          </label>
+                        ))}
+                        <p className="text-[10px] text-slate-400 pt-1">{t('saisieJournaliere.ajouterFiliereHint')}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="grid grid-cols-2 gap-2">
                   <input
                     type="text"
@@ -311,6 +355,12 @@ function MouvementsWidget({
                     className="field-input text-xs py-1.5"
                     required
                   />
+                  {sommeFilieres > 0 && (
+                    <div className="field-input text-xs py-1.5 flex items-center justify-between text-slate-500 dark:text-slate-400 col-span-2">
+                      <span>{t('saisieJournaliere.mouvementsMontantTotal')}</span>
+                      <span className="font-semibold text-slate-700 dark:text-slate-200">{formatMontant(montantTotalCalcule)}</span>
+                    </div>
+                  )}
                   <div className="field-input text-xs py-1.5 flex items-center justify-between text-slate-500 dark:text-slate-400 col-span-2">
                     <span>{t('saisieJournaliere.mouvementsResteAPayer')}</span>
                     <span className="font-semibold text-slate-700 dark:text-slate-200">{formatMontant(Math.max(0, resteAPayer))}</span>
@@ -432,7 +482,13 @@ function MouvementsWidget({
                 </div>
                 <div className="field-input text-xs py-1.5 flex items-center justify-between text-slate-500 dark:text-slate-400">
                   <span>{t('saisieJournaliere.mouvementsDroitInscription')}</span>
-                  <span className="font-semibold text-slate-700 dark:text-slate-200">{formatMontant(droitInscription ?? 0)}</span>
+                  {dupliqueDe ? (
+                    <span className="font-semibold text-emerald-600 dark:text-emerald-400" title={t('saisieJournaliere.ajouterFiliereHint')}>
+                      {t('saisieJournaliere.dejaPaye')}
+                    </span>
+                  ) : (
+                    <span className="font-semibold text-slate-700 dark:text-slate-200">{formatMontant(droitInscription ?? 0)}</span>
+                  )}
                 </div>
                 <MontantInput
                   placeholder={t('saisieJournaliere.mouvementsReduction')}

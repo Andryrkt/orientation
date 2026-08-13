@@ -120,6 +120,8 @@ export interface PaiementComplementaire {
   date: string;
   montant: number;
   numeroRecu: string | null;
+  // Non vide quand ce paiement correspondait aussi à l'ajout d'une nouvelle filière.
+  filieresInscrites?: InscriptionFiliere[];
   saisiPar?: { id: string; nom: string; prenom: string } | null;
 }
 

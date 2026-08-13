@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Periode, TypeMouvement } from '@prisma/client';
-import { IsArray, IsEnum, IsInt, IsOptional, IsString, IsUUID, Min, MinLength } from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsInt, IsOptional, IsString, IsUUID, Min, MinLength } from 'class-validator';
 
 export class CreateMouvementDto {
   @ApiProperty({ enum: Periode })
@@ -79,4 +79,11 @@ export class CreateMouvementDto {
   @IsOptional()
   @IsUUID()
   inscriptionParentId?: string;
+
+  // Renouvellement (via "Dupliquer") d'un étudiant déjà inscrit : le droit d'inscription n'est
+  // facturé qu'une seule fois par étudiant, pas à chaque nouvelle inscription/filière.
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  sansDroitInscription?: boolean;
 }

@@ -289,6 +289,12 @@ export function EtudiantsAdmin() {
             )}
             {etudiants?.items.map((m) => {
               const paiementsComplementaires = m.paiementsComplementaires ?? [];
+              // Une filière ajoutée plus tard (via un paiement complémentaire) est rattachée à ce
+              // paiement plutôt qu'à l'inscription d'origine : on les fusionne pour l'affichage.
+              const toutesFilieresInscrites = [
+                ...m.filieresInscrites,
+                ...paiementsComplementaires.flatMap((p) => p.filieresInscrites ?? []),
+              ];
               const ouvert = lignesOuvertes.has(m.id);
               return (
                 <Fragment key={m.id}>
@@ -317,9 +323,9 @@ export function EtudiantsAdmin() {
                     </td>
                     <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{m.contact ?? '—'}</td>
                     <td className="px-4 py-3 text-slate-500 dark:text-slate-400 text-xs">
-                      {m.filieresInscrites.length > 0 ? (
+                      {toutesFilieresInscrites.length > 0 ? (
                         <ul className="space-y-0.5">
-                          {m.filieresInscrites.map((fi) => (
+                          {toutesFilieresInscrites.map((fi) => (
                             <li key={fi.id} className="whitespace-nowrap">
                               <span className="text-slate-700 dark:text-slate-300 font-medium">{fi.filiere.nom}</span>
                               {' '}({formatDateCourte(fi.dateDebutCours)} → {formatDateCourte(fi.dateFinCours)})
@@ -367,6 +373,7 @@ export function EtudiantsAdmin() {
                               <th className="px-4 py-2 font-medium">Date</th>
                               <th className="px-4 py-2 font-medium">Montant</th>
                               <th className="px-4 py-2 font-medium">N° reçu</th>
+                              <th className="px-4 py-2 font-medium">Filière ajoutée</th>
                               <th className="px-4 py-2 font-medium">Encaissé par</th>
                             </tr>
                           </thead>
@@ -379,6 +386,9 @@ export function EtudiantsAdmin() {
                               <td className="px-4 py-2 text-emerald-600 font-medium">{formatMontant(m.montant)}</td>
                               <td className="px-4 py-2 text-slate-500 dark:text-slate-400">{m.numeroRecu ?? '—'}</td>
                               <td className="px-4 py-2 text-slate-500 dark:text-slate-400">
+                                {m.filieresInscrites.length > 0 ? m.filieresInscrites.map((fi) => fi.filiere.nom).join(' + ') : '—'}
+                              </td>
+                              <td className="px-4 py-2 text-slate-500 dark:text-slate-400">
                                 {m.saisiPar ? `${m.saisiPar.prenom} ${m.saisiPar.nom}` : '—'}
                               </td>
                             </tr>
@@ -390,6 +400,9 @@ export function EtudiantsAdmin() {
                                 </td>
                                 <td className="px-4 py-2 text-emerald-600 font-medium">{formatMontant(p.montant)}</td>
                                 <td className="px-4 py-2 text-slate-500 dark:text-slate-400">{p.numeroRecu ?? '—'}</td>
+                                <td className="px-4 py-2 text-slate-500 dark:text-slate-400">
+                                  {p.filieresInscrites && p.filieresInscrites.length > 0 ? p.filieresInscrites.map((fi) => fi.filiere.nom).join(' + ') : '—'}
+                                </td>
                                 <td className="px-4 py-2 text-slate-500 dark:text-slate-400">
                                   {p.saisiPar ? `${p.saisiPar.prenom} ${p.saisiPar.nom}` : '—'}
                                 </td>

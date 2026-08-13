@@ -70,7 +70,9 @@ export class SaisiesJournalieresService {
 
   async ajouterMouvement(utilisateurId: string, dto: CreateMouvementDto) {
     if (dto.inscriptionParentId) {
-      return this.ajouterPaiementComplementaire(utilisateurId, dto);
+      return dto.filiereIds?.length
+        ? this.ajouterFiliereComplementaire(utilisateurId, dto)
+        : this.ajouterPaiementComplementaire(utilisateurId, dto);
     }
 
     const detailInscriptionRenseigne = !!(dto.nom || dto.prenom || dto.contact || dto.numeroRecu || dto.filiereIds?.length);
@@ -86,7 +88,8 @@ export class SaisiesJournalieresService {
 
     const pointDeVenteId = await this.pointDeVenteDuSecretaire(utilisateurId);
     const date = dateDuJourMadagascar();
-    const droitInscription = dto.type === TypeMouvement.GAGNE ? (await this.droitInscriptionService.get()).montant : null;
+    const droitInscription =
+      dto.type === TypeMouvement.GAGNE && !dto.sansDroitInscription ? (await this.droitInscriptionService.get()).montant : null;
 
     return this.prisma.mouvementCaisse.create({
       data: {
@@ -161,6 +164,62 @@ export class SaisiesJournalieresService {
     });
   }
 
+  // Un étudiant déjà inscrit qui veut suivre une filière supplémentaire : le droit d'inscription
+  // n'est facturé qu'une fois par étudiant, donc on rattache la nouvelle filière à l'inscription
+  // d'origine (comme un paiement complémentaire) et on augmente le montant total de l'inscription
+  // au lieu d'en créer une nouvelle avec un droit d'inscription refacturé.
+  private async ajouterFiliereComplementaire(utilisateurId: string, dto: CreateMouvementDto) {
+    const pointDeVenteId = await this.pointDeVenteDuSecretaire(utilisateurId);
+    const parent = await this.prisma.mouvementCaisse.findUnique({
+      where: { id: dto.inscriptionParentId },
+      include: { paiementsComplementaires: { select: { montant: true } } },
+    });
+    if (!parent) throw new NotFoundException(`Inscription #${dto.inscriptionParentId} introuvable`);
+    if (parent.pointDeVenteId !== pointDeVenteId) {
+      throw new ForbiddenException("Cette inscription n'appartient pas à votre point de vente");
+    }
+    if (parent.inscriptionParentId) {
+      throw new BadRequestException('Impossible de rattacher une filière à un autre paiement complémentaire');
+    }
+    if (parent.montantTotal === null) {
+      throw new BadRequestException("Cette inscription n'a pas de montant total défini");
+    }
+
+    const nouvellesFilieres = await this.prisma.filiere.findMany({ where: { id: { in: dto.filiereIds! } } });
+    const sommeNouvellesFilieres = nouvellesFilieres.reduce((s, f) => s + f.prix, 0);
+    const nouveauMontantTotal = parent.montantTotal + sommeNouvellesFilieres;
+
+    const dejaPaye = parent.montant + parent.paiementsComplementaires.reduce((s, p) => s + p.montant, 0);
+    const montantRestant = Math.max(0, nouveauMontantTotal - dejaPaye - dto.montant);
+    const date = dateDuJourMadagascar();
+
+    const [, enfant] = await this.prisma.$transaction([
+      this.prisma.mouvementCaisse.update({ where: { id: parent.id }, data: { montantTotal: nouveauMontantTotal } }),
+      this.prisma.mouvementCaisse.create({
+        data: {
+          pointDeVenteId,
+          date,
+          periode: dto.periode,
+          type: TypeMouvement.GAGNE,
+          montant: dto.montant,
+          note: dto.note?.trim() || 'Ajout de filière',
+          saisiParId: utilisateurId,
+          nom: parent.nom,
+          prenom: parent.prenom,
+          contact: parent.contact,
+          numeroRecu: dto.numeroRecu,
+          montantTotal: nouveauMontantTotal,
+          montantRestant,
+          inscriptionParentId: parent.id,
+          filieresInscrites: { create: dto.filiereIds!.map((filiereId) => ({ filiereId })) },
+        },
+        include: { filieresInscrites: { include: { filiere: true } } },
+      }),
+    ]);
+
+    return enfant;
+  }
+
   async mouvementsAujourdhui(utilisateurId: string) {
     const pointDeVenteId = await this.pointDeVenteDuSecretaire(utilisateurId);
     const date = dateDuJourMadagascar();
@@ -206,7 +265,9 @@ export class SaisiesJournalieresService {
       take: 10,
       include: {
         filieresInscrites: { include: { filiere: true } },
-        paiementsComplementaires: { select: { montant: true } },
+        paiementsComplementaires: {
+          select: { montant: true, filieresInscrites: { include: { filiere: true } } },
+        },
       },
     });
     return resultats.map((m) => this.avecSoldeActuel(m));
@@ -381,7 +442,14 @@ export class SaisiesJournalieresService {
       filieresInscrites: { include: { filiere: { select: { id: true, nom: true } } } },
       paiementsComplementaires: {
         orderBy: { createdAt: 'asc' as const },
-        select: { id: true, date: true, montant: true, numeroRecu: true, saisiPar: { select: { id: true, nom: true, prenom: true } } },
+        select: {
+          id: true,
+          date: true,
+          montant: true,
+          numeroRecu: true,
+          saisiPar: { select: { id: true, nom: true, prenom: true } },
+          filieresInscrites: { include: { filiere: { select: { id: true, nom: true } } } },
+        },
       },
     };
 
