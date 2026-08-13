@@ -92,7 +92,7 @@ export function PublicLayout() {
             {user && !isEmploye && (
               <NavLink to="/ressources" className={navLinkClass}>{t('nav.ressources')}</NavLink>
             )}
-            {user?.role === 'ADMIN' && (
+            {(user?.role === 'ADMIN' || user?.role === 'MODERATEUR_FINANCE') && (
               <NavLink to="/admin" className={navLinkClass}>{t('nav.backoffice')}</NavLink>
             )}
             {user?.role === 'SECRETAIRE' && (
@@ -286,7 +286,7 @@ export function PublicLayout() {
                   </NavLink>
                 ),
               )}
-            {user?.role === 'ADMIN' && (
+            {(user?.role === 'ADMIN' || user?.role === 'MODERATEUR_FINANCE') && (
               <NavLink to="/admin" className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
                 {t('nav.backoffice')}
               </NavLink>
