@@ -20,9 +20,9 @@ function ilYA30JoursIso() {
 const DEPUIS_LE_DEBUT = '2000-01-01';
 
 const RACCOURCIS = [
-  { to: '/admin/points-de-vente', label: 'Points de vente', description: 'Gérer les points de vente et leurs secrétaires' },
+  { to: '/admin/points-de-vente', label: 'Stands', description: 'Gérer les stands et leurs secrétaires' },
   { to: '/admin/etudiants', label: 'Étudiants', description: 'Étudiants inscrits par les secrétaires' },
-  { to: '/admin/saisies-journalieres', label: 'Saisies journalières', description: 'Recettes et dépenses des points de vente' },
+  { to: '/admin/saisies-journalieres', label: 'Saisies journalières', description: 'Recettes et dépenses des stands' },
   { to: '/admin/depenses-globales', label: 'Dépenses globales', description: "Charges de l'entreprise (loyer, salaires...)" },
   { to: '/admin/investissements', label: 'Investissements', description: 'Dons, prêts et apports reçus des bailleurs' },
 ];
@@ -110,7 +110,7 @@ export function FinancesDashboard() {
     <div>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Tableau de bord Finances</h1>
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Tableau de bord FIRST ACADEMY</h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Vue d'ensemble consolidée sur la période sélectionnée</p>
         </div>
         <div className="flex items-center gap-2 text-sm flex-wrap">
@@ -119,7 +119,7 @@ export function FinancesDashboard() {
             value={pointDeVenteId}
             onChange={(e) => setPointDeVenteId(e.target.value)}
           >
-            <option value="">— Tous les points de vente —</option>
+            <option value="">— Tous les stands —</option>
             {pointsDeVente?.items.map((pdv) => (
               <option key={pdv.id} value={pdv.id}>
                 {pdv.nom}
@@ -146,13 +146,13 @@ export function FinancesDashboard() {
 
       <div className="bg-brand-900 rounded-xl p-6 mb-8 flex items-center justify-between flex-wrap gap-4">
         <div>
-          <p className="text-sm text-brand-200">Trésorerie réelle en caisse (depuis le début{pointDeVenteId ? ' — point de vente sélectionné' : ''})</p>
+          <p className="text-sm text-brand-200">Trésorerie réelle en caisse (depuis le début{pointDeVenteId ? ' — stand sélectionné' : ''})</p>
           <p className="text-4xl font-black text-white mt-1">
             {chargementTresorerie ? '…' : formatMontant(tresorerieCaisse)}
           </p>
         </div>
         <p className="text-xs text-brand-300 max-w-xs text-right">
-          Ventes − dépenses (points de vente et globales) + investissements reçus, cumulés depuis la première saisie.
+          Ventes − dépenses (stands et globales) + investissements reçus, cumulés depuis la première saisie.
           Indépendant du filtre de période ci-dessus.
         </p>
       </div>

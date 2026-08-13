@@ -106,7 +106,7 @@ export function PointsDeVenteAdmin() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Points de vente</h1>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Stands</h1>
         <button
           onClick={openCreate}
           className="px-4 py-2 bg-brand-600 text-white rounded-md text-sm font-medium hover:bg-brand-700"
@@ -134,7 +134,7 @@ export function PointsDeVenteAdmin() {
             )}
             {!isLoading && data?.items.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-slate-400">Aucun point de vente</td>
+                <td colSpan={5} className="px-4 py-6 text-center text-slate-400">Aucun stand</td>
               </tr>
             )}
             {data?.items.map((pdv) => (
@@ -236,7 +236,7 @@ export function PointsDeVenteAdmin() {
           <div className="bg-white dark:bg-slate-900 rounded-lg shadow-xl w-full max-w-lg">
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
-                {editing ? 'Modifier' : 'Ajouter'} — Point de vente
+                {editing ? 'Modifier' : 'Ajouter'} — Stand
               </h2>
               {error && <div className="bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">{error}</div>}
               <div>

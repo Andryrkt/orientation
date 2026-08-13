@@ -53,10 +53,10 @@ const groups: { title?: string; links: { to: string; label: string; end?: boolea
     ],
   },
   {
-    title: 'Finances',
+    title: 'FIRST ACADEMY',
     links: [
       { to: '/admin/finances', label: 'Tableau de bord', end: true },
-      { to: '/admin/points-de-vente', label: 'Points de vente' },
+      { to: '/admin/points-de-vente', label: 'Stands' },
       { to: '/admin/etudiants', label: 'Étudiants' },
       { to: '/admin/saisies-journalieres', label: 'Saisies journalières' },
       { to: '/admin/depenses-globales', label: 'Dépenses globales' },
@@ -74,8 +74,8 @@ export function AdminLayout() {
   );
   const [sidebarOuvert, setSidebarOuvert] = useState(() => localStorage.getItem('admin-sidebar-ouvert') !== 'false');
 
-  // Un modérateur finance n'a accès qu'à la section Finances du back-office.
-  const visibleGroups = user?.role === 'MODERATEUR_FINANCE' ? groups.filter((g) => g.title === 'Finances') : groups;
+  // Un modérateur finance n'a accès qu'à la section FIRST ACADEMY du back-office.
+  const visibleGroups = user?.role === 'MODERATEUR_FINANCE' ? groups.filter((g) => g.title === 'FIRST ACADEMY') : groups;
 
   function toggleGroupe(titre: string) {
     setGroupesFermes((prev) => ({ ...prev, [titre]: !prev[titre] }));

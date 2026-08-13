@@ -145,7 +145,7 @@ export function SaisiesJournalieresAdmin() {
               setPage(1);
             }}
           >
-            <option value="">— Tous les points de vente —</option>
+            <option value="">— Tous les stands —</option>
             {pointsDeVente?.items.map((pdv) => (
               <option key={pdv.id} value={pdv.id}>
                 {pdv.nom}
@@ -210,7 +210,7 @@ export function SaisiesJournalieresAdmin() {
             <table className="w-full text-sm">
               <thead className="bg-slate-50 dark:bg-slate-800/60 text-left text-slate-500 dark:text-slate-400">
                 <tr>
-                  <th className="px-4 py-3 font-medium">Point de vente</th>
+                  <th className="px-4 py-3 font-medium">Stand</th>
                   <th className="px-4 py-3 font-medium">Ville</th>
                   <th className="px-4 py-3 font-medium">Total gagné</th>
                   <th className="px-4 py-3 font-medium">Total dépensé</th>
@@ -223,7 +223,7 @@ export function SaisiesJournalieresAdmin() {
                   <tr><td colSpan={6} className="px-4 py-6 text-center text-slate-400">Chargement...</td></tr>
                 )}
                 {!loadingResume && resume?.length === 0 && (
-                  <tr><td colSpan={6} className="px-4 py-6 text-center text-slate-400">Aucun point de vente actif</td></tr>
+                  <tr><td colSpan={6} className="px-4 py-6 text-center text-slate-400">Aucun stand actif</td></tr>
                 )}
                 {resume?.map((r) => (
                   <tr key={r.pointDeVente.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
@@ -288,7 +288,7 @@ export function SaisiesJournalieresAdmin() {
                 <tr>
                   <th className="px-4 py-3 font-medium" />
                   <th className="px-4 py-3 font-medium">Date</th>
-                  <th className="px-4 py-3 font-medium">Point de vente</th>
+                  <th className="px-4 py-3 font-medium">Stand</th>
                   <th className="px-4 py-3 font-medium">Périodes saisies</th>
                   <th className="px-4 py-3 font-medium">Gagné (jour)</th>
                   <th className="px-4 py-3 font-medium">Dépensé (jour)</th>

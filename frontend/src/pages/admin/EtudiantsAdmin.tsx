@@ -145,7 +145,7 @@ export function EtudiantsAdmin() {
             value={pointDeVenteId}
             onChange={(e) => resetPage(setPointDeVenteId)(e.target.value)}
           >
-            <option value="">— Tous les points de vente —</option>
+            <option value="">— Tous les stands —</option>
             {pointsDeVente?.items.map((pdv) => (
               <option key={pdv.id} value={pdv.id}>
                 {pdv.nom}
@@ -277,7 +277,7 @@ export function EtudiantsAdmin() {
               <th className="px-4 py-3 font-medium">Montant payé</th>
               <th className="px-4 py-3 font-medium">Reste à payer</th>
               <th className="px-4 py-3 font-medium">Statut</th>
-              <th className="px-4 py-3 font-medium">Point de vente</th>
+              <th className="px-4 py-3 font-medium">Stand</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800">

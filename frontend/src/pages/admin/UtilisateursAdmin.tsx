@@ -100,7 +100,7 @@ function CreerEmployeModal({ onClose }: { onClose: () => void }) {
             >
               <option value="SECRETAIRE">Secrétaire (saisies journalières)</option>
               <option value="MODERATEUR">Modérateur (commentaires du blog)</option>
-              <option value="MODERATEUR_FINANCE">Modérateur finance (back-office Finances)</option>
+              <option value="MODERATEUR_FINANCE">Modérateur finance (back-office FIRST ACADEMY)</option>
             </select>
           </div>
 
