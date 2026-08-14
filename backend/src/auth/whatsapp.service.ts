@@ -17,6 +17,14 @@ export class WhatsAppService {
   }
 
   /**
+   * Envoie un lien de réinitialisation de mot de passe par WhatsApp
+   */
+  async sendPasswordResetLink(telephone: string, resetLink: string): Promise<boolean> {
+    const messageText = `🔑 Réinitialisation de votre mot de passe Avenir Assuré.\n\nCliquez sur ce lien (valable 1 heure) : ${resetLink}\n\nSi vous n'êtes pas à l'origine de cette demande, ignorez ce message.`;
+    return this.sendWhatsAppMessage(telephone, messageText, '[WhatsApp Reset mot de passe]');
+  }
+
+  /**
    * Envoie un rappel de saisie journalière (recettes/dépenses) à une secrétaire
    */
   async sendRappelSaisie(telephone: string, nomPointDeVente: string, periode: 'MIDI' | 'APRES_MIDI'): Promise<boolean> {

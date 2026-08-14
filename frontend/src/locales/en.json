@@ -281,7 +281,21 @@
     "invalid_credentials_error": "Invalid credentials.",
     "server_unreachable_error": "The server is temporarily unavailable. Please try again in a moment.",
     "show_password": "Show password",
-    "hide_password": "Hide password"
+    "hide_password": "Hide password",
+    "forgot_password_link": "Forgot your password?"
+  },
+  "forgotPassword": {
+    "title": "Forgot password",
+    "subtitle": "Enter your email or phone number and we'll send you a reset link",
+    "submit_btn": "Send reset link",
+    "sending_btn": "Sending...",
+    "sentMessage": "If this account exists, a reset link has been sent via WhatsApp (or by email if no phone number is on file).",
+    "backToLogin": "Back to login",
+    "resetTitle": "Reset password",
+    "resetSubmit_btn": "Reset password",
+    "resetSuccess": "Password reset successfully. Redirecting to login...",
+    "resetError": "Something went wrong. The link may have expired — request a new one.",
+    "invalidLink": "This reset link is invalid. Request a new one from the login page."
   },
   "register": {
     "eyebrow": "Join us",

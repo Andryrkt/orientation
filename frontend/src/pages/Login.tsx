@@ -150,6 +150,11 @@ export function Login() {
                 )}
               </button>
             </div>
+            <div className="text-right mt-1.5">
+              <Link to="/mot-de-passe-oublie" className="text-xs text-purple-600 dark:text-purple-400 hover:underline">
+                {t('login.forgot_password_link')}
+              </Link>
+            </div>
           </div>
 
           <button

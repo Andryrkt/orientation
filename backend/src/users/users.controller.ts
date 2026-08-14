@@ -20,6 +20,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UpdateUserRoleDto } from './dto/update-user-role.dto';
 import { CreateEmployeDto } from './dto/create-employe.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { ResetPasswordAdminDto } from './dto/reset-password-admin.dto';
 
 @ApiBearerAuth()
 @ApiTags('users')
@@ -75,5 +76,12 @@ export class UsersController {
   @Delete('admin/users/:id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Patch('admin/users/:id/password')
+  resetPasswordAdmin(@Param('id') id: string, @Body() dto: ResetPasswordAdminDto) {
+    return this.usersService.resetPasswordAdmin(id, dto.newPassword);
   }
 }

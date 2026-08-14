@@ -12,6 +12,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { WhatsAppService } from './whatsapp.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
     private jwt: JwtService,
     private config: ConfigService,
     private whatsAppService: WhatsAppService,
+    private mailService: MailService,
   ) {}
 
   private signAccessToken(userId: string, role: string) {
@@ -272,15 +274,26 @@ export class AuthService {
     });
   }
 
-  async forgotPassword(email: string) {
-    const user = await this.prisma.utilisateur.findUnique({ where: { email } });
+  // Le WhatsApp est privilégié sur l'email (usage courant à Madagascar) : dès qu'un numéro de
+  // téléphone est renseigné sur le compte, le lien part par WhatsApp plutôt que par email.
+  async forgotPassword(identifiant: string) {
+    const user = await this.prisma.utilisateur.findFirst({
+      where: { OR: [{ email: identifiant }, { telephone: identifiant }] },
+    });
+    const messageGenerique = { message: 'Si ce compte existe, un lien de reinitialisation a ete envoye.' };
     if (!user) {
-      // On ne revele pas si l'email existe ou non.
-      return { message: 'Si ce compte existe, un email a ete envoye.' };
+      // On ne revele pas si le compte existe ou non.
+      return messageGenerique;
     }
     const resetToken = this.signPurposeToken(user.id, 'reset-password', '1h');
-    console.log(`[dev] Lien de reinitialisation pour ${user.email} : token=${resetToken}`);
-    return { message: 'Si ce compte existe, un email a ete envoye.' };
+    const frontendOrigin = this.config.get<string>('FRONTEND_ORIGIN') ?? 'http://localhost:5173';
+    const resetLink = `${frontendOrigin}/reinitialiser-mot-de-passe?token=${resetToken}`;
+    if (user.telephone) {
+      await this.whatsAppService.sendPasswordResetLink(user.telephone, resetLink);
+    } else if (user.email) {
+      await this.mailService.sendPasswordResetEmail(user.email, resetLink);
+    }
+    return messageGenerique;
   }
 
   async resetPassword(token: string, newPassword: string) {

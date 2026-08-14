@@ -281,7 +281,21 @@
     "invalid_credentials_error": "Tsy mety ny solonanarana na teny miafina.",
     "server_unreachable_error": "Tsy azo tratrarina vonjimaika ny serveur. Andramo indray afaka kelikely.",
     "show_password": "Hampiseho ny teny miafina",
-    "hide_password": "Hanafina ny teny miafina"
+    "hide_password": "Hanafina ny teny miafina",
+    "forgot_password_link": "Hadinonao ny teny miafina ?"
+  },
+  "forgotPassword": {
+    "title": "Hadinonao ny teny miafina",
+    "subtitle": "Ampidiro ny mailakao na ny laharana finday, handefasanay rohy famerenana",
+    "submit_btn": "Alefaso ny rohy",
+    "sending_btn": "Mandefa...",
+    "sentMessage": "Raha misy io kaonty io, dia nalefa tamin'ny WhatsApp ny rohy famerenana (na tamin'ny mailaka raha tsy misy laharana finday mifamatotra amin'ny kaonty).",
+    "backToLogin": "Miverina amin'ny fidirana",
+    "resetTitle": "Averina ny teny miafina",
+    "resetSubmit_btn": "Averina ny teny miafina",
+    "resetSuccess": "Voaverina soa aman-tsara ny teny miafina. Mamerina any amin'ny fidirana...",
+    "resetError": "Nisy olana. Angamba efa lany daty ny rohy, mangataha iray hafa.",
+    "invalidLink": "Tsy mety io rohy famerenana io. Mangataha iray hafa avy amin'ny pejy fidirana."
   },
   "register": {
     "eyebrow": "Hiara-hiasa",

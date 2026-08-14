@@ -281,7 +281,21 @@
     "invalid_credentials_error": "Identifiants invalides.",
     "server_unreachable_error": "Le serveur est momentanément indisponible. Merci de réessayer dans quelques instants.",
     "show_password": "Afficher le mot de passe",
-    "hide_password": "Masquer le mot de passe"
+    "hide_password": "Masquer le mot de passe",
+    "forgot_password_link": "Mot de passe oublié ?"
+  },
+  "forgotPassword": {
+    "title": "Mot de passe oublié",
+    "subtitle": "Indiquez votre email ou votre numéro de téléphone, nous vous enverrons un lien de réinitialisation",
+    "submit_btn": "Envoyer le lien",
+    "sending_btn": "Envoi en cours...",
+    "sentMessage": "Si ce compte existe, un lien de réinitialisation a été envoyé par WhatsApp (ou par email si aucun numéro n'est associé au compte).",
+    "backToLogin": "Retour à la connexion",
+    "resetTitle": "Réinitialiser le mot de passe",
+    "resetSubmit_btn": "Réinitialiser le mot de passe",
+    "resetSuccess": "Mot de passe réinitialisé avec succès. Redirection vers la connexion...",
+    "resetError": "Une erreur est survenue. Le lien est peut-être expiré, redemandez-en un nouveau.",
+    "invalidLink": "Ce lien de réinitialisation est invalide. Redemandez-en un nouveau depuis la page de connexion."
   },
   "register": {
     "eyebrow": "Rejoignez-nous",

@@ -76,6 +76,16 @@ export class UsersService {
     return { message: 'Mot de passe mis à jour' };
   }
 
+  // Réinitialisation par un admin (personnel qui a oublié son mot de passe) : contrairement à
+  // changePassword, ne demande pas l'ancien mot de passe puisque c'est justement ce qui est perdu.
+  async resetPasswordAdmin(userId: string, newPassword: string) {
+    const user = await this.prisma.utilisateur.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('Utilisateur introuvable');
+    const password = await bcrypt.hash(newPassword, 10);
+    await this.prisma.utilisateur.update({ where: { id: userId }, data: { password, refreshTokenHash: null } });
+    return { message: 'Mot de passe réinitialisé' };
+  }
+
   async getCvSuggestion(userId: string) {
     const latestResult = await this.prisma.resultatOrientation.findFirst({
       where: { utilisateurId: userId },

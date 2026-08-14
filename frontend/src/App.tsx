@@ -26,6 +26,8 @@ import { EnseignantDetail } from './pages/EnseignantDetail';
 import { CentresFormationList } from './pages/CentresFormationList';
 import { CentreFormationDetail } from './pages/CentreFormationDetail';
 import { Login } from './pages/Login';
+import { MotDePasseOublie } from './pages/MotDePasseOublie';
+import { ReinitialiserMotDePasse } from './pages/ReinitialiserMotDePasse';
 import { Register } from './pages/Register';
 import { Profil } from './pages/Profil';
 import { CvGenerator } from './pages/CvGenerator';
@@ -95,6 +97,8 @@ export default function App() {
         <Route path="enseignants" element={<EnseignantsList />} />
         <Route path="enseignants/:id" element={<EnseignantDetail />} />
         <Route path="login" element={<Login />} />
+        <Route path="mot-de-passe-oublie" element={<MotDePasseOublie />} />
+        <Route path="reinitialiser-mot-de-passe" element={<ReinitialiserMotDePasse />} />
         <Route path="register" element={<Register />} />
         <Route path="guide" element={<GuideUtilisateur />} />
         <Route path="contact" element={<Contact />} />

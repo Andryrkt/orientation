@@ -126,9 +126,79 @@ function CreerEmployeModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+function ReinitialiserMotDePasseModal({ user, onClose }: { user: User; onClose: () => void }) {
+  const queryClient = useQueryClient();
+  const [newPassword, setNewPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [succes, setSucces] = useState(false);
+
+  const resetMutation = useMutation({
+    mutationFn: () => api.patch(`/admin/users/${user.id}/password`, { newPassword }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+      setSucces(true);
+    },
+    onError: (err: unknown) => {
+      const message = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
+      setError(Array.isArray(message) ? message.join(', ') : message ?? 'Une erreur est survenue');
+    },
+  });
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    resetMutation.mutate();
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-20 p-4">
+      <div className="bg-white dark:bg-slate-900 rounded-lg shadow-xl w-full max-w-md">
+        {succes ? (
+          <div className="p-6 space-y-4">
+            <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">Mot de passe réinitialisé</h2>
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Nouveau mot de passe pour <strong>{user.prenom} {user.nom}</strong> : <code className="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">{newPassword}</code>
+            </p>
+            <p className="text-xs text-slate-400">Transmettez-le à la personne — elle pourra le changer ensuite depuis son profil.</p>
+            <div className="flex justify-end">
+              <button onClick={onClose} className="px-4 py-2 text-sm rounded-md bg-brand-600 text-white hover:bg-brand-700">Fermer</button>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
+              Réinitialiser le mot de passe — {user.prenom} {user.nom}
+            </h2>
+            {error && <div className="bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">{error}</div>}
+            <div>
+              <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Nouveau mot de passe temporaire</label>
+              <input
+                type="text"
+                className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-3 py-2 text-sm"
+                required
+                minLength={8}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <button type="button" onClick={onClose} className="px-4 py-2 text-sm rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                Annuler
+              </button>
+              <button type="submit" disabled={resetMutation.isPending} className="px-4 py-2 text-sm rounded-md bg-brand-600 text-white hover:bg-brand-700 disabled:opacity-50">
+                Réinitialiser
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function UtilisateursAdmin() {
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
+  const [resetPasswordUser, setResetPasswordUser] = useState<User | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-users'],
@@ -188,7 +258,13 @@ export function UtilisateursAdmin() {
                     ))}
                   </select>
                 </td>
-                <td className="px-4 py-3 text-right">
+                <td className="px-4 py-3 text-right whitespace-nowrap">
+                  <button
+                    onClick={() => setResetPasswordUser(u)}
+                    className="text-brand-600 dark:text-brand-400 hover:underline mr-3"
+                  >
+                    Réinitialiser mot de passe
+                  </button>
                   <button
                     onClick={() => confirm('Supprimer cet utilisateur ?') && remove.mutate(u.id)}
                     className="text-red-600 dark:text-red-400 hover:underline"
@@ -203,6 +279,9 @@ export function UtilisateursAdmin() {
       </div>
 
       {showForm && <CreerEmployeModal onClose={() => setShowForm(false)} />}
+      {resetPasswordUser && (
+        <ReinitialiserMotDePasseModal user={resetPasswordUser} onClose={() => setResetPasswordUser(null)} />
+      )}
     </div>
   );
 }
