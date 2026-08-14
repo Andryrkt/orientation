@@ -1,10 +1,14 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { api } from '../lib/api';
 import { Paginated, Universite } from '../lib/types';
 import { FavoriteButton } from '../components/FavoriteButton';
+import { UniversitesMap } from '../components/UniversitesMap';
 
 export function UniversitesList() {
+  const [view, setView] = useState<'liste' | 'carte'>('liste');
+
   const { data, isLoading } = useQuery({
     queryKey: ['universites'],
     queryFn: async () => (await api.get<Paginated<Universite>>('/universites?limit=100')).data,
@@ -27,21 +31,45 @@ export function UniversitesList() {
           </p>
         </div>
       </section>
-      {isLoading && <p className="text-slate-400">Chargement...</p>}
-      <div className="grid md:grid-cols-2 gap-4">
-        {data?.items.map((u) => (
-          <Link
-            key={u.id}
-            to={`/universites/${u.slug}`}
-            className="card relative block p-5"
-          >
-            <FavoriteButton type="UNIVERSITE" entityId={u.id} compact className="absolute top-4 right-4" />
-            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1 pr-8">{u.nom}</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">{u.ville}{u.region ? `, ${u.region}` : ''}</p>
-            <p className="text-slate-600 dark:text-slate-400 text-sm line-clamp-2">{u.description}</p>
-          </Link>
-        ))}
+      <div className="inline-flex rounded-full border border-slate-200 dark:border-white/15 overflow-hidden mb-6">
+        <button
+          onClick={() => setView('liste')}
+          className={`px-4 py-1.5 text-xs font-bold transition-all duration-200 ${
+            view === 'liste' ? 'bg-blue-500 text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
+          }`}
+        >
+          📋 Liste
+        </button>
+        <button
+          onClick={() => setView('carte')}
+          className={`px-4 py-1.5 text-xs font-bold transition-all duration-200 ${
+            view === 'carte' ? 'bg-blue-500 text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
+          }`}
+        >
+          🗺️ Carte
+        </button>
       </div>
+
+      {isLoading && <p className="text-slate-400">Chargement...</p>}
+
+      {view === 'carte' ? (
+        <UniversitesMap universites={data?.items ?? []} />
+      ) : (
+        <div className="grid md:grid-cols-2 gap-4">
+          {data?.items.map((u) => (
+            <Link
+              key={u.id}
+              to={`/universites/${u.slug}`}
+              className="card relative block p-5"
+            >
+              <FavoriteButton type="UNIVERSITE" entityId={u.id} compact className="absolute top-4 right-4" />
+              <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1 pr-8">{u.nom}</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">{u.ville}{u.region ? `, ${u.region}` : ''}</p>
+              <p className="text-slate-600 dark:text-slate-400 text-sm line-clamp-2">{u.description}</p>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
