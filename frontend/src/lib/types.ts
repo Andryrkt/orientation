@@ -679,6 +679,7 @@ export interface Enseignant {
   photo: string | null;
   bio: string | null;
   matieres: string[];
+  niveauxEtude: string[];
   etablissement: string | null;
   disponibilites: string | null;
   visible: boolean;

@@ -45,11 +45,6 @@ export function EnseignantDetail() {
       <div className="flex items-start justify-between gap-4 mb-2">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">{enseignant.prenom} {enseignant.nom}</h1>
-          {enseignant.etablissement && (
-            <p className="text-base text-blue-600 dark:text-blue-400 font-bold mt-1">
-              🏫 Établissement : {enseignant.etablissement}
-            </p>
-          )}
         </div>
         <FavoriteButton type="ENSEIGNANT" entityId={enseignant.id} className="shrink-0" />
       </div>

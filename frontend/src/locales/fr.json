@@ -2,7 +2,8 @@
   "nav": {
     "orientation": "Orientation",
     "opportunities": "Opportunités",
-    "blog": "Blog / Conseils",
+    "student_life": "Vie étudiante",
+    "blog": "Information / Conseils",
     "login": "Connexion",
     "register": "Inscription",
     "logout": "Déconnexion",
@@ -249,6 +250,7 @@
     "subtitle": "Des ressources éducatives et des documents professionnels adaptés à votre parcours.",
     "tab_learning": "Plateforme d'Apprentissage",
     "tab_docs": "Plateforme Documentaire",
+    "tab_teachers": "Enseignants",
     "select_level_prompt": "Configurez votre profil d'études",
     "select_level_desc": "Afin de vous suggérer les documents et cours les plus pertinents, sélectionnez votre situation actuelle :",
     "level_lycee": "Lycée / Préparation BACC",
@@ -260,12 +262,14 @@
     "btn_choose": "Confirmer et accéder",
     "btn_change_level": "Modifier mon profil d'études",
     "search_placeholder": "Rechercher un cours, un sujet, un modèle...",
+    "search_placeholder_teachers": "Rechercher un enseignant, une matière, un établissement...",
     "category_all": "Tout",
     "duration": "Durée : {{duration}}",
     "pages": "Pages : {{pages}}",
     "download": "Télécharger",
     "read": "Lire le cours",
     "empty_msg": "Aucune ressource disponible pour cette catégorie.",
+    "empty_msg_teachers": "Aucun enseignant disponible pour ce profil d'études.",
     "modal_close": "Fermer"
   },
   "login": {

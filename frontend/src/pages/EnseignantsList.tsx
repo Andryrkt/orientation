@@ -56,12 +56,6 @@ export function EnseignantsList() {
           >
             <FavoriteButton type="ENSEIGNANT" entityId={e.id} compact className="absolute top-4 right-4" />
             <h3 className="text-lg font-bold text-slate-800 mb-1 pr-8">{e.prenom} {e.nom}</h3>
-            
-            {e.etablissement && (
-              <p className="text-xs text-blue-600 dark:text-blue-400 font-semibold mb-1">
-                🏫 {e.etablissement}
-              </p>
-            )}
 
             {e.noteMoyenne !== null && (
               <p className="text-sm text-amber-600 mb-2">

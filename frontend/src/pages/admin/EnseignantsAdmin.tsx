@@ -8,6 +8,10 @@ function toPayload(values: Record<string, unknown>) {
       typeof values.matieres === 'string'
         ? values.matieres.split(',').map((s) => s.trim()).filter(Boolean)
         : [],
+    niveauxEtude:
+      typeof values.niveauxEtude === 'string'
+        ? values.niveauxEtude.split(',').map((s) => s.trim().toUpperCase()).filter(Boolean)
+        : [],
     visible: values.visible === 'true' || values.visible === true,
   };
 }
@@ -26,6 +30,7 @@ export function EnseignantsAdmin() {
         telephone: '',
         bio: '',
         matieres: '',
+        niveauxEtude: '',
         etablissement: '',
         disponibilites: '',
         visible: 'true',
@@ -33,12 +38,18 @@ export function EnseignantsAdmin() {
       toFormValues={(item) => ({
         ...item,
         matieres: (item.matieres ?? []).join(', '),
+        niveauxEtude: (item.niveauxEtude ?? []).join(', '),
         visible: String(item.visible),
       })}
       toPayload={toPayload}
       columns={[
         { key: 'nom', label: 'Nom', render: (item) => `${item.prenom} ${item.nom}` },
         { key: 'matieres', label: 'Matières', render: (item) => item.matieres.join(', ') || '—' },
+        {
+          key: 'niveauxEtude',
+          label: 'Niveaux',
+          render: (item) => (item.niveauxEtude?.length ? item.niveauxEtude.join(', ') : 'Tous niveaux'),
+        },
         { key: 'etablissement', label: 'Établissement', render: (item) => item.etablissement || '—' },
         {
           key: 'noteMoyenne',
@@ -58,6 +69,11 @@ export function EnseignantsAdmin() {
         { name: 'telephone', label: 'Téléphone', type: 'text' },
         { name: 'bio', label: 'Bio', type: 'textarea' },
         { name: 'matieres', label: 'Matières (séparées par des virgules)', type: 'text' },
+        {
+          name: 'niveauxEtude',
+          label: 'Niveaux d\'études (LYCEE, NOUVEAU_BACHELIER, UNIVERSITE — vide = tous niveaux)',
+          type: 'text',
+        },
         { name: 'etablissement', label: 'Établissement de rattachement', type: 'text' },
         { name: 'disponibilites', label: 'Disponibilités', type: 'text' },
         {

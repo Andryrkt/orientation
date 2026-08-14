@@ -31,22 +31,22 @@ interface CategorieDepense extends Categorie {
 }
 
 const REVENUS: Categorie[] = [
-  { id: 'bourse', label: 'Bourse (CROUS)', def: 200, max: 700 },
-  { id: 'job', label: 'Job étudiant', def: 300, max: 1200 },
-  { id: 'famille', label: 'Aide familiale', def: 250, max: 800 },
-  { id: 'apl', label: 'Aide au logement (APL/ALS)', def: 50, max: 400 },
-  { id: 'autres_rev', label: 'Autres revenus', def: 0, max: 500 },
+  { id: 'bourse', label: 'Bourse d\'études', def: 200_000, max: 700_000 },
+  { id: 'job', label: 'Job étudiant', def: 300_000, max: 1_200_000 },
+  { id: 'famille', label: 'Aide familiale', def: 250_000, max: 800_000 },
+  { id: 'apl', label: 'Aide au logement', def: 50_000, max: 400_000 },
+  { id: 'autres_rev', label: 'Autres revenus', def: 0, max: 500_000 },
 ];
 
 const DEPENSES: CategorieDepense[] = [
-  { id: 'logement', label: 'Logement (loyer)', def: 450, max: 2000, color: '#0052FF', icon: Home },
-  { id: 'alimentation', label: 'Alimentation', def: 180, max: 500, color: '#F97316', icon: Utensils },
-  { id: 'transport', label: 'Transport', def: 35, max: 150, color: '#10B981', icon: Bus },
-  { id: 'sante', label: 'Santé & assurance', def: 25, max: 150, color: '#EAB308', icon: HeartPulse },
-  { id: 'telecom', label: 'Téléphone & abonnements', def: 30, max: 100, color: '#EC4899', icon: Smartphone },
-  { id: 'fournitures', label: 'Fournitures scolaires', def: 15, max: 150, color: '#14B8A6', icon: BookOpen },
-  { id: 'loisirs', label: 'Loisirs & sorties', def: 50, max: 300, color: '#8B5CF6', icon: PartyPopper },
-  { id: 'epargne', label: 'Épargne & imprévus', def: 15, max: 300, color: '#EF4444', icon: PiggyBank },
+  { id: 'logement', label: 'Logement (loyer)', def: 450_000, max: 2_000_000, color: '#0052FF', icon: Home },
+  { id: 'alimentation', label: 'Alimentation', def: 180_000, max: 500_000, color: '#F97316', icon: Utensils },
+  { id: 'transport', label: 'Transport', def: 35_000, max: 150_000, color: '#10B981', icon: Bus },
+  { id: 'sante', label: 'Santé & assurance', def: 25_000, max: 150_000, color: '#EAB308', icon: HeartPulse },
+  { id: 'telecom', label: 'Téléphone & abonnements', def: 30_000, max: 100_000, color: '#EC4899', icon: Smartphone },
+  { id: 'fournitures', label: 'Fournitures scolaires', def: 15_000, max: 150_000, color: '#14B8A6', icon: BookOpen },
+  { id: 'loisirs', label: 'Loisirs & sorties', def: 50_000, max: 300_000, color: '#8B5CF6', icon: PartyPopper },
+  { id: 'epargne', label: 'Épargne & imprévus', def: 15_000, max: 300_000, color: '#EF4444', icon: PiggyBank },
 ];
 
 const ALL: Categorie[] = [...REVENUS, ...DEPENSES];
@@ -55,27 +55,27 @@ type Preset = Record<string, number>;
 
 const PRESETS: { id: string; label: string; values: Preset }[] = [
   {
-    id: 'crous',
-    label: 'Boursier·ère au CROUS',
+    id: 'boursier',
+    label: 'Boursier·ère',
     values: {
-      bourse: 350, job: 150, famille: 100, apl: 200, autres_rev: 0,
-      logement: 250, alimentation: 200, transport: 30, sante: 20, telecom: 30, fournitures: 25, loisirs: 40, epargne: 15,
+      bourse: 350_000, job: 150_000, famille: 100_000, apl: 200_000, autres_rev: 0,
+      logement: 250_000, alimentation: 200_000, transport: 30_000, sante: 20_000, telecom: 30_000, fournitures: 25_000, loisirs: 40_000, epargne: 15_000,
     },
   },
   {
     id: 'alternance',
     label: 'Alternance / job étudiant',
     values: {
-      bourse: 0, job: 900, famille: 50, apl: 150, autres_rev: 0,
-      logement: 550, alimentation: 220, transport: 60, sante: 35, telecom: 35, fournitures: 15, loisirs: 80, epargne: 40,
+      bourse: 0, job: 900_000, famille: 50_000, apl: 150_000, autres_rev: 0,
+      logement: 550_000, alimentation: 220_000, transport: 60_000, sante: 35_000, telecom: 35_000, fournitures: 15_000, loisirs: 80_000, epargne: 40_000,
     },
   },
   {
     id: 'parents',
     label: 'Chez mes parents',
     values: {
-      bourse: 100, job: 250, famille: 150, apl: 0, autres_rev: 0,
-      logement: 50, alimentation: 80, transport: 40, sante: 20, telecom: 25, fournitures: 20, loisirs: 70, epargne: 30,
+      bourse: 100_000, job: 250_000, famille: 150_000, apl: 0, autres_rev: 0,
+      logement: 50_000, alimentation: 80_000, transport: 40_000, sante: 20_000, telecom: 25_000, fournitures: 20_000, loisirs: 70_000, epargne: 30_000,
     },
   },
 ];
@@ -86,14 +86,15 @@ function defaultState(): Record<string, number> {
   return s;
 }
 
-const fmtEUR = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+const numberFmt = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 });
+const fmtAr = (v: number) => `${numberFmt.format(v)} Ar`;
 
 export function BudgetSimulator() {
   const [values, setValues] = useState<Record<string, number>>(defaultState());
   const [periode, setPeriode] = useState<Periode>('MENSUEL');
 
   const mult = periode === 'ANNUEL' ? 12 : 1;
-  const disp = (v: number) => fmtEUR.format(v * mult);
+  const disp = (v: number) => fmtAr(v * mult);
 
   function setValue(id: string, v: number) {
     setValues((prev) => ({ ...prev, [id]: Math.max(0, isNaN(v) ? 0 : v) }));
@@ -139,8 +140,8 @@ export function BudgetSimulator() {
       cls: 'critical',
       text: (
         <>
-          <b>Déficit —</b> {fmtEUR.format(-solde)} manquent chaque mois. Sur une année universitaire (10 mois), cela
-          représente {fmtEUR.format(-solde * 10)} à trouver.
+          <b>Déficit —</b> {fmtAr(-solde)} manquent chaque mois. Sur une année universitaire (10 mois), cela
+          représente {fmtAr(-solde * 10)} à trouver.
         </>
       ),
     });
@@ -150,7 +151,7 @@ export function BudgetSimulator() {
       text: (
         <>
           <b>Marge serrée —</b> le budget est tout juste équilibré ; une dépense imprévue de quelques dizaines
-          d'euros suffirait à basculer dans le rouge.
+          de milliers d'ariary suffirait à basculer dans le rouge.
         </>
       ),
     });
@@ -159,7 +160,7 @@ export function BudgetSimulator() {
       cls: 'good',
       text: (
         <>
-          <b>Marge confortable —</b> il reste {fmtEUR.format(solde)}/mois, de quoi renforcer une épargne de
+          <b>Marge confortable —</b> il reste {fmtAr(solde)}/mois, de quoi renforcer une épargne de
           précaution.
         </>
       ),
@@ -170,7 +171,7 @@ export function BudgetSimulator() {
       cls: 'warning',
       text: (
         <>
-          <b>Alimentation serrée —</b> {fmtEUR.format(values.alimentation)}/mois est faible ; pensez aux épiceries
+          <b>Alimentation serrée —</b> {fmtAr(values.alimentation)}/mois est faible ; pensez aux épiceries
           solidaires ou aux restaurants universitaires à tarif réduit pour les boursiers.
         </>
       ),
@@ -281,7 +282,7 @@ export function BudgetSimulator() {
               Revenus
               <span className="text-sm font-bold tabular-nums text-blue-600 dark:text-blue-400">{disp(totalRevenus)}</span>
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-5">Montants mensuels, en euros.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-5">Montants mensuels, en ariary.</p>
             <div className="space-y-5">
               {REVENUS.map((c) => (
                 <RowInput key={c.id} categorie={c} value={values[c.id]} onChange={(v) => setValue(c.id, v)} />
@@ -294,7 +295,7 @@ export function BudgetSimulator() {
               Dépenses
               <span className="text-sm font-bold tabular-nums text-rose-500 dark:text-rose-400">{disp(totalDepenses)}</span>
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-5">Montants mensuels, en euros.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-5">Montants mensuels, en ariary.</p>
             <div className="space-y-5">
               {DEPENSES.map((c) => (
                 <RowInput key={c.id} categorie={c} value={values[c.id]} onChange={(v) => setValue(c.id, v)} color={c.color} Icon={c.icon} />
@@ -425,20 +426,21 @@ function RowInput({
           <input
             type="number"
             min={0}
-            max={Math.max(categorie.max, 5000)}
+            max={Math.max(categorie.max, 5_000_000)}
+            step={1000}
             value={value}
             onChange={(e) => onChange(Number(e.target.value))}
-            aria-label={`${categorie.label}, montant mensuel en euros`}
-            className="w-20 text-right text-sm font-bold tabular-nums rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+            aria-label={`${categorie.label}, montant mensuel en ariary`}
+            className="w-24 text-right text-sm font-bold tabular-nums rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
           />
-          <span className="text-xs text-slate-400">€</span>
+          <span className="text-xs text-slate-400">Ar</span>
         </div>
       </div>
       <input
         type="range"
         min={0}
         max={categorie.max}
-        step={5}
+        step={5000}
         value={Math.min(value, categorie.max)}
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full accent-blue-500"

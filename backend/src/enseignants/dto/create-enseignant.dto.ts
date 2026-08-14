@@ -36,6 +36,12 @@ export class CreateEnseignantDto {
   @IsString({ each: true })
   matieres?: string[];
 
+  @ApiProperty({ required: false, type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  niveauxEtude?: string[];
+
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()

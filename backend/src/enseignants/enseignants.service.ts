@@ -21,17 +21,23 @@ export class EnseignantsService {
   async findAllVisible(query: QueryEnseignantDto) {
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
-    const where: Prisma.EnseignantWhereInput = {
-      visible: true,
-      ...(query.matiere && { matieres: { has: query.matiere } }),
-      ...(query.q && {
+    const filters: Prisma.EnseignantWhereInput[] = [{ visible: true }];
+    if (query.matiere) filters.push({ matieres: { has: query.matiere } });
+    if (query.niveauEtude) {
+      filters.push({
+        OR: [{ niveauxEtude: { isEmpty: true } }, { niveauxEtude: { has: query.niveauEtude } }],
+      });
+    }
+    if (query.q) {
+      filters.push({
         OR: [
           { nom: { contains: query.q, mode: 'insensitive' } },
           { prenom: { contains: query.q, mode: 'insensitive' } },
           { etablissement: { contains: query.q, mode: 'insensitive' } },
         ],
-      }),
-    };
+      });
+    }
+    const where: Prisma.EnseignantWhereInput = { AND: filters };
 
     const [items, total] = await Promise.all([
       this.prisma.enseignant.findMany({

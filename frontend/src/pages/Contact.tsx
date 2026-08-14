@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import {
   CheckCircle2,
   GraduationCap,
@@ -46,7 +47,7 @@ const CONTACT_INFO = [
 ];
 
 const TEAM = [
-  { icon: Headset, name: 'Équipe Support', role: 'Problèmes techniques & Comptes', delay: '0ms' },
+  { icon: Headset, name: 'Équipe Support', role: 'Problèmes techniques & Comptes', delay: '0ms', to: '/tickets' },
   { icon: GraduationCap, name: 'Équipe Orientation', role: 'Conseils & Parcours académiques', delay: '80ms' },
   { icon: Handshake, name: 'Équipe Partenariats', role: 'Collaborations & Institutions', delay: '160ms' },
 ];
@@ -297,22 +298,30 @@ export function Contact() {
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Des professionnels dévoués à votre orientation</p>
         </div>
         <div className="grid sm:grid-cols-3 gap-5">
-          {TEAM.map((member) => (
-            <div
-              key={member.name}
-              className="glass-card p-6 text-center hover:-translate-y-1 transition-transform duration-300"
-              style={{ animationDelay: member.delay }}
-            >
-              <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                style={{ background: 'linear-gradient(135deg, rgba(0,82,255,0.15), rgba(0,163,255,0.15))' }}
-              >
-                <member.icon className="w-7 h-7 text-blue-600 dark:text-blue-400" strokeWidth={1.75} />
+          {TEAM.map((member) => {
+            const content = (
+              <>
+                <div
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                  style={{ background: 'linear-gradient(135deg, rgba(0,82,255,0.15), rgba(0,163,255,0.15))' }}
+                >
+                  <member.icon className="w-7 h-7 text-blue-600 dark:text-blue-400" strokeWidth={1.75} />
+                </div>
+                <p className="font-bold text-slate-900 dark:text-white text-sm">{member.name}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{member.role}</p>
+              </>
+            );
+            const className = "glass-card p-6 text-center hover:-translate-y-1 transition-transform duration-300";
+            return member.to ? (
+              <Link key={member.name} to={member.to} className={className} style={{ animationDelay: member.delay }}>
+                {content}
+              </Link>
+            ) : (
+              <div key={member.name} className={className} style={{ animationDelay: member.delay }}>
+                {content}
               </div>
-              <p className="font-bold text-slate-900 dark:text-white text-sm">{member.name}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{member.role}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     </div>

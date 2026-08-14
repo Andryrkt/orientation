@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { api } from '../lib/api';
 import { useAuth } from '../lib/auth-context';
+import { Enseignant, Paginated } from '../lib/types';
+import { FavoriteButton } from '../components/FavoriteButton';
 
 interface Ressource {
   id: string;
@@ -37,7 +40,7 @@ export function RessourcesApprentissage() {
   };
 
   const [selectedLevel, setSelectedLevel] = useState<'LYCEE' | 'NOUVEAU_BACHELIER' | 'UNIVERSITE' | null>(getInitialLevel());
-  const [activeTab, setActiveTab] = useState<'LEARNING' | 'DOCS'>('LEARNING');
+  const [activeTab, setActiveTab] = useState<'LEARNING' | 'DOCS' | 'TEACHERS'>('LEARNING');
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [readerResource, setReaderResource] = useState<Ressource | null>(null);
@@ -75,7 +78,23 @@ export function RessourcesApprentissage() {
       });
       return res.data;
     },
-    enabled: !!selectedLevel
+    enabled: !!selectedLevel && activeTab !== 'TEACHERS'
+  });
+
+  // Récupérer les enseignants selon le profil d'études
+  const { data: enseignantsData, isLoading: isLoadingEnseignants } = useQuery({
+    queryKey: ['ressources-enseignants', selectedLevel, search],
+    queryFn: async () => {
+      const res = await api.get<Paginated<Enseignant>>('/enseignants', {
+        params: {
+          niveauEtude: selectedLevel ?? undefined,
+          q: search || undefined,
+          limit: 50
+        }
+      });
+      return res.data;
+    },
+    enabled: !!selectedLevel && activeTab === 'TEACHERS'
   });
 
   const categories = selectedLevel === 'LYCEE'
@@ -257,6 +276,16 @@ export function RessourcesApprentissage() {
         >
           📂 {t('ressources.tab_docs')}
         </button>
+        <button
+          onClick={() => { setActiveTab('TEACHERS'); setActiveCategory('All'); }}
+          className={`px-6 py-3 font-bold text-sm border-b-2 transition-all duration-200 -mb-px ${
+            activeTab === 'TEACHERS'
+              ? 'border-blue-500 text-blue-500 dark:text-blue-400'
+              : 'border-transparent text-slate-400 hover:text-slate-650 dark:hover:text-slate-200'
+          }`}
+        >
+          🧑‍🏫 {t('ressources.tab_teachers')}
+        </button>
       </div>
 
       {/* Search & Categories */}
@@ -264,7 +293,7 @@ export function RessourcesApprentissage() {
         <div className="flex gap-4">
           <input
             type="text"
-            placeholder={t('ressources.search_placeholder')}
+            placeholder={activeTab === 'TEACHERS' ? t('ressources.search_placeholder_teachers') : t('ressources.search_placeholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="field-input flex-1"
@@ -272,6 +301,7 @@ export function RessourcesApprentissage() {
         </div>
 
         {/* Categories Pills */}
+        {activeTab !== 'TEACHERS' && (
         <div className="flex flex-wrap gap-2">
           {categories.map((cat) => (
             <button
@@ -287,10 +317,47 @@ export function RessourcesApprentissage() {
             </button>
           ))}
         </div>
+        )}
       </div>
 
-      {/* Resources grid */}
-      {isLoading ? (
+      {/* Teachers grid */}
+      {activeTab === 'TEACHERS' ? (
+        isLoadingEnseignants ? (
+          <div className="flex items-center gap-3 text-slate-400 py-16 justify-center">
+            <div className="w-6 h-6 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
+            Chargement...
+          </div>
+        ) : enseignantsData?.items.length === 0 ? (
+          <div className="text-center py-20 border border-dashed border-slate-200 dark:border-white/8 rounded-2xl">
+            <span className="text-4xl block mb-3">🔍</span>
+            <p className="text-slate-400 text-sm font-semibold">{t('ressources.empty_msg_teachers')}</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {enseignantsData?.items.map((ens) => (
+              <Link
+                key={ens.id}
+                to={`/enseignants/${ens.id}`}
+                className="glass-card relative flex flex-col p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+              >
+                <FavoriteButton type="ENSEIGNANT" entityId={ens.id} compact className="absolute top-4 right-4" />
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 pr-8 leading-snug">{ens.prenom} {ens.nom}</h3>
+                {ens.noteMoyenne !== null && (
+                  <p className="text-sm text-amber-600 dark:text-amber-400 mb-2">★ {ens.noteMoyenne.toFixed(1)} ({ens.avisCount} avis)</p>
+                )}
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {ens.matieres.map((m) => (
+                    <span key={m} className="text-xs bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 rounded-full px-2 py-0.5">
+                      {m}
+                    </span>
+                  ))}
+                </div>
+                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-3">{ens.bio}</p>
+              </Link>
+            ))}
+          </div>
+        )
+      ) : isLoading ? (
         <div className="flex items-center gap-3 text-slate-400 py-16 justify-center">
           <div className="w-6 h-6 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
           Chargement...
@@ -305,7 +372,7 @@ export function RessourcesApprentissage() {
           {ressourcesData?.items.map((res) => (
             <div
               key={res.id}
-              className="flex flex-col justify-between p-6 rounded-2xl bg-white dark:bg-white/3 border border-slate-200 dark:border-white/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:hover:border-white/10"
+              className="glass-card flex flex-col justify-between p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
             >
               <div>
                 <div className="flex items-center justify-between gap-3 mb-4">

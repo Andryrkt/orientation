@@ -470,6 +470,7 @@ model Enseignant {
   photo           String?
   bio             String?
   matieres        String[]         @default([])
+  niveauxEtude    String[]         @default([])
   etablissement   String?
   disponibilites  String?
   visible         Boolean          @default(true)

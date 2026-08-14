@@ -2,7 +2,8 @@
   "nav": {
     "orientation": "Fizahan-dalana",
     "opportunities": "Tolotra",
-    "blog": "Blog / Torohevitra",
+    "student_life": "Fiainan'ny mpianatra",
+    "blog": "Vaovao / Torohevitra",
     "login": "Hiditra",
     "register": "Hisoratra anarana",
     "logout": "Hivoaka",
@@ -249,6 +250,7 @@
     "subtitle": "Loharano ho an'ny fianarana sy tahirin-kevitra matihanina mifanaraka amin'ny lalanao.",
     "tab_learning": "Sehatry ny Fianarana",
     "tab_docs": "Sehatry ny Tahirin-kevitra",
+    "tab_teachers": "Mpampianatra",
     "select_level_prompt": "Farito ny ambaratonga fianaranao",
     "select_level_desc": "Mba hanolorana anao ny tahirin-kevitra sy ny lesona mifanaraka indrindra amin'ny ambaratonga misy anao, safidio ny ambaratonganao ankehitriny :",
     "level_lycee": "Lisea / Fanomanana BACC",
@@ -260,12 +262,14 @@
     "btn_choose": "Hanamarina sy hiditra",
     "btn_change_level": "Hanova ny ambaratonga fianarako",
     "search_placeholder": "Hitady lesona, lohahevitra, modely...",
+    "search_placeholder_teachers": "Hitady mpampianatra, taranja, sekoly...",
     "category_all": "Rehetra",
     "duration": "Faharetany : {{duration}}",
     "pages": "Pejy : {{pages}}",
     "download": "Hampidina",
     "read": "Hovakiana ny lesona",
     "empty_msg": "Tsy misy loharano azo ampiasaina amin'ity sokajy ity.",
+    "empty_msg_teachers": "Tsy misy mpampianatra azo ampiasaina amin'ity ambaratonga ity.",
     "modal_close": "Hanakatona"
   },
   "login": {

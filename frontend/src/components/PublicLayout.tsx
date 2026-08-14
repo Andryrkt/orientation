@@ -32,13 +32,16 @@ export function PublicLayout() {
     { to: '/centres-formation', label: t('nav.training_centers') },
     { to: '/questionnaire', label: t('nav.questionnaire') },
     { to: '/coachs', label: t('nav.coaches') },
-    { to: '/enseignants', label: t('nav.teachers') },
   ];
 
   const OPPORTUNITES_ITEMS = [
     { to: '/stages', label: t('nav.internships') },
     { to: '/bourses', label: t('nav.scholarships') },
+  ];
+
+  const VIE_ETUDIANTE_ITEMS = [
     { to: '/budget', label: t('nav.budget') },
+    { to: '/ressources', label: t('nav.ressources') },
   ];
 
 
@@ -51,10 +54,8 @@ export function PublicLayout() {
           { label: t('nav.logout'), onClick: () => logout() },
         ]
       : [
-          { to: '/ressources', label: t('nav.ressources') },
           { to: '/favoris', label: t('nav.my_favorites') },
           { to: '/mes-resultats', label: t('nav.my_results') },
-          { to: '/tickets', label: t('nav.support_tickets') },
           { to: '/profil', label: t('nav.my_profile') },
           { to: '/mon-cv', label: t('nav.my_cv') },
           { label: t('nav.logout'), onClick: () => logout() },
@@ -85,12 +86,10 @@ export function PublicLayout() {
               <>
                 <NavDropdown label={t('nav.orientation')} items={ORIENTATION_ITEMS} />
                 <NavDropdown label={t('nav.opportunities')} items={OPPORTUNITES_ITEMS} />
+                <NavDropdown label={t('nav.student_life')} items={VIE_ETUDIANTE_ITEMS} />
                 <NavLink to="/blog" className={navLinkClass}>{t('nav.blog')}</NavLink>
                 <NavLink to="/contact" className={navLinkClass}>{t('nav.contact')}</NavLink>
               </>
-            )}
-            {user && !isEmploye && (
-              <NavLink to="/ressources" className={navLinkClass}>{t('nav.ressources')}</NavLink>
             )}
             {(user?.role === 'ADMIN' || user?.role === 'MODERATEUR_FINANCE') && (
               <NavLink to="/admin" className={navLinkClass}>{t('nav.backoffice')}</NavLink>
@@ -279,7 +278,7 @@ export function PublicLayout() {
             }}
           >
             {!isEmploye &&
-              [...ORIENTATION_ITEMS, ...OPPORTUNITES_ITEMS, { to: '/blog', label: t('nav.blog') }, { to: '/contact', label: t('nav.contact') }].map(
+              [...ORIENTATION_ITEMS, ...OPPORTUNITES_ITEMS, ...VIE_ETUDIANTE_ITEMS, { to: '/blog', label: t('nav.blog') }, { to: '/contact', label: t('nav.contact') }].map(
                 (item) => (
                   <NavLink key={item.to} to={item.to} className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
                     {item.label}

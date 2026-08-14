@@ -11,5 +11,10 @@ export class QueryEnseignantDto extends PaginationQueryDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
+  niveauEtude?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
   q?: string;
 }
