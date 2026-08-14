@@ -35,6 +35,8 @@ export class SaisiesJournalieresService {
       update: {
         montantGagne: dto.montantGagne,
         montantDepense: dto.montantDepense,
+        fondDeCaisse: dto.fondDeCaisse ?? 0,
+        montantCompte: dto.montantCompte,
         saisiParId: utilisateurId,
       },
       create: {
@@ -43,6 +45,8 @@ export class SaisiesJournalieresService {
         periode: dto.periode,
         montantGagne: dto.montantGagne,
         montantDepense: dto.montantDepense,
+        fondDeCaisse: dto.fondDeCaisse ?? 0,
+        montantCompte: dto.montantCompte,
         saisiParId: utilisateurId,
       },
     });
@@ -56,7 +60,13 @@ export class SaisiesJournalieresService {
     const parPeriode = (periode: Periode) => {
       const saisie = saisies.find((s) => s.periode === periode);
       return saisie
-        ? { soumis: true, montantGagne: saisie.montantGagne, montantDepense: saisie.montantDepense }
+        ? {
+            soumis: true,
+            montantGagne: saisie.montantGagne,
+            montantDepense: saisie.montantDepense,
+            fondDeCaisse: saisie.fondDeCaisse,
+            montantCompte: saisie.montantCompte,
+          }
         : { soumis: false };
     };
 

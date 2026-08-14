@@ -550,9 +550,13 @@ function PeriodeCard({
   const [editing, setEditing] = useState(false);
   const [montantGagne, setMontantGagne] = useState(statut.montantGagne?.toString() ?? '');
   const [montantDepense, setMontantDepense] = useState(statut.montantDepense?.toString() ?? '');
+  const [fondDeCaisse, setFondDeCaisse] = useState(statut.fondDeCaisse?.toString() ?? '');
+  const [montantCompte, setMontantCompte] = useState(statut.montantCompte?.toString() ?? '');
   const [error, setError] = useState<string | null>(null);
 
   const showForm = editing || !statut.soumis;
+  const soldeTheorique = (Number(fondDeCaisse) || 0) + (Number(montantGagne) || 0) - (Number(montantDepense) || 0);
+  const ecartSaisi = montantCompte !== '' ? Number(montantCompte) - soldeTheorique : null;
 
   const mutation = useMutation({
     mutationFn: () =>
@@ -560,6 +564,8 @@ function PeriodeCard({
         periode,
         montantGagne: Number(montantGagne),
         montantDepense: Number(montantDepense),
+        fondDeCaisse: Number(fondDeCaisse) || 0,
+        montantCompte: montantCompte !== '' ? Number(montantCompte) : undefined,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['saisie-aujourdhui'] });
@@ -588,6 +594,12 @@ function PeriodeCard({
           </div>
           <dl className="space-y-2 text-sm mb-4">
             <div className="flex justify-between">
+              <dt className="text-slate-500 dark:text-slate-400">{t('saisieJournaliere.fondDeCaisse')}</dt>
+              <dd className="font-bold text-slate-900 dark:text-white">
+                {statut.fondDeCaisse !== undefined ? formatMontant(statut.fondDeCaisse) : ''}
+              </dd>
+            </div>
+            <div className="flex justify-between">
               <dt className="text-slate-500 dark:text-slate-400">{t('saisieJournaliere.montantGagne')}</dt>
               <dd className="font-bold text-slate-900 dark:text-white">
                 {statut.montantGagne !== undefined ? formatMontant(statut.montantGagne) : ''}
@@ -599,11 +611,40 @@ function PeriodeCard({
                 {statut.montantDepense !== undefined ? formatMontant(statut.montantDepense) : ''}
               </dd>
             </div>
+            <div className="flex justify-between border-t border-slate-200 dark:border-slate-700 pt-2">
+              <dt className="text-slate-500 dark:text-slate-400">{t('saisieJournaliere.soldeTheorique')}</dt>
+              <dd className="font-bold text-slate-900 dark:text-white">{formatMontant(soldeTheorique)}</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="text-slate-500 dark:text-slate-400">{t('saisieJournaliere.montantCompte')}</dt>
+              <dd className="font-bold text-slate-900 dark:text-white">
+                {statut.montantCompte != null ? formatMontant(statut.montantCompte) : '—'}
+              </dd>
+            </div>
+            {ecartSaisi !== null && (
+              <div className="flex justify-between items-center">
+                <dt className="text-slate-500 dark:text-slate-400">{t('saisieJournaliere.ecart')}</dt>
+                <dd>
+                  {ecartSaisi === 0 ? (
+                    <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
+                      {t('saisieJournaliere.ecartNul')}
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600">
+                      {ecartSaisi > 0 ? '+' : ''}
+                      {formatMontant(ecartSaisi)}
+                    </span>
+                  )}
+                </dd>
+              </div>
+            )}
           </dl>
           <button
             onClick={() => {
               setMontantGagne(statut.montantGagne?.toString() ?? '');
               setMontantDepense(statut.montantDepense?.toString() ?? '');
+              setFondDeCaisse(statut.fondDeCaisse?.toString() ?? '');
+              setMontantCompte(statut.montantCompte?.toString() ?? '');
               setEditing(true);
             }}
             className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline"
@@ -613,6 +654,13 @@ function PeriodeCard({
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
+              {t('saisieJournaliere.fondDeCaisse')}
+            </label>
+            <p className="text-xs text-slate-400 mb-1.5">{t('saisieJournaliere.fondDeCaisseHint')}</p>
+            <MontantInput className="field-input" value={fondDeCaisse} onChange={setFondDeCaisse} required />
+          </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
               {t('saisieJournaliere.montantGagne')}
@@ -625,6 +673,23 @@ function PeriodeCard({
             </label>
             <MontantInput className="field-input" value={montantDepense} onChange={setMontantDepense} required />
           </div>
+          <div className="field-input flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
+            <span>{t('saisieJournaliere.soldeTheorique')}</span>
+            <span className="font-semibold text-slate-700 dark:text-slate-200">{formatMontant(soldeTheorique)}</span>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
+              {t('saisieJournaliere.montantCompte')}
+            </label>
+            <p className="text-xs text-slate-400 mb-1.5">{t('saisieJournaliere.montantCompteHint')}</p>
+            <MontantInput className="field-input" value={montantCompte} onChange={setMontantCompte} />
+          </div>
+          {ecartSaisi !== null && ecartSaisi !== 0 && (
+            <p className="text-sm font-semibold text-amber-600">
+              {t('saisieJournaliere.ecart')} : {ecartSaisi > 0 ? '+' : ''}
+              {formatMontant(ecartSaisi)}
+            </p>
+          )}
           {error && <p className="text-sm text-rose-500 font-medium">{error}</p>}
           <div className="flex gap-2">
             {statut.soumis && (

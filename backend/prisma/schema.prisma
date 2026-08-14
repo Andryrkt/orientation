@@ -637,6 +637,12 @@ model SaisieJournaliere {
   periode        Periode
   montantGagne   Int          @default(0)
   montantDepense Int          @default(0)
+
+  // Fond de caisse : montant remis au stand en début de période pour rendre la monnaie. Comparé au
+  // comptage réel de fin de période (montantCompte) pour détecter les écarts de caisse (erreur, vol).
+  fondDeCaisse   Int          @default(0)
+  montantCompte  Int?
+
   saisiParId     String?
   saisiPar       Utilisateur? @relation(fields: [saisiParId], references: [id], onDelete: SetNull)
   createdAt      DateTime     @default(now())

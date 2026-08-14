@@ -17,6 +17,26 @@ function ilYA30JoursIso() {
 
 const PERIODE_LABELS: Record<string, string> = { MIDI: 'Midi', APRES_MIDI: 'Après-midi' };
 
+function EcartCaisseBadge({ saisie }: { saisie: SaisieJournaliere }) {
+  if (saisie.montantCompte == null) return <span className="text-slate-300 text-xs">—</span>;
+  const soldeTheorique = saisie.fondDeCaisse + saisie.montantGagne - saisie.montantDepense;
+  const ecart = saisie.montantCompte - soldeTheorique;
+  const titre = `Théorique : ${formatMontant(soldeTheorique)} · Compté : ${formatMontant(saisie.montantCompte)}`;
+
+  if (ecart === 0) {
+    return (
+      <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600" title={titre}>
+        ✅ Caisse juste
+      </span>
+    );
+  }
+  return (
+    <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600" title={titre}>
+      ⚠️ Écart {ecart > 0 ? '+' : ''}{formatMontant(ecart)}
+    </span>
+  );
+}
+
 function ContrePoidsBadge({ saisie }: { saisie: SaisieJournaliere }) {
   const aDesMouvements =
     (saisie.mouvementsGagne !== null && saisie.mouvementsGagne !== undefined) ||
@@ -48,6 +68,7 @@ interface JourneeGroupee {
   date: string;
   pointDeVente: SaisieJournaliere['pointDeVente'];
   saisies: SaisieJournaliere[];
+  totalFondDeCaisse: number;
   totalGagne: number;
   totalDepense: number;
 }
@@ -56,8 +77,11 @@ function grouperParJournee(items: SaisieJournaliere[]): JourneeGroupee[] {
   const groupes = new Map<string, JourneeGroupee>();
   for (const s of items) {
     const cle = `${s.pointDeVenteId}__${s.date}`;
-    const groupe = groupes.get(cle) ?? { cle, date: s.date, pointDeVente: s.pointDeVente, saisies: [], totalGagne: 0, totalDepense: 0 };
+    const groupe =
+      groupes.get(cle) ??
+      { cle, date: s.date, pointDeVente: s.pointDeVente, saisies: [], totalFondDeCaisse: 0, totalGagne: 0, totalDepense: 0 };
     groupe.saisies.push(s);
+    groupe.totalFondDeCaisse += s.fondDeCaisse;
     groupe.totalGagne += s.montantGagne;
     groupe.totalDepense += s.montantDepense;
     groupes.set(cle, groupe);
@@ -290,6 +314,7 @@ export function SaisiesJournalieresAdmin() {
                   <th className="px-4 py-3 font-medium">Date</th>
                   <th className="px-4 py-3 font-medium">Stand</th>
                   <th className="px-4 py-3 font-medium">Périodes saisies</th>
+                  <th className="px-4 py-3 font-medium">Fond de caisse (jour)</th>
                   <th className="px-4 py-3 font-medium">Gagné (jour)</th>
                   <th className="px-4 py-3 font-medium">Dépensé (jour)</th>
                   <th className="px-4 py-3 font-medium">Solde (jour)</th>
@@ -297,10 +322,10 @@ export function SaisiesJournalieresAdmin() {
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {loadingHistorique && (
-                  <tr><td colSpan={7} className="px-4 py-6 text-center text-slate-400">Chargement...</td></tr>
+                  <tr><td colSpan={8} className="px-4 py-6 text-center text-slate-400">Chargement...</td></tr>
                 )}
                 {!loadingHistorique && journees.length === 0 && (
-                  <tr><td colSpan={7} className="px-4 py-6 text-center text-slate-400">Aucune saisie</td></tr>
+                  <tr><td colSpan={8} className="px-4 py-6 text-center text-slate-400">Aucune saisie</td></tr>
                 )}
                 {journees.map((j) => {
                   const ouvert = journeesOuvertes.has(j.cle);
@@ -317,6 +342,7 @@ export function SaisiesJournalieresAdmin() {
                         <td className="px-4 py-3 text-slate-500 dark:text-slate-400 text-xs">
                           {j.saisies.map((s) => PERIODE_LABELS[s.periode]).join(', ')}
                         </td>
+                        <td className="px-4 py-3 text-slate-500 dark:text-slate-400 font-medium">{formatMontant(j.totalFondDeCaisse)}</td>
                         <td className="px-4 py-3 text-emerald-600 font-medium">{formatMontant(j.totalGagne)}</td>
                         <td className="px-4 py-3 text-red-600 font-medium">{formatMontant(j.totalDepense)}</td>
                         <td className="px-4 py-3 text-slate-700 dark:text-slate-300 font-medium">
@@ -325,32 +351,42 @@ export function SaisiesJournalieresAdmin() {
                       </tr>
                       {ouvert && (
                         <tr>
-                          <td colSpan={7} className="p-0">
+                          <td colSpan={8} className="p-0">
                             <table className="w-full text-sm bg-slate-50 dark:bg-slate-800/40">
                               <thead className="text-left text-slate-400">
                                 <tr>
                                   <th className="pl-12 pr-4 py-2 font-medium">Période</th>
+                                  <th className="px-4 py-2 font-medium">Fond de caisse</th>
                                   <th className="px-4 py-2 font-medium">Gagné</th>
                                   <th className="px-4 py-2 font-medium">Dépensé</th>
-                                  <th className="px-4 py-2 font-medium">Solde</th>
+                                  <th className="px-4 py-2 font-medium">Solde théorique</th>
+                                  <th className="px-4 py-2 font-medium">Compté</th>
                                   <th className="px-4 py-2 font-medium">Saisi par</th>
                                   <th className="px-4 py-2 font-medium">Contre-poids</th>
+                                  <th className="px-4 py-2 font-medium">Écart caisse</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
                                 {j.saisies.map((s) => (
                                   <tr key={s.id}>
                                     <td className="pl-12 pr-4 py-2 text-slate-600 dark:text-slate-300">{PERIODE_LABELS[s.periode]}</td>
+                                    <td className="px-4 py-2 text-slate-500 dark:text-slate-400">{formatMontant(s.fondDeCaisse)}</td>
                                     <td className="px-4 py-2 text-emerald-600">{formatMontant(s.montantGagne)}</td>
                                     <td className="px-4 py-2 text-red-600">{formatMontant(s.montantDepense)}</td>
                                     <td className="px-4 py-2 text-slate-600 dark:text-slate-300 font-medium">
-                                      {formatMontant(s.montantGagne - s.montantDepense)}
+                                      {formatMontant(s.fondDeCaisse + s.montantGagne - s.montantDepense)}
+                                    </td>
+                                    <td className="px-4 py-2 text-slate-500 dark:text-slate-400">
+                                      {s.montantCompte != null ? formatMontant(s.montantCompte) : '—'}
                                     </td>
                                     <td className="px-4 py-2 text-slate-500 dark:text-slate-400">
                                       {s.saisiPar ? `${s.saisiPar.prenom} ${s.saisiPar.nom}` : '—'}
                                     </td>
                                     <td className="px-4 py-2">
                                       <ContrePoidsBadge saisie={s} />
+                                    </td>
+                                    <td className="px-4 py-2">
+                                      <EcartCaisseBadge saisie={s} />
                                     </td>
                                   </tr>
                                 ))}

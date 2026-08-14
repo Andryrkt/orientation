@@ -15,6 +15,8 @@ export interface SaisiePeriodeStatut {
   soumis: boolean;
   montantGagne?: number;
   montantDepense?: number;
+  fondDeCaisse?: number;
+  montantCompte?: number | null;
 }
 
 export interface SaisieAujourdhui {
@@ -34,6 +36,8 @@ export interface SaisieJournaliere {
   periode: Periode;
   montantGagne: number;
   montantDepense: number;
+  fondDeCaisse: number;
+  montantCompte: number | null;
   saisiParId: string | null;
   saisiPar?: { id: string; nom: string; prenom: string } | null;
   createdAt: string;
