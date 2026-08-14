@@ -104,7 +104,10 @@ export function AdminResourcePage<T extends { id: string }>({
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    const payload = toPayload ? toPayload(values) : values;
+    // L'édition préremplit le formulaire avec l'objet complet (id, createdAt, updatedAt inclus) :
+    // ces champs générés par le serveur ne doivent jamais repartir dans le payload, sous peine
+    // d'être rejetés par le ValidationPipe (whitelist strict) du backend.
+    const { id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...payload } = toPayload ? toPayload(values) : values;
     if (editing) {
       updateMutation.mutate({ id: editing.id, payload });
     } else {

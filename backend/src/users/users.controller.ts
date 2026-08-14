@@ -47,8 +47,10 @@ export class UsersController {
     return this.usersService.changePassword(user.id, dto);
   }
 
+  // Lecture ouverte au modérateur finance : les pages Stands et Étudiants du back-office finance
+  // s'en servent pour peupler la liste des secrétaires (aucune donnée sensible, cf. userSelect).
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MODERATEUR_FINANCE)
   @Get('admin/users')
   findAll(@Query() query: PaginationQueryDto) {
     return this.usersService.findAll(query.page ?? 1, query.limit ?? 20);
