@@ -32,6 +32,7 @@ import { DepensesGlobalesModule } from './depenses-globales/depenses-globales.mo
 import { InvestissementsModule } from './investissements/investissements.module';
 import { FilieresModule } from './filieres/filieres.module';
 import { DroitInscriptionModule } from './droit-inscription/droit-inscription.module';
+import { BudgetsModule } from './budgets/budgets.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { DroitInscriptionModule } from './droit-inscription/droit-inscription.mo
     InvestissementsModule,
     FilieresModule,
     DroitInscriptionModule,
+    BudgetsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

@@ -64,6 +64,7 @@ import { EtudiantsAdmin } from './pages/admin/EtudiantsAdmin';
 import { SaisiesJournalieresAdmin } from './pages/admin/SaisiesJournalieresAdmin';
 import { DepensesGlobalesAdmin } from './pages/admin/DepensesGlobalesAdmin';
 import { InvestissementsAdmin } from './pages/admin/InvestissementsAdmin';
+import { BudgetsAdmin } from './pages/admin/BudgetsAdmin';
 import { FinancesDashboard } from './pages/admin/FinancesDashboard';
 import { FilieresAdmin } from './pages/admin/FilieresAdmin';
 
@@ -146,6 +147,7 @@ export default function App() {
           <Route path="saisies-journalieres" element={<SaisiesJournalieresAdmin />} />
           <Route path="depenses-globales" element={<DepensesGlobalesAdmin />} />
           <Route path="investissements" element={<InvestissementsAdmin />} />
+          <Route path="budgets" element={<BudgetsAdmin />} />
           <Route path="filieres" element={<FilieresAdmin />} />
         </Route>
       </Route>

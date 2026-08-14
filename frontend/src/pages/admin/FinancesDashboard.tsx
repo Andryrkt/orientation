@@ -25,6 +25,7 @@ const RACCOURCIS = [
   { to: '/admin/saisies-journalieres', label: 'Saisies journalières', description: 'Recettes et dépenses des stands' },
   { to: '/admin/depenses-globales', label: 'Dépenses globales', description: "Charges de l'entreprise (loyer, salaires...)" },
   { to: '/admin/investissements', label: 'Investissements', description: 'Dons, prêts et apports reçus des bailleurs' },
+  { to: '/admin/budgets', label: 'Budgétisation', description: 'Budget mensuel par catégorie vs dépenses réelles' },
 ];
 
 export function FinancesDashboard() {

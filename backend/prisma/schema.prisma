@@ -756,6 +756,42 @@ model DepenseGlobale {
   @@map("depenses_globales")
 }
 
+// Budget mensuel prévu par catégorie de dépense (les mêmes catégories libres que DepenseGlobale),
+// comparé aux dépenses réelles du mois pour calculer un écart. Réservé à ADMIN/MODERATEUR_FINANCE.
+model BudgetCategorie {
+  id        String   @id @default(uuid())
+  categorie String
+  annee     Int
+  mois      Int
+  montant   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([categorie, annee, mois])
+  @@map("budgets_categories")
+}
+
+// Décomposition d'une ligne de budget (ex: "Salaires") en postes individuels calculés
+// (taux × quantité × nombre de périodes + ajustement optionnel), pour que le montant total de la
+// catégorie reste toujours la somme exacte de ce qui le compose plutôt qu'un chiffre saisi à la main.
+model BudgetDetailLigne {
+  id                String   @id @default(uuid())
+  categorie         String
+  annee             Int
+  mois              Int
+  description       String
+  tauxUnitaire      Int
+  quantite          Float
+  unite             String?
+  nombrePeriodes    Float    @default(1)
+  ajustementMontant Int?
+  ajustementNote    String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("budget_detail_lignes")
+}
+
 enum TypeInvestissement {
   DON
   PRET

@@ -150,6 +150,39 @@ export interface MouvementsAujourdhui {
   apresMidi: MouvementsPeriode;
 }
 
+export interface BudgetLigne {
+  id: string | null;
+  categorie: string;
+  annee: number;
+  mois: number;
+  montantBudget: number | null;
+  montantDepense: number;
+  ecart: number | null;
+  detailsCount: number;
+}
+
+export interface BudgetDetailLigne {
+  id: string;
+  categorie: string;
+  annee: number;
+  mois: number;
+  description: string;
+  tauxUnitaire: number;
+  quantite: number;
+  unite: string | null;
+  nombrePeriodes: number;
+  ajustementMontant: number | null;
+  ajustementNote: string | null;
+  montant: number;
+}
+
+export interface ResumeBudgets {
+  items: BudgetLigne[];
+  totalBudget: number;
+  totalDepense: number;
+  ecartTotal: number;
+}
+
 export interface ResumeEtudiantsFiliere {
   filiereId: string;
   filiereNom: string;
