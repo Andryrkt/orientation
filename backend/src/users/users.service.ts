@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma/prisma.service';
@@ -31,7 +31,13 @@ export class UsersService {
     return user;
   }
 
-  async updateMe(userId: string, dto: UpdateProfileDto) {
+  // Le personnel (secrétaire, modérateur, modérateur finance) ne gère son compte que via le
+  // changement de mot de passe — pas d'édition d'identité/coordonnées, même en appelant l'API
+  // directement (le formulaire de profil ne leur montre déjà que ça côté frontend).
+  async updateMe(userId: string, role: Role, dto: UpdateProfileDto) {
+    if (role === Role.SECRETAIRE || role === Role.MODERATEUR || role === Role.MODERATEUR_FINANCE) {
+      throw new ForbiddenException('Seul le changement de mot de passe est autorisé pour ce rôle');
+    }
     const { nom, prenom, telephone, ...profilFields } = dto;
     await this.prisma.utilisateur.update({
       where: { id: userId },

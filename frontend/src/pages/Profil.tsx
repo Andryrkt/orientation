@@ -102,6 +102,9 @@ export function Profil() {
   if (!user) return null;
 
   const isEmploye = user.role === 'SECRETAIRE' || user.role === 'MODERATEUR' || user.role === 'MODERATEUR_FINANCE';
+  // Le personnel (secrétaire, modérateur, modérateur finance) n'a accès qu'au changement de mot
+  // de passe sur son profil — pas d'édition d'identité/coordonnées.
+  const motDePasseSeulement = isEmploye;
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -123,7 +126,7 @@ export function Profil() {
     <div className="max-w-lg mx-auto">
       <h1 className="page-title">{t('profile.title')}</h1>
 
-      {!isEmploye && (
+      {!isEmploye && !motDePasseSeulement && (
         <div className="mb-6 p-5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-white shadow-md relative overflow-hidden">
           <div className="absolute right-0 bottom-0 opacity-10 transform translate-y-2 translate-x-2">
             <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24">
@@ -143,6 +146,12 @@ export function Profil() {
         </div>
       )}
 
+      {motDePasseSeulement ? (
+        <div className="space-y-4 bg-white border border-slate-200 rounded-lg p-6">
+          <p className="text-sm text-slate-500">{t('profile.email_label')} : {user.email}</p>
+          <p className="text-sm text-slate-500">{t('profile.firstname')} / {t('profile.lastname')} : {user.prenom} {user.nom}</p>
+        </div>
+      ) : (
       <form onSubmit={handleSubmit} className="space-y-4 bg-white border border-slate-200 rounded-lg p-6">
         {saved && (
           <div className="bg-green-50 text-green-700 text-sm rounded-md px-3 py-2">{t('profile.updated_msg')}</div>
@@ -255,6 +264,7 @@ export function Profil() {
           {loading ? t('profile.saving_btn') : t('profile.save_btn')}
         </button>
       </form>
+      )}
 
       <ChangerMotDePasse />
     </div>

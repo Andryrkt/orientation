@@ -38,8 +38,8 @@ export class UsersController {
   }
 
   @Patch('users/me')
-  updateMe(@CurrentUser() user: { id: string }, @Body() dto: UpdateProfileDto) {
-    return this.usersService.updateMe(user.id, dto);
+  updateMe(@CurrentUser() user: { id: string; role: Role }, @Body() dto: UpdateProfileDto) {
+    return this.usersService.updateMe(user.id, user.role, dto);
   }
 
   @Patch('users/me/password')
