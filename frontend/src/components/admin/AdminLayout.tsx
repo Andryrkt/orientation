@@ -62,6 +62,8 @@ const groups: { title?: string; links: { to: string; label: string; end?: boolea
       { to: '/admin/depenses-globales', label: 'Dépenses globales' },
       { to: '/admin/investissements', label: 'Investissements' },
       { to: '/admin/budgets', label: 'Budgétisation' },
+      { to: '/admin/emploi-du-temps', label: 'Emploi du temps' },
+      { to: '/admin/salles', label: 'Salles' },
       { to: '/admin/filieres', label: 'Filières' },
     ],
   },

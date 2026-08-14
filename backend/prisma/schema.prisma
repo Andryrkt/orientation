@@ -476,7 +476,8 @@ model Enseignant {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
-  avis EnseignantAvis[]
+  avis    EnseignantAvis[]
+  seances SeanceCours[]
 
   @@map("enseignants")
 }
@@ -703,6 +704,7 @@ model Filiere {
 
   inscriptions InscriptionFiliere[]
   montants     FiliereMontant[]
+  seances      SeanceCours[]
 
   @@map("filieres")
 }
@@ -790,6 +792,51 @@ model BudgetDetailLigne {
   updatedAt         DateTime @updatedAt
 
   @@map("budget_detail_lignes")
+}
+
+enum JourSemaine {
+  LUNDI
+  MARDI
+  MERCREDI
+  JEUDI
+  VENDREDI
+  SAMEDI
+  DIMANCHE
+}
+
+// Catalogue des salles physiques disponibles, avec leur capacité — saisi en amont par l'admin
+// plutôt que du texte libre, pour permettre de vérifier la disponibilité d'une salle par créneau.
+model Salle {
+  id        String   @id @default(uuid())
+  nom       String   @unique
+  capacite  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  seances SeanceCours[]
+
+  @@map("salles")
+}
+
+// Créneau hebdomadaire récurrent (pas une séance datée) : "tous les lundis 8h-10h", pas une date
+// calendaire précise. Le conflit d'enseignant/salle est vérifié à la création/modification.
+// Une matière commune (ex: "Anglais général") peut être enseignée en même temps à plusieurs
+// filières par un seul enseignant : la séance se rattache donc à N filières, pas une seule.
+model SeanceCours {
+  id           String      @id @default(uuid())
+  matiere      String
+  filieres     Filiere[]
+  enseignantId String
+  enseignant   Enseignant  @relation(fields: [enseignantId], references: [id], onDelete: Cascade)
+  jour         JourSemaine
+  heureDebut   String
+  heureFin     String
+  salleId      String
+  salle        Salle       @relation(fields: [salleId], references: [id], onDelete: Restrict)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@map("seances_cours")
 }
 
 enum TypeInvestissement {

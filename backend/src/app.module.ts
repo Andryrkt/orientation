@@ -33,6 +33,8 @@ import { InvestissementsModule } from './investissements/investissements.module'
 import { FilieresModule } from './filieres/filieres.module';
 import { DroitInscriptionModule } from './droit-inscription/droit-inscription.module';
 import { BudgetsModule } from './budgets/budgets.module';
+import { EmploiDuTempsModule } from './emploi-du-temps/emploi-du-temps.module';
+import { SallesModule } from './salles/salles.module';
 
 @Module({
   imports: [
@@ -68,6 +70,8 @@ import { BudgetsModule } from './budgets/budgets.module';
     FilieresModule,
     DroitInscriptionModule,
     BudgetsModule,
+    EmploiDuTempsModule,
+    SallesModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

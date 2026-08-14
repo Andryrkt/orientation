@@ -65,6 +65,8 @@ import { SaisiesJournalieresAdmin } from './pages/admin/SaisiesJournalieresAdmin
 import { DepensesGlobalesAdmin } from './pages/admin/DepensesGlobalesAdmin';
 import { InvestissementsAdmin } from './pages/admin/InvestissementsAdmin';
 import { BudgetsAdmin } from './pages/admin/BudgetsAdmin';
+import { EmploiDuTempsAdmin } from './pages/admin/EmploiDuTempsAdmin';
+import { SallesAdmin } from './pages/admin/SallesAdmin';
 import { FinancesDashboard } from './pages/admin/FinancesDashboard';
 import { FilieresAdmin } from './pages/admin/FilieresAdmin';
 
@@ -148,6 +150,8 @@ export default function App() {
           <Route path="depenses-globales" element={<DepensesGlobalesAdmin />} />
           <Route path="investissements" element={<InvestissementsAdmin />} />
           <Route path="budgets" element={<BudgetsAdmin />} />
+          <Route path="emploi-du-temps" element={<EmploiDuTempsAdmin />} />
+          <Route path="salles" element={<SallesAdmin />} />
           <Route path="filieres" element={<FilieresAdmin />} />
         </Route>
       </Route>

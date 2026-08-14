@@ -150,6 +150,27 @@ export interface MouvementsAujourdhui {
   apresMidi: MouvementsPeriode;
 }
 
+export type JourSemaine = 'LUNDI' | 'MARDI' | 'MERCREDI' | 'JEUDI' | 'VENDREDI' | 'SAMEDI' | 'DIMANCHE';
+
+export interface Salle {
+  id: string;
+  nom: string;
+  capacite: number;
+}
+
+export interface SeanceCours {
+  id: string;
+  matiere: string;
+  filieres: { id: string; nom: string }[];
+  enseignantId: string;
+  enseignant: { id: string; nom: string; prenom: string };
+  jour: JourSemaine;
+  heureDebut: string;
+  heureFin: string;
+  salleId: string;
+  salle: Salle;
+}
+
 export interface BudgetLigne {
   id: string | null;
   categorie: string;
