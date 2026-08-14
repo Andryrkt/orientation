@@ -278,13 +278,13 @@ export function Contact() {
               <Lightbulb className="w-3.5 h-3.5" strokeWidth={2.5} /> Consultez notre FAQ
             </p>
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-              Avant de nous écrire, vous trouverez peut-être la réponse dans notre guide d'utilisation.
+              Avant de nous écrire, vous trouverez peut-être la réponse dans notre foire aux questions.
             </p>
             <a
-              href="/guide"
+              href="/faq"
               className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
             >
-              Voir le guide →
+              Voir la FAQ →
             </a>
           </div>
         </div>
