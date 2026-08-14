@@ -290,7 +290,7 @@ export function CvGenerator() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* ==================== VOLET GAUCHE : EDITEUR ==================== */}
-        <div className="lg:col-span-5 space-y-6 no-print">
+        <div className="lg:col-span-5 space-y-6 no-print text-slate-800">
           {/* Sélection du Template */}
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
             <h2 className="text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">

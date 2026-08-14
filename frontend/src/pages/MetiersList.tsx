@@ -200,7 +200,7 @@ export function MetiersList() {
                   {m.nom}
                 </h3>
                 
-                <p className="text-slate-400 text-xs line-clamp-2 leading-relaxed h-8">
+                <p className="text-slate-400 text-xs line-clamp-2 leading-relaxed h-10">
                   {m.description}
                 </p>
 

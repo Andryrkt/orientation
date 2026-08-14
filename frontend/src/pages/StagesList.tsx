@@ -31,17 +31,17 @@ export function StagesList() {
 
   return (
     <div>
-      <section className="relative overflow-hidden px-6 py-10 sm:py-12 rounded-[2rem] border border-slate-100 bg-gradient-to-r from-sky-50/60 via-blue-50/40 to-slate-50/60 mb-8 shadow-[0_8px_30px_rgb(0,0,0,0.01)]">
-        <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-sky-100/50 blur-[80px] -z-10" />
-        <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-blue-100/40 blur-[80px] -z-10" />
+      <section className="relative overflow-hidden px-6 py-10 sm:py-12 rounded-[2rem] border border-slate-100 dark:border-white/10 bg-gradient-to-r from-sky-50/60 via-blue-50/40 to-slate-50/60 dark:from-sky-500/10 dark:via-blue-500/5 dark:to-transparent mb-8 shadow-[0_8px_30px_rgb(0,0,0,0.01)] dark:shadow-none">
+        <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-sky-100/50 dark:bg-sky-500/10 blur-[80px] -z-10" />
+        <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-blue-100/40 dark:bg-blue-500/10 blur-[80px] -z-10" />
         <div className="max-w-2xl">
-          <span className="eyebrow mb-3 px-3 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-100/30 inline-block text-xs font-semibold">
+          <span className="eyebrow mb-3 px-3 py-1 rounded-full bg-sky-50 dark:bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-100/30 dark:border-sky-500/25 inline-block text-xs font-semibold">
             💼 Expériences Professionnelles
           </span>
-          <h1 className="text-3xl font-extrabold text-slate-900 mb-3 tracking-tight">
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">
             Trouve ton stage à Madagascar
           </h1>
-          <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed">
             Explorez les offres de stage en entreprise pour mettre en pratique vos connaissances et débuter votre insertion professionnelle.
           </p>
         </div>
@@ -80,12 +80,12 @@ export function StagesList() {
             className="card relative block p-5"
           >
             <FavoriteButton type="STAGE" entityId={s.id} compact className="absolute top-4 right-4" />
-            <p className="text-xs font-medium text-brand-600 mb-1 pr-8">{s.domaine?.nom ?? s.entreprise}</p>
-            <h3 className="text-lg font-bold text-slate-800 mb-1">{s.titre}</h3>
-            <p className="text-sm text-slate-500 mb-2">{s.entreprise}{s.region ? ` — ${s.region}` : ''}</p>
-            <p className="text-slate-600 text-sm line-clamp-2">{s.description}</p>
+            <p className="text-xs font-medium text-brand-600 dark:text-blue-400 mb-1 pr-8">{s.domaine?.nom ?? s.entreprise}</p>
+            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1">{s.titre}</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">{s.entreprise}{s.region ? ` — ${s.region}` : ''}</p>
+            <p className="text-slate-600 dark:text-slate-400 text-sm line-clamp-2">{s.description}</p>
             {s.dateLimiteCandidature && (
-              <p className="text-xs text-slate-500 mt-3">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-3">
                 Date limite de candidature : {formatDate(s.dateLimiteCandidature)}
               </p>
             )}

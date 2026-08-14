@@ -60,9 +60,9 @@ export function BlogsList() {
                   {BLOG_CATEGORIES.find((c) => c.value === b.categorie)?.label ?? b.categorie}
                 </p>
               )}
-              <h3 className="text-lg font-bold text-slate-800 mb-2">{b.titre}</h3>
-              <p className="text-slate-600 text-sm">{excerpt(b.contenu)}</p>
-              <div className="flex items-center justify-between text-xs text-slate-500 mt-3">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2">{b.titre}</h3>
+              <p className="text-slate-600 dark:text-slate-400 text-sm">{excerpt(b.contenu)}</p>
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mt-3">
                 <span>{formatDate(b.publishedAt)}</span>
                 <span>★ {b._count?.likes ?? 0}</span>
               </div>
