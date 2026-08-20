@@ -12,7 +12,7 @@ export function CentreFormationDetail() {
   });
 
   if (isLoading) return <p className="text-slate-400">Chargement...</p>;
-  if (!centre) return <p className="text-slate-400">Centre de formation introuvable.</p>;
+  if (!centre) return <p className="text-slate-400">Formation professionnelle introuvable.</p>;
 
   return (
     <div className="max-w-2xl mx-auto">

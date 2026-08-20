@@ -15,7 +15,7 @@ const groups: { title?: string; links: { to: string; label: string; end?: boolea
       { to: '/admin/domaines', label: 'Domaines' },
       { to: '/admin/metiers', label: 'Métiers' },
       { to: '/admin/universites', label: 'Universités' },
-      { to: '/admin/centres-formation', label: 'Centres de formation' },
+      { to: '/admin/centres-formation', label: 'Formation professionnelle' },
       { to: '/admin/mentions', label: 'Mentions' },
       { to: '/admin/parcours', label: 'Parcours' },
     ],

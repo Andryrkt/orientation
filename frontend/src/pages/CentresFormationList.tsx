@@ -28,7 +28,7 @@ export function CentresFormationList() {
             🛠️ Formations Professionnelles
           </span>
           <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">
-            Découvre les centres de formation
+            Découvre la formation professionnelle
           </h1>
           <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed">
             Trouvez des centres d'apprentissage technique et des instituts spécialisés pour acquérir des compétences pratiques à Madagascar.
@@ -48,7 +48,7 @@ export function CentresFormationList() {
 
       {isLoading && <p className="text-slate-400">Chargement...</p>}
       {!isLoading && data?.items.length === 0 && (
-        <p className="text-slate-400">Aucun centre de formation référencé pour le moment.</p>
+        <p className="text-slate-400">Aucune formation professionnelle référencée pour le moment.</p>
       )}
 
       <div className="grid md:grid-cols-2 gap-4">

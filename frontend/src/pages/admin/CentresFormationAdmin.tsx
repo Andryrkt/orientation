@@ -4,7 +4,7 @@ import { CentreFormation } from '../../lib/types';
 export function CentresFormationAdmin() {
   return (
     <AdminResourcePage<CentreFormation>
-      title="Centres de formation"
+      title="Formation professionnelle"
       apiPath="/centres-formation"
       queryKey="admin-centres-formation"
       emptyItem={{ nom: '', adresse: '', ville: '', region: '', contact: '', siteWeb: '' }}

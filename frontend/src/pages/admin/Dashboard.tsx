@@ -14,7 +14,7 @@ const LABELS: Record<keyof AdminStats, string> = {
   blogs: 'Articles de blog',
   testsCompletes: "Tests d'orientation complétés",
   coachs: 'Coachs',
-  centresFormation: 'Centres de formation',
+  centresFormation: 'Formation professionnelle',
   tickets: 'Tickets / Support',
 };
 

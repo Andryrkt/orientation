@@ -7,7 +7,7 @@ const TYPE_LABELS: Record<string, string> = {
   STAGE: 'Stages',
   BOURSE: 'Bourses',
   COACH: 'Coachs',
-  CENTRE_FORMATION: 'Centres de formation',
+  CENTRE_FORMATION: 'Formation professionnelle',
 };
 
 const TYPE_LINK: Record<string, (slug: string) => string> = {
@@ -33,7 +33,7 @@ export function Favoris() {
 
       {favoris.length === 0 && (
         <p className="text-slate-400">
-          Tu n'as pas encore de favoris. Ajoute des métiers, universités, centres de formation, stages, bourses ou coachs depuis leur page de détail.
+          Tu n'as pas encore de favoris. Ajoute des métiers, universités, formations professionnelles, stages, bourses ou coachs depuis leur page de détail.
         </p>
       )}
 
