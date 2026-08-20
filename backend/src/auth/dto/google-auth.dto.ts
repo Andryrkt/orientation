@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class GoogleAuthDto {
   @ApiProperty({
@@ -9,20 +9,4 @@ export class GoogleAuthDto {
   @IsString()
   @IsNotEmpty()
   idToken: string;
-
-  @ApiPropertyOptional({
-    description: 'Numéro de téléphone requis lors de la première connexion Google',
-    example: '+261340000000',
-  })
-  @IsOptional()
-  @IsString()
-  telephone?: string;
-
-  @ApiPropertyOptional({
-    description: 'Code OTP reçu par WhatsApp pour valider le téléphone (6 chiffres)',
-    example: '849201',
-  })
-  @IsOptional()
-  @IsString()
-  otpCode?: string;
 }

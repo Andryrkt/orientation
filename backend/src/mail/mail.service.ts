@@ -15,8 +15,8 @@ export class MailService {
     const pass = this.config.get<string>('SMTP_PASSWORD');
     this.from = this.config.get<string>('SMTP_FROM') ?? user ?? 'no-reply@avenirassure.mg';
 
-    // Comme WhatsAppService : sans configuration, on journalise seulement (dev/test) plutôt que
-    // de faire planter l'application — SMTP est une infrastructure optionnelle à brancher en prod.
+    // Sans configuration, on journalise seulement (dev/test) plutôt que de faire planter
+    // l'application — SMTP est une infrastructure optionnelle à brancher en prod.
     if (host && user && pass) {
       this.transporter = nodemailer.createTransport({
         host,

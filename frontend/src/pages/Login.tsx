@@ -3,10 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/auth-context';
 import { GoogleLoginButton } from '../components/GoogleLoginButton';
-import { PhoneRequiredModal } from '../components/PhoneRequiredModal';
 
 export function Login() {
-  const { login, loginWithGoogle, sendWhatsAppOtp } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [identifiant, setIdentifiant] = useState('');
@@ -14,11 +13,6 @@ export function Login() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  // Modale téléphone requis
-  const [pendingGoogleToken, setPendingGoogleToken] = useState<string | null>(null);
-  const [googleUserData, setGoogleUserData] = useState<{ email?: string; prenom?: string } | null>(null);
-  const [showPhoneModal, setShowPhoneModal] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -44,29 +38,11 @@ export function Login() {
     setError(null);
     setLoading(true);
     try {
-      const res = await loginWithGoogle(idToken);
-      if (res && res.requiresPhone) {
-        setPendingGoogleToken(idToken);
-        setGoogleUserData({ email: res.email, prenom: res.prenom });
-        setShowPhoneModal(true);
-        return;
-      }
+      await loginWithGoogle(idToken);
       navigate('/');
     } catch (err) {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
       setError(msg ?? t('auth.google_failed', 'Échec de la connexion avec Google.'));
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handlePhoneSubmit(telephone: string, otpCode: string) {
-    if (!pendingGoogleToken) return;
-    setLoading(true);
-    try {
-      await loginWithGoogle(pendingGoogleToken, telephone, otpCode);
-      setShowPhoneModal(false);
-      navigate('/');
     } finally {
       setLoading(false);
     }
@@ -178,16 +154,6 @@ export function Login() {
           </Link>
         </p>
       </div>
-
-      <PhoneRequiredModal
-        isOpen={showPhoneModal}
-        email={googleUserData?.email}
-        prenom={googleUserData?.prenom}
-        onSendOtp={sendWhatsAppOtp}
-        onSubmit={handlePhoneSubmit}
-        onClose={() => setShowPhoneModal(false)}
-        loading={loading}
-      />
     </div>
   );
 }

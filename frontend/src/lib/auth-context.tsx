@@ -3,19 +3,11 @@ import { api } from './api';
 import { setAccessToken } from './tokenStore';
 import { User } from './types';
 
-export interface GoogleLoginResult {
-  requiresPhone?: boolean;
-  email?: string;
-  prenom?: string;
-  nom?: string;
-}
-
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
   login: (identifiant: string, password: string) => Promise<void>;
-  loginWithGoogle: (idToken: string, telephone?: string, otpCode?: string) => Promise<GoogleLoginResult | void>;
-  sendWhatsAppOtp: (telephone: string) => Promise<{ devCode?: string }>;
+  loginWithGoogle: (idToken: string) => Promise<void>;
   register: (data: { nom: string; prenom: string; email: string; telephone?: string; password: string }) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -53,21 +45,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await loadCurrentUser();
   }
 
-  async function sendWhatsAppOtp(telephone: string) {
-    const res = await api.post('/auth/send-whatsapp-otp', { telephone });
-    return res.data;
-  }
-
-  async function loginWithGoogle(idToken: string, telephone?: string, otpCode?: string) {
-    const res = await api.post('/auth/google', { idToken, telephone, otpCode });
-    if (res.data?.requiresPhone) {
-      return {
-        requiresPhone: true,
-        email: res.data.email,
-        prenom: res.data.prenom,
-        nom: res.data.nom,
-      };
-    }
+  async function loginWithGoogle(idToken: string) {
+    const res = await api.post('/auth/google', { idToken });
     setAccessToken(res.data.accessToken);
     await loadCurrentUser();
   }
@@ -85,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, loginWithGoogle, sendWhatsAppOtp, register, logout, refreshUser: loadCurrentUser }}>
+    <AuthContext.Provider value={{ user, loading, login, loginWithGoogle, register, logout, refreshUser: loadCurrentUser }}>
       {children}
     </AuthContext.Provider>
   );

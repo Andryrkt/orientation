@@ -11,7 +11,6 @@ import { OAuth2Client } from 'google-auth-library';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { WhatsAppService } from './whatsapp.service';
 import { MailService } from '../mail/mail.service';
 
 @Injectable()
@@ -20,7 +19,6 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService,
-    private whatsAppService: WhatsAppService,
     private mailService: MailService,
   ) {}
 
@@ -62,40 +60,6 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async sendWhatsAppOtp(telephone: string) {
-    const cleanPhone = telephone?.trim();
-    if (!cleanPhone) {
-      throw new BadRequestException('Numéro de téléphone invalide');
-    }
-
-    // Vérifier si ce numéro appartient déjà à un utilisateur enregistré
-    const existingUser = await this.prisma.utilisateur.findFirst({
-      where: { telephone: cleanPhone, phoneVerifiedAt: { not: null } },
-    });
-    if (existingUser) {
-      throw new ConflictException('Un compte existe déjà avec ce numéro de téléphone');
-    }
-
-    // Générer un code à 6 chiffres
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-    const codeHash = await bcrypt.hash(code, 10);
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-
-    await this.prisma.otpVerification.upsert({
-      where: { telephone: cleanPhone },
-      update: { codeHash, expiresAt },
-      create: { telephone: cleanPhone, codeHash, expiresAt },
-    });
-
-    await this.whatsAppService.sendOtp(cleanPhone, code);
-
-    return {
-      message: 'Code OTP envoyé sur votre WhatsApp avec succès.',
-      telephone: cleanPhone,
-      devCode: code,
-    };
-  }
-
   async register(dto: RegisterDto) {
     const existing = await this.prisma.utilisateur.findFirst({
       where: { OR: [{ email: dto.email }, ...(dto.telephone ? [{ telephone: dto.telephone }] : [])] },
@@ -135,7 +99,7 @@ export class AuthService {
     return { user: this.toPublicUser(user), ...tokens };
   }
 
-  async googleLogin(idToken: string, telephone?: string, otpCode?: string) {
+  async googleLogin(idToken: string) {
     const googleClientId = this.config.get<string>('GOOGLE_CLIENT_ID');
     let payload;
 
@@ -165,55 +129,6 @@ export class AuthService {
       },
     });
 
-    const cleanPhone = telephone?.trim();
-
-    // Si l'utilisateur n'existe pas ou n'a pas encore de numéro de téléphone vérifié
-    if (!user || !user.telephone || !user.phoneVerifiedAt) {
-      if (!cleanPhone) {
-        return {
-          requiresPhone: true,
-          email,
-          prenom,
-          nom,
-        };
-      }
-
-      if (!otpCode) {
-        throw new BadRequestException('Un code OTP WhatsApp est requis pour vérifier votre téléphone');
-      }
-
-      // Vérifier le code OTP
-      const otpRecord = await this.prisma.otpVerification.findUnique({
-        where: { telephone: cleanPhone },
-      });
-
-      if (!otpRecord || otpRecord.expiresAt < new Date()) {
-        throw new BadRequestException('Code OTP expiré ou inexistant. Veuillez en demander un nouveau.');
-      }
-
-      const isValidCode = await bcrypt.compare(otpCode.trim(), otpRecord.codeHash);
-      if (!isValidCode) {
-        throw new BadRequestException('Code OTP invalide. Veuillez vérifier le code reçu sur WhatsApp.');
-      }
-
-      // Supprimer l'OTP consommé
-      await this.prisma.otpVerification.delete({
-        where: { telephone: cleanPhone },
-      });
-
-      // Vérifier si ce numéro de téléphone est déjà utilisé par un autre compte
-      const existingPhoneUser = await this.prisma.utilisateur.findFirst({
-        where: {
-          telephone: cleanPhone,
-          ...(user ? { NOT: { id: user.id } } : {}),
-        },
-      });
-
-      if (existingPhoneUser) {
-        throw new ConflictException('Un compte existe déjà avec ce numéro de téléphone');
-      }
-    }
-
     const now = new Date();
 
     if (user) {
@@ -222,7 +137,6 @@ export class AuthService {
         data: {
           googleId: user.googleId ?? googleId,
           emailVerifiedAt: user.emailVerifiedAt ?? now,
-          ...(cleanPhone ? { telephone: cleanPhone, phoneVerifiedAt: now } : {}),
         },
       });
     } else {
@@ -231,8 +145,6 @@ export class AuthService {
           email,
           nom,
           prenom,
-          telephone: cleanPhone,
-          phoneVerifiedAt: now,
           googleId,
           emailVerifiedAt: now,
           profil: {
@@ -274,8 +186,6 @@ export class AuthService {
     });
   }
 
-  // Le WhatsApp est privilégié sur l'email (usage courant à Madagascar) : dès qu'un numéro de
-  // téléphone est renseigné sur le compte, le lien part par WhatsApp plutôt que par email.
   async forgotPassword(identifiant: string) {
     const user = await this.prisma.utilisateur.findFirst({
       where: { OR: [{ email: identifiant }, { telephone: identifiant }] },
@@ -288,11 +198,7 @@ export class AuthService {
     const resetToken = this.signPurposeToken(user.id, 'reset-password', '1h');
     const frontendOrigin = this.config.get<string>('FRONTEND_ORIGIN') ?? 'http://localhost:5173';
     const resetLink = `${frontendOrigin}/reinitialiser-mot-de-passe?token=${resetToken}`;
-    if (user.telephone) {
-      await this.whatsAppService.sendPasswordResetLink(user.telephone, resetLink);
-    } else if (user.email) {
-      await this.mailService.sendPasswordResetEmail(user.email, resetLink);
-    }
+    await this.mailService.sendPasswordResetEmail(user.email, resetLink);
     return messageGenerique;
   }
 

@@ -63,7 +63,6 @@ model Utilisateur {
   googleId         String?   @unique
   role             Role      @default(STUDENT)
   emailVerifiedAt  DateTime?
-  phoneVerifiedAt  DateTime?
   refreshTokenHash String?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
@@ -603,16 +602,6 @@ model ContactMessage {
   updatedAt DateTime      @updatedAt
 
   @@map("contact_messages")
-}
-
-model OtpVerification {
-  id        String   @id @default(uuid())
-  telephone String   @unique
-  codeHash  String
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-
-  @@map("otp_verifications")
 }
 
 model PointDeVente {
