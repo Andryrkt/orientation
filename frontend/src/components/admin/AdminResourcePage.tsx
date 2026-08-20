@@ -30,6 +30,8 @@ interface AdminResourcePageProps<T extends { id: string }> {
   emptyItem: Record<string, unknown>;
   toFormValues?: (item: T) => Record<string, unknown>;
   toPayload?: (values: Record<string, unknown>) => Record<string, unknown>;
+  /** Rend des actions supplémentaires à côté du bouton "+ Ajouter" (ex : import PDF). */
+  extraHeaderActions?: (openCreateWith: (values: Record<string, unknown>) => void) => ReactNode;
 }
 
 export function AdminResourcePage<T extends { id: string }>({
@@ -42,6 +44,7 @@ export function AdminResourcePage<T extends { id: string }>({
   emptyItem,
   toFormValues,
   toPayload,
+  extraHeaderActions,
 }: AdminResourcePageProps<T>) {
   const queryClient = useQueryClient();
   const [editing, setEditing] = useState<T | null>(null);
@@ -95,6 +98,13 @@ export function AdminResourcePage<T extends { id: string }>({
     setShowForm(true);
   }
 
+  function openCreateWith(values: Record<string, unknown>) {
+    setEditing(null);
+    setValues({ ...emptyItem, ...values });
+    setError(null);
+    setShowForm(true);
+  }
+
   function openEdit(item: T) {
     setEditing(item);
     setValues(toFormValues ? toFormValues(item) : (item as unknown as Record<string, unknown>));
@@ -125,12 +135,15 @@ export function AdminResourcePage<T extends { id: string }>({
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{title}</h1>
-        <button
-          onClick={openCreate}
-          className="px-4 py-2 bg-brand-600 text-white rounded-md text-sm font-medium hover:bg-brand-700"
-        >
-          + Ajouter
-        </button>
+        <div className="flex items-center gap-2">
+          {extraHeaderActions?.(openCreateWith)}
+          <button
+            onClick={openCreate}
+            className="px-4 py-2 bg-brand-600 text-white rounded-md text-sm font-medium hover:bg-brand-700"
+          >
+            + Ajouter
+          </button>
+        </div>
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 overflow-x-auto">

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,10 +8,14 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
+import { memoryStorage } from 'multer';
 import { Public } from '../common/decorators/public.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -42,6 +47,25 @@ export class MetiersController {
   @Post()
   create(@Body() dto: CreateMetierDto) {
     return this.metiersService.create(dto);
+  }
+
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Post('parse-pdf')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: memoryStorage(),
+      limits: { fileSize: 10 * 1024 * 1024 },
+    }),
+  )
+  parsePdf(@UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new BadRequestException('Fichier PDF requis');
+    if (file.mimetype !== 'application/pdf') {
+      throw new BadRequestException('Le fichier doit être un PDF');
+    }
+    return this.metiersService.parseFichePdf(file.buffer);
   }
 
   @ApiBearerAuth()

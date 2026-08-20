@@ -1,10 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import pdfParse from 'pdf-parse';
 import { PrismaService } from '../prisma/prisma.service';
 import { slugify } from '../common/utils/slugify';
 import { CreateMetierDto } from './dto/create-metier.dto';
 import { UpdateMetierDto } from './dto/update-metier.dto';
 import { QueryMetierDto } from './dto/query-metier.dto';
+import { parseMetierFiche } from './metier-pdf-parser';
 
 @Injectable()
 export class MetiersService {
@@ -95,5 +97,54 @@ export class MetiersService {
 
   countAll() {
     return this.prisma.metier.count();
+  }
+
+  private normalizeForMatch(value: string): string {
+    return value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+  }
+
+  private async matchDomaine(domainePrincipalRaw: string | undefined) {
+    if (!domainePrincipalRaw) return { matchedDomaineId: undefined, warning: undefined };
+    const domaines = await this.prisma.domaine.findMany();
+    const target = this.normalizeForMatch(domainePrincipalRaw);
+    const targetTokens = new Set(target.split(' ').filter((t) => t.length > 2));
+
+    let bestId: string | undefined;
+    let bestScore = 0;
+    for (const domaine of domaines) {
+      const candidate = this.normalizeForMatch(domaine.nom);
+      let score = 0;
+      if (candidate === target) score = 100;
+      else if (target.includes(candidate) || candidate.includes(target)) score = 50;
+      else score = candidate.split(' ').filter((t) => targetTokens.has(t)).length;
+      if (score > bestScore) {
+        bestScore = score;
+        bestId = domaine.id;
+      }
+    }
+
+    if (!bestId || bestScore < 1) {
+      return {
+        matchedDomaineId: undefined,
+        warning: `Domaine principal du PDF (« ${domainePrincipalRaw} ») non reconnu automatiquement — sélectionnez-le manuellement.`,
+      };
+    }
+    return { matchedDomaineId: bestId, warning: undefined };
+  }
+
+  async parseFichePdf(buffer: Buffer) {
+    const data = await pdfParse(buffer);
+    const { fields, domainePrincipalRaw, warnings } = parseMetierFiche(data.text);
+    const { matchedDomaineId, warning } = await this.matchDomaine(domainePrincipalRaw);
+    return {
+      fields,
+      matchedDomaineId,
+      warnings: warning ? [...warnings, warning] : warnings,
+    };
   }
 }

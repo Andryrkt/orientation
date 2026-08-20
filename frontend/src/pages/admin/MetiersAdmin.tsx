@@ -1,7 +1,65 @@
+import { useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AdminResourcePage } from '../../components/admin/AdminResourcePage';
 import { api } from '../../lib/api';
 import { Domaine, Metier, Paginated } from '../../lib/types';
+
+// Champs tableau édités comme une liste séparée par des virgules dans le formulaire.
+const COMMA_LIST_FIELDS = [
+  'competences',
+  'riasecCodes',
+  'autresAppellations',
+  'secteursActivite',
+  'environnementTravail',
+  'competencesComportementales',
+  'languesRequises',
+  'certifications',
+  'typeContrat',
+  'regionsPresence',
+  'employeurs',
+  'traitsPersonnalite',
+  'valeursProfessionnelles',
+  'volumeHoraire',
+  'tendances',
+  'centresInteret',
+] as const;
+
+// Champs tableau édités comme une liste avec un élément par ligne dans le formulaire.
+const LINE_LIST_FIELDS = ['missions', 'formationsMadagascar', 'sources'] as const;
+
+function toFormValues(item: Record<string, unknown>): Record<string, unknown> {
+  const values: Record<string, unknown> = { ...item };
+  for (const key of COMMA_LIST_FIELDS) {
+    values[key] = (((item[key] as string[]) ?? []) as string[]).join(', ');
+  }
+  for (const key of LINE_LIST_FIELDS) {
+    values[key] = (((item[key] as string[]) ?? []) as string[]).join('\n');
+  }
+  return values;
+}
+
+function toPayload(values: Record<string, unknown>): Record<string, unknown> {
+  const list = (v: unknown) =>
+    typeof v === 'string' ? v.split(',').map((c) => c.trim()).filter(Boolean) : [];
+  const lines = (v: unknown) =>
+    typeof v === 'string' ? v.split('\n').map((c) => c.trim()).filter(Boolean) : [];
+  const payload: Record<string, unknown> = { ...values };
+  for (const key of COMMA_LIST_FIELDS) {
+    payload[key] = key === 'riasecCodes'
+      ? list(values[key]).map((c) => c.toUpperCase())
+      : list(values[key]);
+  }
+  for (const key of LINE_LIST_FIELDS) {
+    payload[key] = lines(values[key]);
+  }
+  return payload;
+}
+
+interface ParsePdfResponse {
+  fields: Record<string, unknown>;
+  matchedDomaineId?: string;
+  warnings: string[];
+}
 
 export function MetiersAdmin() {
   const { data: domaines } = useQuery({
@@ -11,11 +69,63 @@ export function MetiersAdmin() {
 
   const domaineOptions = (domaines?.items ?? []).map((d) => ({ value: d.id, label: d.nom }));
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [importing, setImporting] = useState(false);
+
+  async function handlePdfSelected(
+    e: React.ChangeEvent<HTMLInputElement>,
+    openCreateWith: (values: Record<string, unknown>) => void,
+  ) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+
+    setImporting(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const { data } = await api.post<ParsePdfResponse>('/metiers/parse-pdf', formData);
+      openCreateWith(toFormValues({ ...data.fields, domaineId: data.matchedDomaineId ?? '' }));
+      if (data.warnings.length > 0) {
+        alert(
+          `PDF importé — merci de relire attentivement avant d'enregistrer :\n\n${data.warnings.join('\n')}`,
+        );
+      }
+    } catch (err) {
+      const message =
+        (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
+      alert(
+        `Échec de l'import du PDF : ${Array.isArray(message) ? message.join(', ') : message ?? 'erreur inconnue'}`,
+      );
+    } finally {
+      setImporting(false);
+    }
+  }
+
   return (
     <AdminResourcePage<Metier>
       title="Métiers"
       apiPath="/metiers"
       queryKey="admin-metiers"
+      extraHeaderActions={(openCreateWith) => (
+        <>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/pdf"
+            className="hidden"
+            onChange={(e) => handlePdfSelected(e, openCreateWith)}
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={importing}
+            className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-md text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50"
+          >
+            {importing ? 'Analyse du PDF...' : '📄 Importer un PDF'}
+          </button>
+        </>
+      )}
       emptyItem={{
         domaineId: '',
         nom: '',
@@ -69,58 +179,8 @@ export function MetiersAdmin() {
         fiabilite: '',
         observations: '',
       }}
-      toFormValues={(item) => ({
-        ...item,
-        missions: (item.missions ?? []).join('\n'),
-        competences: (item.competences ?? []).join(', '),
-        riasecCodes: (item.riasecCodes ?? []).join(', '),
-        autresAppellations: (item.autresAppellations ?? []).join(', '),
-        secteursActivite: (item.secteursActivite ?? []).join(', '),
-        environnementTravail: (item.environnementTravail ?? []).join(', '),
-        competencesComportementales: (item.competencesComportementales ?? []).join(', '),
-        languesRequises: (item.languesRequises ?? []).join(', '),
-        formationsMadagascar: (item.formationsMadagascar ?? []).join('\n'),
-        certifications: (item.certifications ?? []).join(', '),
-        typeContrat: (item.typeContrat ?? []).join(', '),
-        regionsPresence: (item.regionsPresence ?? []).join(', '),
-        employeurs: (item.employeurs ?? []).join(', '),
-        traitsPersonnalite: (item.traitsPersonnalite ?? []).join(', '),
-        valeursProfessionnelles: (item.valeursProfessionnelles ?? []).join(', '),
-        volumeHoraire: (item.volumeHoraire ?? []).join(', '),
-        tendances: (item.tendances ?? []).join(', '),
-        centresInteret: (item.centresInteret ?? []).join(', '),
-        sources: (item.sources ?? []).join('\n'),
-      })}
-      toPayload={(values) => {
-        const list = (v: unknown) =>
-          typeof v === 'string' ? v.split(',').map((c) => c.trim()).filter(Boolean) : [];
-        const lines = (v: unknown) =>
-          typeof v === 'string' ? v.split('\n').map((c) => c.trim()).filter(Boolean) : [];
-        return {
-          ...values,
-          missions: lines(values.missions),
-          competences: list(values.competences),
-          riasecCodes: typeof values.riasecCodes === 'string'
-            ? values.riasecCodes.split(',').map((c) => c.trim().toUpperCase()).filter(Boolean)
-            : [],
-          autresAppellations: list(values.autresAppellations),
-          secteursActivite: list(values.secteursActivite),
-          environnementTravail: list(values.environnementTravail),
-          competencesComportementales: list(values.competencesComportementales),
-          languesRequises: list(values.languesRequises),
-          formationsMadagascar: lines(values.formationsMadagascar),
-          certifications: list(values.certifications),
-          typeContrat: list(values.typeContrat),
-          regionsPresence: list(values.regionsPresence),
-          employeurs: list(values.employeurs),
-          traitsPersonnalite: list(values.traitsPersonnalite),
-          valeursProfessionnelles: list(values.valeursProfessionnelles),
-          volumeHoraire: list(values.volumeHoraire),
-          tendances: list(values.tendances),
-          centresInteret: list(values.centresInteret),
-          sources: lines(values.sources),
-        };
-      }}
+      toFormValues={(item) => toFormValues(item as unknown as Record<string, unknown>)}
+      toPayload={toPayload}
       columns={[
         { key: 'nom', label: 'Nom' },
         { key: 'domaine', label: 'Domaine', render: (item) => item.domaine?.nom ?? '—' },
