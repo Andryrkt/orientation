@@ -1,0 +1,54 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 100 100"
+  fill="none"
+>
+  <defs>
+    <linearGradient id="leftLegGrad" x1="23" y1="80" x2="49" y2="14" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#081426" />
+      <stop offset="50%" stop-color="#0B2545" />
+      <stop offset="100%" stop-color="#134074" />
+    </linearGradient>
+    <linearGradient id="rightLegGrad" x1="51" y1="14" x2="77" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1A5EAA" />
+      <stop offset="100%" stop-color="#081426" />
+    </linearGradient>
+    <linearGradient id="arrowGrad" x1="26" y1="80" x2="87" y2="37" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0052FF" />
+      <stop offset="60%" stop-color="#00A3FF" />
+      <stop offset="100%" stop-color="#00F0FF" />
+    </linearGradient>
+  </defs>
+
+  <path
+    d="M 49 14
+       L 23 80
+       C 29 73, 35 65, 43 58
+       C 49 53, 53 48, 53 48
+       L 49 14 Z"
+    fill="url(#leftLegGrad)"
+  />
+
+  <path
+    d="M 51 14
+       L 77 80
+       H 68
+       L 54 45
+       C 53 48, 51 51, 49 55
+       L 51 14 Z"
+    fill="url(#rightLegGrad)"
+  />
+
+  <path
+    d="M 26 80
+       C 34 80, 43 75, 51 66
+       C 60 56, 69 43, 80 39
+       L 77 35
+       L 87 37
+       L 82 47
+       L 80 43
+       C 69 46, 60 59, 51 69
+       C 42 77, 34 80, 26 80 Z"
+    fill="url(#arrowGrad)"
+  />
+</svg>
