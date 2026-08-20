@@ -40,15 +40,15 @@ export function Favoris() {
       <div className="space-y-8">
         {Object.entries(groups).map(([type, items]) => (
           <div key={type}>
-            <h2 className="text-lg font-bold text-slate-700 mb-3">{TYPE_LABELS[type] ?? type}</h2>
+            <h2 className="text-lg font-bold text-slate-700 dark:text-slate-300 mb-3">{TYPE_LABELS[type] ?? type}</h2>
             <div className="grid md:grid-cols-2 gap-3">
               {items.map((f) => (
                 <div
                   key={f.id}
-                  className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-4 py-3"
+                  className="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-3"
                 >
                   {f.entity ? (
-                    <Link to={TYPE_LINK[type](f.entity.slug)} className="text-slate-800 font-medium hover:text-brand-600">
+                    <Link to={TYPE_LINK[type](f.entity.slug)} className="text-slate-800 dark:text-white font-medium hover:text-brand-600 dark:hover:text-blue-400">
                       {f.entity.nom}
                     </Link>
                   ) : (
@@ -56,7 +56,7 @@ export function Favoris() {
                   )}
                   <button
                     onClick={() => toggle(f.type, f.entityId)}
-                    className="text-sm text-red-600 hover:underline shrink-0 ml-3"
+                    className="text-sm text-red-600 dark:text-red-400 hover:underline shrink-0 ml-3"
                   >
                     Retirer
                   </button>

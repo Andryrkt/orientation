@@ -37,14 +37,14 @@ function ChangerMotDePasse() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-white border border-slate-200 rounded-lg p-6 mt-6">
-      <h2 className="text-base font-bold text-slate-800">{t('profile.change_password_title')}</h2>
+    <form onSubmit={handleSubmit} className="space-y-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 mt-6">
+      <h2 className="text-base font-bold text-slate-800 dark:text-white">{t('profile.change_password_title')}</h2>
       {saved && (
-        <div className="bg-green-50 text-green-700 text-sm rounded-md px-3 py-2">{t('profile.password_updated_msg')}</div>
+        <div className="bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 text-sm rounded-md px-3 py-2">{t('profile.password_updated_msg')}</div>
       )}
-      {error && <div className="bg-red-50 text-red-700 text-sm rounded-md px-3 py-2">{error}</div>}
+      {error && <div className="bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">{error}</div>}
       <div>
-        <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.current_password')}</label>
+        <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.current_password')}</label>
         <input
           type="password"
           className="field-input"
@@ -54,7 +54,7 @@ function ChangerMotDePasse() {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.new_password')}</label>
+        <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.new_password')}</label>
         <input
           type="password"
           className="field-input"
@@ -65,7 +65,7 @@ function ChangerMotDePasse() {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.confirm_password')}</label>
+        <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.confirm_password')}</label>
         <input
           type="password"
           className="field-input"
@@ -147,19 +147,19 @@ export function Profil() {
       )}
 
       {motDePasseSeulement ? (
-        <div className="space-y-4 bg-white border border-slate-200 rounded-lg p-6">
-          <p className="text-sm text-slate-500">{t('profile.email_label')} : {user.email}</p>
-          <p className="text-sm text-slate-500">{t('profile.firstname')} / {t('profile.lastname')} : {user.prenom} {user.nom}</p>
+        <div className="space-y-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t('profile.email_label')} : {user.email}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t('profile.firstname')} / {t('profile.lastname')} : {user.prenom} {user.nom}</p>
         </div>
       ) : (
-      <form onSubmit={handleSubmit} className="space-y-4 bg-white border border-slate-200 rounded-lg p-6">
+      <form onSubmit={handleSubmit} className="space-y-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6">
         {saved && (
-          <div className="bg-green-50 text-green-700 text-sm rounded-md px-3 py-2">{t('profile.updated_msg')}</div>
+          <div className="bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 text-sm rounded-md px-3 py-2">{t('profile.updated_msg')}</div>
         )}
-         <p className="text-sm text-slate-500">{t('profile.email_label')} : {user.email}</p>
+         <p className="text-sm text-slate-500 dark:text-slate-400">{t('profile.email_label')} : {user.email}</p>
 
-        <div className="flex items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl mb-2">
-          <div className="w-16 h-16 rounded-full bg-slate-200 border border-slate-300 flex-shrink-0 overflow-hidden flex items-center justify-center">
+        <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-800 rounded-xl mb-2">
+          <div className="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
             {form.photo ? (
               <img src={form.photo} alt="Avatar" className="w-full h-full object-cover" />
             ) : (
@@ -167,13 +167,13 @@ export function Profil() {
             )}
           </div>
           <div className="flex-1">
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
               {t('profile.photo_label')}
             </label>
             <input
               type="text"
               placeholder="https://example.com/avatar.jpg"
-              className="field-input bg-white"
+              className="field-input"
               value={form.photo}
               onChange={(e) => setForm({ ...form, photo: e.target.value })}
             />
@@ -181,7 +181,7 @@ export function Profil() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.firstname')}</label>
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.firstname')}</label>
             <input
               className="field-input"
               value={form.prenom}
@@ -189,7 +189,7 @@ export function Profil() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.lastname')}</label>
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.lastname')}</label>
             <input
               className="field-input"
               value={form.nom}
@@ -200,7 +200,7 @@ export function Profil() {
         <div className="grid grid-cols-2 gap-3">
           {!isEmploye && (
             <div>
-              <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.region')}</label>
+              <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.region')}</label>
               <input
                 className="field-input"
                 value={form.region}
@@ -209,7 +209,7 @@ export function Profil() {
             </div>
           )}
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.phone')}</label>
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.phone')}</label>
             <input
               className="field-input"
               value={form.telephone}
@@ -220,7 +220,7 @@ export function Profil() {
         {!isEmploye && (
           <>
             <div>
-              <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.address')}</label>
+              <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.address')}</label>
               <input
                 className="field-input"
                 value={form.adresse}
@@ -228,7 +228,7 @@ export function Profil() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.education_level')}</label>
+              <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.education_level')}</label>
               <input
                 className="field-input"
                 value={form.niveauEtude}
@@ -236,7 +236,7 @@ export function Profil() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-600 mb-1">{t('profile.bio')}</label>
+              <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.bio')}</label>
               <textarea
                 className="field-input"
                 rows={3}
@@ -245,7 +245,7 @@ export function Profil() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-600 mb-1">
+              <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
                 {t('profile.interests')}
               </label>
               <input

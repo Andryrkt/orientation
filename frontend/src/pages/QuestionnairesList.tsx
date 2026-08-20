@@ -13,8 +13,8 @@ export function QuestionnairesList() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-slate-800 mb-2">Questionnaire d'orientation</h1>
-      <p className="text-slate-600 mb-8">
+      <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Questionnaire d'orientation</h1>
+      <p className="text-slate-600 dark:text-slate-400 mb-8">
         Réponds à quelques questions pour découvrir les domaines et métiers qui correspondent le
         mieux à ta personnalité, selon le modèle RIASEC (Holland), l'un des référentiels les plus
         reconnus en psychologie de l'orientation.
@@ -27,9 +27,9 @@ export function QuestionnairesList() {
 
       <div className="space-y-4">
         {data?.map((q) => (
-          <div key={q.id} className="bg-white border border-slate-200 rounded-lg p-6">
-            <h2 className="text-lg font-bold text-slate-800 mb-2">{q.titre}</h2>
-            <p className="text-slate-600 text-sm mb-4">{q.description}</p>
+          <div key={q.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6">
+            <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-2">{q.titre}</h2>
+            <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">{q.description}</p>
             <Link
               to={user ? `/questionnaire/${q.id}` : '/login'}
               className="btn-primary"
@@ -41,8 +41,8 @@ export function QuestionnairesList() {
       </div>
 
       {user && (
-        <p className="text-sm text-slate-500 mt-6">
-          <Link to="/mes-resultats" className="text-brand-600 hover:underline">
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-6">
+          <Link to="/mes-resultats" className="text-brand-600 dark:text-blue-400 hover:underline">
             Voir mes résultats précédents
           </Link>
         </p>

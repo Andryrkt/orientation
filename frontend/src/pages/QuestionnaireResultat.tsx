@@ -23,33 +23,33 @@ export function QuestionnaireResultat() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-slate-800 mb-2">Ton profil d'orientation</h1>
-      <p className="text-slate-500 mb-8">
+      <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Ton profil d'orientation</h1>
+      <p className="text-slate-500 dark:text-slate-400 mb-8">
         {new Date(resultat.createdAt).toLocaleDateString('fr-FR')}
         {resultat.questionnaire && ` — ${resultat.questionnaire.titre}`}
       </p>
 
       {profilLabel && (
-        <div className="bg-brand-50 border border-brand-200 rounded-lg p-6 mb-8">
-          <p className="text-sm text-brand-600 font-medium mb-1">Profil dominant</p>
-          <p className="text-2xl font-bold text-brand-800">{profilLabel}</p>
+        <div className="bg-brand-50 dark:bg-blue-500/10 border border-brand-200 dark:border-blue-500/20 rounded-lg p-6 mb-8">
+          <p className="text-sm text-brand-600 dark:text-blue-400 font-medium mb-1">Profil dominant</p>
+          <p className="text-2xl font-bold text-brand-800 dark:text-blue-300">{profilLabel}</p>
         </div>
       )}
 
-      <h2 className="text-lg font-bold text-slate-800 mb-4">Répartition de tes scores</h2>
-      <div className="bg-white border border-slate-200 rounded-lg p-6 mb-8">
+      <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Répartition de tes scores</h2>
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 mb-8">
         <RiasecChart scores={resultat.scores} />
       </div>
 
       {resultat.domainesRecommandes.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-lg font-bold text-slate-800 mb-3">Domaines recommandés</h2>
+          <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-3">Domaines recommandés</h2>
           <div className="flex flex-wrap gap-2">
             {resultat.domainesRecommandes.map((d) => (
               <Link
                 key={d.id}
                 to={`/metiers?domaine=${d.slug}`}
-                className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-sm text-slate-700 hover:bg-slate-50"
+                className="px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
               >
                 {d.nom}
               </Link>
@@ -60,13 +60,13 @@ export function QuestionnaireResultat() {
 
       {resultat.metiersRecommandes.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-lg font-bold text-slate-800 mb-3">Métiers recommandés</h2>
+          <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-3">Métiers recommandés</h2>
           <div className="flex flex-wrap gap-2">
             {resultat.metiersRecommandes.map((m) => (
               <Link
                 key={m.id}
                 to={`/metiers/${m.slug}`}
-                className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-sm text-slate-700 hover:bg-slate-50"
+                className="px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
               >
                 {m.nom}
               </Link>
@@ -75,8 +75,8 @@ export function QuestionnaireResultat() {
         </div>
       )}
 
-      <p className="text-sm text-slate-500">
-        <Link to="/mes-resultats" className="text-brand-600 hover:underline">
+      <p className="text-sm text-slate-500 dark:text-slate-400">
+        <Link to="/mes-resultats" className="text-brand-600 dark:text-blue-400 hover:underline">
           Voir l'historique de mes résultats
         </Link>
       </p>

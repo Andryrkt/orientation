@@ -12,8 +12,8 @@ export function QuestionnaireHistorique() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-slate-800 mb-2">Mes résultats d'orientation</h1>
-      <p className="text-slate-500 mb-8">
+      <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Mes résultats d'orientation</h1>
+      <p className="text-slate-500 dark:text-slate-400 mb-8">
         Retrouve l'historique de tes tests et observe l'évolution de ton profil dans le temps.
       </p>
 
@@ -21,7 +21,7 @@ export function QuestionnaireHistorique() {
       {!isLoading && data?.length === 0 && (
         <p className="text-slate-400">
           Tu n'as pas encore complété de questionnaire.{' '}
-          <Link to="/questionnaire" className="text-brand-600 hover:underline">
+          <Link to="/questionnaire" className="text-brand-600 dark:text-blue-400 hover:underline">
             Commencer maintenant
           </Link>
         </p>
@@ -42,8 +42,8 @@ export function QuestionnaireHistorique() {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-bold text-slate-800">{profilLabel ?? 'Résultat'}</p>
-                  <p className="text-sm text-slate-500">{r.questionnaire?.titre}</p>
+                  <p className="font-bold text-slate-800 dark:text-white">{profilLabel ?? 'Résultat'}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{r.questionnaire?.titre}</p>
                 </div>
                 <span className="text-sm text-slate-400">
                   {new Date(r.createdAt).toLocaleDateString('fr-FR')}

@@ -23,14 +23,14 @@ export function RiasecChart({ scores }: RiasecChartProps) {
         const width = Math.round((value / max) * 100);
         return (
           <div key={code} className="flex items-center gap-3">
-            <span className="w-32 shrink-0 text-sm text-slate-600">{RIASEC_LABELS[code]}</span>
-            <div className="flex-1 bg-slate-100 rounded-full h-3 overflow-hidden">
+            <span className="w-32 shrink-0 text-sm text-slate-600 dark:text-slate-300">{RIASEC_LABELS[code]}</span>
+            <div className="flex-1 bg-slate-100 dark:bg-white/10 rounded-full h-3 overflow-hidden">
               <div
                 className="h-3 rounded-full transition-all"
                 style={{ width: `${width}%`, backgroundColor: COLORS[code] }}
               />
             </div>
-            <span className="w-8 shrink-0 text-sm font-medium text-slate-700 text-right">{value}</span>
+            <span className="w-8 shrink-0 text-sm font-medium text-slate-700 dark:text-slate-200 text-right">{value}</span>
           </div>
         );
       })}

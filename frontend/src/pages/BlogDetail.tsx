@@ -69,34 +69,34 @@ export function BlogDetail() {
   return (
     <div className="max-w-2xl mx-auto">
       {blog.categorie && (
-        <p className="text-sm font-medium text-brand-600 mb-1">
+        <p className="text-sm font-medium text-brand-600 dark:text-blue-400 mb-1">
           {BLOG_CATEGORIES.find((c) => c.value === blog.categorie)?.label ?? blog.categorie}
         </p>
       )}
-      <h1 className="text-3xl font-bold text-slate-900 mb-2">{blog.titre}</h1>
-      <p className="text-sm text-slate-500 mb-6">
+      <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{blog.titre}</h1>
+      <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
         {blog.auteur && `${blog.auteur.prenom} ${blog.auteur.nom} — `}
         {formatDate(blog.publishedAt)}
       </p>
 
       {blog.image && <img src={blog.image} alt="" className="w-full rounded-lg mb-6" />}
 
-      <div className="text-slate-700 mb-8" dangerouslySetInnerHTML={{ __html: blog.contenu }} />
+      <div className="text-slate-700 dark:text-slate-300 mb-8" dangerouslySetInnerHTML={{ __html: blog.contenu }} />
 
       <button
         onClick={handleLike}
         disabled={likeMutation.isPending}
         className={`inline-flex items-center gap-2 px-4 py-2 rounded-md border text-sm font-medium mb-10 transition-colors disabled:opacity-50 ${
           likeStatus?.liked
-            ? 'bg-brand-50 border-brand-300 text-brand-700'
-            : 'bg-white border-slate-300 text-slate-600 hover:bg-slate-50'
+            ? 'bg-brand-50 dark:bg-blue-500/10 border-brand-300 dark:border-blue-400 text-brand-700 dark:text-blue-300'
+            : 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
         }`}
       >
         <span>{likeStatus?.liked ? '★' : '☆'}</span>
         J'aime ({blog._count?.likes ?? 0})
       </button>
 
-      <h2 className="text-xl font-bold text-slate-800 mb-4">Commentaires</h2>
+      <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-4">Commentaires</h2>
 
       {user ? (
         <form onSubmit={handleComment} className="mb-8">
@@ -108,7 +108,7 @@ export function BlogDetail() {
             onChange={(e) => setComment(e.target.value)}
           />
           {sent && (
-            <p className="text-sm text-green-700 mt-2">
+            <p className="text-sm text-green-700 dark:text-green-400 mt-2">
               Merci ! Ton commentaire sera visible après validation par l'équipe.
             </p>
           )}
@@ -121,8 +121,8 @@ export function BlogDetail() {
           </button>
         </form>
       ) : (
-        <p className="text-sm text-slate-500 mb-8">
-          <button onClick={() => navigate('/login')} className="text-brand-600 hover:underline">
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          <button onClick={() => navigate('/login')} className="text-brand-600 dark:text-blue-400 hover:underline">
             Connecte-toi
           </button>{' '}
           pour laisser un commentaire.
@@ -132,11 +132,11 @@ export function BlogDetail() {
       {blog.commentaires && blog.commentaires.length > 0 ? (
         <div className="space-y-4">
           {blog.commentaires.map((c) => (
-            <div key={c.id} className="bg-white border border-slate-200 rounded-lg p-4">
-              <p className="text-sm font-medium text-slate-800">
+            <div key={c.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+              <p className="text-sm font-medium text-slate-800 dark:text-white">
                 {c.utilisateur?.prenom} {c.utilisateur?.nom}
               </p>
-              <p className="text-sm text-slate-600 mt-1">{c.contenu}</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{c.contenu}</p>
             </div>
           ))}
         </div>

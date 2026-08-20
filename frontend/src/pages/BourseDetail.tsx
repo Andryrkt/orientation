@@ -21,32 +21,32 @@ export function BourseDetail() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      {bourse.domaine && <p className="text-sm font-medium text-brand-600 mb-1">{bourse.domaine.nom}</p>}
+      {bourse.domaine && <p className="text-sm font-medium text-brand-600 dark:text-blue-400 mb-1">{bourse.domaine.nom}</p>}
       <div className="flex items-start justify-between gap-4 mb-2">
-        <h1 className="text-3xl font-bold text-slate-900">{bourse.nom}</h1>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{bourse.nom}</h1>
         <FavoriteButton type="BOURSE" entityId={bourse.id} className="shrink-0" />
       </div>
-      <p className="text-slate-500 mb-6">{bourse.organisme}{bourse.pays ? ` — ${bourse.pays}` : ''}</p>
+      <p className="text-slate-500 dark:text-slate-400 mb-6">{bourse.organisme}{bourse.pays ? ` — ${bourse.pays}` : ''}</p>
 
-      {bourse.conditions && <p className="text-slate-700 mb-6">{bourse.conditions}</p>}
+      {bourse.conditions && <p className="text-slate-700 dark:text-slate-300 mb-6">{bourse.conditions}</p>}
 
       <div className="grid sm:grid-cols-2 gap-6 mb-8">
         {bourse.niveauEtude && (
           <div>
-            <h3 className="font-bold text-slate-800 mb-1">Niveau d'étude</h3>
-            <p className="text-slate-600 text-sm">{bourse.niveauEtude}</p>
+            <h3 className="font-bold text-slate-800 dark:text-white mb-1">Niveau d'étude</h3>
+            <p className="text-slate-600 dark:text-slate-400 text-sm">{bourse.niveauEtude}</p>
           </div>
         )}
         {bourse.montant && (
           <div>
-            <h3 className="font-bold text-slate-800 mb-1">Montant</h3>
-            <p className="text-slate-600 text-sm">{bourse.montant}</p>
+            <h3 className="font-bold text-slate-800 dark:text-white mb-1">Montant</h3>
+            <p className="text-slate-600 dark:text-slate-400 text-sm">{bourse.montant}</p>
           </div>
         )}
         {bourse.dateLimite && (
           <div>
-            <h3 className="font-bold text-slate-800 mb-1">Date limite</h3>
-            <p className="text-slate-600 text-sm">{formatDate(bourse.dateLimite)}</p>
+            <h3 className="font-bold text-slate-800 dark:text-white mb-1">Date limite</h3>
+            <p className="text-slate-600 dark:text-slate-400 text-sm">{formatDate(bourse.dateLimite)}</p>
           </div>
         )}
       </div>
