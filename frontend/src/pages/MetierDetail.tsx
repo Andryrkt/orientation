@@ -44,10 +44,23 @@ function TagList({ items }: { items: string[] }) {
 }
 
 /* ── Champ de Contenu Standard ── */
-function Field({ label, children, id }: { label: string; children: React.ReactNode; id?: string }) {
+function Field({
+  label,
+  subtitle,
+  children,
+  id,
+}: {
+  label: string;
+  subtitle?: string;
+  children: React.ReactNode;
+  id?: string;
+}) {
   return (
     <div className="glass-card p-5" id={id}>
-      <h3 className="font-bold text-slate-900 dark:text-white text-base border-b border-black/5 dark:border-white/5 pb-2 mb-3">{label}</h3>
+      <div className="border-b border-black/5 dark:border-white/5 pb-2 mb-3">
+        <h3 className="font-bold text-slate-900 dark:text-white text-base">{label}</h3>
+        {subtitle && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{subtitle}</p>}
+      </div>
       {children}
     </div>
   );
@@ -205,15 +218,16 @@ function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalair
 /* ── Composant : Barres de Niveaux de Compétences ── */
 interface SkillProps {
   title: string;
+  subtitle?: string;
   items: string[];
   color?: 'cyan' | 'blue' | 'pink';
   id?: string;
 }
-function VisualSkillBars({ title, items, color = 'cyan', id }: SkillProps) {
+function VisualSkillBars({ title, subtitle, items, color = 'cyan', id }: SkillProps) {
   const getLevel = (name: string, index: number) => {
     let sum = 0;
     for (let i = 0; i < name.length; i++) sum += name.charCodeAt(i);
-    return 65 + ((sum + index * 17) % 31); 
+    return 65 + ((sum + index * 17) % 31);
   };
 
   const colorConfig = {
@@ -224,7 +238,10 @@ function VisualSkillBars({ title, items, color = 'cyan', id }: SkillProps) {
 
   return (
     <div className="glass-card p-5 space-y-4" id={id}>
-      <h3 className="font-bold text-slate-900 dark:text-white text-base border-b border-black/5 dark:border-white/5 pb-2">{title}</h3>
+      <div className="border-b border-black/5 dark:border-white/5 pb-2">
+        <h3 className="font-bold text-slate-900 dark:text-white text-base">{title}</h3>
+        {subtitle && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{subtitle}</p>}
+      </div>
       <div className="space-y-3.5">
         {items.map((item, index) => {
           const level = getLevel(item, index);
@@ -301,6 +318,28 @@ function JaugeSalaire({ min, max, source, id }: SalaireProps) {
           Source : {source}
         </p>
       )}
+    </div>
+  );
+}
+
+/* ── Jauge de Pénibilité (1 à 5) ── */
+function PenibiliteGauge({ label, niveau }: { label: string; niveau: number }) {
+  return (
+    <div className="space-y-1">
+      <div className="flex justify-between text-xs font-semibold">
+        <span className="text-slate-700 dark:text-slate-300">{label}</span>
+        <span className="text-slate-500 dark:text-slate-400">{niveau} / 5</span>
+      </div>
+      <div className="flex gap-1">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <div
+            key={n}
+            className={`h-2 flex-1 rounded-full ${
+              n <= niveau ? 'bg-gradient-to-r from-amber-500 to-rose-500' : 'bg-slate-200 dark:bg-white/5'
+            }`}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -396,6 +435,11 @@ export function MetierDetail() {
                 {metier.temoignageAnneesExperience != null &&
                   ` (${metier.temoignageAnneesExperience} ans d'exp.)`}
               </h3>
+              {(metier.temoignageVille || metier.temoignageSecteurEmployeur) && (
+                <p className="text-slate-500 dark:text-slate-500 text-xs italic mb-2">
+                  {[metier.temoignageVille, metier.temoignageSecteurEmployeur].filter(Boolean).join(' · ')}
+                </p>
+              )}
               {metier.temoignageCitation && (
                 <p className="italic text-slate-700 dark:text-slate-200 text-sm leading-relaxed mb-3">
                   « {metier.temoignageCitation} »
@@ -405,6 +449,12 @@ export function MetierDetail() {
                 <p className="text-slate-600 dark:text-slate-400 text-xs mb-1.5">
                   <span className="font-semibold text-blue-600 dark:text-blue-400">Ce qui plaît : </span>
                   {metier.temoignageCePlait}
+                </p>
+              )}
+              {metier.temoignageDifficultes && (
+                <p className="text-slate-600 dark:text-slate-400 text-xs mb-1.5">
+                  <span className="font-semibold text-blue-600 dark:text-blue-400">Difficultés : </span>
+                  {metier.temoignageDifficultes}
                 </p>
               )}
               {metier.temoignageConseil && (
@@ -441,6 +491,16 @@ export function MetierDetail() {
           </Field>
         )}
 
+        {/* Environnement de travail */}
+        {metier.environnementTravail?.length > 0 && (
+          <Field label="🏞️ Environnement de travail">
+            <TagList items={metier.environnementTravail} />
+            {metier.environnementAutre && (
+              <p className="text-slate-500 dark:text-slate-400 text-xs mt-2">{metier.environnementAutre}</p>
+            )}
+          </Field>
+        )}
+
         {/* Salaire Jauge */}
         {hasSalaire && (
           <JaugeSalaire 
@@ -451,20 +511,22 @@ export function MetierDetail() {
           />
         )}
 
-        {/* Compétences Techniques avec Visual Skill Bars */}
+        {/* Compétences Techniques */}
         {hasCompetences && (
-          <VisualSkillBars 
-            title="⚡ Compétences Techniques"
-            items={metier.competences as unknown as string[]}
-            color="cyan"
-            id="section-competences"
-          />
+          <Field label="⚡ Compétences Techniques" id="section-competences">
+            <ul className="text-slate-700 dark:text-slate-300 text-sm list-disc list-inside space-y-2 leading-relaxed">
+              {(metier.competences as unknown as string[]).map((c) => (
+                <li key={c} className="hover:text-slate-950 dark:hover:text-white transition-colors">{c}</li>
+              ))}
+            </ul>
+          </Field>
         )}
 
         {/* Traits de personnalité avec Visual Skill Bars */}
         {hasTraits && (
-          <VisualSkillBars 
+          <VisualSkillBars
             title="🧠 Profil &amp; Traits de Personnalité"
+            subtitle="Le profil de personnalité qui s'épanouit naturellement dans ce métier — pour situer votre propre profil."
             items={metier.traitsPersonnalite}
             color="blue"
             id="section-personnalite"
@@ -473,7 +535,10 @@ export function MetierDetail() {
 
         {/* Compétences comportementales */}
         {metier.competencesComportementales?.length > 0 && (
-          <Field label="🤝 Compétences Comportementales / Soft Skills">
+          <Field
+            label="🤝 Compétences Comportementales / Soft Skills"
+            subtitle="Les aptitudes à développer pour bien exercer ce métier au quotidien."
+          >
             <TagList items={metier.competencesComportementales} />
           </Field>
         )}
@@ -515,9 +580,36 @@ export function MetierDetail() {
         )}
 
         {/* Type de contrat */}
-        {metier.typeContrat?.length > 0 && (
-          <Field label="📄 Type de contrat">
-            <TagList items={metier.typeContrat} />
+        {(metier.typeContrat?.length > 0 || metier.volumeHoraire?.length > 0) && (
+          <Field label="📄 Type de contrat &amp; volume horaire">
+            {metier.typeContrat?.length > 0 && <TagList items={metier.typeContrat} />}
+            {metier.volumeHoraire?.length > 0 && (
+              <p className="text-slate-500 dark:text-slate-400 text-xs mt-2">{metier.volumeHoraire.join(' · ')}</p>
+            )}
+          </Field>
+        )}
+
+        {/* Avantages */}
+        {metier.avantages && (
+          <Field label="🎁 Avantages en nature courants">
+            <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">{metier.avantages}</p>
+          </Field>
+        )}
+
+        {/* Pénibilité */}
+        {(metier.penibilitePhysique != null || metier.penibiliteStress != null || metier.penibiliteRisques != null) && (
+          <Field label="⚠️ Niveau de pénibilité">
+            <div className="space-y-3">
+              {metier.penibilitePhysique != null && (
+                <PenibiliteGauge label="Physique / effort corporel" niveau={metier.penibilitePhysique} />
+              )}
+              {metier.penibiliteStress != null && (
+                <PenibiliteGauge label="Stress et pression" niveau={metier.penibiliteStress} />
+              )}
+              {metier.penibiliteRisques != null && (
+                <PenibiliteGauge label="Risques professionnels" niveau={metier.penibiliteRisques} />
+              )}
+            </div>
           </Field>
         )}
 
@@ -542,11 +634,46 @@ export function MetierDetail() {
           </Field>
         )}
 
+        {/* Tendances du secteur */}
+        {metier.tendances?.length > 0 && (
+          <Field label="📊 Tendances du secteur">
+            <TagList items={metier.tendances} />
+          </Field>
+        )}
+
+        {/* Centres d'intérêt */}
+        {metier.centresInteret?.length > 0 && (
+          <Field label="🎯 Centres d'intérêt typiques">
+            <TagList items={metier.centresInteret} />
+          </Field>
+        )}
+
+        {/* Profil introverti / extraverti */}
+        {metier.profilIntroExtraverti && (
+          <Field label="🧭 Adéquation introverti / extraverti">
+            <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">{metier.profilIntroExtraverti}</p>
+          </Field>
+        )}
+
         {/* Perspectives */}
-        {metier.perspectivesEmploi && (
+        {(metier.perspectivesEmploi || metier.postesEvolution || metier.mobiliteInternationale) && (
           <div className="md:col-span-2">
             <Field label="🔮 Perspectives d'évolution">
-              <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">{metier.perspectivesEmploi}</p>
+              <div className="space-y-3 text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
+                {metier.perspectivesEmploi && <p>{metier.perspectivesEmploi}</p>}
+                {metier.postesEvolution && (
+                  <p>
+                    <span className="font-semibold text-slate-900 dark:text-white">Évolution hiérarchique : </span>
+                    {metier.postesEvolution}
+                  </p>
+                )}
+                {metier.mobiliteInternationale && (
+                  <p>
+                    <span className="font-semibold text-slate-900 dark:text-white">Mobilité internationale : </span>
+                    {metier.mobiliteInternationale}
+                  </p>
+                )}
+              </div>
             </Field>
           </div>
         )}

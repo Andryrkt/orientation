@@ -51,6 +51,23 @@ export function MetiersAdmin() {
         temoignageCitation: '',
         temoignageCePlait: '',
         temoignageConseil: '',
+        environnementAutre: '',
+        volumeHoraire: '',
+        penibilitePhysique: undefined,
+        penibiliteStress: undefined,
+        penibiliteRisques: undefined,
+        postesEvolution: '',
+        mobiliteInternationale: '',
+        tendances: '',
+        centresInteret: '',
+        profilIntroExtraverti: '',
+        temoignageVille: '',
+        temoignageSecteurEmployeur: '',
+        temoignageDifficultes: '',
+        temoignageAccordPublication: '',
+        sources: '',
+        fiabilite: '',
+        observations: '',
       }}
       toFormValues={(item) => ({
         ...item,
@@ -69,6 +86,10 @@ export function MetiersAdmin() {
         employeurs: (item.employeurs ?? []).join(', '),
         traitsPersonnalite: (item.traitsPersonnalite ?? []).join(', '),
         valeursProfessionnelles: (item.valeursProfessionnelles ?? []).join(', '),
+        volumeHoraire: (item.volumeHoraire ?? []).join(', '),
+        tendances: (item.tendances ?? []).join(', '),
+        centresInteret: (item.centresInteret ?? []).join(', '),
+        sources: (item.sources ?? []).join('\n'),
       })}
       toPayload={(values) => {
         const list = (v: unknown) =>
@@ -94,6 +115,10 @@ export function MetiersAdmin() {
           employeurs: list(values.employeurs),
           traitsPersonnalite: list(values.traitsPersonnalite),
           valeursProfessionnelles: list(values.valeursProfessionnelles),
+          volumeHoraire: list(values.volumeHoraire),
+          tendances: list(values.tendances),
+          centresInteret: list(values.centresInteret),
+          sources: lines(values.sources),
         };
       }}
       columns={[
@@ -118,8 +143,13 @@ export function MetiersAdmin() {
         { name: 'description', label: 'Description', type: 'textarea' },
         { name: 'missions', label: 'Missions (une par ligne)', type: 'textarea' },
         { name: 'environnementTravail', label: 'Environnement de travail (séparés par des virgules)', type: 'text' },
+        { name: 'environnementAutre', label: 'Environnement de travail — autre précision', type: 'text' },
         { name: 'competences', label: 'Compétences techniques (séparées par des virgules)', type: 'text' },
-        { name: 'competencesComportementales', label: 'Compétences comportementales (séparées par des virgules)', type: 'text' },
+        {
+          name: 'competencesComportementales',
+          label: 'Compétences comportementales / soft skills — aptitudes à développer pour bien exercer le métier (séparées par des virgules)',
+          type: 'text',
+        },
         { name: 'languesRequises', label: 'Langues requises (séparées par des virgules)', type: 'text' },
         { name: 'niveauLangues', label: 'Niveau requis en langues', type: 'text' },
         { name: 'niveauRequis', label: 'Niveau de diplôme requis', type: 'text' },
@@ -131,13 +161,26 @@ export function MetiersAdmin() {
         { name: 'salaireMax', label: 'Salaire maximum (Ar)', type: 'number' },
         { name: 'salaireSource', label: 'Source des données salariales', type: 'text' },
         { name: 'typeContrat', label: 'Type de contrat habituel (séparés par des virgules)', type: 'text' },
+        { name: 'volumeHoraire', label: 'Volume horaire typique (séparés par des virgules)', type: 'text' },
+        { name: 'penibilitePhysique', label: 'Pénibilité — physique / effort corporel (1 à 5)', type: 'number' },
+        { name: 'penibiliteStress', label: 'Pénibilité — stress et pression (1 à 5)', type: 'number' },
+        { name: 'penibiliteRisques', label: 'Pénibilité — risques professionnels (1 à 5)', type: 'number' },
         { name: 'avantages', label: 'Avantages en nature courants', type: 'text' },
         { name: 'niveauDemande', label: "Niveau de demande d'emploi à Madagascar", type: 'text' },
         { name: 'regionsPresence', label: 'Régions où le métier est présent (séparées par des virgules)', type: 'text' },
         { name: 'employeurs', label: 'Principaux employeurs (séparés par des virgules)', type: 'text' },
         { name: 'perspectivesEmploi', label: "Perspectives d'emploi", type: 'textarea' },
-        { name: 'traitsPersonnalite', label: 'Traits de personnalité (séparés par des virgules)', type: 'text' },
+        { name: 'postesEvolution', label: 'Évolution professionnelle et hiérarchique', type: 'textarea' },
+        { name: 'mobiliteInternationale', label: 'Mobilité internationale / opportunités institutionnelles', type: 'textarea' },
+        { name: 'tendances', label: 'Tendances du secteur (séparées par des virgules)', type: 'text' },
+        {
+          name: 'traitsPersonnalite',
+          label: 'Traits de personnalité type — profil qui réussit naturellement dans ce métier, pour matcher un élève (séparés par des virgules)',
+          type: 'text',
+        },
+        { name: 'centresInteret', label: "Centres d'intérêt typiques (séparés par des virgules)", type: 'text' },
         { name: 'valeursProfessionnelles', label: 'Valeurs professionnelles (séparées par des virgules)', type: 'text' },
+        { name: 'profilIntroExtraverti', label: 'Adéquation introverti / extraverti', type: 'textarea' },
         {
           name: 'riasecCodes',
           label: 'Codes RIASEC (ex: R, I) — pour les recommandations du questionnaire',
@@ -145,9 +188,24 @@ export function MetiersAdmin() {
         },
         { name: 'temoignagePrenom', label: 'Témoignage — prénom', type: 'text' },
         { name: 'temoignageAnneesExperience', label: "Témoignage — années d'expérience", type: 'number' },
+        { name: 'temoignageVille', label: 'Témoignage — ville', type: 'text' },
+        { name: 'temoignageSecteurEmployeur', label: 'Témoignage — secteur / employeur', type: 'text' },
         { name: 'temoignageCePlait', label: 'Témoignage — ce qui lui plaît', type: 'textarea' },
+        { name: 'temoignageDifficultes', label: 'Témoignage — difficultés rencontrées', type: 'textarea' },
         { name: 'temoignageConseil', label: 'Témoignage — son conseil', type: 'textarea' },
         { name: 'temoignageCitation', label: 'Témoignage — citation', type: 'textarea' },
+        {
+          name: 'temoignageAccordPublication',
+          label: 'Témoignage — accord de publication (OUI_PHOTO, OUI_PRENOM, OUI_ANONYME, NON)',
+          type: 'text',
+        },
+        { name: 'sources', label: 'Sources consultées (une par ligne, ex : Type — Référence — Date)', type: 'textarea' },
+        {
+          name: 'fiabilite',
+          label: 'Évaluation de la fiabilité (TRES_FIABLE, FIABLE, A_VERIFIER, PARTIELLE)',
+          type: 'text',
+        },
+        { name: 'observations', label: 'Observations complémentaires', type: 'textarea' },
       ]}
     />
   );
