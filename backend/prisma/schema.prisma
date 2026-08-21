@@ -80,6 +80,7 @@ model Utilisateur {
   avisEnseignants      EnseignantAvis[]
   tickets              Ticket[]
   ticketMessages       TicketMessage[]
+  rendezVous           RendezVous[]
 
   pointDeVenteId      String?
   pointDeVente        PointDeVente?       @relation("SecretairesPointDeVente", fields: [pointDeVenteId], references: [id], onDelete: SetNull)
@@ -441,7 +442,8 @@ model Coach {
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
-  avis CoachAvis[]
+  avis       CoachAvis[]
+  rendezVous RendezVous[]
 
   @@map("coachs")
 }
@@ -478,8 +480,9 @@ model Enseignant {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
-  avis    EnseignantAvis[]
-  seances SeanceCours[]
+  avis       EnseignantAvis[]
+  seances    SeanceCours[]
+  rendezVous RendezVous[]
 
   @@map("enseignants")
 }
@@ -496,6 +499,37 @@ model EnseignantAvis {
 
   @@unique([enseignantId, utilisateurId])
   @@map("enseignant_avis")
+}
+
+enum RendezVousCible {
+  COACH
+  ENSEIGNANT
+}
+
+enum RendezVousStatut {
+  EN_ATTENTE
+  CONFIRME
+  ANNULE
+  TERMINE
+}
+
+model RendezVous {
+  id            String           @id @default(uuid())
+  utilisateurId String
+  utilisateur   Utilisateur      @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  cible         RendezVousCible
+  coachId       String?
+  coach         Coach?           @relation(fields: [coachId], references: [id], onDelete: Cascade)
+  enseignantId  String?
+  enseignant    Enseignant?      @relation(fields: [enseignantId], references: [id], onDelete: Cascade)
+  dateSouhaitee DateTime
+  message       String?
+  statut        RendezVousStatut @default(EN_ATTENTE)
+  reponse       String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@map("rendez_vous")
 }
 
 model Favori {

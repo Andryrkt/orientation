@@ -14,6 +14,10 @@ export function CoachDetail() {
   const [note, setNote] = useState(5);
   const [commentaire, setCommentaire] = useState('');
   const [sent, setSent] = useState(false);
+  const [dateRdv, setDateRdv] = useState('');
+  const [heureRdv, setHeureRdv] = useState('');
+  const [messageRdv, setMessageRdv] = useState('');
+  const [rdvSent, setRdvSent] = useState(false);
 
   const { data: coach, isLoading } = useQuery({
     queryKey: ['coach', id],
@@ -28,6 +32,22 @@ export function CoachDetail() {
     },
   });
 
+  const rdvMutation = useMutation({
+    mutationFn: () =>
+      api.post('/rendez-vous', {
+        cible: 'COACH',
+        coachId: id,
+        dateSouhaitee: new Date(`${dateRdv}T${heureRdv}`).toISOString(),
+        message: messageRdv || undefined,
+      }),
+    onSuccess: () => {
+      setRdvSent(true);
+      setDateRdv('');
+      setHeureRdv('');
+      setMessageRdv('');
+    },
+  });
+
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!user) {
@@ -35,6 +55,15 @@ export function CoachDetail() {
       return;
     }
     avisMutation.mutate();
+  }
+
+  function handleRdvSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    rdvMutation.mutate();
   }
 
   if (isLoading) return <p className="text-slate-400">Chargement...</p>;
@@ -79,9 +108,65 @@ export function CoachDetail() {
         </div>
       )}
 
-      <p className="text-xs text-slate-400 mb-8">
-        La prise de rendez-vous en ligne sera disponible dans une prochaine version.
-      </p>
+      <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">📅 Prendre rendez-vous</h2>
+
+      {user ? (
+        rdvSent ? (
+          <div className="mb-8 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-sm rounded-lg px-4 py-3">
+            Ta demande a été envoyée à {coach.prenom}. Tu recevras une réponse prochainement dans "Mes rendez-vous".
+          </div>
+        ) : (
+          <form onSubmit={handleRdvSubmit} className="mb-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Date souhaitée
+                </label>
+                <input
+                  type="date"
+                  required
+                  min={new Date().toISOString().slice(0, 10)}
+                  className="field-input"
+                  value={dateRdv}
+                  onChange={(e) => setDateRdv(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Heure souhaitée
+                </label>
+                <input
+                  type="time"
+                  required
+                  className="field-input"
+                  value={heureRdv}
+                  onChange={(e) => setHeureRdv(e.target.value)}
+                />
+              </div>
+            </div>
+            <textarea
+              className="field-input"
+              rows={2}
+              placeholder="Un mot sur le sujet que tu veux aborder (optionnel)..."
+              value={messageRdv}
+              onChange={(e) => setMessageRdv(e.target.value)}
+            />
+            {rdvMutation.isError && (
+              <p className="text-sm text-red-600 dark:text-red-400">Une erreur est survenue, réessaie.</p>
+            )}
+            <button type="submit" disabled={rdvMutation.isPending} className="btn-primary">
+              {rdvMutation.isPending ? 'Envoi...' : 'Envoyer la demande'}
+            </button>
+          </form>
+        )
+      ) : (
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-8">
+          <button onClick={() => navigate('/login')} className="text-brand-600 dark:text-blue-400 hover:underline">
+            Connecte-toi
+          </button>{' '}
+          pour prendre rendez-vous.
+        </p>
+      )}
 
       <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Avis</h2>
 

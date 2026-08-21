@@ -691,3 +691,23 @@ export interface Enseignant {
   avisCount: number;
   avis?: EnseignantAvis[];
 }
+
+export type RendezVousCible = 'COACH' | 'ENSEIGNANT';
+export type RendezVousStatut = 'EN_ATTENTE' | 'CONFIRME' | 'ANNULE' | 'TERMINE';
+
+export interface RendezVous {
+  id: string;
+  utilisateurId: string;
+  utilisateur?: { id: string; nom: string; prenom: string; email: string; telephone: string | null };
+  cible: RendezVousCible;
+  coachId: string | null;
+  coach?: { id: string; nom: string; prenom: string; photo: string | null } | null;
+  enseignantId: string | null;
+  enseignant?: { id: string; nom: string; prenom: string; photo: string | null } | null;
+  dateSouhaitee: string;
+  message: string | null;
+  statut: RendezVousStatut;
+  reponse: string | null;
+  createdAt: string;
+  updatedAt: string;
+}

@@ -46,6 +46,7 @@ export function PublicLayout() {
 
 
   const isEmploye = user?.role === 'SECRETAIRE' || user?.role === 'MODERATEUR' || user?.role === 'MODERATEUR_FINANCE';
+  const isCoachOuEnseignant = user?.role === 'COACH' || user?.role === 'TEACHER';
 
   const userItems: NavDropdownItem[] = user
     ? isEmploye
@@ -56,6 +57,10 @@ export function PublicLayout() {
       : [
           { to: '/favoris', label: t('nav.my_favorites') },
           { to: '/mes-resultats', label: t('nav.my_results') },
+          { to: '/mes-rendez-vous', label: t('nav.my_appointments') },
+          ...(isCoachOuEnseignant
+            ? [{ to: '/rendez-vous-a-traiter', label: t('nav.appointments_to_handle') }]
+            : []),
           { to: '/profil', label: t('nav.my_profile') },
           { to: '/mon-cv', label: t('nav.my_cv') },
           { label: t('nav.logout'), onClick: () => logout() },

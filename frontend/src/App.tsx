@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { PublicLayout } from './components/PublicLayout';
 import { AdminLayout } from './components/admin/AdminLayout';
-import { ProtectedRoute, AdminRoute, AdminStrictRoute, SecretaireRoute, ModerateurRoute } from './components/ProtectedRoute';
+import { ProtectedRoute, AdminRoute, AdminStrictRoute, SecretaireRoute, ModerateurRoute, CoachOuEnseignantRoute } from './components/ProtectedRoute';
 import { Home } from './pages/Home';
 import { MetiersList } from './pages/MetiersList';
 import { MetierDetail } from './pages/MetierDetail';
@@ -55,6 +55,9 @@ import { CentresFormationAdmin } from './pages/admin/CentresFormationAdmin';
 import { UtilisateursAdmin } from './pages/admin/UtilisateursAdmin';
 import { Tickets } from './pages/Tickets';
 import { TicketDetail } from './pages/TicketDetail';
+import { MesRendezVous } from './pages/MesRendezVous';
+import { RendezVousATraiter } from './pages/RendezVousATraiter';
+import { RendezVousAdmin } from './pages/admin/RendezVousAdmin';
 import { TicketsAdmin } from './pages/admin/TicketsAdmin';
 import { TicketDetailAdmin } from './pages/admin/TicketDetailAdmin';
 import { RessourcesAdmin } from './pages/admin/RessourcesAdmin';
@@ -113,12 +116,16 @@ export default function App() {
           <Route path="mes-resultats" element={<QuestionnaireHistorique />} />
           <Route path="tickets" element={<Tickets />} />
           <Route path="tickets/:id" element={<TicketDetail />} />
+          <Route path="mes-rendez-vous" element={<MesRendezVous />} />
         </Route>
         <Route element={<SecretaireRoute />}>
           <Route path="saisie-journaliere" element={<SaisieJournaliere />} />
         </Route>
         <Route element={<ModerateurRoute />}>
           <Route path="moderation" element={<BlogCommentairesAdmin />} />
+        </Route>
+        <Route element={<CoachOuEnseignantRoute />}>
+          <Route path="rendez-vous-a-traiter" element={<RendezVousATraiter />} />
         </Route>
       </Route>
 
@@ -144,6 +151,7 @@ export default function App() {
             <Route path="utilisateurs" element={<UtilisateursAdmin />} />
             <Route path="tickets" element={<TicketsAdmin />} />
             <Route path="tickets/:id" element={<TicketDetailAdmin />} />
+            <Route path="rendez-vous" element={<RendezVousAdmin />} />
             <Route path="faq" element={<FaqAdmin />} />
             <Route path="contact-messages" element={<ContactMessagesAdmin />} />
           </Route>

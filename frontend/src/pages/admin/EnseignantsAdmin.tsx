@@ -1,8 +1,10 @@
+import { useQuery } from '@tanstack/react-query';
 import { AdminResourcePage } from '../../components/admin/AdminResourcePage';
-import { Enseignant } from '../../lib/types';
+import { api } from '../../lib/api';
+import { Enseignant, Paginated, User } from '../../lib/types';
 
-function toPayload(values: Record<string, unknown>) {
-  return {
+function toPayload(values: Record<string, unknown>): Record<string, unknown> {
+  const payload: Record<string, unknown> = {
     ...values,
     matieres:
       typeof values.matieres === 'string'
@@ -14,9 +16,19 @@ function toPayload(values: Record<string, unknown>) {
         : [],
     visible: values.visible === 'true' || values.visible === true,
   };
+  if (payload.utilisateurId === '') delete payload.utilisateurId;
+  return payload;
 }
 
 export function EnseignantsAdmin() {
+  const { data: users } = useQuery({
+    queryKey: ['all-users-enseignant'],
+    queryFn: async () => (await api.get<Paginated<User>>('/admin/users?limit=100')).data,
+  });
+  const userOptions = (users?.items ?? [])
+    .filter((u) => u.role === 'TEACHER')
+    .map((u) => ({ value: u.id, label: `${u.prenom} ${u.nom} (${u.email})` }));
+
   return (
     <AdminResourcePage<Enseignant>
       title="Enseignants"
@@ -24,6 +36,7 @@ export function EnseignantsAdmin() {
       listApiPath="/admin/enseignants"
       queryKey="admin-enseignants"
       emptyItem={{
+        utilisateurId: '',
         nom: '',
         prenom: '',
         email: '',
@@ -37,6 +50,7 @@ export function EnseignantsAdmin() {
       }}
       toFormValues={(item) => ({
         ...item,
+        utilisateurId: item.utilisateurId ?? '',
         matieres: (item.matieres ?? []).join(', '),
         niveauxEtude: (item.niveauxEtude ?? []).join(', '),
         visible: String(item.visible),
@@ -63,6 +77,12 @@ export function EnseignantsAdmin() {
         },
       ]}
       fields={[
+        {
+          name: 'utilisateurId',
+          label: "Compte utilisateur lié (rôle Enseignant) — pour l'accès à l'espace \"Rendez-vous à traiter\"",
+          type: 'select',
+          options: userOptions,
+        },
         { name: 'prenom', label: 'Prénom', type: 'text', required: true },
         { name: 'nom', label: 'Nom', type: 'text', required: true },
         { name: 'email', label: 'Email', type: 'text' },

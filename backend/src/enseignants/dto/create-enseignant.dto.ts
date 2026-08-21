@@ -1,7 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsBoolean, IsEmail, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateEnseignantDto {
+  @ApiProperty({ required: false, description: "Compte utilisateur lié (rôle Enseignant), pour l'accès à l'espace self-service" })
+  @IsOptional()
+  @IsUUID()
+  utilisateurId?: string;
+
   @ApiProperty()
   @IsString()
   nom: string;

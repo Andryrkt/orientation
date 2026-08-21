@@ -41,3 +41,11 @@ export function ModerateurRoute() {
   if (user.role !== 'MODERATEUR' && user.role !== 'ADMIN') return <Navigate to="/" replace />;
   return <Outlet />;
 }
+
+export function CoachOuEnseignantRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="p-8 text-center text-slate-500">Chargement...</div>;
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role !== 'COACH' && user.role !== 'TEACHER') return <Navigate to="/" replace />;
+  return <Outlet />;
+}
