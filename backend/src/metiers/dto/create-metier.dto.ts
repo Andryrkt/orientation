@@ -17,6 +17,14 @@ export class CreateMetierDto {
   @IsString()
   description?: string;
 
+  @ApiProperty({
+    required: false,
+    description: "URL de l'image de bannière affichée sur la fiche métier. Si absente, l'image par défaut du domaine est utilisée.",
+  })
+  @IsOptional()
+  @IsString()
+  imageBanniere?: string;
+
   @ApiProperty({ required: false, type: [String] })
   @IsOptional()
   @IsArray()

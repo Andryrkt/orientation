@@ -143,7 +143,7 @@ export function MetiersList() {
         {data?.items.map((m) => {
           const color = getColor(m.domaine?.slug);
           const slugDomaine = m.domaine?.slug || '';
-          const imageUrl = DOMAINE_IMAGES[slugDomaine] || DEFAULT_IMAGE;
+          const imageUrl = m.imageBanniere || DOMAINE_IMAGES[slugDomaine] || DEFAULT_IMAGE;
           
           return (
             <Link

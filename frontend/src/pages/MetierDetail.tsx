@@ -367,7 +367,7 @@ export function MetierDetail() {
   const hasSalaire = !!(metier.salaireMin || metier.salaireMax);
 
   const slugDomaine = metier.domaine?.slug || '';
-  const imageUrl = DOMAINE_IMAGES[slugDomaine] || DEFAULT_IMAGE;
+  const imageUrl = metier.imageBanniere || DOMAINE_IMAGES[slugDomaine] || DEFAULT_IMAGE;
   const domainColor = DOMAINE_COLORS[slugDomaine] || DEFAULT_COLOR;
 
   return (

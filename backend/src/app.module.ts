@@ -35,6 +35,7 @@ import { DroitInscriptionModule } from './droit-inscription/droit-inscription.mo
 import { BudgetsModule } from './budgets/budgets.module';
 import { EmploiDuTempsModule } from './emploi-du-temps/emploi-du-temps.module';
 import { SallesModule } from './salles/salles.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { SallesModule } from './salles/salles.module';
     BudgetsModule,
     EmploiDuTempsModule,
     SallesModule,
+    UploadsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

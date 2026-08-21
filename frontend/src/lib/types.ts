@@ -329,6 +329,7 @@ export interface Metier {
   nom: string;
   slug: string;
   description: string | null;
+  imageBanniere: string | null;
   missions: string[];
   competences: string[];
   salaireMin: number | null;

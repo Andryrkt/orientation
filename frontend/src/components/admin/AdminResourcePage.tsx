@@ -1,10 +1,11 @@
-import { FormEvent, ReactNode, useState } from 'react';
+import { FormEvent, ReactNode, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { CheckCircle2, X } from 'lucide-react';
 import Editor from 'react-simple-wysiwyg';
 import { api } from '../../lib/api';
 import { Paginated } from '../../lib/types';
 
-export type FieldType = 'text' | 'number' | 'textarea' | 'select' | 'date' | 'wysiwyg';
+export type FieldType = 'text' | 'number' | 'textarea' | 'select' | 'date' | 'wysiwyg' | 'image';
 
 export interface FieldConfig {
   name: string;
@@ -52,6 +53,9 @@ export function AdminResourcePage<T extends { id: string }>({
   const [values, setValues] = useState<Record<string, unknown>>(emptyItem);
   const [error, setError] = useState<string | null>(null);
   const [fullscreenField, setFullscreenField] = useState<string | null>(null);
+  const [uploadingField, setUploadingField] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const successTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: [queryKey],
@@ -60,20 +64,29 @@ export function AdminResourcePage<T extends { id: string }>({
 
   const createMutation = useMutation({
     mutationFn: (payload: Record<string, unknown>) => api.post(apiPath, payload),
-    onSuccess: closeAndRefresh,
+    onSuccess: () => {
+      closeAndRefresh();
+      showSuccess('Élément créé avec succès.');
+    },
     onError: showError,
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: Record<string, unknown> }) =>
       api.patch(`${apiPath}/${id}`, payload),
-    onSuccess: closeAndRefresh,
+    onSuccess: () => {
+      closeAndRefresh();
+      showSuccess('Élément modifié avec succès.');
+    },
     onError: showError,
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => api.delete(`${apiPath}/${id}`),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [queryKey] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [queryKey] });
+      showSuccess('Élément supprimé avec succès.');
+    },
     onError: showError,
   });
 
@@ -81,6 +94,12 @@ export function AdminResourcePage<T extends { id: string }>({
     const message =
       (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
     setError(Array.isArray(message) ? message.join(', ') : message ?? 'Une erreur est survenue');
+  }
+
+  function showSuccess(message: string) {
+    setSuccessMessage(message);
+    if (successTimer.current) clearTimeout(successTimer.current);
+    successTimer.current = setTimeout(() => setSuccessMessage(null), 3500);
   }
 
   function closeAndRefresh() {
@@ -114,10 +133,13 @@ export function AdminResourcePage<T extends { id: string }>({
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    // L'édition préremplit le formulaire avec l'objet complet (id, createdAt, updatedAt inclus) :
-    // ces champs générés par le serveur ne doivent jamais repartir dans le payload, sous peine
-    // d'être rejetés par le ValidationPipe (whitelist strict) du backend.
-    const { id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...payload } = toPayload ? toPayload(values) : values;
+    // L'édition préremplit le formulaire avec l'objet complet renvoyé par le serveur — y compris
+    // des champs générés/relationnels (id, slug, domaine, similaires, createdAt...) qui ne font
+    // pas partie du formulaire. On ne renvoie donc que les champs déclarés dans `fields`, sous
+    // peine d'être rejetés par le ValidationPipe (whitelist strict) du backend.
+    const raw = toPayload ? toPayload(values) : values;
+    const fieldNames = new Set(fields.map((f) => f.name));
+    const payload = Object.fromEntries(Object.entries(raw).filter(([key]) => fieldNames.has(key)));
     if (editing) {
       updateMutation.mutate({ id: editing.id, payload });
     } else {
@@ -128,6 +150,22 @@ export function AdminResourcePage<T extends { id: string }>({
   function handleDelete(item: T) {
     if (confirm('Confirmer la suppression ?')) {
       deleteMutation.mutate(item.id);
+    }
+  }
+
+  async function handleImageUpload(fieldName: string, file: File) {
+    setUploadingField(fieldName);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const { data } = await api.post<{ url: string }>('/uploads/image', formData);
+      const fullUrl = `${api.defaults.baseURL ?? ''}${data.url}`;
+      setValues((prev) => ({ ...prev, [fieldName]: fullUrl }));
+    } catch (err) {
+      showError(err);
+    } finally {
+      setUploadingField(null);
     }
   }
 
@@ -285,6 +323,40 @@ export function AdminResourcePage<T extends { id: string }>({
                       value={(values[field.name] as string) ?? ''}
                       onChange={(e) => setValues({ ...values, [field.name]: e.target.value })}
                     />
+                  ) : field.type === 'image' ? (
+                    <div className="space-y-2">
+                      {values[field.name] ? (
+                        <img
+                          src={values[field.name] as string}
+                          alt=""
+                          className="h-24 w-auto rounded-md border border-slate-300 dark:border-slate-700 object-cover"
+                        />
+                      ) : null}
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          placeholder="URL de l'image, ou téléversez un fichier"
+                          className="flex-1 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-3 py-2 text-sm"
+                          required={field.required}
+                          value={(values[field.name] as string) ?? ''}
+                          onChange={(e) => setValues({ ...values, [field.name]: e.target.value })}
+                        />
+                        <label className="shrink-0 px-3 py-2 text-sm rounded-md border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
+                          {uploadingField === field.name ? 'Envoi...' : 'Téléverser'}
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,image/gif"
+                            className="hidden"
+                            disabled={uploadingField === field.name}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              e.target.value = '';
+                              if (file) handleImageUpload(field.name, file);
+                            }}
+                          />
+                        </label>
+                      </div>
+                    </div>
                   ) : field.type === 'select' ? (
                     <select
                       className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-3 py-2 text-sm"
@@ -333,6 +405,21 @@ export function AdminResourcePage<T extends { id: string }>({
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="fixed bottom-6 right-6 z-[110] flex items-center gap-2.5 bg-emerald-600 text-white text-sm font-medium pl-4 pr-3 py-3 rounded-lg shadow-xl animate-dropdown">
+          <CheckCircle2 className="w-4 h-4 shrink-0" />
+          <span>{successMessage}</span>
+          <button
+            type="button"
+            onClick={() => setSuccessMessage(null)}
+            className="ml-1 text-white/70 hover:text-white"
+            aria-label="Fermer"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
     </div>

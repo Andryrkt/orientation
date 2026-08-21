@@ -135,6 +135,7 @@ model Metier {
   nom                 String
   slug                String   @unique
   description         String?
+  imageBanniere       String?
   missions            String[] @default([])
   competences         Json     @default("[]")
   salaireMin          Int?

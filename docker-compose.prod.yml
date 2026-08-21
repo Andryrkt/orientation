@@ -35,6 +35,8 @@ services:
       SWAGGER_ENABLED: ${SWAGGER_ENABLED:-false}
       NODE_ENV: production
       PORT: 3000
+    volumes:
+      - backend_uploads:/app/uploads
     expose:
       - "3000"
     healthcheck:
@@ -82,3 +84,4 @@ networks:
 
 volumes:
   db_data:
+  backend_uploads:

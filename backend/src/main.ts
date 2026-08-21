@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { mkdirSync } from 'fs';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
@@ -7,6 +8,7 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { UPLOADS_DIR, UPLOADS_IMAGES_DIR } from './uploads/upload-paths';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -15,8 +17,12 @@ async function bootstrap() {
   // cookies "secure" et la détection HTTPS fonctionnent correctement.
   app.set('trust proxy', 1);
 
-  app.use(helmet());
+  // Le front (autre sous-domaine) doit pouvoir charger les images uploadées servies par l'API.
+  app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
   app.use(cookieParser());
+
+  mkdirSync(UPLOADS_IMAGES_DIR, { recursive: true });
+  app.useStaticAssets(UPLOADS_DIR, { prefix: '/uploads' });
   app.enableCors({
     origin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:5173',
     credentials: true,
