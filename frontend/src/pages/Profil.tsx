@@ -88,6 +88,7 @@ export function Profil() {
   const [form, setForm] = useState({
     nom: user?.nom ?? '',
     prenom: user?.prenom ?? '',
+    username: user?.username ?? '',
     telephone: user?.telephone ?? '',
     region: user?.profil?.region ?? '',
     adresse: user?.profil?.adresse ?? '',
@@ -98,6 +99,7 @@ export function Profil() {
   });
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
 
@@ -128,6 +130,7 @@ export function Profil() {
     e.preventDefault();
     setLoading(true);
     setSaved(false);
+    setFormError(null);
     try {
       await api.patch('/users/me', {
         ...form,
@@ -135,6 +138,9 @@ export function Profil() {
       });
       await refreshUser();
       setSaved(true);
+    } catch (err) {
+      const message = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
+      setFormError(Array.isArray(message) ? message.join(', ') : message ?? 'Une erreur est survenue');
     } finally {
       setLoading(false);
     }
@@ -173,6 +179,9 @@ export function Profil() {
       <form onSubmit={handleSubmit} className="space-y-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6">
         {saved && (
           <div className="bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 text-sm rounded-md px-3 py-2">{t('profile.updated_msg')}</div>
+        )}
+        {formError && (
+          <div className="bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">{formError}</div>
         )}
          <p className="text-sm text-slate-500 dark:text-slate-400">{t('profile.email_label')} : {user.email}</p>
 
@@ -231,6 +240,17 @@ export function Profil() {
               onChange={(e) => setForm({ ...form, nom: e.target.value })}
             />
           </div>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.username')}</label>
+          <input
+            className="field-input"
+            placeholder="ex: jean.rabe"
+            minLength={3}
+            maxLength={30}
+            value={form.username}
+            onChange={(e) => setForm({ ...form, username: e.target.value })}
+          />
         </div>
         <div className="grid grid-cols-2 gap-3">
           {!isEmploye && (

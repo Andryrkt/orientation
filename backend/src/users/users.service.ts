@@ -5,6 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { CreateEmployeDto } from './dto/create-employe.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { generateUniqueUsername } from '../common/utils/unique-username';
 
 @Injectable()
 export class UsersService {
@@ -14,6 +15,7 @@ export class UsersService {
     id: true,
     nom: true,
     prenom: true,
+    username: true,
     email: true,
     telephone: true,
     role: true,
@@ -38,13 +40,22 @@ export class UsersService {
     if (role === Role.SECRETAIRE || role === Role.MODERATEUR || role === Role.MODERATEUR_FINANCE) {
       throw new ForbiddenException('Seul le changement de mot de passe est autorisé pour ce rôle');
     }
-    const { nom, prenom, telephone, ...profilFields } = dto;
+    const { nom, prenom, telephone, username, ...profilFields } = dto;
+    if (username) {
+      const existing = await this.prisma.utilisateur.findFirst({
+        where: { username, NOT: { id: userId } },
+      });
+      if (existing) {
+        throw new ConflictException('Ce nom d\'utilisateur est déjà pris');
+      }
+    }
     await this.prisma.utilisateur.update({
       where: { id: userId },
       data: {
         ...(nom && { nom }),
         ...(prenom && { prenom }),
         ...(telephone !== undefined && { telephone }),
+        ...(username !== undefined && { username }),
         profil: {
           upsert: {
             create: {
@@ -198,10 +209,12 @@ export class UsersService {
     }
 
     const password = await bcrypt.hash(dto.password, 10);
+    const username = await generateUniqueUsername(this.prisma, dto.nom);
     return this.prisma.utilisateur.create({
       data: {
         nom: dto.nom,
         prenom: dto.prenom,
+        username,
         email: dto.email,
         telephone: dto.telephone,
         password,

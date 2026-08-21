@@ -227,6 +227,7 @@
     "photo_label": "Profile Picture (URL)",
     "firstname": "First Name",
     "lastname": "Last Name",
+    "username": "Username",
     "phone": "Phone Number",
     "region": "Region / City",
     "address": "Address",

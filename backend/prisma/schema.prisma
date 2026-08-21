@@ -57,6 +57,7 @@ model Utilisateur {
   id               String    @id @default(uuid())
   nom              String
   prenom           String
+  username         String?   @unique
   email            String    @unique
   telephone        String?   @unique
   password         String?

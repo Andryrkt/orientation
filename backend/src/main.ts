@@ -9,6 +9,8 @@ import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { UPLOADS_DIR, UPLOADS_IMAGES_DIR } from './uploads/upload-paths';
+import { PrismaService } from './prisma/prisma.service';
+import { backfillUsernames } from './users/backfill-usernames';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -36,6 +38,8 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  await backfillUsernames(app.get(PrismaService));
 
   if (process.env.SWAGGER_ENABLED !== 'false') {
     const config = new DocumentBuilder()

@@ -12,6 +12,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { MailService } from '../mail/mail.service';
+import { generateUniqueUsername } from '../common/utils/unique-username';
 
 @Injectable()
 export class AuthService {
@@ -69,10 +70,12 @@ export class AuthService {
     }
 
     const password = await bcrypt.hash(dto.password, 10);
+    const username = await generateUniqueUsername(this.prisma, dto.nom);
     const user = await this.prisma.utilisateur.create({
       data: {
         nom: dto.nom,
         prenom: dto.prenom,
+        username,
         email: dto.email,
         telephone: dto.telephone,
         password,
@@ -140,11 +143,13 @@ export class AuthService {
         },
       });
     } else {
+      const username = await generateUniqueUsername(this.prisma, nom || prenom);
       user = await this.prisma.utilisateur.create({
         data: {
           email,
           nom,
           prenom,
+          username,
           googleId,
           emailVerifiedAt: now,
           profil: {
@@ -238,6 +243,7 @@ export class AuthService {
     id: string;
     nom: string;
     prenom: string;
+    username: string | null;
     email: string;
     telephone: string | null;
     role: string;
@@ -247,6 +253,7 @@ export class AuthService {
       id: user.id,
       nom: user.nom,
       prenom: user.prenom,
+      username: user.username,
       email: user.email,
       telephone: user.telephone,
       role: user.role,

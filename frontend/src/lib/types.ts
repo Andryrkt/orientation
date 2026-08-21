@@ -298,6 +298,7 @@ export interface User {
   id: string;
   nom: string;
   prenom: string;
+  username: string | null;
   email: string;
   telephone: string | null;
   role: Role;
