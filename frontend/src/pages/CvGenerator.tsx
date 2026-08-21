@@ -10,6 +10,8 @@ export function CvGenerator() {
 
   // CV Fields
   const [photo, setPhoto] = useState('');
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
   const [titreCv, setTitreCv] = useState('');
   const [bio, setBio] = useState('');
   const [competences, setCompetences] = useState<string[]>([]);
@@ -58,6 +60,22 @@ export function CvGenerator() {
         <p className="text-lg font-medium mb-4">Veuillez vous connecter pour accéder au générateur de CV.</p>
       </div>
     );
+  }
+
+  async function handlePhotoUpload(file: File) {
+    setUploadingPhoto(true);
+    setPhotoError(null);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const { data } = await api.post<{ url: string }>('/uploads/image', formData);
+      setPhoto(`${api.defaults.baseURL ?? ''}${data.url}`);
+    } catch (err) {
+      const message = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
+      setPhotoError(Array.isArray(message) ? message.join(', ') : message ?? "Échec de l'envoi de l'image");
+    } finally {
+      setUploadingPhoto(false);
+    }
   }
 
   // Handle Save
@@ -332,7 +350,7 @@ export function CvGenerator() {
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-                Photo de profil (URL)
+                Photo de profil
               </label>
               <div className="flex gap-2">
                 <input
@@ -342,10 +360,25 @@ export function CvGenerator() {
                   onChange={(e) => setPhoto(e.target.value)}
                   className="flex-1 text-sm border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                 />
+                <label className="shrink-0 px-3 py-2 text-sm rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer">
+                  {uploadingPhoto ? 'Envoi...' : 'Téléverser'}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    className="hidden"
+                    disabled={uploadingPhoto}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      e.target.value = '';
+                      if (file) handlePhotoUpload(file);
+                    }}
+                  />
+                </label>
                 {photo && (
                   <img src={photo} alt="Aperçu" className="w-10 h-10 rounded-full object-cover border border-slate-200" />
                 )}
               </div>
+              {photoError && <p className="text-xs text-red-600 mt-1">{photoError}</p>}
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">

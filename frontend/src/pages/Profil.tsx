@@ -98,8 +98,26 @@ export function Profil() {
   });
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
 
   if (!user) return null;
+
+  async function handlePhotoUpload(file: File) {
+    setUploadingPhoto(true);
+    setPhotoError(null);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const { data } = await api.post<{ url: string }>('/uploads/image', formData);
+      setForm((prev) => ({ ...prev, photo: `${api.defaults.baseURL ?? ''}${data.url}` }));
+    } catch (err) {
+      const message = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
+      setPhotoError(Array.isArray(message) ? message.join(', ') : message ?? "Échec de l'envoi de l'image");
+    } finally {
+      setUploadingPhoto(false);
+    }
+  }
 
   const isEmploye = user.role === 'SECRETAIRE' || user.role === 'MODERATEUR' || user.role === 'MODERATEUR_FINANCE';
   // Le personnel (secrétaire, modérateur, modérateur finance) n'a accès qu'au changement de mot
@@ -170,13 +188,30 @@ export function Profil() {
             <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
               {t('profile.photo_label')}
             </label>
-            <input
-              type="text"
-              placeholder="https://example.com/avatar.jpg"
-              className="field-input"
-              value={form.photo}
-              onChange={(e) => setForm({ ...form, photo: e.target.value })}
-            />
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                placeholder="https://example.com/avatar.jpg"
+                className="field-input flex-1"
+                value={form.photo}
+                onChange={(e) => setForm({ ...form, photo: e.target.value })}
+              />
+              <label className="shrink-0 px-3 py-2 text-sm rounded-md border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
+                {uploadingPhoto ? 'Envoi...' : 'Téléverser'}
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  className="hidden"
+                  disabled={uploadingPhoto}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    e.target.value = '';
+                    if (file) handlePhotoUpload(file);
+                  }}
+                />
+              </label>
+            </div>
+            {photoError && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{photoError}</p>}
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3">

@@ -3,7 +3,6 @@ import {
   Controller,
   Post,
   UploadedFile,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -11,9 +10,6 @@ import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { randomUUID } from 'crypto';
 import { extname } from 'path';
-import { Role } from '@prisma/client';
-import { Roles } from '../common/decorators/roles.decorator';
-import { RolesGuard } from '../common/guards/roles.guard';
 import { UPLOADS_IMAGES_DIR } from './upload-paths';
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
@@ -22,10 +18,11 @@ const MAX_SIZE_BYTES = 5 * 1024 * 1024;
 @ApiTags('uploads')
 @Controller('uploads')
 export class UploadsController {
+  // Réservé aux utilisateurs connectés (via le JwtAuthGuard global) — pas de restriction de rôle,
+  // car cet endpoint sert autant l'admin (images des fiches métiers/blog) que les utilisateurs
+  // classiques (photo de profil).
   @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
-  @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
   @Post('image')
   @UseInterceptors(
     FileInterceptor('file', {
