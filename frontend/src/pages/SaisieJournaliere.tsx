@@ -5,7 +5,7 @@ import { CalendarDays, CheckCircle2, Loader2, Search, Store, Trash2 } from 'luci
 import { api } from '../lib/api';
 import { formatMontant } from '../lib/format';
 import { MontantInput } from '../components/MontantInput';
-import { DroitInscription, Filiere, InscriptionFiliereSuivi, MouvementCaisse, MouvementsAujourdhui, MouvementsPeriode, Periode, PointDeVente, SaisieAujourdhui, TypeMouvement } from '../lib/types';
+import { DroitInscription, Filiere, InscriptionFiliereSuivi, MouvementCaisse, MouvementsAujourdhui, MouvementsPeriode, Periode, PointDeVente, SaisieAujourdhui, SaisiePeriodeStatut, TypeMouvement } from '../lib/types';
 
 const PERIODES: { value: Periode; labelKey: string; key: 'midi' | 'apresMidi' }[] = [
   { value: 'MIDI', labelKey: 'saisieJournaliere.midi', key: 'midi' },
@@ -540,7 +540,7 @@ function PeriodeCard({
 }: {
   periode: Periode;
   labelKey: string;
-  statut: { soumis: boolean; montantGagne?: number; montantDepense?: number };
+  statut: SaisiePeriodeStatut;
   mouvements?: MouvementsPeriode;
   filieres?: Filiere[];
   droitInscription?: number;
