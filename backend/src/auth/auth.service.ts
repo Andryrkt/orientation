@@ -191,10 +191,8 @@ export class AuthService {
     });
   }
 
-  async forgotPassword(identifiant: string) {
-    const user = await this.prisma.utilisateur.findFirst({
-      where: { OR: [{ email: identifiant }, { telephone: identifiant }] },
-    });
+  async forgotPassword(email: string) {
+    const user = await this.prisma.utilisateur.findFirst({ where: { email } });
     const messageGenerique = { message: 'Si ce compte existe, un lien de reinitialisation a ete envoye.' };
     if (!user) {
       // On ne revele pas si le compte existe ou non.

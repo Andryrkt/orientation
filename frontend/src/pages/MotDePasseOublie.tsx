@@ -5,7 +5,7 @@ import { api } from '../lib/api';
 
 export function MotDePasseOublie() {
   const { t } = useTranslation();
-  const [identifiant, setIdentifiant] = useState('');
+  const [email, setEmail] = useState('');
   const [envoye, setEnvoye] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -13,7 +13,7 @@ export function MotDePasseOublie() {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post('/auth/forgot-password', { identifiant });
+      await api.post('/auth/forgot-password', { email });
     } finally {
       // Toujours afficher le même message, que l'email existe ou non (ne pas révéler quels
       // comptes existent).
@@ -49,14 +49,14 @@ export function MotDePasseOublie() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
-                {t('login.email_label')}
+                {t('forgotPassword.email_label')}
               </label>
               <input
-                type="text"
-                placeholder="ex: jean@avenirassure.mg ou +261340000000"
+                type="email"
+                placeholder="ex: jean@avenirassure.mg"
                 className="field-input"
-                value={identifiant}
-                onChange={(e) => setIdentifiant(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>

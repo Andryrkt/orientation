@@ -291,7 +291,8 @@
   },
   "forgotPassword": {
     "title": "Forgot password",
-    "subtitle": "Enter your email or phone number and we'll send you a reset link",
+    "subtitle": "Enter your email and we'll send you a reset link",
+    "email_label": "Email",
     "submit_btn": "Send reset link",
     "sending_btn": "Sending...",
     "sentMessage": "If this account exists, a reset link has been sent by email.",

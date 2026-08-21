@@ -291,7 +291,8 @@
   },
   "forgotPassword": {
     "title": "Mot de passe oublié",
-    "subtitle": "Indiquez votre email ou votre numéro de téléphone, nous vous enverrons un lien de réinitialisation",
+    "subtitle": "Indiquez votre email, nous vous enverrons un lien de réinitialisation",
+    "email_label": "Email",
     "submit_btn": "Envoyer le lien",
     "sending_btn": "Envoi en cours...",
     "sentMessage": "Si ce compte existe, un lien de réinitialisation a été envoyé par email.",

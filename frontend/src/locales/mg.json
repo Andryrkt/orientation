@@ -291,7 +291,8 @@
   },
   "forgotPassword": {
     "title": "Hadinonao ny teny miafina",
-    "subtitle": "Ampidiro ny mailakao na ny laharana finday, handefasanay rohy famerenana",
+    "subtitle": "Ampidiro ny mailakao, handefasanay rohy famerenana",
+    "email_label": "Email",
     "submit_btn": "Alefaso ny rohy",
     "sending_btn": "Mandefa...",
     "sentMessage": "Raha misy io kaonty io, dia nalefa tamin'ny mailaka ny rohy famerenana.",
