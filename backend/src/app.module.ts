@@ -37,6 +37,7 @@ import { EmploiDuTempsModule } from './emploi-du-temps/emploi-du-temps.module';
 import { SallesModule } from './salles/salles.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { RendezVousModule } from './rendez-vous/rendez-vous.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { RendezVousModule } from './rendez-vous/rendez-vous.module';
     SallesModule,
     UploadsModule,
     RendezVousModule,
+    NotificationsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

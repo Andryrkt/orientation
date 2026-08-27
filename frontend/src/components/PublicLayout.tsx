@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/auth-context';
 import { useTheme } from '../lib/theme-context';
 import { NavDropdown, NavDropdownItem } from './NavDropdown';
+import { NotificationBell } from './NotificationBell';
 import { Logo } from './Logo';
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -106,22 +107,25 @@ export function PublicLayout() {
               <NavLink to="/moderation" className={navLinkClass}>Modération</NavLink>
             )}
             {user ? (
-              <NavDropdown
-                label={
-                  <span className="flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full overflow-hidden bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
-                      {user.profil?.photo ? (
-                        <img src={user.profil.photo} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-xs">👤</span>
-                      )}
+              <>
+                <NotificationBell />
+                <NavDropdown
+                  label={
+                    <span className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full overflow-hidden bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
+                        {user.profil?.photo ? (
+                          <img src={user.profil.photo} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-xs">👤</span>
+                        )}
+                      </span>
+                      <span className="max-w-[140px] truncate">{user.username || `${user.prenom} ${user.nom}`}</span>
                     </span>
-                    <span className="max-w-[140px] truncate">{user.username || `${user.prenom} ${user.nom}`}</span>
-                  </span>
-                }
-                items={userItems}
-                align="right"
-              />
+                  }
+                  items={userItems}
+                  align="right"
+                />
+              </>
             ) : (
               <>
                 <NavLink to="/login" className={navLinkClass}>{t('nav.login')}</NavLink>
@@ -207,6 +211,11 @@ export function PublicLayout() {
           </nav>
 
           <div className="flex items-center lg:hidden">
+            {user && (
+              <div className="mr-1">
+                <NotificationBell />
+              </div>
+            )}
             {/* Sélecteur de langue abrégé (Mobile) */}
             <div className="relative mr-1">
               <button

@@ -81,6 +81,7 @@ model Utilisateur {
   tickets              Ticket[]
   ticketMessages       TicketMessage[]
   rendezVous           RendezVous[]
+  notifications        Notification[]
 
   pointDeVenteId      String?
   pointDeVente        PointDeVente?       @relation("SecretairesPointDeVente", fields: [pointDeVenteId], references: [id], onDelete: SetNull)
@@ -530,6 +531,20 @@ model RendezVous {
   updatedAt     DateTime         @updatedAt
 
   @@map("rendez_vous")
+}
+
+model Notification {
+  id            String      @id @default(uuid())
+  utilisateurId String
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  type          String
+  titre         String
+  message       String
+  lien          String?
+  lu            Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+
+  @@map("notifications")
 }
 
 model Favori {

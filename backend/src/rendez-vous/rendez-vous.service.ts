@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Prisma, Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { CreateRendezVousDto } from './dto/create-rendez-vous.dto';
 import { UpdateRendezVousDto } from './dto/update-rendez-vous.dto';
 import { QueryRendezVousDto } from './dto/query-rendez-vous.dto';
@@ -23,6 +24,7 @@ export class RendezVousService {
   constructor(
     private prisma: PrismaService,
     private mailService: MailService,
+    private notificationsService: NotificationsService,
     private config: ConfigService,
   ) {}
 
@@ -35,8 +37,8 @@ export class RendezVousService {
   }
 
   async create(utilisateurId: string, dto: CreateRendezVousDto) {
-    let coach: { nom: string; prenom: string; email: string | null } | null = null;
-    let enseignant: { nom: string; prenom: string; email: string | null } | null = null;
+    let coach: { nom: string; prenom: string; email: string | null; utilisateurId: string | null } | null = null;
+    let enseignant: { nom: string; prenom: string; email: string | null; utilisateurId: string | null } | null = null;
 
     if (dto.cible === 'COACH') {
       if (!dto.coachId) throw new BadRequestException('coachId requis pour une demande à un coach');
@@ -60,18 +62,34 @@ export class RendezVousService {
     });
 
     const destinataire = coach ?? enseignant;
-    if (destinataire?.email) {
+    if (destinataire) {
       const demandeur = await this.prisma.utilisateur.findUnique({ where: { id: utilisateurId } });
       if (demandeur) {
-        this.mailService
-          .sendRendezVousDemande(destinataire.email, {
-            destinataireNom: `${destinataire.prenom} ${destinataire.nom}`,
-            demandeurNom: `${demandeur.prenom} ${demandeur.nom}`,
-            dateSouhaitee: this.formatDate(rdv.dateSouhaitee),
-            message: rdv.message,
-            lienEspace: `${this.frontendOrigin()}/rendez-vous-a-traiter`,
-          })
-          .catch(() => undefined);
+        const demandeurNom = `${demandeur.prenom} ${demandeur.nom}`;
+
+        if (destinataire.email) {
+          this.mailService
+            .sendRendezVousDemande(destinataire.email, {
+              destinataireNom: `${destinataire.prenom} ${destinataire.nom}`,
+              demandeurNom,
+              dateSouhaitee: this.formatDate(rdv.dateSouhaitee),
+              message: rdv.message,
+              lienEspace: `${this.frontendOrigin()}/rendez-vous-a-traiter`,
+            })
+            .catch(() => undefined);
+        }
+
+        if (destinataire.utilisateurId) {
+          this.notificationsService
+            .create({
+              utilisateurId: destinataire.utilisateurId,
+              type: 'RENDEZ_VOUS_DEMANDE',
+              titre: 'Nouvelle demande de rendez-vous',
+              message: `${demandeurNom} souhaite un rendez-vous le ${this.formatDate(rdv.dateSouhaitee)}.`,
+              lien: '/rendez-vous-a-traiter',
+            })
+            .catch(() => undefined);
+        }
       }
     }
 
@@ -181,14 +199,29 @@ export class RendezVousService {
               ? this.prisma.enseignant.findUnique({ where: { id: rdv.enseignantId } })
               : null,
         ]);
-        if (demandeur?.email && destinataire) {
-          this.mailService
-            .sendRendezVousReponse(demandeur.email, {
-              demandeurNom: `${demandeur.prenom} ${demandeur.nom}`,
-              destinataireNom: `${destinataire.prenom} ${destinataire.nom}`,
-              statut: STATUT_LABELS[dto.statut] ?? dto.statut,
-              reponse: updated.reponse,
-              lienEspace: `${this.frontendOrigin()}/mes-rendez-vous`,
+        if (demandeur && destinataire) {
+          const statutLabel = STATUT_LABELS[dto.statut] ?? dto.statut;
+          const destinataireNom = `${destinataire.prenom} ${destinataire.nom}`;
+
+          if (demandeur.email) {
+            this.mailService
+              .sendRendezVousReponse(demandeur.email, {
+                demandeurNom: `${demandeur.prenom} ${demandeur.nom}`,
+                destinataireNom,
+                statut: statutLabel,
+                reponse: updated.reponse,
+                lienEspace: `${this.frontendOrigin()}/mes-rendez-vous`,
+              })
+              .catch(() => undefined);
+          }
+
+          this.notificationsService
+            .create({
+              utilisateurId: demandeur.id,
+              type: 'RENDEZ_VOUS_REPONSE',
+              titre: 'Réponse à votre demande de rendez-vous',
+              message: `${destinataireNom} a répondu à votre demande : ${statutLabel}.`,
+              lien: '/mes-rendez-vous',
             })
             .catch(() => undefined);
         }

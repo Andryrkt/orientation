@@ -692,6 +692,17 @@ export interface Enseignant {
   avis?: EnseignantAvis[];
 }
 
+export interface Notification {
+  id: string;
+  utilisateurId: string;
+  type: string;
+  titre: string;
+  message: string;
+  lien: string | null;
+  lu: boolean;
+  createdAt: string;
+}
+
 export type RendezVousCible = 'COACH' | 'ENSEIGNANT';
 export type RendezVousStatut = 'EN_ATTENTE' | 'CONFIRME' | 'ANNULE' | 'TERMINE';
 
