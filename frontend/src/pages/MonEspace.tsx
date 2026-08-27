@@ -377,19 +377,29 @@ function Card({ title, icon, children, action }: { title: string; icon: string; 
   );
 }
 
-function NewArticleForm({ onClose, onCreated }: { onClose: () => void; onCreated: () => void }) {
-  const [titre, setTitre] = useState('');
-  const [contenu, setContenu] = useState('');
-  const [categorie, setCategorie] = useState('');
-  const [image, setImage] = useState('');
+function ArticleForm({
+  article,
+  onClose,
+  onSaved,
+}: {
+  article?: Blog;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [titre, setTitre] = useState(article?.titre ?? '');
+  const [contenu, setContenu] = useState(article?.contenu ?? '');
+  const [categorie, setCategorie] = useState(article?.categorie ?? '');
+  const [image, setImage] = useState(article?.image ?? '');
   const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const createMutation = useMutation({
-    mutationFn: () =>
-      api.post('/blogs', { titre, contenu, categorie: categorie || undefined, image: image || undefined }),
+    mutationFn: () => {
+      const payload = { titre, contenu, categorie: categorie || undefined, image: image || undefined };
+      return article ? api.patch(`/blogs/${article.id}/mine`, payload) : api.post('/blogs', payload);
+    },
     onSuccess: () => {
-      onCreated();
+      onSaved();
       onClose();
     },
     onError: (err: unknown) => {
@@ -426,9 +436,13 @@ function NewArticleForm({ onClose, onCreated }: { onClose: () => void; onCreated
         >
           ✕
         </button>
-        <h2 className="text-xl font-extrabold text-slate-900 dark:text-white mb-1">Nouvel article</h2>
+        <h2 className="text-xl font-extrabold text-slate-900 dark:text-white mb-1">
+          {article ? "Modifier l'article" : 'Nouvel article'}
+        </h2>
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
-          Votre article sera visible publiquement après validation par un modérateur.
+          {article
+            ? "Toute modification renvoie l'article en modération avant sa republication."
+            : 'Votre article sera visible publiquement après validation par un modérateur.'}
         </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
@@ -494,7 +508,7 @@ function NewArticleForm({ onClose, onCreated }: { onClose: () => void; onCreated
               disabled={createMutation.isPending}
               className="btn-primary px-5 py-2 text-sm font-bold rounded-xl disabled:opacity-50"
             >
-              {createMutation.isPending ? 'Envoi...' : 'Soumettre pour modération'}
+              {createMutation.isPending ? 'Envoi...' : article ? 'Enregistrer et renvoyer en modération' : 'Soumettre pour modération'}
             </button>
           </div>
         </form>
@@ -508,6 +522,7 @@ export function MonEspace() {
   const { favoris } = useFavoris();
   const queryClient = useQueryClient();
   const [showArticleForm, setShowArticleForm] = useState(false);
+  const [editingArticle, setEditingArticle] = useState<Blog | null>(null);
 
   const isEmploye = user?.role === 'SECRETAIRE' || user?.role === 'MODERATEUR' || user?.role === 'MODERATEUR_FINANCE';
   // Déterminé par le lien de profil, pas par le rôle système — un compte peut être coach,
@@ -671,9 +686,18 @@ export function MonEspace() {
                       className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-slate-50 dark:bg-white/5"
                     >
                       <span className="text-sm font-medium text-slate-800 dark:text-white truncate">{a.titre}</span>
-                      <span className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-bold ${BLOG_STATUT_CLASSES[a.statut]}`}>
-                        {BLOG_STATUT_LABELS[a.statut]}
-                      </span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${BLOG_STATUT_CLASSES[a.statut]}`}>
+                          {BLOG_STATUT_LABELS[a.statut]}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setEditingArticle(a)}
+                          className="text-xs font-semibold text-brand-600 dark:text-blue-400 hover:underline"
+                        >
+                          Modifier
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -684,9 +708,17 @@ export function MonEspace() {
       )}
 
       {showArticleForm && (
-        <NewArticleForm
+        <ArticleForm
           onClose={() => setShowArticleForm(false)}
-          onCreated={() => queryClient.invalidateQueries({ queryKey: ['mes-articles'] })}
+          onSaved={() => queryClient.invalidateQueries({ queryKey: ['mes-articles'] })}
+        />
+      )}
+
+      {editingArticle && (
+        <ArticleForm
+          article={editingArticle}
+          onClose={() => setEditingArticle(null)}
+          onSaved={() => queryClient.invalidateQueries({ queryKey: ['mes-articles'] })}
         />
       )}
     </div>

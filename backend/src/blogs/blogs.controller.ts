@@ -18,6 +18,7 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
+import { UpdateMyBlogDto } from './dto/update-my-blog.dto';
 import { QueryBlogDto } from './dto/query-blog.dto';
 import { CreateCommentaireDto } from './dto/create-commentaire.dto';
 import { QueryCommentaireDto } from './dto/query-commentaire.dto';
@@ -72,6 +73,16 @@ export class BlogsController {
   @Post('blogs')
   create(@CurrentUser() user: { id: string; role: Role }, @Body() dto: CreateBlogDto) {
     return this.blogsService.create(user.id, user.role, dto);
+  }
+
+  @ApiBearerAuth()
+  @Patch('blogs/:id/mine')
+  updateMine(
+    @Param('id') id: string,
+    @CurrentUser() user: { id: string },
+    @Body() dto: UpdateMyBlogDto,
+  ) {
+    return this.blogsService.updateMine(user.id, id, dto);
   }
 
   @ApiBearerAuth()

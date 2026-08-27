@@ -46,6 +46,30 @@ function ProfilPropose({ d }: { d: DemandeRole }) {
   );
 }
 
+function ReexaminerToggle({
+  onSubmit,
+  submitting,
+}: {
+  onSubmit: (statut: DemandeRoleStatut, reponse: string) => void;
+  submitting: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="mt-3 text-sm font-semibold text-brand-600 dark:text-blue-400 hover:underline"
+      >
+        Ce refus était une erreur ? Réexaminer la demande →
+      </button>
+    );
+  }
+
+  return <ReponseForm submitting={submitting} onSubmit={onSubmit} />;
+}
+
 function ReponseForm({
   onSubmit,
   submitting,
@@ -153,6 +177,12 @@ export function DemandesRoleAdmin() {
             )}
             {d.statut === 'EN_ATTENTE' && (
               <ReponseForm
+                submitting={updateMutation.isPending}
+                onSubmit={(statut, reponse) => updateMutation.mutate({ id: d.id, statut, reponse })}
+              />
+            )}
+            {d.statut === 'REJETEE' && (
+              <ReexaminerToggle
                 submitting={updateMutation.isPending}
                 onSubmit={(statut, reponse) => updateMutation.mutate({ id: d.id, statut, reponse })}
               />

@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { BlogStatut, CommentaireStatut, Prisma, Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { slugify } from '../common/utils/slugify';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
+import { UpdateMyBlogDto } from './dto/update-my-blog.dto';
 import { QueryBlogDto } from './dto/query-blog.dto';
 import { CreateCommentaireDto } from './dto/create-commentaire.dto';
 import { QueryCommentaireDto } from './dto/query-commentaire.dto';
@@ -137,6 +138,25 @@ export class BlogsService {
         ...dto,
         ...(slug && { slug }),
         publishedAt: dto.publishedAt ? new Date(dto.publishedAt) : undefined,
+      },
+    });
+  }
+
+  async updateMine(auteurId: string, id: string, dto: UpdateMyBlogDto) {
+    const existing = await this.prisma.blog.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException('Article introuvable');
+    if (existing.auteurId !== auteurId) throw new ForbiddenException();
+
+    const slug = dto.titre ? await this.uniqueSlug(dto.titre, id) : undefined;
+    return this.prisma.blog.update({
+      where: { id },
+      data: {
+        ...dto,
+        ...(slug && { slug }),
+        // Toute modification renvoie l'article en modération, même s'il était déjà publié —
+        // pour éviter qu'un utilisateur fasse approuver un texte puis le remplace ensuite.
+        statut: BlogStatut.EN_ATTENTE,
+        publishedAt: null,
       },
     });
   }

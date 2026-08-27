@@ -149,7 +149,10 @@ export class DemandesRoleService {
   async resolve(id: string, dto: UpdateDemandeRoleDto) {
     const demande = await this.prisma.demandeRole.findUnique({ where: { id } });
     if (!demande) throw new NotFoundException('Demande introuvable');
-    if (demande.statut !== DemandeRoleStatut.EN_ATTENTE) {
+    // Une demande refusée reste réexaminable (ex. refus fait par erreur) : l'admin peut encore
+    // l'approuver ou demander un complément. Une fois approuvée en revanche, elle est définitive
+    // (le profil Coach/Enseignant a déjà été créé).
+    if (demande.statut !== DemandeRoleStatut.EN_ATTENTE && demande.statut !== DemandeRoleStatut.REJETEE) {
       throw new BadRequestException('Cette demande a déjà été traitée');
     }
 
