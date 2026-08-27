@@ -633,6 +633,16 @@ export interface Coach {
   avis?: CoachAvis[];
 }
 
+export interface Formation {
+  id: string;
+  centreId: string;
+  centre?: CentreFormation;
+  nom: string;
+  description: string | null;
+  duree: string | null;
+  niveauRequis: string | null;
+}
+
 export interface CentreFormation {
   id: string;
   nom: string;
@@ -642,6 +652,7 @@ export interface CentreFormation {
   region: string | null;
   contact: string | null;
   siteWeb: string | null;
+  formations?: Formation[];
 }
 
 export type FavorisableType = 'METIER' | 'UNIVERSITE' | 'STAGE' | 'BOURSE' | 'COACH' | 'CENTRE_FORMATION' | 'ENSEIGNANT';

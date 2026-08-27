@@ -32,7 +32,10 @@ export class CentresFormationService {
   }
 
   async findOne(slug: string) {
-    const centre = await this.prisma.centreFormation.findUnique({ where: { slug } });
+    const centre = await this.prisma.centreFormation.findUnique({
+      where: { slug },
+      include: { formations: { orderBy: { nom: 'asc' } } },
+    });
     if (!centre) throw new NotFoundException('Centre de formation introuvable');
     return centre;
   }

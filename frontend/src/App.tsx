@@ -53,6 +53,7 @@ import { QuestionnairesAdmin } from './pages/admin/QuestionnairesAdmin';
 import { QuestionnaireBuilder } from './pages/admin/QuestionnaireBuilder';
 import { CoachsAdmin } from './pages/admin/CoachsAdmin';
 import { CentresFormationAdmin } from './pages/admin/CentresFormationAdmin';
+import { FormationsAdmin } from './pages/admin/FormationsAdmin';
 import { UtilisateursAdmin } from './pages/admin/UtilisateursAdmin';
 import { Tickets } from './pages/Tickets';
 import { TicketDetail } from './pages/TicketDetail';
@@ -154,6 +155,7 @@ export default function App() {
             <Route path="enseignants" element={<EnseignantsAdmin />} />
             <Route path="demandes-role" element={<DemandesRoleAdmin />} />
             <Route path="centres-formation" element={<CentresFormationAdmin />} />
+            <Route path="formations" element={<FormationsAdmin />} />
             <Route path="utilisateurs" element={<UtilisateursAdmin />} />
             <Route path="tickets" element={<TicketsAdmin />} />
             <Route path="tickets/:id" element={<TicketDetailAdmin />} />

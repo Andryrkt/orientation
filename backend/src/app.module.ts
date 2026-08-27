@@ -20,6 +20,7 @@ import { BlogsModule } from './blogs/blogs.module';
 import { QuestionnairesModule } from './questionnaires/questionnaires.module';
 import { CoachsModule } from './coachs/coachs.module';
 import { CentresFormationModule } from './centres-formation/centres-formation.module';
+import { FormationsModule } from './formations/formations.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { RessourcesModule } from './ressources/ressources.module';
 import { EnseignantsModule } from './enseignants/enseignants.module';
@@ -61,6 +62,7 @@ import { DemandesRoleModule } from './demandes-role/demandes-role.module';
     QuestionnairesModule,
     CoachsModule,
     CentresFormationModule,
+    FormationsModule,
     TicketsModule,
     RessourcesModule,
     EnseignantsModule,

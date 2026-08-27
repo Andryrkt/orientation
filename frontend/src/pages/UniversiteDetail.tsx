@@ -50,7 +50,7 @@ export function UniversiteDetail() {
       )}
       <div className="space-y-4">
         {universite.mentions?.map((mention) => (
-          <div key={mention.id} className="bg-white dark:bg-white/3 border border-slate-200 dark:border-white/10 rounded-lg p-5">
+          <div key={mention.id} className="card p-5">
             <p className="text-xs font-medium text-brand-600 dark:text-blue-400 mb-1">{mention.niveau} — {mention.domaine?.nom}</p>
             <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2">{mention.nom}</h3>
             <p className="text-slate-600 dark:text-slate-400 text-sm mb-3">{mention.description}</p>

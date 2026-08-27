@@ -528,6 +528,54 @@ async function main() {
     });
   }
 
+  const formationsData = [
+    {
+      centreSlug: 'centre-formation-professionnelle-analamanga',
+      nom: 'Soudure industrielle',
+      description: 'Techniques de soudure a l\'arc et au chalumeau, lecture de plans, securite en atelier.',
+      duree: '6 mois',
+      niveauRequis: 'Niveau BEPC',
+    },
+    {
+      centreSlug: 'centre-formation-professionnelle-analamanga',
+      nom: 'Electricite du batiment',
+      description: 'Installation et depannage electrique domestique et industriel, normes de securite.',
+      duree: '8 mois',
+      niveauRequis: 'Niveau BEPC',
+    },
+    {
+      centreSlug: 'centre-formation-professionnelle-analamanga',
+      nom: 'Maintenance informatique',
+      description: 'Assemblage, depannage materiel et logiciel, initiation aux reseaux.',
+      duree: '4 mois',
+      niveauRequis: 'Niveau Bac',
+    },
+    {
+      centreSlug: 'institut-formation-technique-toamasina',
+      nom: 'Mecanique automobile',
+      description: 'Diagnostic et reparation de vehicules legers, moteurs essence et diesel.',
+      duree: '1 an',
+      niveauRequis: 'Niveau BEPC',
+    },
+    {
+      centreSlug: 'institut-formation-technique-toamasina',
+      nom: 'Plomberie sanitaire',
+      description: 'Installation et entretien de reseaux d\'eau et d\'assainissement.',
+      duree: '6 mois',
+      niveauRequis: 'Aucun niveau requis',
+    },
+  ];
+
+  for (const f of formationsData) {
+    const { centreSlug, ...data } = f;
+    const centre = await prisma.centreFormation.findUnique({ where: { slug: centreSlug } });
+    if (!centre) continue;
+    const existing = await prisma.formation.findFirst({ where: { centreId: centre.id, nom: f.nom } });
+    if (!existing) {
+      await prisma.formation.create({ data: { ...data, centreId: centre.id } });
+    }
+  }
+
   const stagesData = [
     { titre: 'Stagiaire developpeur web', entreprise: 'Teknet Madagascar', description: 'Participer au developpement d\'applications web au sein d\'une equipe agile.', domaine: 'sciences-technologies', duree: '3 mois', dateDebut: new Date('2026-09-01'), dateLimiteCandidature: new Date('2026-08-15'), region: 'Analamanga', niveauEtude: 'Licence/Master', remuneration: '300000 Ar/mois' },
     { titre: 'Stagiaire assistant medical', entreprise: 'Clinique Saint Francois Xavier', description: 'Assister les medecins dans le suivi des patients et la gestion des dossiers.', domaine: 'sante', duree: '2 mois', dateDebut: new Date('2026-08-01'), dateLimiteCandidature: new Date('2026-07-20'), region: 'Analamanga', niveauEtude: 'Licence', remuneration: 'Non remunere' },

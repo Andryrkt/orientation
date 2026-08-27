@@ -434,7 +434,23 @@ model CentreFormation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  formations Formation[]
+
   @@map("centres_formation")
+}
+
+model Formation {
+  id           String          @id @default(uuid())
+  centreId     String
+  centre       CentreFormation @relation(fields: [centreId], references: [id], onDelete: Cascade)
+  nom          String
+  description  String?
+  duree        String?
+  niveauRequis String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@map("formations")
 }
 
 model Coach {
