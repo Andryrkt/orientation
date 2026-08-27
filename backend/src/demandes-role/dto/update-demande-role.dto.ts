@@ -3,6 +3,7 @@ import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { DemandeRoleStatut } from '@prisma/client';
 
 const RESOLUTION_STATUTS = [
+  DemandeRoleStatut.EN_ATTENTE,
   DemandeRoleStatut.APPROUVEE,
   DemandeRoleStatut.REJETEE,
   DemandeRoleStatut.CLARIFICATION_DEMANDEE,

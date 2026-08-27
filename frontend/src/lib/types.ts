@@ -308,9 +308,11 @@ export interface User {
   // avoir les deux liens simultanément.
   coachProfil?: { id: string } | null;
   enseignantProfil?: { id: string } | null;
+  // Débloque l'accès aux pages "Vie étudiante" (budget, ressources), indépendamment de `role`.
+  estEtudiantValide?: boolean;
 }
 
-export type DemandeRoleType = 'COACH' | 'ENSEIGNANT';
+export type DemandeRoleType = 'COACH' | 'ENSEIGNANT' | 'ETUDIANT';
 export type DemandeRoleStatut = 'EN_ATTENTE' | 'CLARIFICATION_DEMANDEE' | 'APPROUVEE' | 'REJETEE';
 
 export interface DemandeRole {
@@ -331,6 +333,7 @@ export interface DemandeRole {
   matieres: string[];
   niveauxEtude: string[];
   etablissement: string | null;
+  niveauEtude: string | null;
 }
 
 export interface Paginated<T> {

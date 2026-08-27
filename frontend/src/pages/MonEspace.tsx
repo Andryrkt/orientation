@@ -38,7 +38,14 @@ const DEMANDE_STATUT_CLASSES: Record<string, string> = {
 const DEMANDE_TYPE_LABELS: Record<DemandeRoleType, string> = {
   COACH: 'Coach',
   ENSEIGNANT: 'Enseignant',
+  ETUDIANT: 'Étudiant',
 };
+
+const NIVEAUX_ETUDE_OPTIONS: { value: string; label: string }[] = [
+  { value: 'LYCEE', label: 'Lycée' },
+  { value: 'NOUVEAU_BACHELIER', label: 'Nouveau Bachelier' },
+  { value: 'UNIVERSITE', label: 'Université' },
+];
 
 interface DemandeFormValues {
   message: string;
@@ -50,6 +57,7 @@ interface DemandeFormValues {
   matieres: string;
   niveauxEtude: string;
   etablissement: string;
+  niveauEtude: string;
 }
 
 const EMPTY_DEMANDE_FORM: DemandeFormValues = {
@@ -62,6 +70,7 @@ const EMPTY_DEMANDE_FORM: DemandeFormValues = {
   matieres: '',
   niveauxEtude: '',
   etablissement: '',
+  niveauEtude: '',
 };
 
 function splitList(value: string): string[] | undefined {
@@ -80,6 +89,7 @@ function buildDemandeFieldsPayload(values: DemandeFormValues) {
     matieres: splitList(values.matieres),
     niveauxEtude: splitList(values.niveauxEtude),
     etablissement: values.etablissement || undefined,
+    niveauEtude: values.niveauEtude || undefined,
   };
 }
 
@@ -88,11 +98,13 @@ function DemandeFieldsInputs({
   onChange,
   showCoach,
   showEnseignant,
+  showEtudiant,
 }: {
   values: DemandeFormValues;
   onChange: (patch: Partial<DemandeFormValues>) => void;
   showCoach: boolean;
   showEnseignant: boolean;
+  showEtudiant?: boolean;
 }) {
   return (
     <div className="space-y-3">
@@ -162,6 +174,24 @@ function DemandeFieldsInputs({
           />
         </div>
       )}
+      {showEtudiant && (
+        <div className="border-l-2 border-brand-200 dark:border-brand-800 pl-3">
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+            Niveau d'étude *
+          </label>
+          <select
+            className="field-input"
+            value={values.niveauEtude}
+            onChange={(e) => onChange({ niveauEtude: e.target.value })}
+            required
+          >
+            <option value="">— Sélectionner —</option>
+            {NIVEAUX_ETUDE_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+        </div>
+      )}
       <textarea
         className="field-input"
         rows={2}
@@ -185,6 +215,7 @@ function DemandeRow({ demande, onCompleted }: { demande: DemandeRole; onComplete
     matieres: (demande.matieres ?? []).join(', '),
     niveauxEtude: (demande.niveauxEtude ?? []).join(', '),
     etablissement: demande.etablissement ?? '',
+    niveauEtude: demande.niveauEtude ?? '',
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -236,11 +267,12 @@ function DemandeRow({ demande, onCompleted }: { demande: DemandeRole; onComplete
                 onChange={(patch) => setValues((v) => ({ ...v, ...patch }))}
                 showCoach={demande.type === 'COACH'}
                 showEnseignant={demande.type === 'ENSEIGNANT'}
+                showEtudiant={demande.type === 'ETUDIANT'}
               />
               <div className="flex gap-2">
                 <button
                   type="button"
-                  disabled={resubmitMutation.isPending}
+                  disabled={resubmitMutation.isPending || (demande.type === 'ETUDIANT' && !values.niveauEtude)}
                   onClick={() => resubmitMutation.mutate()}
                   className="btn-primary text-sm px-4 py-1.5 disabled:opacity-50"
                 >
@@ -358,6 +390,108 @@ function DevenirCoachEnseignant({
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Vous avez déjà accès aux deux espaces, ou une demande est déjà en cours pour chacun.
         </p>
+      )}
+    </div>
+  );
+}
+
+function DevenirEtudiant({
+  estEtudiant,
+  demandes,
+  onSubmitted,
+}: {
+  estEtudiant: boolean;
+  demandes: DemandeRole[];
+  onSubmitted: () => void;
+}) {
+  const [message, setMessage] = useState('');
+  const [niveauEtude, setNiveauEtude] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const demandeEnCours = demandes.find((d) => d.statut === 'EN_ATTENTE' || d.statut === 'CLARIFICATION_DEMANDEE');
+
+  const submitMutation = useMutation({
+    mutationFn: () => api.post('/demandes-role', { type: 'ETUDIANT', message: message || undefined, niveauEtude }),
+    onSuccess: () => {
+      setMessage('');
+      setNiveauEtude('');
+      setError(null);
+      onSubmitted();
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
+      setError(Array.isArray(msg) ? msg.join(', ') : msg ?? 'Une erreur est survenue');
+    },
+  });
+
+  if (estEtudiant) {
+    return (
+      <div className="grid sm:grid-cols-2 gap-3">
+        <Link
+          to="/budget"
+          className="px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-sm font-semibold text-slate-700 dark:text-slate-200"
+        >
+          💰 Simulateur de budget →
+        </Link>
+        <Link
+          to="/ressources"
+          className="px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-sm font-semibold text-slate-700 dark:text-slate-200"
+        >
+          📚 Ressources d'apprentissage →
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {demandes.length > 0 && (
+        <div className="space-y-2 mb-2">
+          {demandes.map((d) => (
+            <DemandeRow key={d.id} demande={d} onCompleted={onSubmitted} />
+          ))}
+        </div>
+      )}
+
+      {!demandeEnCours && (
+        <div className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-3">
+          {error && (
+            <div className="bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">
+              {error}
+            </div>
+          )}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              Niveau d'étude *
+            </label>
+            <select
+              className="field-input"
+              value={niveauEtude}
+              onChange={(e) => setNiveauEtude(e.target.value)}
+              required
+            >
+              <option value="">— Sélectionner —</option>
+              {NIVEAUX_ETUDE_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </div>
+          <textarea
+            className="field-input"
+            rows={2}
+            placeholder="Motivation (optionnel)"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <button
+            type="button"
+            disabled={submitMutation.isPending || !niveauEtude}
+            onClick={() => submitMutation.mutate()}
+            className="btn-primary text-sm px-4 py-2 disabled:opacity-50"
+          >
+            {submitMutation.isPending ? 'Envoi...' : "Demander l'accès étudiant"}
+          </button>
+        </div>
       )}
     </div>
   );
@@ -530,6 +664,7 @@ export function MonEspace() {
   const estCoach = !!user?.coachProfil;
   const estEnseignant = !!user?.enseignantProfil;
   const isCoachOuEnseignant = estCoach || estEnseignant;
+  const estEtudiantValide = !!user?.estEtudiantValide;
 
   const { data: resultats } = useQuery({
     queryKey: ['resultats-orientation'],
@@ -559,9 +694,15 @@ export function MonEspace() {
     queryKey: ['mes-demandes-role'],
     queryFn: async () => (await api.get<DemandeRole[]>('/demandes-role/mes-demandes')).data,
     enabled: !!user && !isEmploye,
+    // Le statut peut changer côté admin pendant que l'utilisateur navigue ailleurs dans l'app —
+    // on revérifie donc à chaque retour sur Mon espace plutôt que de servir le cache React Query.
+    refetchOnMount: 'always',
   });
 
   if (!user) return null;
+
+  const demandesCoachEnseignant = (mesDemandesRole ?? []).filter((d) => d.type !== 'ETUDIANT');
+  const demandesEtudiant = (mesDemandesRole ?? []).filter((d) => d.type === 'ETUDIANT');
 
   const dernierResultat = resultats?.[0];
   const profilLabel = dernierResultat?.profilDominant
@@ -649,13 +790,23 @@ export function MonEspace() {
             </Link>
           </Card>
 
+          <div className="sm:col-span-2">
+            <Card title="Vie étudiante" icon="🎒">
+              <DevenirEtudiant
+                estEtudiant={estEtudiantValide}
+                demandes={demandesEtudiant}
+                onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['mes-demandes-role'] })}
+              />
+            </Card>
+          </div>
+
           {!(estCoach && estEnseignant) && (
             <div className="sm:col-span-2">
               <Card title="Devenir coach ou enseignant" icon="🎓">
                 <DevenirCoachEnseignant
                   estCoach={estCoach}
                   estEnseignant={estEnseignant}
-                  demandes={mesDemandesRole ?? []}
+                  demandes={demandesCoachEnseignant}
                   onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['mes-demandes-role'] })}
                 />
               </Card>

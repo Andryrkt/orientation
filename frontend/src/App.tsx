@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { PublicLayout } from './components/PublicLayout';
 import { AdminLayout } from './components/admin/AdminLayout';
-import { ProtectedRoute, AdminRoute, AdminStrictRoute, SecretaireRoute, ModerateurRoute, CoachOuEnseignantRoute } from './components/ProtectedRoute';
+import { ProtectedRoute, AdminRoute, AdminStrictRoute, SecretaireRoute, ModerateurRoute, CoachOuEnseignantRoute, EtudiantRoute } from './components/ProtectedRoute';
 import { Home } from './pages/Home';
 import { MetiersList } from './pages/MetiersList';
 import { MetierDetail } from './pages/MetierDetail';
@@ -93,7 +93,6 @@ export default function App() {
         <Route path="stages/:id" element={<StageDetail />} />
         <Route path="bourses" element={<BoursesList />} />
         <Route path="bourses/:id" element={<BourseDetail />} />
-        <Route path="budget" element={<BudgetSimulator />} />
         <Route path="blog" element={<BlogsList />} />
         <Route path="blog/:slug" element={<BlogDetail />} />
         <Route path="questionnaire" element={<QuestionnairesList />} />
@@ -112,7 +111,6 @@ export default function App() {
           <Route path="mon-espace" element={<MonEspace />} />
           <Route path="profil" element={<Profil />} />
           <Route path="mon-cv" element={<CvGenerator />} />
-          <Route path="ressources" element={<RessourcesApprentissage />} />
           <Route path="favoris" element={<Favoris />} />
           <Route path="questionnaire/:id" element={<QuestionnaireTake />} />
           <Route path="questionnaire/resultats/:id" element={<QuestionnaireResultat />} />
@@ -129,6 +127,10 @@ export default function App() {
         </Route>
         <Route element={<CoachOuEnseignantRoute />}>
           <Route path="rendez-vous-a-traiter" element={<RendezVousATraiter />} />
+        </Route>
+        <Route element={<EtudiantRoute />}>
+          <Route path="budget" element={<BudgetSimulator />} />
+          <Route path="ressources" element={<RessourcesApprentissage />} />
         </Route>
       </Route>
 

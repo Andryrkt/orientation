@@ -69,6 +69,9 @@ model Utilisateur {
   password         String?
   googleId         String?   @unique
   role             Role      @default(STUDENT)
+  // Statut indépendant du Role système (comme coachProfil/enseignantProfil) : débloque l'accès
+  // aux pages "Vie étudiante" (budget, ressources) une fois la demande ETUDIANT approuvée.
+  estEtudiantValide Boolean  @default(false)
   emailVerifiedAt  DateTime?
   refreshTokenHash String?
   createdAt        DateTime  @default(now())
@@ -558,6 +561,7 @@ model Notification {
 enum DemandeRoleType {
   COACH
   ENSEIGNANT
+  ETUDIANT
 }
 
 enum DemandeRoleStatut {
@@ -588,6 +592,9 @@ model DemandeRole {
   matieres       String[] @default([])
   niveauxEtude   String[] @default([])
   etablissement  String?
+  // Requis pour une demande de type ETUDIANT (LYCEE, NOUVEAU_BACHELIER, UNIVERSITE) — reporté sur
+  // Profil.niveauEtude à l'approbation pour que Ressources d'apprentissage le retrouve directement.
+  niveauEtude    String?
 
   @@map("demandes_role")
 }

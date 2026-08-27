@@ -12,6 +12,7 @@ const AUTEUR_SELECT = { select: { id: true, nom: true, prenom: true, email: true
 const TYPE_LABELS: Record<DemandeRoleType, string> = {
   COACH: 'coach',
   ENSEIGNANT: 'enseignant',
+  ETUDIANT: 'étudiant',
 };
 
 @Injectable()
@@ -22,12 +23,9 @@ export class DemandesRoleService {
   ) {}
 
   async create(utilisateurId: string, dto: CreateDemandeRoleDto) {
-    const dejaProfil =
-      dto.type === DemandeRoleType.COACH
-        ? await this.prisma.coach.findFirst({ where: { utilisateurId } })
-        : await this.prisma.enseignant.findFirst({ where: { utilisateurId } });
+    const dejaProfil = await this.aDejaLeStatut(utilisateurId, dto.type);
     if (dejaProfil) {
-      throw new ConflictException(`Vous avez déjà un profil ${TYPE_LABELS[dto.type]}`);
+      throw new ConflictException(`Vous avez déjà le statut ${TYPE_LABELS[dto.type]}`);
     }
 
     const demandeEnCours = await this.prisma.demandeRole.findFirst({
@@ -54,6 +52,7 @@ export class DemandesRoleService {
         matieres: dto.type === DemandeRoleType.ENSEIGNANT ? (dto.matieres ?? []) : [],
         niveauxEtude: dto.type === DemandeRoleType.ENSEIGNANT ? (dto.niveauxEtude ?? []) : [],
         etablissement: dto.type === DemandeRoleType.ENSEIGNANT ? dto.etablissement : undefined,
+        niveauEtude: dto.type === DemandeRoleType.ETUDIANT ? dto.niveauEtude : undefined,
       },
     });
 
@@ -74,6 +73,17 @@ export class DemandesRoleService {
     }
 
     return demande;
+  }
+
+  private async aDejaLeStatut(utilisateurId: string, type: DemandeRoleType): Promise<boolean> {
+    if (type === DemandeRoleType.COACH) {
+      return !!(await this.prisma.coach.findFirst({ where: { utilisateurId } }));
+    }
+    if (type === DemandeRoleType.ENSEIGNANT) {
+      return !!(await this.prisma.enseignant.findFirst({ where: { utilisateurId } }));
+    }
+    const utilisateur = await this.prisma.utilisateur.findUnique({ where: { id: utilisateurId } });
+    return !!utilisateur?.estEtudiantValide;
   }
 
   findMine(utilisateurId: string) {
@@ -103,6 +113,7 @@ export class DemandesRoleService {
         matieres: demande.type === DemandeRoleType.ENSEIGNANT ? (dto.matieres ?? demande.matieres) : [],
         niveauxEtude: demande.type === DemandeRoleType.ENSEIGNANT ? (dto.niveauxEtude ?? demande.niveauxEtude) : [],
         etablissement: demande.type === DemandeRoleType.ENSEIGNANT ? (dto.etablissement ?? demande.etablissement) : undefined,
+        niveauEtude: demande.type === DemandeRoleType.ETUDIANT ? (dto.niveauEtude ?? demande.niveauEtude) : undefined,
         statut: DemandeRoleStatut.EN_ATTENTE,
         reponse: null,
       },
@@ -149,11 +160,27 @@ export class DemandesRoleService {
   async resolve(id: string, dto: UpdateDemandeRoleDto) {
     const demande = await this.prisma.demandeRole.findUnique({ where: { id } });
     if (!demande) throw new NotFoundException('Demande introuvable');
+
     // Une demande refusée reste réexaminable (ex. refus fait par erreur) : l'admin peut encore
-    // l'approuver ou demander un complément. Une fois approuvée en revanche, elle est définitive
-    // (le profil Coach/Enseignant a déjà été créé).
-    if (demande.statut !== DemandeRoleStatut.EN_ATTENTE && demande.statut !== DemandeRoleStatut.REJETEE) {
-      throw new BadRequestException('Cette demande a déjà été traitée');
+    // l'approuver ou demander un complément. Une demande déjà approuvée ne peut, elle, être remise
+    // qu'"en attente" (pour repasser ensuite par le circuit normal) — pas directement réapprouvée
+    // ou refusée, pour garder une étape de confirmation explicite.
+    const transitionsAutorisees: Record<DemandeRoleStatut, DemandeRoleStatut[]> = {
+      [DemandeRoleStatut.EN_ATTENTE]: [
+        DemandeRoleStatut.APPROUVEE,
+        DemandeRoleStatut.REJETEE,
+        DemandeRoleStatut.CLARIFICATION_DEMANDEE,
+      ],
+      [DemandeRoleStatut.REJETEE]: [
+        DemandeRoleStatut.APPROUVEE,
+        DemandeRoleStatut.REJETEE,
+        DemandeRoleStatut.CLARIFICATION_DEMANDEE,
+      ],
+      [DemandeRoleStatut.APPROUVEE]: [DemandeRoleStatut.EN_ATTENTE],
+      [DemandeRoleStatut.CLARIFICATION_DEMANDEE]: [],
+    };
+    if (!transitionsAutorisees[demande.statut].includes(dto.statut)) {
+      throw new BadRequestException('Cette transition n\'est pas autorisée pour cette demande');
     }
 
     const utilisateur = await this.prisma.utilisateur.findUnique({ where: { id: demande.utilisateurId } });
@@ -166,7 +193,14 @@ export class DemandesRoleService {
     if (dto.statut === DemandeRoleStatut.APPROUVEE) {
       if (demande.type === DemandeRoleType.COACH) {
         const existant = await this.prisma.coach.findFirst({ where: { utilisateurId: utilisateur.id } });
-        if (!existant) {
+        // Un profil délié (ex. suite à une remise en attente précédente) est réutilisé plutôt que
+        // dupliqué — il conserve son historique d'avis/rendez-vous.
+        const orphelin = existant
+          ? null
+          : await this.prisma.coach.findFirst({ where: { utilisateurId: null, email: utilisateur.email } });
+        if (orphelin) {
+          await this.prisma.coach.update({ where: { id: orphelin.id }, data: { utilisateurId: utilisateur.id, visible: true } });
+        } else if (!existant) {
           await this.prisma.coach.create({
             data: {
               utilisateurId: utilisateur.id,
@@ -182,9 +216,14 @@ export class DemandesRoleService {
             },
           });
         }
-      } else {
+      } else if (demande.type === DemandeRoleType.ENSEIGNANT) {
         const existant = await this.prisma.enseignant.findFirst({ where: { utilisateurId: utilisateur.id } });
-        if (!existant) {
+        const orphelin = existant
+          ? null
+          : await this.prisma.enseignant.findFirst({ where: { utilisateurId: null, email: utilisateur.email } });
+        if (orphelin) {
+          await this.prisma.enseignant.update({ where: { id: orphelin.id }, data: { utilisateurId: utilisateur.id, visible: true } });
+        } else if (!existant) {
           await this.prisma.enseignant.create({
             data: {
               utilisateurId: utilisateur.id,
@@ -201,6 +240,33 @@ export class DemandesRoleService {
             },
           });
         }
+      } else {
+        await this.prisma.utilisateur.update({
+          where: { id: utilisateur.id },
+          data: { estEtudiantValide: true },
+        });
+        if (demande.niveauEtude) {
+          await this.prisma.profil.upsert({
+            where: { utilisateurId: utilisateur.id },
+            update: { niveauEtude: demande.niveauEtude },
+            create: { utilisateurId: utilisateur.id, niveauEtude: demande.niveauEtude },
+          });
+        }
+      }
+    } else if (demande.statut === DemandeRoleStatut.APPROUVEE && dto.statut === DemandeRoleStatut.EN_ATTENTE) {
+      // Remettre en attente une demande déjà approuvée retire l'accès accordé — sinon "Mon espace"
+      // continuerait d'afficher le statut débloqué alors que la demande est de nouveau en cours
+      // d'examen. Le profil Coach/Enseignant n'est pas supprimé (avis, rendez-vous liés) : on le
+      // délie juste du compte, comme le permet déjà le schéma (utilisateurId optionnel).
+      if (demande.type === DemandeRoleType.COACH) {
+        await this.prisma.coach.updateMany({ where: { utilisateurId: utilisateur.id }, data: { utilisateurId: null } });
+      } else if (demande.type === DemandeRoleType.ENSEIGNANT) {
+        await this.prisma.enseignant.updateMany({ where: { utilisateurId: utilisateur.id }, data: { utilisateurId: null } });
+      } else {
+        await this.prisma.utilisateur.update({
+          where: { id: utilisateur.id },
+          data: { estEtudiantValide: false },
+        });
       }
     }
 
@@ -210,6 +276,10 @@ export class DemandesRoleService {
     });
 
     const messages: Record<(typeof dto)['statut'], { titre: string; message: string }> = {
+      [DemandeRoleStatut.EN_ATTENTE]: {
+        titre: 'Demande remise en attente',
+        message: `Votre demande pour devenir ${TYPE_LABELS[demande.type]} a été remise en attente pour réexamen.`,
+      },
       [DemandeRoleStatut.APPROUVEE]: {
         titre: 'Demande approuvée',
         message: `Votre demande pour devenir ${TYPE_LABELS[demande.type]} a été approuvée ! Rendez-vous dans "Mon espace".`,

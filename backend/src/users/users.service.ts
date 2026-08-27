@@ -26,6 +26,7 @@ export class UsersService {
     // compte peut être coach, enseignant, ou les deux à la fois.
     coachProfil: { select: { id: true } },
     enseignantProfil: { select: { id: true } },
+    estEtudiantValide: true,
   };
 
   async findMe(userId: string) {

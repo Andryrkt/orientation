@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsIn, IsNotEmpty, IsOptional, IsString, ValidateIf } from 'class-validator';
 import { DemandeRoleType } from '@prisma/client';
+
+const NIVEAUX_ETUDE = ['LYCEE', 'NOUVEAU_BACHELIER', 'UNIVERSITE'] as const;
 
 export class CreateDemandeRoleDto {
   @ApiProperty({ enum: DemandeRoleType })
@@ -54,4 +56,14 @@ export class CreateDemandeRoleDto {
   @IsOptional()
   @IsString()
   etablissement?: string;
+
+  @ApiProperty({
+    required: false,
+    enum: NIVEAUX_ETUDE,
+    description: 'Requis pour une demande de type ETUDIANT',
+  })
+  @ValidateIf((o) => o.type === DemandeRoleType.ETUDIANT)
+  @IsNotEmpty({ message: "Le niveau d'étude est requis pour une demande étudiant" })
+  @IsIn(NIVEAUX_ETUDE, { message: "Niveau d'étude invalide" })
+  niveauEtude?: string;
 }

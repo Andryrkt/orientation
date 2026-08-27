@@ -20,6 +20,13 @@ const STATUT_CLASSES: Record<DemandeRoleStatut, string> = {
 const TYPE_LABELS: Record<string, string> = {
   COACH: 'Coach',
   ENSEIGNANT: 'Enseignant',
+  ETUDIANT: 'Étudiant',
+};
+
+const NIVEAU_ETUDE_LABELS: Record<string, string> = {
+  LYCEE: 'Lycée',
+  NOUVEAU_BACHELIER: 'Nouveau Bachelier',
+  UNIVERSITE: 'Université',
 };
 
 function ProfilPropose({ d }: { d: DemandeRole }) {
@@ -31,6 +38,7 @@ function ProfilPropose({ d }: { d: DemandeRole }) {
   if (d.type === 'ENSEIGNANT' && d.matieres.length > 0) rows.push(['Matières', d.matieres.join(', ')]);
   if (d.type === 'ENSEIGNANT' && d.niveauxEtude.length > 0) rows.push(['Niveaux', d.niveauxEtude.join(', ')]);
   if (d.type === 'ENSEIGNANT' && d.etablissement) rows.push(['Établissement', d.etablissement]);
+  if (d.type === 'ETUDIANT' && d.niveauEtude) rows.push(["Niveau d'étude", NIVEAU_ETUDE_LABELS[d.niveauEtude] ?? d.niveauEtude]);
 
   if (rows.length === 0 && !d.bio) return null;
 
@@ -68,6 +76,29 @@ function ReexaminerToggle({
   }
 
   return <ReponseForm submitting={submitting} onSubmit={onSubmit} />;
+}
+
+function RemettreEnAttenteButton({
+  onConfirm,
+  submitting,
+}: {
+  onConfirm: () => void;
+  submitting: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      disabled={submitting}
+      onClick={() => {
+        if (confirm('Remettre cette demande en attente ? Elle pourra ensuite être réapprouvée ou refusée.')) {
+          onConfirm();
+        }
+      }}
+      className="mt-3 px-4 py-1.5 text-sm rounded-md border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50"
+    >
+      Remettre en attente
+    </button>
+  );
 }
 
 function ReponseForm({
@@ -138,10 +169,10 @@ export function DemandesRoleAdmin() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Demandes coach / enseignant</h1>
+      <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Demandes de statut</h1>
       <p className="text-slate-500 dark:text-slate-400 mb-8">
         Approuve, refuse, ou demande un complément d'information sur les demandes des utilisateurs souhaitant devenir
-        coach ou enseignant.
+        coach, enseignant, ou obtenir l'accès étudiant (budget, ressources).
       </p>
 
       {isLoading && <p className="text-slate-400">Chargement...</p>}
@@ -185,6 +216,12 @@ export function DemandesRoleAdmin() {
               <ReexaminerToggle
                 submitting={updateMutation.isPending}
                 onSubmit={(statut, reponse) => updateMutation.mutate({ id: d.id, statut, reponse })}
+              />
+            )}
+            {d.statut === 'APPROUVEE' && (
+              <RemettreEnAttenteButton
+                submitting={updateMutation.isPending}
+                onConfirm={() => updateMutation.mutate({ id: d.id, statut: 'EN_ATTENTE', reponse: '' })}
               />
             )}
           </div>
