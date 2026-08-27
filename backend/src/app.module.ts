@@ -38,6 +38,7 @@ import { SallesModule } from './salles/salles.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { RendezVousModule } from './rendez-vous/rendez-vous.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { DemandesRoleModule } from './demandes-role/demandes-role.module';
 
 @Module({
   imports: [
@@ -78,6 +79,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     UploadsModule,
     RendezVousModule,
     NotificationsModule,
+    DemandesRoleModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

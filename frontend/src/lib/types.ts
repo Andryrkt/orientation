@@ -304,6 +304,33 @@ export interface User {
   role: Role;
   emailVerifiedAt: string | null;
   profil?: Profil | null;
+  // Détermine si le compte est coach/enseignant, indépendamment de `role` — un même compte peut
+  // avoir les deux liens simultanément.
+  coachProfil?: { id: string } | null;
+  enseignantProfil?: { id: string } | null;
+}
+
+export type DemandeRoleType = 'COACH' | 'ENSEIGNANT';
+export type DemandeRoleStatut = 'EN_ATTENTE' | 'CLARIFICATION_DEMANDEE' | 'APPROUVEE' | 'REJETEE';
+
+export interface DemandeRole {
+  id: string;
+  utilisateurId: string;
+  utilisateur?: { id: string; nom: string; prenom: string; email: string };
+  type: DemandeRoleType;
+  message: string | null;
+  statut: DemandeRoleStatut;
+  reponse: string | null;
+  createdAt: string;
+  updatedAt: string;
+  telephone: string | null;
+  bio: string | null;
+  disponibilites: string | null;
+  specialites: string[];
+  experience: string | null;
+  matieres: string[];
+  niveauxEtude: string[];
+  etablissement: string | null;
 }
 
 export interface Paginated<T> {

@@ -5,7 +5,7 @@ import Editor from 'react-simple-wysiwyg';
 import { useAuth } from '../lib/auth-context';
 import { useFavoris } from '../lib/use-favoris';
 import { api } from '../lib/api';
-import { Blog, Paginated, RendezVous, ResultatOrientation } from '../lib/types';
+import { Blog, DemandeRole, DemandeRoleType, Paginated, RendezVous, ResultatOrientation } from '../lib/types';
 import { RIASEC_LABELS } from '../lib/riasec';
 import { BLOG_CATEGORIES } from '../lib/blog-categories';
 
@@ -20,6 +20,348 @@ const BLOG_STATUT_CLASSES: Record<string, string> = {
   APPROUVE: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20',
   REJETE: 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20',
 };
+
+const DEMANDE_STATUT_LABELS: Record<string, string> = {
+  EN_ATTENTE: 'En attente',
+  CLARIFICATION_DEMANDEE: 'Complément demandé',
+  APPROUVEE: 'Approuvée',
+  REJETEE: 'Refusée',
+};
+
+const DEMANDE_STATUT_CLASSES: Record<string, string> = {
+  EN_ATTENTE: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20',
+  CLARIFICATION_DEMANDEE: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20',
+  APPROUVEE: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20',
+  REJETEE: 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20',
+};
+
+const DEMANDE_TYPE_LABELS: Record<DemandeRoleType, string> = {
+  COACH: 'Coach',
+  ENSEIGNANT: 'Enseignant',
+};
+
+interface DemandeFormValues {
+  message: string;
+  telephone: string;
+  bio: string;
+  disponibilites: string;
+  specialites: string;
+  experience: string;
+  matieres: string;
+  niveauxEtude: string;
+  etablissement: string;
+}
+
+const EMPTY_DEMANDE_FORM: DemandeFormValues = {
+  message: '',
+  telephone: '',
+  bio: '',
+  disponibilites: '',
+  specialites: '',
+  experience: '',
+  matieres: '',
+  niveauxEtude: '',
+  etablissement: '',
+};
+
+function splitList(value: string): string[] | undefined {
+  const items = value.split(',').map((s) => s.trim()).filter(Boolean);
+  return items.length > 0 ? items : undefined;
+}
+
+function buildDemandeFieldsPayload(values: DemandeFormValues) {
+  return {
+    message: values.message || undefined,
+    telephone: values.telephone || undefined,
+    bio: values.bio || undefined,
+    disponibilites: values.disponibilites || undefined,
+    specialites: splitList(values.specialites),
+    experience: values.experience || undefined,
+    matieres: splitList(values.matieres),
+    niveauxEtude: splitList(values.niveauxEtude),
+    etablissement: values.etablissement || undefined,
+  };
+}
+
+function DemandeFieldsInputs({
+  values,
+  onChange,
+  showCoach,
+  showEnseignant,
+}: {
+  values: DemandeFormValues;
+  onChange: (patch: Partial<DemandeFormValues>) => void;
+  showCoach: boolean;
+  showEnseignant: boolean;
+}) {
+  return (
+    <div className="space-y-3">
+      <div className="grid sm:grid-cols-2 gap-3">
+        <input
+          type="text"
+          className="field-input"
+          placeholder="Téléphone (optionnel)"
+          value={values.telephone}
+          onChange={(e) => onChange({ telephone: e.target.value })}
+        />
+        <input
+          type="text"
+          className="field-input"
+          placeholder="Disponibilités (ex : soirs et week-ends)"
+          value={values.disponibilites}
+          onChange={(e) => onChange({ disponibilites: e.target.value })}
+        />
+      </div>
+      <textarea
+        className="field-input"
+        rows={2}
+        placeholder="Présentation / bio (optionnel)"
+        value={values.bio}
+        onChange={(e) => onChange({ bio: e.target.value })}
+      />
+      {showCoach && (
+        <div className="grid sm:grid-cols-2 gap-3 border-l-2 border-brand-200 dark:border-brand-800 pl-3">
+          <input
+            type="text"
+            className="field-input"
+            placeholder="Spécialités coach (séparées par des virgules)"
+            value={values.specialites}
+            onChange={(e) => onChange({ specialites: e.target.value })}
+          />
+          <input
+            type="text"
+            className="field-input"
+            placeholder="Expérience (coach)"
+            value={values.experience}
+            onChange={(e) => onChange({ experience: e.target.value })}
+          />
+        </div>
+      )}
+      {showEnseignant && (
+        <div className="grid sm:grid-cols-2 gap-3 border-l-2 border-brand-200 dark:border-brand-800 pl-3">
+          <input
+            type="text"
+            className="field-input"
+            placeholder="Matières enseignées (séparées par des virgules)"
+            value={values.matieres}
+            onChange={(e) => onChange({ matieres: e.target.value })}
+          />
+          <input
+            type="text"
+            className="field-input"
+            placeholder="Niveaux d'études (ex : LYCEE, UNIVERSITE)"
+            value={values.niveauxEtude}
+            onChange={(e) => onChange({ niveauxEtude: e.target.value })}
+          />
+          <input
+            type="text"
+            className="field-input sm:col-span-2"
+            placeholder="Établissement de rattachement (optionnel)"
+            value={values.etablissement}
+            onChange={(e) => onChange({ etablissement: e.target.value })}
+          />
+        </div>
+      )}
+      <textarea
+        className="field-input"
+        rows={2}
+        placeholder="Motivation (optionnel)"
+        value={values.message}
+        onChange={(e) => onChange({ message: e.target.value })}
+      />
+    </div>
+  );
+}
+
+function DemandeRow({ demande, onCompleted }: { demande: DemandeRole; onCompleted: () => void }) {
+  const [editing, setEditing] = useState(false);
+  const [values, setValues] = useState<DemandeFormValues>({
+    message: demande.message ?? '',
+    telephone: demande.telephone ?? '',
+    bio: demande.bio ?? '',
+    disponibilites: demande.disponibilites ?? '',
+    specialites: (demande.specialites ?? []).join(', '),
+    experience: demande.experience ?? '',
+    matieres: (demande.matieres ?? []).join(', '),
+    niveauxEtude: (demande.niveauxEtude ?? []).join(', '),
+    etablissement: demande.etablissement ?? '',
+  });
+  const [error, setError] = useState<string | null>(null);
+
+  const resubmitMutation = useMutation({
+    mutationFn: () => api.patch(`/demandes-role/${demande.id}`, buildDemandeFieldsPayload(values)),
+    onSuccess: () => {
+      setEditing(false);
+      setError(null);
+      onCompleted();
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
+      setError(Array.isArray(msg) ? msg.join(', ') : msg ?? 'Une erreur est survenue');
+    },
+  });
+
+  return (
+    <div className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-white/5">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-sm font-medium text-slate-800 dark:text-white">{DEMANDE_TYPE_LABELS[demande.type]}</span>
+        <span className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-bold ${DEMANDE_STATUT_CLASSES[demande.statut]}`}>
+          {DEMANDE_STATUT_LABELS[demande.statut]}
+        </span>
+      </div>
+      {demande.reponse && (
+        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1.5">
+          <span className="font-semibold">Réponse de l'équipe : </span>{demande.reponse}
+        </p>
+      )}
+      {demande.statut === 'CLARIFICATION_DEMANDEE' && (
+        <div className="mt-2">
+          {!editing ? (
+            <button
+              type="button"
+              onClick={() => setEditing(true)}
+              className="text-sm font-semibold text-brand-600 dark:text-blue-400 hover:underline"
+            >
+              Compléter ma demande →
+            </button>
+          ) : (
+            <div className="space-y-2 pt-1">
+              {error && (
+                <div className="bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">
+                  {error}
+                </div>
+              )}
+              <DemandeFieldsInputs
+                values={values}
+                onChange={(patch) => setValues((v) => ({ ...v, ...patch }))}
+                showCoach={demande.type === 'COACH'}
+                showEnseignant={demande.type === 'ENSEIGNANT'}
+              />
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  disabled={resubmitMutation.isPending}
+                  onClick={() => resubmitMutation.mutate()}
+                  className="btn-primary text-sm px-4 py-1.5 disabled:opacity-50"
+                >
+                  {resubmitMutation.isPending ? 'Envoi...' : 'Renvoyer la demande'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditing(false)}
+                  className="px-4 py-1.5 text-sm rounded-md border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DevenirCoachEnseignant({
+  estCoach,
+  estEnseignant,
+  demandes,
+  onSubmitted,
+}: {
+  estCoach: boolean;
+  estEnseignant: boolean;
+  demandes: DemandeRole[];
+  onSubmitted: () => void;
+}) {
+  const [selection, setSelection] = useState<DemandeRoleType[]>([]);
+  const [values, setValues] = useState<DemandeFormValues>(EMPTY_DEMANDE_FORM);
+  const [error, setError] = useState<string | null>(null);
+
+  const typesEnCours = new Set(
+    demandes.filter((d) => d.statut === 'EN_ATTENTE' || d.statut === 'CLARIFICATION_DEMANDEE').map((d) => d.type),
+  );
+  const typesDisponibles: DemandeRoleType[] = (['COACH', 'ENSEIGNANT'] as DemandeRoleType[]).filter(
+    (t) => !(t === 'COACH' ? estCoach : estEnseignant) && !typesEnCours.has(t),
+  );
+
+  const submitMutation = useMutation({
+    mutationFn: async () => {
+      const payload = buildDemandeFieldsPayload(values);
+      for (const type of selection) {
+        await api.post('/demandes-role', { type, ...payload });
+      }
+    },
+    onSuccess: () => {
+      setSelection([]);
+      setValues(EMPTY_DEMANDE_FORM);
+      setError(null);
+      onSubmitted();
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
+      setError(Array.isArray(msg) ? msg.join(', ') : msg ?? 'Une erreur est survenue');
+    },
+  });
+
+  function toggle(type: DemandeRoleType) {
+    setSelection((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
+  }
+
+  return (
+    <div className="space-y-3">
+      {demandes.length > 0 && (
+        <div className="space-y-2 mb-2">
+          {demandes.map((d) => (
+            <DemandeRow key={d.id} demande={d} onCompleted={onSubmitted} />
+          ))}
+        </div>
+      )}
+
+      {typesDisponibles.length > 0 ? (
+        <div className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-3">
+          {error && (
+            <div className="bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">
+              {error}
+            </div>
+          )}
+          <div className="flex flex-wrap gap-3">
+            {typesDisponibles.map((type) => (
+              <label key={type} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={selection.includes(type)}
+                  onChange={() => toggle(type)}
+                  className="rounded"
+                />
+                {DEMANDE_TYPE_LABELS[type]}
+              </label>
+            ))}
+          </div>
+          {selection.length > 0 && (
+            <DemandeFieldsInputs
+              values={values}
+              onChange={(patch) => setValues((v) => ({ ...v, ...patch }))}
+              showCoach={selection.includes('COACH')}
+              showEnseignant={selection.includes('ENSEIGNANT')}
+            />
+          )}
+          <button
+            type="button"
+            disabled={selection.length === 0 || submitMutation.isPending}
+            onClick={() => submitMutation.mutate()}
+            className="btn-primary text-sm px-4 py-2 disabled:opacity-50"
+          >
+            {submitMutation.isPending ? 'Envoi...' : 'Envoyer la demande'}
+          </button>
+        </div>
+      ) : (
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Vous avez déjà accès aux deux espaces, ou une demande est déjà en cours pour chacun.
+        </p>
+      )}
+    </div>
+  );
+}
 
 function Card({ title, icon, children, action }: { title: string; icon: string; children: ReactNode; action?: ReactNode }) {
   return (
@@ -168,7 +510,11 @@ export function MonEspace() {
   const [showArticleForm, setShowArticleForm] = useState(false);
 
   const isEmploye = user?.role === 'SECRETAIRE' || user?.role === 'MODERATEUR' || user?.role === 'MODERATEUR_FINANCE';
-  const isCoachOuEnseignant = user?.role === 'COACH' || user?.role === 'TEACHER';
+  // Déterminé par le lien de profil, pas par le rôle système — un compte peut être coach,
+  // enseignant, ou les deux à la fois.
+  const estCoach = !!user?.coachProfil;
+  const estEnseignant = !!user?.enseignantProfil;
+  const isCoachOuEnseignant = estCoach || estEnseignant;
 
   const { data: resultats } = useQuery({
     queryKey: ['resultats-orientation'],
@@ -191,6 +537,12 @@ export function MonEspace() {
   const { data: mesArticles } = useQuery({
     queryKey: ['mes-articles'],
     queryFn: async () => (await api.get<Blog[]>('/blogs/mes-articles')).data,
+    enabled: !!user && !isEmploye,
+  });
+
+  const { data: mesDemandesRole } = useQuery({
+    queryKey: ['mes-demandes-role'],
+    queryFn: async () => (await api.get<DemandeRole[]>('/demandes-role/mes-demandes')).data,
     enabled: !!user && !isEmploye,
   });
 
@@ -281,6 +633,19 @@ export function MonEspace() {
               Modifier mes informations →
             </Link>
           </Card>
+
+          {!(estCoach && estEnseignant) && (
+            <div className="sm:col-span-2">
+              <Card title="Devenir coach ou enseignant" icon="🎓">
+                <DevenirCoachEnseignant
+                  estCoach={estCoach}
+                  estEnseignant={estEnseignant}
+                  demandes={mesDemandesRole ?? []}
+                  onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['mes-demandes-role'] })}
+                />
+              </Card>
+            </div>
+          )}
 
           <div className="sm:col-span-2">
             <Card

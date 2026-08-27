@@ -88,6 +88,7 @@ model Utilisateur {
   ticketMessages       TicketMessage[]
   rendezVous           RendezVous[]
   notifications        Notification[]
+  demandesRole         DemandeRole[]
 
   pointDeVenteId      String?
   pointDeVente        PointDeVente?       @relation("SecretairesPointDeVente", fields: [pointDeVenteId], references: [id], onDelete: SetNull)
@@ -552,6 +553,43 @@ model Notification {
   createdAt     DateTime    @default(now())
 
   @@map("notifications")
+}
+
+enum DemandeRoleType {
+  COACH
+  ENSEIGNANT
+}
+
+enum DemandeRoleStatut {
+  EN_ATTENTE
+  CLARIFICATION_DEMANDEE
+  APPROUVEE
+  REJETEE
+}
+
+model DemandeRole {
+  id            String            @id @default(uuid())
+  utilisateurId String
+  utilisateur   Utilisateur       @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  type          DemandeRoleType
+  message       String?
+  statut        DemandeRoleStatut @default(EN_ATTENTE)
+  reponse       String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  // Profil que le demandeur propose lui-même — repris tel quel pour créer le Coach/Enseignant
+  // si la demande est approuvée, au lieu de laisser l'admin ressaisir ces informations.
+  telephone      String?
+  bio            String?
+  disponibilites String?
+  specialites    String[] @default([])
+  experience     String?
+  matieres       String[] @default([])
+  niveauxEtude   String[] @default([])
+  etablissement  String?
+
+  @@map("demandes_role")
 }
 
 model Favori {

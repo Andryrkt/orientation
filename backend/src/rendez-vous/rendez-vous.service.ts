@@ -102,15 +102,19 @@ export class RendezVousService {
     const where: Prisma.RendezVousWhereInput = {};
 
     if (query.vue === 'a-traiter') {
-      if (role === Role.COACH) {
-        const coach = await this.prisma.coach.findFirst({ where: { utilisateurId } });
-        where.coachId = coach?.id ?? '__aucun__';
-      } else if (role === Role.TEACHER) {
-        const enseignant = await this.prisma.enseignant.findFirst({ where: { utilisateurId } });
-        where.enseignantId = enseignant?.id ?? '__aucun__';
-      } else {
+      // Le statut coach/enseignant est déterminé par le lien de profil, pas par le rôle système —
+      // un même compte peut être coach, enseignant, ou les deux à la fois.
+      const [coach, enseignant] = await Promise.all([
+        this.prisma.coach.findFirst({ where: { utilisateurId } }),
+        this.prisma.enseignant.findFirst({ where: { utilisateurId } }),
+      ]);
+      if (!coach && !enseignant) {
         throw new ForbiddenException('Réservé aux coachs et enseignants');
       }
+      where.OR = [
+        ...(coach ? [{ coachId: coach.id }] : []),
+        ...(enseignant ? [{ enseignantId: enseignant.id }] : []),
+      ];
     } else {
       where.utilisateurId = utilisateurId;
     }
@@ -153,14 +157,14 @@ export class RendezVousService {
     return { items, total, page, limit };
   }
 
-  private async resolveResponsable(utilisateurId: string, role: Role, rdv: { coachId: string | null; enseignantId: string | null }) {
-    if (role === Role.COACH && rdv.coachId) {
+  private async resolveResponsable(utilisateurId: string, rdv: { coachId: string | null; enseignantId: string | null }) {
+    if (rdv.coachId) {
       const coach = await this.prisma.coach.findFirst({ where: { utilisateurId, id: rdv.coachId } });
-      return !!coach;
+      if (coach) return true;
     }
-    if (role === Role.TEACHER && rdv.enseignantId) {
+    if (rdv.enseignantId) {
       const enseignant = await this.prisma.enseignant.findFirst({ where: { utilisateurId, id: rdv.enseignantId } });
-      return !!enseignant;
+      if (enseignant) return true;
     }
     return false;
   }
@@ -171,7 +175,7 @@ export class RendezVousService {
 
     const isAdmin = role === Role.ADMIN || role === Role.MODERATEUR;
     const isDemandeur = rdv.utilisateurId === utilisateurId;
-    const isResponsable = !isAdmin && (await this.resolveResponsable(utilisateurId, role, rdv));
+    const isResponsable = !isAdmin && (await this.resolveResponsable(utilisateurId, rdv));
 
     if (isAdmin) {
       return this.prisma.rendezVous.update({

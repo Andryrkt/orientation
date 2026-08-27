@@ -63,6 +63,7 @@ import { TicketsAdmin } from './pages/admin/TicketsAdmin';
 import { TicketDetailAdmin } from './pages/admin/TicketDetailAdmin';
 import { RessourcesAdmin } from './pages/admin/RessourcesAdmin';
 import { EnseignantsAdmin } from './pages/admin/EnseignantsAdmin';
+import { DemandesRoleAdmin } from './pages/admin/DemandesRoleAdmin';
 import { FaqAdmin } from './pages/admin/FaqAdmin';
 import { ContactMessagesAdmin } from './pages/admin/ContactMessagesAdmin';
 import { PointsDeVenteAdmin } from './pages/admin/PointsDeVenteAdmin';
@@ -149,6 +150,7 @@ export default function App() {
             <Route path="questionnaires/:id" element={<QuestionnaireBuilder />} />
             <Route path="coachs" element={<CoachsAdmin />} />
             <Route path="enseignants" element={<EnseignantsAdmin />} />
+            <Route path="demandes-role" element={<DemandesRoleAdmin />} />
             <Route path="centres-formation" element={<CentresFormationAdmin />} />
             <Route path="utilisateurs" element={<UtilisateursAdmin />} />
             <Route path="tickets" element={<TicketsAdmin />} />

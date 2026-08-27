@@ -21,8 +21,10 @@ export function CoachsAdmin() {
     queryKey: ['all-users-coach'],
     queryFn: async () => (await api.get<Paginated<User>>('/admin/users?limit=100')).data,
   });
+  // N'importe quel compte peut être lié comme coach (indépendamment de son rôle) — on masque
+  // juste ceux déjà liés à un autre profil coach pour éviter les doublons dans la liste.
   const userOptions = (users?.items ?? [])
-    .filter((u) => u.role === 'COACH')
+    .filter((u) => !u.coachProfil)
     .map((u) => ({ value: u.id, label: `${u.prenom} ${u.nom} (${u.email})` }));
 
   return (
