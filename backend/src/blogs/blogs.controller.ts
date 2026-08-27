@@ -34,6 +34,12 @@ export class BlogsController {
     return this.blogsService.findAllPublished(query);
   }
 
+  @ApiBearerAuth()
+  @Get('blogs/mes-articles')
+  findMine(@CurrentUser() user: { id: string }) {
+    return this.blogsService.findMine(user.id);
+  }
+
   @Public()
   @Get('blogs/:slug')
   findOnePublished(@Param('slug') slug: string) {
@@ -63,11 +69,9 @@ export class BlogsController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
   @Post('blogs')
-  create(@CurrentUser() user: { id: string }, @Body() dto: CreateBlogDto) {
-    return this.blogsService.create(user.id, dto);
+  create(@CurrentUser() user: { id: string; role: Role }, @Body() dto: CreateBlogDto) {
+    return this.blogsService.create(user.id, user.role, dto);
   }
 
   @ApiBearerAuth()

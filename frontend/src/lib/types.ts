@@ -494,6 +494,8 @@ export interface BlogCommentaire {
   createdAt: string;
 }
 
+export type BlogStatut = 'EN_ATTENTE' | 'APPROUVE' | 'REJETE';
+
 export interface Blog {
   id: string;
   titre: string;
@@ -503,6 +505,7 @@ export interface Blog {
   categorie: string | null;
   auteurId: string;
   auteur?: AuteurResume;
+  statut: BlogStatut;
   publishedAt: string | null;
   createdAt: string;
   _count?: { likes: number; commentaires?: number };

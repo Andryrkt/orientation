@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CommentaireStatut, Prisma } from '@prisma/client';
+import { BlogStatut, CommentaireStatut, Prisma, Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { slugify } from '../common/utils/slugify';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -18,6 +18,7 @@ export class BlogsService {
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
     const where: Prisma.BlogWhereInput = {
+      statut: BlogStatut.APPROUVE,
       publishedAt: { lte: new Date() },
       ...(query.categorie && { categorie: { equals: query.categorie, mode: 'insensitive' } }),
       ...(query.q && { titre: { contains: query.q, mode: 'insensitive' } }),
@@ -49,10 +50,18 @@ export class BlogsService {
         },
       },
     });
-    if (!blog || !blog.publishedAt || blog.publishedAt > new Date()) {
+    if (!blog || blog.statut !== BlogStatut.APPROUVE || !blog.publishedAt || blog.publishedAt > new Date()) {
       throw new NotFoundException('Article introuvable');
     }
     return blog;
+  }
+
+  async findMine(auteurId: string) {
+    return this.prisma.blog.findMany({
+      where: { auteurId },
+      include: { _count: { select: { likes: true, commentaires: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
   async likeStatus(blogId: string, userId: string) {
@@ -66,6 +75,7 @@ export class BlogsService {
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
     const where: Prisma.BlogWhereInput = {
+      ...(query.statut && { statut: query.statut }),
       ...(query.categorie && { categorie: { equals: query.categorie, mode: 'insensitive' } }),
       ...(query.q && { titre: { contains: query.q, mode: 'insensitive' } }),
     };
@@ -101,14 +111,18 @@ export class BlogsService {
     return slug;
   }
 
-  async create(auteurId: string, dto: CreateBlogDto) {
+  async create(auteurId: string, role: Role, dto: CreateBlogDto) {
     const slug = await this.uniqueSlug(dto.titre);
+    // Un article soumis par un utilisateur non-admin part toujours en modération : ni le statut
+    // ni la date de publication ne peuvent être court-circuités depuis le formulaire de création.
+    const isAdmin = role === Role.ADMIN;
     return this.prisma.blog.create({
       data: {
         ...dto,
         slug,
         auteurId,
-        publishedAt: dto.publishedAt ? new Date(dto.publishedAt) : undefined,
+        statut: isAdmin ? BlogStatut.APPROUVE : BlogStatut.EN_ATTENTE,
+        publishedAt: isAdmin && dto.publishedAt ? new Date(dto.publishedAt) : undefined,
       },
     });
   }

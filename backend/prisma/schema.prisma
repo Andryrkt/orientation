@@ -47,6 +47,12 @@ enum CommentaireStatut {
   REJETE
 }
 
+enum BlogStatut {
+  EN_ATTENTE
+  APPROUVE
+  REJETE
+}
+
 enum TypeQuestion {
   CHOIX_MULTIPLE
   ECHELLE
@@ -317,6 +323,7 @@ model Blog {
   categorie   String?
   auteurId    String
   auteur      Utilisateur @relation(fields: [auteurId], references: [id], onDelete: Restrict)
+  statut      BlogStatut  @default(APPROUVE)
   publishedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

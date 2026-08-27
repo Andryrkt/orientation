@@ -47,25 +47,14 @@ export function PublicLayout() {
 
 
   const isEmploye = user?.role === 'SECRETAIRE' || user?.role === 'MODERATEUR' || user?.role === 'MODERATEUR_FINANCE';
-  const isCoachOuEnseignant = user?.role === 'COACH' || user?.role === 'TEACHER';
 
+  // Un seul point d'entrée vers l'espace personnel de l'utilisateur (favoris, résultats,
+  // rendez-vous, CV, profil, articles...) plutôt que des liens éparpillés dans le menu.
   const userItems: NavDropdownItem[] = user
-    ? isEmploye
-      ? [
-          { to: '/profil', label: t('nav.my_profile') },
-          { label: t('nav.logout'), onClick: () => logout() },
-        ]
-      : [
-          { to: '/favoris', label: t('nav.my_favorites') },
-          { to: '/mes-resultats', label: t('nav.my_results') },
-          { to: '/mes-rendez-vous', label: t('nav.my_appointments') },
-          ...(isCoachOuEnseignant
-            ? [{ to: '/rendez-vous-a-traiter', label: t('nav.appointments_to_handle') }]
-            : []),
-          { to: '/profil', label: t('nav.my_profile') },
-          { to: '/mon-cv', label: t('nav.my_cv') },
-          { label: t('nav.logout'), onClick: () => logout() },
-        ]
+    ? [
+        { to: '/mon-espace', label: t('nav.my_space') },
+        { label: t('nav.logout'), onClick: () => logout() },
+      ]
     : [];
 
   return (
@@ -426,7 +415,7 @@ export function PublicLayout() {
                   {(user.role === 'MODERATEUR' || user.role === 'MODERATEUR_FINANCE') && (
                     <li><Link to="/moderation" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Modération</Link></li>
                   )}
-                  <li><Link to="/profil" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.my_profile')}</Link></li>
+                  <li><Link to="/mon-espace" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.my_space')}</Link></li>
                 </>
               )}
               {!user ? (
@@ -436,10 +425,8 @@ export function PublicLayout() {
                 </>
               ) : !isEmploye ? (
                 <>
-                  <li><Link to="/favoris" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.my_favorites')}</Link></li>
+                  <li><Link to="/mon-espace" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.my_space')}</Link></li>
                   <li><Link to="/tickets" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.support_tickets')}</Link></li>
-                  <li><Link to="/profil" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.my_profile')}</Link></li>
-                  <li><Link to="/mon-cv" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.my_cv')}</Link></li>
                 </>
               ) : null}
             </ul>

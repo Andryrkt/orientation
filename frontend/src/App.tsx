@@ -30,6 +30,7 @@ import { MotDePasseOublie } from './pages/MotDePasseOublie';
 import { ReinitialiserMotDePasse } from './pages/ReinitialiserMotDePasse';
 import { Register } from './pages/Register';
 import { Profil } from './pages/Profil';
+import { MonEspace } from './pages/MonEspace';
 import { CvGenerator } from './pages/CvGenerator';
 import { Favoris } from './pages/Favoris';
 import { RessourcesApprentissage } from './pages/RessourcesApprentissage';
@@ -107,6 +108,7 @@ export default function App() {
         <Route path="contact" element={<Contact />} />
         <Route path="faq" element={<FAQ />} />
         <Route element={<ProtectedRoute />}>
+          <Route path="mon-espace" element={<MonEspace />} />
           <Route path="profil" element={<Profil />} />
           <Route path="mon-cv" element={<CvGenerator />} />
           <Route path="ressources" element={<RessourcesApprentissage />} />
