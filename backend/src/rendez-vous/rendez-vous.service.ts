@@ -1,6 +1,8 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Prisma, Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 import { CreateRendezVousDto } from './dto/create-rendez-vous.dto';
 import { UpdateRendezVousDto } from './dto/update-rendez-vous.dto';
 import { QueryRendezVousDto } from './dto/query-rendez-vous.dto';
@@ -9,22 +11,44 @@ const DEMANDEUR_SELECT = { select: { id: true, nom: true, prenom: true, email: t
 const COACH_SELECT = { select: { id: true, nom: true, prenom: true, photo: true } };
 const ENSEIGNANT_SELECT = { select: { id: true, nom: true, prenom: true, photo: true } };
 
+const STATUT_LABELS: Record<string, string> = {
+  EN_ATTENTE: 'En attente',
+  CONFIRME: 'Confirmé',
+  ANNULE: 'Décliné',
+  TERMINE: 'Terminé',
+};
+
 @Injectable()
 export class RendezVousService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailService: MailService,
+    private config: ConfigService,
+  ) {}
+
+  private frontendOrigin() {
+    return this.config.get<string>('FRONTEND_ORIGIN') ?? 'http://localhost:5173';
+  }
+
+  private formatDate(date: Date) {
+    return date.toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' });
+  }
 
   async create(utilisateurId: string, dto: CreateRendezVousDto) {
+    let coach: { nom: string; prenom: string; email: string | null } | null = null;
+    let enseignant: { nom: string; prenom: string; email: string | null } | null = null;
+
     if (dto.cible === 'COACH') {
       if (!dto.coachId) throw new BadRequestException('coachId requis pour une demande à un coach');
-      const coach = await this.prisma.coach.findUnique({ where: { id: dto.coachId } });
+      coach = await this.prisma.coach.findUnique({ where: { id: dto.coachId } });
       if (!coach) throw new NotFoundException('Coach introuvable');
     } else {
       if (!dto.enseignantId) throw new BadRequestException('enseignantId requis pour une demande à un enseignant');
-      const enseignant = await this.prisma.enseignant.findUnique({ where: { id: dto.enseignantId } });
+      enseignant = await this.prisma.enseignant.findUnique({ where: { id: dto.enseignantId } });
       if (!enseignant) throw new NotFoundException('Enseignant introuvable');
     }
 
-    return this.prisma.rendezVous.create({
+    const rdv = await this.prisma.rendezVous.create({
       data: {
         utilisateurId,
         cible: dto.cible,
@@ -34,6 +58,24 @@ export class RendezVousService {
         message: dto.message,
       },
     });
+
+    const destinataire = coach ?? enseignant;
+    if (destinataire?.email) {
+      const demandeur = await this.prisma.utilisateur.findUnique({ where: { id: utilisateurId } });
+      if (demandeur) {
+        this.mailService
+          .sendRendezVousDemande(destinataire.email, {
+            destinataireNom: `${destinataire.prenom} ${destinataire.nom}`,
+            demandeurNom: `${demandeur.prenom} ${demandeur.nom}`,
+            dateSouhaitee: this.formatDate(rdv.dateSouhaitee),
+            message: rdv.message,
+            lienEspace: `${this.frontendOrigin()}/rendez-vous-a-traiter`,
+          })
+          .catch(() => undefined);
+      }
+    }
+
+    return rdv;
   }
 
   async findAll(utilisateurId: string, role: Role, query: QueryRendezVousDto) {
@@ -128,7 +170,31 @@ export class RendezVousService {
       if (Object.keys(dto).some((key) => !allowedKeys.has(key))) {
         throw new ForbiddenException('Vous ne pouvez modifier que le statut et votre réponse');
       }
-      return this.prisma.rendezVous.update({ where: { id }, data: dto });
+      const updated = await this.prisma.rendezVous.update({ where: { id }, data: dto });
+
+      if (dto.statut && dto.statut !== rdv.statut) {
+        const [demandeur, destinataire] = await Promise.all([
+          this.prisma.utilisateur.findUnique({ where: { id: rdv.utilisateurId } }),
+          rdv.coachId
+            ? this.prisma.coach.findUnique({ where: { id: rdv.coachId } })
+            : rdv.enseignantId
+              ? this.prisma.enseignant.findUnique({ where: { id: rdv.enseignantId } })
+              : null,
+        ]);
+        if (demandeur?.email && destinataire) {
+          this.mailService
+            .sendRendezVousReponse(demandeur.email, {
+              demandeurNom: `${demandeur.prenom} ${demandeur.nom}`,
+              destinataireNom: `${destinataire.prenom} ${destinataire.nom}`,
+              statut: STATUT_LABELS[dto.statut] ?? dto.statut,
+              reponse: updated.reponse,
+              lienEspace: `${this.frontendOrigin()}/mes-rendez-vous`,
+            })
+            .catch(() => undefined);
+        }
+      }
+
+      return updated;
     }
 
     if (isDemandeur) {
