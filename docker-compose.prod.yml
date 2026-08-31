@@ -33,6 +33,7 @@ services:
       FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:?FRONTEND_ORIGIN manquant}
       COOKIE_SECURE: ${COOKIE_SECURE:-true}
       SWAGGER_ENABLED: ${SWAGGER_ENABLED:-false}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       NODE_ENV: production
       PORT: 3000
     volumes:
@@ -62,6 +63,7 @@ services:
       target: prod
       args:
         VITE_API_URL: ${VITE_API_URL:?VITE_API_URL manquant}
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-}
     restart: unless-stopped
     depends_on:
       - backend
