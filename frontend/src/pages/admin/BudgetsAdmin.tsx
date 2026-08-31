@@ -168,7 +168,7 @@ function DetailBudgetCategorie({ categorie, annee, mois }: { categorie: string; 
       {(showAjout || enEdition) && (
         <form onSubmit={handleSubmit} className="bg-slate-50 dark:bg-slate-800/60 rounded-md p-3 flex flex-wrap items-end gap-2">
           <div>
-            <label className="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-0.5">Description</label>
+            <label className="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-0.5">Description <span className="text-red-500">*</span></label>
             <input
               className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1 text-xs w-40"
               placeholder="Ex: Prof Histoire"
@@ -178,7 +178,7 @@ function DetailBudgetCategorie({ categorie, annee, mois }: { categorie: string; 
             />
           </div>
           <div>
-            <label className="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-0.5">Taux (Ar)</label>
+            <label className="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-0.5">Taux (Ar) <span className="text-red-500">*</span></label>
             <input
               type="number" min={0}
               className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1 text-xs w-24"
@@ -188,7 +188,7 @@ function DetailBudgetCategorie({ categorie, annee, mois }: { categorie: string; 
             />
           </div>
           <div>
-            <label className="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-0.5">Quantité</label>
+            <label className="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-0.5">Quantité <span className="text-red-500">*</span></label>
             <input
               type="number" min={0} step="0.5"
               className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1 text-xs w-20"
@@ -208,7 +208,7 @@ function DetailBudgetCategorie({ categorie, annee, mois }: { categorie: string; 
             />
           </div>
           <div>
-            <label className="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-0.5">Nb périodes</label>
+            <label className="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-0.5">Nb périodes <span className="text-red-500">*</span></label>
             <input
               type="number" min={0} step="0.5"
               className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1 text-xs w-20"
@@ -442,7 +442,7 @@ export function BudgetsAdmin() {
       {showAjout && (
         <form onSubmit={handleAjout} className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-4 mb-4 flex items-end gap-2 flex-wrap">
           <div>
-            <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Catégorie</label>
+            <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Catégorie <span className="text-red-500">*</span></label>
             <input
               list="categories-connues"
               className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1.5 text-sm"
@@ -457,7 +457,7 @@ export function BudgetsAdmin() {
             </datalist>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Budget prévu (Ar)</label>
+            <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Budget prévu (Ar) <span className="text-red-500">*</span></label>
             <input
               type="number"
               min={0}

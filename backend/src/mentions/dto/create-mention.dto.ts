@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
-import { NiveauMention } from '@prisma/client';
+import { IsEnum, IsInt, IsOptional, IsString, IsUUID } from 'class-validator';
+import { ConditionAdmission, NiveauMention } from '@prisma/client';
 
 export class CreateMentionDto {
   @ApiProperty()
@@ -24,4 +24,24 @@ export class CreateMentionDto {
   @IsOptional()
   @IsEnum(NiveauMention)
   niveau?: NiveauMention;
+
+  @ApiProperty({ enum: ConditionAdmission, required: false, description: "Condition d'admission" })
+  @IsOptional()
+  @IsEnum(ConditionAdmission)
+  conditionAdmission?: ConditionAdmission;
+
+  @ApiProperty({ required: false, description: "Droit d'inscription" })
+  @IsOptional()
+  @IsInt()
+  droitInscription?: number;
+
+  @ApiProperty({ required: false, description: 'Frais annuel' })
+  @IsOptional()
+  @IsInt()
+  fraisAnnuel?: number;
+
+  @ApiProperty({ required: false, description: 'Frais annexe' })
+  @IsOptional()
+  @IsInt()
+  fraisAnnexe?: number;
 }

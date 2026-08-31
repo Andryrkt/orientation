@@ -86,7 +86,7 @@ export function Login() {
           )}
           
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('login.email_label')}</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('login.email_label')} <span className="text-rose-400">*</span></label>
             <input
               type="text"
               placeholder="ex: jean@avenirassure.mg"
@@ -98,7 +98,7 @@ export function Login() {
           </div>
           
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('login.password_label')}</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('login.password_label')} <span className="text-rose-400">*</span></label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}

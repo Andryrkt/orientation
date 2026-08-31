@@ -252,6 +252,7 @@ export function AdminResourcePage<T extends { id: string }>({
                 <div key={field.name}>
                   <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
                     {field.label}
+                    {field.required && <span className="text-red-500"> *</span>}
                   </label>
                   {field.type === 'wysiwyg' ? (
                     <div>

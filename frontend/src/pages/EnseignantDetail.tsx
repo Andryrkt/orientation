@@ -120,7 +120,7 @@ export function EnseignantDetail() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                  Date souhaitée
+                  Date souhaitée <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="date"
@@ -133,7 +133,7 @@ export function EnseignantDetail() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                  Heure souhaitée
+                  Heure souhaitée <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="time"

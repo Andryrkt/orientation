@@ -10,6 +10,13 @@ const NIVEAU_OPTIONS = [
   { value: 'DOCTORAT', label: 'Doctorat' },
 ];
 
+const CONDITION_ADMISSION_OPTIONS = [
+  { value: 'SELECTION_DOSSIER', label: 'Sélection de dossier' },
+  { value: 'EXAMEN_ENTREE', label: "Examen d'entrée" },
+  { value: 'TEST_ACCES', label: "Test d'accès" },
+  { value: 'CONCOURS', label: 'Concours' },
+];
+
 export function MentionsAdmin() {
   const { data: universites } = useQuery({
     queryKey: ['all-universites'],
@@ -28,7 +35,17 @@ export function MentionsAdmin() {
       title="Mentions"
       apiPath="/mentions"
       queryKey="admin-mentions"
-      emptyItem={{ universiteId: '', domaineId: '', nom: '', description: '', niveau: 'LICENCE' }}
+      emptyItem={{
+        universiteId: '',
+        domaineId: '',
+        nom: '',
+        description: '',
+        niveau: 'LICENCE',
+        conditionAdmission: '',
+        droitInscription: undefined,
+        fraisAnnuel: undefined,
+        fraisAnnexe: undefined,
+      }}
       columns={[
         { key: 'nom', label: 'Nom' },
         { key: 'universite', label: 'Université', render: (item) => item.universite?.nom ?? '—' },
@@ -41,6 +58,10 @@ export function MentionsAdmin() {
         { name: 'nom', label: 'Nom', type: 'text', required: true },
         { name: 'description', label: 'Description', type: 'textarea' },
         { name: 'niveau', label: 'Niveau', type: 'select', options: NIVEAU_OPTIONS },
+        { name: 'conditionAdmission', label: "Condition d'admission", type: 'select', options: CONDITION_ADMISSION_OPTIONS },
+        { name: 'droitInscription', label: "Droit d'inscription", type: 'number' },
+        { name: 'fraisAnnuel', label: 'Frais annuel', type: 'number' },
+        { name: 'fraisAnnexe', label: 'Frais annexe', type: 'number' },
       ]}
     />
   );

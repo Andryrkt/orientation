@@ -31,6 +31,13 @@ enum NiveauMention {
   DOCTORAT
 }
 
+enum ConditionAdmission {
+  SELECTION_DOSSIER
+  EXAMEN_ENTREE
+  TEST_ACCES
+  CONCOURS
+}
+
 enum FavorisableType {
   METIER
   UNIVERSITE
@@ -256,6 +263,10 @@ model Mention {
   slug          String        @unique
   description   String?
   niveau        NiveauMention @default(LICENCE)
+  conditionAdmission ConditionAdmission?
+  droitInscription   Int?
+  fraisAnnuel        Int?
+  fraisAnnexe        Int?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 

@@ -44,7 +44,7 @@ function ChangerMotDePasse() {
       )}
       {error && <div className="bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">{error}</div>}
       <div>
-        <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.current_password')}</label>
+        <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.current_password')} <span className="text-red-500">*</span></label>
         <input
           type="password"
           className="field-input"
@@ -54,7 +54,7 @@ function ChangerMotDePasse() {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.new_password')}</label>
+        <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.new_password')} <span className="text-red-500">*</span></label>
         <input
           type="password"
           className="field-input"
@@ -65,7 +65,7 @@ function ChangerMotDePasse() {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.confirm_password')}</label>
+        <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">{t('profile.confirm_password')} <span className="text-red-500">*</span></label>
         <input
           type="password"
           className="field-input"

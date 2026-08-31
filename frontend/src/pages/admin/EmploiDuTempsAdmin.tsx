@@ -223,7 +223,7 @@ export function EmploiDuTempsAdmin() {
         <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-4 mb-4 space-y-3">
           <div className="flex items-end gap-2 flex-wrap">
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Matière</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Matière <span className="text-red-500">*</span></label>
               <input
                 list="matieres-suggestions"
                 className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1.5 text-sm w-44"
@@ -239,7 +239,7 @@ export function EmploiDuTempsAdmin() {
               </datalist>
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Enseignant</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Enseignant <span className="text-red-500">*</span></label>
               <select
                 className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1.5 text-sm"
                 value={form.enseignantId}
@@ -253,7 +253,7 @@ export function EmploiDuTempsAdmin() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Jour</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Jour <span className="text-red-500">*</span></label>
               <select
                 className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1.5 text-sm"
                 value={form.jour}
@@ -266,7 +266,7 @@ export function EmploiDuTempsAdmin() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Heure début</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Heure début <span className="text-red-500">*</span></label>
               <input
                 type="time"
                 className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1.5 text-sm"
@@ -276,7 +276,7 @@ export function EmploiDuTempsAdmin() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Heure fin</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Heure fin <span className="text-red-500">*</span></label>
               <input
                 type="time"
                 className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1.5 text-sm"
@@ -286,7 +286,7 @@ export function EmploiDuTempsAdmin() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Salle</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Salle <span className="text-red-500">*</span></label>
               <select
                 className="border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md px-2 py-1.5 text-sm"
                 value={form.salleId}

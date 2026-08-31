@@ -49,7 +49,7 @@ export function MotDePasseOublie() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
-                {t('forgotPassword.email_label')}
+                {t('forgotPassword.email_label')} <span className="text-rose-400">*</span>
               </label>
               <input
                 type="email"

@@ -87,7 +87,7 @@ export function Register() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.firstname_label')}</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.firstname_label')} <span className="text-rose-400">*</span></label>
               <input
                 className="field-input"
                 placeholder="ex: Jean"
@@ -97,7 +97,7 @@ export function Register() {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.lastname_label')}</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.lastname_label')} <span className="text-rose-400">*</span></label>
               <input
                 className="field-input"
                 placeholder="ex: Rabe"
@@ -109,7 +109,7 @@ export function Register() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.email_label')}</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.email_label')} <span className="text-rose-400">*</span></label>
             <input
               type="email"
               placeholder="ex: jean.rabe@gmail.com"
@@ -121,7 +121,7 @@ export function Register() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.phone_label')}</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.phone_label')} <span className="text-rose-400">*</span></label>
             <input
               placeholder="ex: +261 34 00 000 00"
               className="field-input"
@@ -132,7 +132,7 @@ export function Register() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.password_label')}</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.password_label')} <span className="text-rose-400">*</span></label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -164,7 +164,7 @@ export function Register() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.password_confirm_label')}</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">{t('register.password_confirm_label')} <span className="text-rose-400">*</span></label>
             <div className="relative">
               <input
                 type={showConfirmPassword ? 'text' : 'password'}

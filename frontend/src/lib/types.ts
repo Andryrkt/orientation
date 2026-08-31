@@ -459,6 +459,10 @@ export interface Mention {
   slug: string;
   description: string | null;
   niveau: 'BTS' | 'LICENCE' | 'MASTER' | 'DOCTORAT';
+  conditionAdmission: 'SELECTION_DOSSIER' | 'EXAMEN_ENTREE' | 'TEST_ACCES' | 'CONCOURS' | null;
+  droitInscription: number | null;
+  fraisAnnuel: number | null;
+  fraisAnnexe: number | null;
   parcours?: Parcours[];
 }
 

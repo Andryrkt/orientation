@@ -64,7 +64,7 @@ export function ReinitialiserMotDePasse() {
             )}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
-                {t('profile.new_password')}
+                {t('profile.new_password')} <span className="text-rose-400">*</span>
               </label>
               <input
                 type="password"
@@ -77,7 +77,7 @@ export function ReinitialiserMotDePasse() {
             </div>
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
-                {t('profile.confirm_password')}
+                {t('profile.confirm_password')} <span className="text-rose-400">*</span>
               </label>
               <input
                 type="password"
