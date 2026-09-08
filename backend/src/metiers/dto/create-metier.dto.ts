@@ -64,6 +64,15 @@ export class CreateMetierDto {
   @IsIn(RIASEC_CODES, { each: true })
   riasecCodes?: string[];
 
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description: 'Series du Bac malgache donnant acces a ce metier (ex: C, D, S, A, Technique)',
+  })
+  @IsOptional()
+  @IsArray()
+  seriesBacMadagascar?: string[];
+
   // Section 1 - Identification
   @ApiProperty({ required: false, type: [String] })
   @IsOptional()

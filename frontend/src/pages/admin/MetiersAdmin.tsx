@@ -8,6 +8,7 @@ import { Domaine, Metier, Paginated } from '../../lib/types';
 const COMMA_LIST_FIELDS = [
   'competences',
   'riasecCodes',
+  'seriesBacMadagascar',
   'autresAppellations',
   'secteursActivite',
   'environnementTravail',
@@ -138,6 +139,7 @@ export function MetiersAdmin() {
         niveauRequis: '',
         perspectivesEmploi: '',
         riasecCodes: '',
+        seriesBacMadagascar: '',
         autresAppellations: '',
         sousDomaine: '',
         secteursActivite: '',
@@ -220,6 +222,11 @@ export function MetiersAdmin() {
         { name: 'niveauLangues', label: 'Niveau requis en langues', type: 'text' },
         { name: 'niveauRequis', label: 'Niveau de diplôme requis', type: 'text' },
         { name: 'specialiteDiplome', label: 'Spécialité de diplôme recommandée', type: 'text' },
+        {
+          name: 'seriesBacMadagascar',
+          label: 'Séries du Bac malgache donnant accès à ce métier (ex: C, D, S, A, Technique)',
+          type: 'text',
+        },
         { name: 'formationsMadagascar', label: 'Formations à Madagascar (une par ligne)', type: 'textarea' },
         { name: 'certifications', label: 'Certifications valorisées (séparées par des virgules)', type: 'text' },
         { name: 'autoFormation', label: 'Accès par auto-formation', type: 'text' },

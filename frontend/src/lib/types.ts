@@ -369,6 +369,7 @@ export interface Metier {
   perspectivesEmploi: string | null;
   similaires?: Metier[];
   riasecCodes?: string[];
+  seriesBacMadagascar: string[];
 
   // Section 1 - Identification
   autresAppellations: string[];

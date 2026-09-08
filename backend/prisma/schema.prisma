@@ -163,6 +163,7 @@ model Metier {
   niveauRequis        String?
   perspectivesEmploi  String?
   riasecCodes         String[] @default([])
+  seriesBacMadagascar String[] @default([])
 
   // Section 1 - Identification
   autresAppellations  String[] @default([])

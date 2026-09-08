@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { Metier } from '../lib/types';
 import { FavoriteButton } from '../components/FavoriteButton';
+import { RIASEC_LABELS } from '../lib/riasec';
 
 const DOMAINE_IMAGES: Record<string, string> = {
   'sciences-technologies': 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80',
@@ -412,6 +413,48 @@ export function MetierDetail() {
         </div>
       </section>
 
+      {/* Diplôme requis & Codes RIASEC */}
+      {(metier.niveauRequis || metier.seriesBacMadagascar.length > 0 || (metier.riasecCodes && metier.riasecCodes.length > 0)) && (
+        <div className="grid md:grid-cols-2 gap-6">
+          {(metier.niveauRequis || metier.seriesBacMadagascar.length > 0) && (
+            <Field label="🎓 Diplôme &amp; Niveau requis">
+              {metier.niveauRequis && (
+                <p className="text-slate-700 dark:text-slate-300 text-sm font-semibold">{metier.niveauRequis}</p>
+              )}
+              {metier.specialiteDiplome && (
+                <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">Spécialité : {metier.specialiteDiplome}</p>
+              )}
+              {metier.seriesBacMadagascar.length > 0 && (
+                <div className="mt-3">
+                  <p className="text-[10px] uppercase font-black tracking-wider text-slate-500 mb-1.5">
+                    Série du Bac recommandée
+                  </p>
+                  <TagList items={metier.seriesBacMadagascar} />
+                </div>
+              )}
+            </Field>
+          )}
+
+          {metier.riasecCodes && metier.riasecCodes.length > 0 && (
+            <Field
+              label="🧭 Codes RIASEC"
+              subtitle="Le profil d'intérêts (test RIASEC) associé à ce métier."
+            >
+              <div className="flex flex-wrap gap-1.5">
+                {metier.riasecCodes.map((code) => (
+                  <span
+                    key={code}
+                    className="px-3 py-1 bg-blue-500/10 border border-blue-500/25 rounded-full text-xs font-bold text-blue-600 dark:text-blue-300"
+                  >
+                    {code} · {RIASEC_LABELS[code] ?? code}
+                  </span>
+                ))}
+              </div>
+            </Field>
+          )}
+        </div>
+      )}
+
       {/* Description & Boussole interactive */}
       <div className="grid md:grid-cols-5 gap-6 items-start">
         <div className="md:col-span-3 space-y-6">
@@ -547,16 +590,6 @@ export function MetierDetail() {
         {metier.valeursProfessionnelles?.length > 0 && (
           <Field label="💎 Valeurs Professionnelles">
             <TagList items={metier.valeursProfessionnelles} />
-          </Field>
-        )}
-
-        {/* Niveau requis */}
-        {metier.niveauRequis && (
-          <Field label="🎓 Diplôme &amp; Niveau requis">
-            <p className="text-slate-700 dark:text-slate-300 text-sm font-semibold">{metier.niveauRequis}</p>
-            {metier.specialiteDiplome && (
-              <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">Spécialité : {metier.specialiteDiplome}</p>
-            )}
           </Field>
         )}
 
