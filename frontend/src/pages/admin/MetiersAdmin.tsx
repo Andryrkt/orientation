@@ -26,7 +26,7 @@ const COMMA_LIST_FIELDS = [
 ] as const;
 
 // Champs tableau édités comme une liste avec un élément par ligne dans le formulaire.
-const LINE_LIST_FIELDS = ['missions', 'formationsMadagascar', 'sources'] as const;
+const LINE_LIST_FIELDS = ['missions', 'formationsMadagascar', 'sources', 'etapesEvolution'] as const;
 
 function toFormValues(item: Record<string, unknown>): Record<string, unknown> {
   const values: Record<string, unknown> = { ...item };
@@ -170,6 +170,7 @@ export function MetiersAdmin() {
         penibiliteStress: undefined,
         penibiliteRisques: undefined,
         postesEvolution: '',
+        etapesEvolution: '',
         mobiliteInternationale: '',
         tendances: '',
         centresInteret: '',
@@ -244,6 +245,12 @@ export function MetiersAdmin() {
         { name: 'employeurs', label: 'Principaux employeurs (séparés par des virgules)', type: 'text' },
         { name: 'perspectivesEmploi', label: "Perspectives d'emploi", type: 'textarea' },
         { name: 'postesEvolution', label: 'Évolution professionnelle et hiérarchique', type: 'textarea' },
+        {
+          name: 'etapesEvolution',
+          label:
+            "Étapes de carrière détaillées (une par ligne, format : Poste | Expérience ou niveau requis) — ex : « Développeur junior | 0-2 ans d'expérience ». Le poste est automatiquement mis en lien vers sa fiche métier s'il est reconnu.",
+          type: 'textarea',
+        },
         { name: 'mobiliteInternationale', label: 'Mobilité internationale / opportunités institutionnelles', type: 'textarea' },
         { name: 'tendances', label: 'Tendances du secteur (séparées par des virgules)', type: 'text' },
         {

@@ -200,6 +200,16 @@ export class CreateMetierDto {
   @IsString()
   postesEvolution?: string;
 
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description:
+      "Étapes de la progression de carrière, une par ligne, au format 'Poste | Expérience ou niveau requis'. Le poste est mis en lien vers sa fiche métier s'il est reconnu.",
+  })
+  @IsOptional()
+  @IsArray()
+  etapesEvolution?: string[];
+
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()

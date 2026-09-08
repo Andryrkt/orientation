@@ -1,10 +1,75 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { api } from '../lib/api';
-import { Metier } from '../lib/types';
+import { Metier, Paginated } from '../lib/types';
 import { FavoriteButton } from '../components/FavoriteButton';
 import { RIASEC_LABELS } from '../lib/riasec';
+
+/* ── Mise en lien des étapes de carrière avec les fiches métiers existantes ── */
+function normalizeForMatch(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+function findMetierMatch(poste: string, candidates: { nom: string; slug: string }[]) {
+  const target = normalizeForMatch(poste);
+  if (!target) return undefined;
+  let best: { nom: string; slug: string } | undefined;
+  let bestScore = 0;
+  for (const c of candidates) {
+    const candidate = normalizeForMatch(c.nom);
+    if (!candidate) continue;
+    let score = 0;
+    if (candidate === target) score = 100;
+    else if (target.includes(candidate) || candidate.includes(target)) score = 60;
+    if (score > bestScore) {
+      bestScore = score;
+      best = c;
+    }
+  }
+  return bestScore >= 60 ? best : undefined;
+}
+
+/* ── Étapes de progression de carrière, mises en lien quand le poste est reconnu ── */
+function EvolutionCarriere({ etapes, candidates }: { etapes: string[]; candidates: { nom: string; slug: string }[] }) {
+  const steps = etapes.map((line) => {
+    const [poste, condition] = line.split('|').map((s) => s.trim());
+    return { poste: poste || line.trim(), condition };
+  });
+
+  return (
+    <div className="flex flex-wrap items-stretch gap-2">
+      {steps.map((step, i) => {
+        const match = findMetierMatch(step.poste, candidates);
+        return (
+          <div key={`${step.poste}-${i}`} className="flex items-center gap-2">
+            <div className="px-3.5 py-2.5 rounded-xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 min-w-[150px]">
+              {match ? (
+                <Link
+                  to={`/metiers/${match.slug}`}
+                  className="text-sm font-bold text-blue-600 dark:text-blue-300 hover:underline"
+                >
+                  {step.poste}
+                </Link>
+              ) : (
+                <span className="text-sm font-bold text-slate-800 dark:text-slate-100">{step.poste}</span>
+              )}
+              {step.condition && (
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{step.condition}</p>
+              )}
+            </div>
+            {i < steps.length - 1 && <span className="text-slate-400 text-lg shrink-0">→</span>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 const DOMAINE_IMAGES: Record<string, string> = {
   'sciences-technologies': 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80',
@@ -28,13 +93,20 @@ const DOMAINE_COLORS: Record<string, { gradient: string; glow: string; text: str
 
 const DEFAULT_COLOR = { gradient: 'from-slate-500 to-slate-600', glow: 'rgba(148,163,184,0.3)', text: '#94a3b8', bgLight: 'rgba(148,163,184,0.15)' };
 
+function formatSalaryCompact(val: number | null) {
+  if (!val) return '?';
+  if (val >= 1000000) return `${(val / 1000000).toFixed(1)}M`;
+  if (val >= 1000) return `${(val / 1000).toFixed(0)}k`;
+  return val.toString();
+}
+
 /* ── Liste de Tags Stylisée (Sombre) ── */
 function TagList({ items }: { items: string[] }) {
   return (
     <div className="flex flex-wrap gap-1.5">
       {items.map((item) => (
-        <span 
-          key={item} 
+        <span
+          key={item}
           className="px-3 py-1 bg-slate-200/50 dark:bg-white/5 border border-slate-300/50 dark:border-white/8 rounded-full text-xs text-slate-700 dark:text-slate-300 font-semibold hover:border-blue-500 dark:hover:border-blue-500/30 hover:text-slate-950 dark:hover:text-white transition-colors"
         >
           {item}
@@ -50,20 +122,69 @@ function Field({
   subtitle,
   children,
   id,
+  wide,
 }: {
   label: string;
   subtitle?: string;
   children: React.ReactNode;
   id?: string;
+  wide?: boolean;
 }) {
   return (
-    <div className="glass-card p-5" id={id}>
+    <div className={`glass-card p-5 ${wide ? 'md:col-span-2' : ''}`} id={id}>
       <div className="border-b border-black/5 dark:border-white/5 pb-2 mb-3">
         <h3 className="font-bold text-slate-900 dark:text-white text-base">{label}</h3>
         {subtitle && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{subtitle}</p>}
       </div>
       {children}
     </div>
+  );
+}
+
+/* ── Section repliable façon "fiche métier" (inspirée de la présentation Onisep) ── */
+function AccordionSection({
+  id,
+  icon,
+  title,
+  subtitle,
+  isOpen,
+  onToggle,
+  children,
+}: {
+  id: string;
+  icon: string;
+  title: string;
+  subtitle?: string;
+  isOpen: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <section id={id} className="glass-card overflow-hidden scroll-mt-4">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="w-full flex items-center justify-between gap-4 p-5 text-left"
+      >
+        <div>
+          <h2 className="font-black text-lg sm:text-xl text-slate-900 dark:text-white flex items-center gap-2.5">
+            <span>{icon}</span> {title}
+          </h2>
+          {subtitle && <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{subtitle}</p>}
+        </div>
+        <span
+          className={`shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 dark:bg-white/5 text-slate-500 dark:text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+        >
+          ▾
+        </span>
+      </button>
+      {isOpen && (
+        <div className="px-5 pb-6 pt-1 border-t border-black/5 dark:border-white/5 grid md:grid-cols-2 gap-6">
+          {children}
+        </div>
+      )}
+    </section>
   );
 }
 
@@ -83,7 +204,7 @@ function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalair
     <div className="glass-card p-6 relative overflow-hidden flex flex-col items-center">
       {/* Glow effect */}
       {hoveredNode && (
-        <div 
+        <div
           className="absolute -top-20 -right-20 w-72 h-72 rounded-full opacity-40 pointer-events-none transition-all duration-500 animate-pulse-glow"
           style={{
             background: `radial-gradient(circle, ${
@@ -98,34 +219,34 @@ function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalair
       <h3 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-6 text-center">
         Boussole &amp; Structure du Métier
       </h3>
-      
+
       <div className="w-full max-w-[340px] h-[280px] relative">
         <svg viewBox="0 0 400 340" className="w-full h-full">
           {/* Liens en arrière-plan */}
           {hasMissions && (
-            <line x1="200" y1="170" x2="200" y2="60" 
-              stroke={hoveredNode === 'missions' ? '#a855f7' : 'rgba(255,255,255,0.08)'} 
-              strokeWidth={hoveredNode === 'missions' ? '3' : '1.5'} 
+            <line x1="200" y1="170" x2="200" y2="60"
+              stroke={hoveredNode === 'missions' ? '#a855f7' : 'rgba(255,255,255,0.08)'}
+              strokeWidth={hoveredNode === 'missions' ? '3' : '1.5'}
               className="transition-all duration-300"
             />
           )}
           {hasCompetences && (
-            <line x1="200" y1="170" x2="70" y2="170" 
-              stroke={hoveredNode === 'competences' ? '#22d3ee' : 'rgba(255,255,255,0.08)'} 
+            <line x1="200" y1="170" x2="70" y2="170"
+              stroke={hoveredNode === 'competences' ? '#22d3ee' : 'rgba(255,255,255,0.08)'}
               strokeWidth={hoveredNode === 'competences' ? '3' : '1.5'}
               className="transition-all duration-300"
             />
           )}
           {hasTraits && (
-            <line x1="200" y1="170" x2="330" y2="170" 
-              stroke={hoveredNode === 'traits' ? '#ec4899' : 'rgba(255,255,255,0.08)'} 
+            <line x1="200" y1="170" x2="330" y2="170"
+              stroke={hoveredNode === 'traits' ? '#ec4899' : 'rgba(255,255,255,0.08)'}
               strokeWidth={hoveredNode === 'traits' ? '3' : '1.5'}
               className="transition-all duration-300"
             />
           )}
           {hasSalaire && (
-            <line x1="200" y1="170" x2="200" y2="280" 
-              stroke={hoveredNode === 'salaire' ? '#34d399' : 'rgba(255,255,255,0.08)'} 
+            <line x1="200" y1="170" x2="200" y2="280"
+              stroke={hoveredNode === 'salaire' ? '#34d399' : 'rgba(255,255,255,0.08)'}
               strokeWidth={hoveredNode === 'salaire' ? '3' : '1.5'}
               className="transition-all duration-300"
             />
@@ -141,8 +262,8 @@ function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalair
 
           {/* Nœud Haut (Missions) */}
           {hasMissions && (
-            <g 
-              className="cursor-pointer group" 
+            <g
+              className="cursor-pointer group"
               onMouseEnter={() => setHoveredNode('missions')}
               onMouseLeave={() => setHoveredNode(null)}
               onClick={() => onNavigate('section-missions')}
@@ -155,8 +276,8 @@ function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalair
 
           {/* Nœud Gauche (Compétences) */}
           {hasCompetences && (
-            <g 
-              className="cursor-pointer group" 
+            <g
+              className="cursor-pointer group"
               onMouseEnter={() => setHoveredNode('competences')}
               onMouseLeave={() => setHoveredNode(null)}
               onClick={() => onNavigate('section-competences')}
@@ -169,8 +290,8 @@ function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalair
 
           {/* Nœud Droite (Traits) */}
           {hasTraits && (
-            <g 
-              className="cursor-pointer group" 
+            <g
+              className="cursor-pointer group"
               onMouseEnter={() => setHoveredNode('traits')}
               onMouseLeave={() => setHoveredNode(null)}
               onClick={() => onNavigate('section-personnalite')}
@@ -183,8 +304,8 @@ function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalair
 
           {/* Nœud Bas (Salaire) */}
           {hasSalaire && (
-            <g 
-              className="cursor-pointer group" 
+            <g
+              className="cursor-pointer group"
               onMouseEnter={() => setHoveredNode('salaire')}
               onMouseLeave={() => setHoveredNode(null)}
               onClick={() => onNavigate('section-salaire')}
@@ -247,9 +368,9 @@ function VisualSkillBars({ title, subtitle, items, color = 'cyan', id }: SkillPr
                 <span className={colorConfig.text}>{level}%</span>
               </div>
               <div className="h-2 w-full bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden relative">
-                <div 
+                <div
                   className={`h-full rounded-full bg-gradient-to-r ${colorConfig.bar} transition-all duration-1000 ease-out`}
-                  style={{ 
+                  style={{
                     width: `${level}%`,
                     boxShadow: `0 0 10px ${colorConfig.glow}`
                   }}
@@ -277,7 +398,7 @@ function JaugeSalaire({ min, max, source, id }: SalaireProps) {
         <h3 className="font-bold text-slate-900 dark:text-white text-base">💰 Salaire Estimé</h3>
         <span className="badge">Mensuel</span>
       </div>
-      
+
       <div className="space-y-6 pt-2">
         <div className="flex justify-between items-end">
           <div>
@@ -292,7 +413,7 @@ function JaugeSalaire({ min, max, source, id }: SalaireProps) {
 
         <div className="relative pt-1">
           <div className="h-3 w-full bg-white/5 rounded-full relative overflow-hidden">
-            <div 
+            <div
               className="absolute h-full rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 shadow-[0_0_15px_rgba(0,163,255,0.4)]"
               style={{
                 left: '15%',
@@ -339,12 +460,42 @@ function PenibiliteGauge({ label, niveau }: { label: string; niveau: number }) {
   );
 }
 
+type AccordionKey = 'metier' | 'exercice' | 'carrieres' | 'acces';
+
+// Sections cliquables de la boussole/résumé -> section repliable qui les contient.
+const SECTION_OWNER: Record<string, AccordionKey> = {
+  'section-metier': 'metier',
+  'section-missions': 'metier',
+  'section-competences': 'metier',
+  'section-personnalite': 'metier',
+  'section-exercice': 'exercice',
+  'section-carrieres': 'carrieres',
+  'section-salaire': 'carrieres',
+  'section-acces': 'acces',
+};
+
 export function MetierDetail() {
   const { slug } = useParams();
-  const [showDetails, setShowDetails] = useState(false);
+  const [openSections, setOpenSections] = useState<Record<AccordionKey, boolean>>({
+    metier: true,
+    exercice: false,
+    carrieres: false,
+    acces: false,
+  });
   const { data: metier, isLoading } = useQuery({
     queryKey: ['metier', slug],
     queryFn: async () => (await api.get<Metier>(`/metiers/${slug}`)).data,
+  });
+  // Si l'image de bannière renseignée est cassée (fichier supprimé du serveur, etc.), on retombe
+  // sur l'image par défaut du domaine plutôt que d'afficher une image morte.
+  const [bannerFailed, setBannerFailed] = useState(false);
+  useEffect(() => setBannerFailed(false), [metier?.imageBanniere]);
+  // Sert à reconnaître les postes cités dans "Perspectives d'évolution" et à les mettre en lien.
+  const { data: allMetiers } = useQuery({
+    queryKey: ['all-metiers-links'],
+    queryFn: async () =>
+      (await api.get<Paginated<Pick<Metier, 'nom' | 'slug'>>>('/metiers?limit=100')).data.items,
+    staleTime: 5 * 60 * 1000,
   });
 
   if (isLoading) return (
@@ -353,7 +504,7 @@ export function MetierDetail() {
       Chargement de la fiche métier...
     </div>
   );
-  
+
   if (!metier) return <p className="text-slate-400 py-16 text-center">Métier introuvable.</p>;
 
   const hasTemoignage = metier.temoignageCitation || metier.temoignageCePlait || metier.temoignageConseil;
@@ -361,24 +512,63 @@ export function MetierDetail() {
   const hasCompetences = metier.competences && metier.competences.length > 0;
   const hasTraits = metier.traitsPersonnalite && metier.traitsPersonnalite.length > 0;
   const hasSalaire = !!(metier.salaireMin || metier.salaireMax);
+  const hasRiasec = !!(metier.riasecCodes && metier.riasecCodes.length > 0);
+  const hasAcces = !!(
+    metier.niveauRequis ||
+    metier.specialiteDiplome ||
+    metier.seriesBacMadagascar.length > 0 ||
+    metier.formationsMadagascar?.length > 0 ||
+    metier.certifications?.length > 0 ||
+    metier.autoFormation
+  );
+  const hasExercice = !!(
+    metier.environnementTravail?.length > 0 ||
+    metier.secteursActivite?.length > 0 ||
+    metier.typeContrat?.length > 0 ||
+    metier.volumeHoraire?.length > 0 ||
+    metier.regionsPresence?.length > 0 ||
+    metier.employeurs?.length > 0
+  );
+  const hasCarrieres = !!(
+    hasSalaire ||
+    metier.niveauDemande ||
+    metier.perspectivesEmploi ||
+    metier.postesEvolution ||
+    metier.etapesEvolution?.length > 0 ||
+    metier.mobiliteInternationale ||
+    metier.tendances?.length > 0 ||
+    metier.avantages ||
+    metier.penibilitePhysique != null ||
+    metier.penibiliteStress != null ||
+    metier.penibiliteRisques != null
+  );
 
   const slugDomaine = metier.domaine?.slug || '';
-  const imageUrl = metier.imageBanniere || DOMAINE_IMAGES[slugDomaine] || DEFAULT_IMAGE;
+  const imageUrl = (!bannerFailed && metier.imageBanniere) || DOMAINE_IMAGES[slugDomaine] || DEFAULT_IMAGE;
   const domainColor = DOMAINE_COLORS[slugDomaine] || DEFAULT_COLOR;
 
-  // Les nœuds "Compétences" et "Profil" vivent dans la section repliable : il faut la déplier avant de défiler vers eux.
   const goToSection = (id: string) => {
-    const needsExpand = id === 'section-competences' || id === 'section-personnalite';
-    if (needsExpand) setShowDetails(true);
-    const scroll = () => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    if (needsExpand) setTimeout(scroll, 50);
-    else scroll();
+    const key = SECTION_OWNER[id];
+    if (key) setOpenSections((s) => ({ ...s, [key]: true }));
+    setTimeout(
+      () => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: key ? 'start' : 'center' }),
+      key ? 50 : 0,
+    );
   };
 
+  const toggleSection = (key: AccordionKey) => setOpenSections((s) => ({ ...s, [key]: !s[key] }));
+
+  const NAV_ITEMS: { key: AccordionKey; id: string; icon: string; label: string; show: boolean }[] = [
+    { key: 'metier', id: 'section-metier', icon: '💼', label: 'Le métier', show: true },
+    { key: 'exercice', id: 'section-exercice', icon: '🏞️', label: "Où l'exercer ?", show: hasExercice },
+    { key: 'carrieres', id: 'section-carrieres', icon: '📈', label: 'Carrières', show: hasCarrieres },
+    { key: 'acces', id: 'section-acces', icon: '🎓', label: 'Accès au métier', show: hasAcces },
+  ];
+
   return (
-    <div className="space-y-8 max-w-4xl mx-auto pb-12">
+    <div className="space-y-6 max-w-4xl mx-auto pb-12">
       {/* ── Bannière de Représentation avec Photo ── */}
-      <section 
+      <section
         className="relative overflow-hidden px-6 py-12 sm:py-16 rounded-[2rem] border border-white/10 flex flex-col justify-end min-h-[260px] sm:min-h-[300px]"
         style={{
           backgroundImage: `linear-gradient(to bottom, rgba(10,8,24,0.3) 0%, rgba(10,8,24,0.85) 100%), url(${imageUrl})`,
@@ -387,6 +577,10 @@ export function MetierDetail() {
         }}
       >
         <div className="absolute inset-0 -z-10" style={{ backdropFilter: 'blur(1px)' }} />
+        {/* Détecte une image de bannière cassée (fichier manquant) pour retomber sur l'image par défaut */}
+        {metier.imageBanniere && !bannerFailed && (
+          <img src={metier.imageBanniere} alt="" className="hidden" onError={() => setBannerFailed(true)} />
+        )}
         {/* Glow orbs dans la bannière */}
         <div className="glow-orb w-64 h-64 -bottom-20 -left-10"
           style={{ background: `radial-gradient(circle, ${domainColor.glow} 0%, transparent 70%)` }} />
@@ -417,166 +611,130 @@ export function MetierDetail() {
         </div>
       </section>
 
-      {/* Diplôme requis & Codes RIASEC */}
-      {(metier.niveauRequis || metier.seriesBacMadagascar.length > 0 || (metier.riasecCodes && metier.riasecCodes.length > 0)) && (
-        <div className="grid md:grid-cols-2 gap-6">
-          {(metier.niveauRequis || metier.seriesBacMadagascar.length > 0) && (
-            <Field label="🎓 Diplôme &amp; Niveau requis">
-              {metier.niveauRequis && (
-                <p className="text-slate-700 dark:text-slate-300 text-sm font-semibold">{metier.niveauRequis}</p>
-              )}
-              {metier.specialiteDiplome && (
-                <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">Spécialité : {metier.specialiteDiplome}</p>
-              )}
-              {metier.seriesBacMadagascar.length > 0 && (
-                <div className="mt-3">
-                  <p className="text-[10px] uppercase font-black tracking-wider text-slate-500 mb-1.5">
-                    Série du Bac recommandée
-                  </p>
-                  <TagList items={metier.seriesBacMadagascar} />
-                </div>
-              )}
-            </Field>
-          )}
-
-          {metier.riasecCodes && metier.riasecCodes.length > 0 && (
-            <Field
-              label="🧭 Codes RIASEC"
-              subtitle="Le profil d'intérêts (test RIASEC) associé à ce métier."
-            >
-              <div className="flex flex-wrap gap-1.5">
-                {metier.riasecCodes.map((code) => (
-                  <span
-                    key={code}
-                    className="px-3 py-1 bg-blue-500/10 border border-blue-500/25 rounded-full text-xs font-bold text-blue-600 dark:text-blue-300"
-                  >
-                    {code} · {RIASEC_LABELS[code] ?? code}
-                  </span>
-                ))}
-              </div>
-            </Field>
-          )}
-        </div>
-      )}
-
-      {/* Description & Boussole interactive */}
-      <div className="grid md:grid-cols-5 gap-6 items-start">
-        <div className="md:col-span-3 space-y-6">
-          <div className="glass-card p-6">
-            <h3 className="font-bold text-slate-900 dark:text-white text-base border-b border-black/5 dark:border-white/5 pb-2 mb-3">
-              Description du Métier
-            </h3>
-            <p className="text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
-              {metier.description}
-            </p>
-          </div>
-
-          {/* Témoignage si existant */}
-          {hasTemoignage && (
-            <div className="p-6 rounded-2xl border bg-blue-500/5 border-blue-500/15 dark:border-blue-500/20 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-20 pointer-events-none"
-                style={{ background: 'radial-gradient(circle, rgba(0,163,255,0.4) 0%, transparent 70%)' }} />
-              
-              <h3 className="font-bold text-blue-600 dark:text-blue-300 text-sm mb-3 flex items-center gap-2">
-                💬 Témoignage de {metier.temoignagePrenom || 'Professionnel'}
-                {metier.temoignageAnneesExperience != null &&
-                  ` (${metier.temoignageAnneesExperience} ans d'exp.)`}
-              </h3>
-              {(metier.temoignageVille || metier.temoignageSecteurEmployeur) && (
-                <p className="text-slate-500 dark:text-slate-500 text-xs italic mb-2">
-                  {[metier.temoignageVille, metier.temoignageSecteurEmployeur].filter(Boolean).join(' · ')}
-                </p>
-              )}
-              {metier.temoignageCitation && (
-                <p className="italic text-slate-700 dark:text-slate-200 text-sm leading-relaxed mb-3">
-                  « {metier.temoignageCitation} »
-                </p>
-              )}
-              {metier.temoignageCePlait && (
-                <p className="text-slate-600 dark:text-slate-400 text-xs mb-1.5">
-                  <span className="font-semibold text-blue-600 dark:text-blue-400">Ce qui plaît : </span>
-                  {metier.temoignageCePlait}
-                </p>
-              )}
-              {metier.temoignageDifficultes && (
-                <p className="text-slate-600 dark:text-slate-400 text-xs mb-1.5">
-                  <span className="font-semibold text-blue-600 dark:text-blue-400">Difficultés : </span>
-                  {metier.temoignageDifficultes}
-                </p>
-              )}
-              {metier.temoignageConseil && (
-                <p className="text-slate-600 dark:text-slate-400 text-xs">
-                  <span className="font-semibold text-blue-600 dark:text-blue-400">Conseil : </span>
-                  {metier.temoignageConseil}
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Schéma de Représentation (Boussole) */}
-        <div className="md:col-span-2">
-          <BoussoleMetier
-            nom={metier.nom}
-            hasMissions={hasMissions}
-            hasCompetences={hasCompetences}
-            hasTraits={hasTraits}
-            hasSalaire={hasSalaire}
-            onNavigate={goToSection}
-          />
-        </div>
+      {/* ── En bref : résumé compact façon fiche Onisep ── */}
+      <div className="flex flex-wrap gap-2">
+        {metier.niveauRequis && (
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-700 dark:text-slate-200">
+            🎓 {metier.niveauRequis}
+          </span>
+        )}
+        {metier.seriesBacMadagascar.length > 0 && (
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-700 dark:text-slate-200">
+            📜 Bac {metier.seriesBacMadagascar.join(' / ')}
+          </span>
+        )}
+        {hasSalaire && (
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-700 dark:text-slate-200">
+            💰 {formatSalaryCompact(metier.salaireMin)} – {formatSalaryCompact(metier.salaireMax)} Ar/m.
+          </span>
+        )}
+        {hasRiasec && (
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold bg-blue-500/10 border border-blue-500/25 text-blue-600 dark:text-blue-300">
+            🧭 RIASEC {metier.riasecCodes!.join(' · ')}
+          </span>
+        )}
       </div>
 
-      {/* Essentiel : missions & salaire, toujours visibles */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Missions (avec id pour le smooth-scroll) */}
+      {/* ── Navigation rapide vers les sections (façon sommaire Onisep) ── */}
+      <div className="flex flex-wrap gap-2">
+        {NAV_ITEMS.filter((n) => n.show).map((n) => (
+          <button
+            key={n.key}
+            type="button"
+            onClick={() => goToSection(n.id)}
+            className="px-3.5 py-1.5 rounded-full text-xs font-bold border border-black/10 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-blue-500/10 hover:border-blue-500/30 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"
+          >
+            {n.icon} {n.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ══════════════ SECTION 1 : LE MÉTIER ══════════════ */}
+      <AccordionSection
+        id="section-metier"
+        icon="💼"
+        title="Le métier"
+        subtitle="Description, missions, compétences et profil idéal."
+        isOpen={openSections.metier}
+        onToggle={() => toggleSection('metier')}
+      >
+        {/* Description & Boussole interactive */}
+        <div className="md:col-span-2 grid md:grid-cols-5 gap-6 items-start">
+          <div className="md:col-span-3 space-y-6">
+            <div>
+              <p className="text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
+                {metier.description}
+              </p>
+            </div>
+
+            {/* Témoignage si existant */}
+            {hasTemoignage && (
+              <div className="p-6 rounded-2xl border bg-blue-500/5 border-blue-500/15 dark:border-blue-500/20 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-20 pointer-events-none"
+                  style={{ background: 'radial-gradient(circle, rgba(0,163,255,0.4) 0%, transparent 70%)' }} />
+
+                <h3 className="font-bold text-blue-600 dark:text-blue-300 text-sm mb-3 flex items-center gap-2">
+                  💬 Témoignage de {metier.temoignagePrenom || 'Professionnel'}
+                  {metier.temoignageAnneesExperience != null &&
+                    ` (${metier.temoignageAnneesExperience} ans d'exp.)`}
+                </h3>
+                {(metier.temoignageVille || metier.temoignageSecteurEmployeur) && (
+                  <p className="text-slate-500 dark:text-slate-500 text-xs italic mb-2">
+                    {[metier.temoignageVille, metier.temoignageSecteurEmployeur].filter(Boolean).join(' · ')}
+                  </p>
+                )}
+                {metier.temoignageCitation && (
+                  <p className="italic text-slate-700 dark:text-slate-200 text-sm leading-relaxed mb-3">
+                    « {metier.temoignageCitation} »
+                  </p>
+                )}
+                {metier.temoignageCePlait && (
+                  <p className="text-slate-600 dark:text-slate-400 text-xs mb-1.5">
+                    <span className="font-semibold text-blue-600 dark:text-blue-400">Ce qui plaît : </span>
+                    {metier.temoignageCePlait}
+                  </p>
+                )}
+                {metier.temoignageDifficultes && (
+                  <p className="text-slate-600 dark:text-slate-400 text-xs mb-1.5">
+                    <span className="font-semibold text-blue-600 dark:text-blue-400">Difficultés : </span>
+                    {metier.temoignageDifficultes}
+                  </p>
+                )}
+                {metier.temoignageConseil && (
+                  <p className="text-slate-600 dark:text-slate-400 text-xs">
+                    <span className="font-semibold text-blue-600 dark:text-blue-400">Conseil : </span>
+                    {metier.temoignageConseil}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Schéma de Représentation (Boussole) */}
+          <div className="md:col-span-2">
+            <BoussoleMetier
+              nom={metier.nom}
+              hasMissions={hasMissions}
+              hasCompetences={hasCompetences}
+              hasTraits={hasTraits}
+              hasSalaire={hasSalaire}
+              onNavigate={goToSection}
+            />
+          </div>
+        </div>
+
+        {/* Nature du travail : Missions */}
         {hasMissions && (
-          <Field label="📋 Missions Principales" id="section-missions">
+          <Field label="📋 Nature du travail — Missions Principales" id="section-missions" wide>
             <ul className="text-slate-700 dark:text-slate-300 text-sm list-disc list-inside space-y-2 leading-relaxed">
               {metier.missions.map((m) => <li key={m} className="hover:text-slate-950 dark:hover:text-white transition-colors">{m}</li>)}
             </ul>
           </Field>
         )}
 
-        {/* Salaire Jauge */}
-        {hasSalaire && (
-          <JaugeSalaire
-            min={metier.salaireMin || 0}
-            max={metier.salaireMax || 0}
-            source={metier.salaireSource ?? undefined}
-            id="section-salaire"
-          />
-        )}
-      </div>
-
-      {/* Bouton pour déplier le reste des informations */}
-      <div className="flex justify-center">
-        <button
-          type="button"
-          onClick={() => setShowDetails((v) => !v)}
-          className="px-5 py-2.5 rounded-full text-sm font-bold border border-blue-500/25 bg-blue-500/10 text-blue-600 dark:text-blue-300 hover:bg-blue-500/20 transition-colors flex items-center gap-2"
-        >
-          {showDetails ? '▲ Réduire' : '▼ Voir tous les détails du métier'}
-        </button>
-      </div>
-
-      {/* Grille de Détails Visuels (repliable) */}
-      {showDetails && (
-      <div className="grid md:grid-cols-2 gap-6">
-
-        {/* Environnement de travail */}
-        {metier.environnementTravail?.length > 0 && (
-          <Field label="🏞️ Environnement de travail">
-            <TagList items={metier.environnementTravail} />
-            {metier.environnementAutre && (
-              <p className="text-slate-500 dark:text-slate-400 text-xs mt-2">{metier.environnementAutre}</p>
-            )}
-          </Field>
-        )}
-
-        {/* Compétences Techniques */}
+        {/* Compétences requises : techniques */}
         {hasCompetences && (
-          <Field label="⚡ Compétences Techniques" id="section-competences">
+          <Field label="⚡ Compétences requises — Techniques" id="section-competences">
             <ul className="text-slate-700 dark:text-slate-300 text-sm list-disc list-inside space-y-2 leading-relaxed">
               {(metier.competences as unknown as string[]).map((c) => (
                 <li key={c} className="hover:text-slate-950 dark:hover:text-white transition-colors">{c}</li>
@@ -585,40 +743,13 @@ export function MetierDetail() {
           </Field>
         )}
 
-        {/* Traits de personnalité avec Visual Skill Bars */}
-        {hasTraits && (
-          <VisualSkillBars
-            title="🧠 Profil &amp; Traits de Personnalité"
-            subtitle="Le profil de personnalité qui s'épanouit naturellement dans ce métier — pour situer votre propre profil."
-            items={metier.traitsPersonnalite}
-            color="blue"
-            id="section-personnalite"
-          />
-        )}
-
         {/* Compétences comportementales */}
         {metier.competencesComportementales?.length > 0 && (
           <Field
-            label="🤝 Compétences Comportementales / Soft Skills"
+            label="🤝 Compétences requises — Soft Skills"
             subtitle="Les aptitudes à développer pour bien exercer ce métier au quotidien."
           >
             <TagList items={metier.competencesComportementales} />
-          </Field>
-        )}
-
-        {/* Valeurs professionnelles */}
-        {metier.valeursProfessionnelles?.length > 0 && (
-          <Field label="💎 Valeurs Professionnelles">
-            <TagList items={metier.valeursProfessionnelles} />
-          </Field>
-        )}
-
-        {/* Formations à Madagascar */}
-        {metier.formationsMadagascar?.length > 0 && (
-          <Field label="🇲🇬 Formations à Madagascar">
-            <ul className="text-slate-700 dark:text-slate-300 text-sm list-disc list-inside space-y-1.5 leading-relaxed">
-              {metier.formationsMadagascar.map((f) => <li key={f}>{f}</li>)}
-            </ul>
           </Field>
         )}
 
@@ -632,65 +763,40 @@ export function MetierDetail() {
           </Field>
         )}
 
-        {/* Type de contrat */}
-        {(metier.typeContrat?.length > 0 || metier.volumeHoraire?.length > 0) && (
-          <Field label="📄 Type de contrat &amp; volume horaire">
-            {metier.typeContrat?.length > 0 && <TagList items={metier.typeContrat} />}
-            {metier.volumeHoraire?.length > 0 && (
-              <p className="text-slate-500 dark:text-slate-400 text-xs mt-2">{metier.volumeHoraire.join(' · ')}</p>
-            )}
-          </Field>
-        )}
-
-        {/* Avantages */}
-        {metier.avantages && (
-          <Field label="🎁 Avantages en nature courants">
-            <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">{metier.avantages}</p>
-          </Field>
-        )}
-
-        {/* Pénibilité */}
-        {(metier.penibilitePhysique != null || metier.penibiliteStress != null || metier.penibiliteRisques != null) && (
-          <Field label="⚠️ Niveau de pénibilité">
-            <div className="space-y-3">
-              {metier.penibilitePhysique != null && (
-                <PenibiliteGauge label="Physique / effort corporel" niveau={metier.penibilitePhysique} />
-              )}
-              {metier.penibiliteStress != null && (
-                <PenibiliteGauge label="Stress et pression" niveau={metier.penibiliteStress} />
-              )}
-              {metier.penibiliteRisques != null && (
-                <PenibiliteGauge label="Risques professionnels" niveau={metier.penibiliteRisques} />
-              )}
+        {/* Codes RIASEC */}
+        {hasRiasec && (
+          <Field
+            label="🧭 Le profil idéal — Codes RIASEC"
+            subtitle="Le profil d'intérêts (test RIASEC) associé à ce métier."
+          >
+            <div className="flex flex-wrap gap-1.5">
+              {metier.riasecCodes!.map((code) => (
+                <span
+                  key={code}
+                  className="px-3 py-1 bg-blue-500/10 border border-blue-500/25 rounded-full text-xs font-bold text-blue-600 dark:text-blue-300"
+                >
+                  {code} · {RIASEC_LABELS[code] ?? code}
+                </span>
+              ))}
             </div>
           </Field>
         )}
 
-        {/* Demande */}
-        {metier.niveauDemande && (
-          <Field label="📈 Demande sur le marché malgache">
-            <p className="text-slate-700 dark:text-slate-300 text-sm font-semibold">{metier.niveauDemande}</p>
-          </Field>
+        {/* Traits de personnalité avec Visual Skill Bars */}
+        {hasTraits && (
+          <VisualSkillBars
+            title="🧠 Le profil idéal — Traits de Personnalité"
+            subtitle="Le profil de personnalité qui s'épanouit naturellement dans ce métier — pour situer votre propre profil."
+            items={metier.traitsPersonnalite}
+            color="blue"
+            id="section-personnalite"
+          />
         )}
 
-        {/* Régions */}
-        {metier.regionsPresence?.length > 0 && (
-          <Field label="📍 Régions de présence">
-            <TagList items={metier.regionsPresence} />
-          </Field>
-        )}
-
-        {/* Employeurs */}
-        {metier.employeurs?.length > 0 && (
-          <Field label="🏢 Principaux Employeurs">
-            <TagList items={metier.employeurs} />
-          </Field>
-        )}
-
-        {/* Tendances du secteur */}
-        {metier.tendances?.length > 0 && (
-          <Field label="📊 Tendances du secteur">
-            <TagList items={metier.tendances} />
+        {/* Valeurs professionnelles */}
+        {metier.valeursProfessionnelles?.length > 0 && (
+          <Field label="💎 Valeurs Professionnelles">
+            <TagList items={metier.valeursProfessionnelles} />
           </Field>
         )}
 
@@ -703,23 +809,104 @@ export function MetierDetail() {
 
         {/* Profil introverti / extraverti */}
         {metier.profilIntroExtraverti && (
-          <Field label="🧭 Adéquation introverti / extraverti">
+          <Field label="🧭 Adéquation introverti / extraverti" wide>
             <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">{metier.profilIntroExtraverti}</p>
           </Field>
         )}
+      </AccordionSection>
 
-        {/* Perspectives */}
-        {(metier.perspectivesEmploi || metier.postesEvolution || metier.mobiliteInternationale) && (
-          <div className="md:col-span-2">
-            <Field label="🔮 Perspectives d'évolution">
-              <div className="space-y-3 text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
+      {/* ══════════════ SECTION 2 : OÙ L'EXERCER ══════════════ */}
+      {hasExercice && (
+        <AccordionSection
+          id="section-exercice"
+          icon="🏞️"
+          title="Où l'exercer ?"
+          subtitle="Environnement, secteurs, contrats et employeurs."
+          isOpen={openSections.exercice}
+          onToggle={() => toggleSection('exercice')}
+        >
+          {metier.environnementTravail?.length > 0 && (
+            <Field label="🏞️ Environnement de travail">
+              <TagList items={metier.environnementTravail} />
+              {metier.environnementAutre && (
+                <p className="text-slate-500 dark:text-slate-400 text-xs mt-2">{metier.environnementAutre}</p>
+              )}
+            </Field>
+          )}
+
+          {metier.secteursActivite?.length > 0 && (
+            <Field label="🏢 Secteurs d'activité">
+              <TagList items={metier.secteursActivite} />
+            </Field>
+          )}
+
+          {(metier.typeContrat?.length > 0 || metier.volumeHoraire?.length > 0) && (
+            <Field label="📄 Type de contrat &amp; volume horaire">
+              {metier.typeContrat?.length > 0 && <TagList items={metier.typeContrat} />}
+              {metier.volumeHoraire?.length > 0 && (
+                <p className="text-slate-500 dark:text-slate-400 text-xs mt-2">{metier.volumeHoraire.join(' · ')}</p>
+              )}
+            </Field>
+          )}
+
+          {metier.regionsPresence?.length > 0 && (
+            <Field label="📍 Régions de présence">
+              <TagList items={metier.regionsPresence} />
+            </Field>
+          )}
+
+          {metier.employeurs?.length > 0 && (
+            <Field label="🏢 Principaux Employeurs" wide>
+              <TagList items={metier.employeurs} />
+            </Field>
+          )}
+        </AccordionSection>
+      )}
+
+      {/* ══════════════ SECTION 3 : CARRIÈRES ══════════════ */}
+      {hasCarrieres && (
+        <AccordionSection
+          id="section-carrieres"
+          icon="📈"
+          title="Carrières"
+          subtitle="Salaire, demande du marché et perspectives d'évolution."
+          isOpen={openSections.carrieres}
+          onToggle={() => toggleSection('carrieres')}
+        >
+          {hasSalaire && (
+            <JaugeSalaire
+              min={metier.salaireMin || 0}
+              max={metier.salaireMax || 0}
+              source={metier.salaireSource ?? undefined}
+              id="section-salaire"
+            />
+          )}
+
+          {metier.niveauDemande && (
+            <Field label="📈 Demande sur le marché malgache">
+              <p className="text-slate-700 dark:text-slate-300 text-sm font-semibold">{metier.niveauDemande}</p>
+            </Field>
+          )}
+
+          {(metier.perspectivesEmploi || metier.postesEvolution || metier.etapesEvolution?.length > 0 || metier.mobiliteInternationale) && (
+            <Field label="🔮 Perspectives d'évolution" wide>
+              <div className="space-y-4 text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
                 {metier.perspectivesEmploi && <p>{metier.perspectivesEmploi}</p>}
-                {metier.postesEvolution && (
-                  <p>
-                    <span className="font-semibold text-slate-900 dark:text-white">Évolution hiérarchique : </span>
-                    {metier.postesEvolution}
-                  </p>
+
+                {metier.etapesEvolution?.length > 0 ? (
+                  <div>
+                    <span className="font-semibold text-slate-900 dark:text-white block mb-2">Évolution hiérarchique</span>
+                    <EvolutionCarriere etapes={metier.etapesEvolution} candidates={allMetiers ?? []} />
+                  </div>
+                ) : (
+                  metier.postesEvolution && (
+                    <p>
+                      <span className="font-semibold text-slate-900 dark:text-white">Évolution hiérarchique : </span>
+                      {metier.postesEvolution}
+                    </p>
+                  )
                 )}
+
                 {metier.mobiliteInternationale && (
                   <p>
                     <span className="font-semibold text-slate-900 dark:text-white">Mobilité internationale : </span>
@@ -728,9 +915,85 @@ export function MetierDetail() {
                 )}
               </div>
             </Field>
-          </div>
-        )}
-      </div>
+          )}
+
+          {metier.tendances?.length > 0 && (
+            <Field label="📊 Tendances du secteur">
+              <TagList items={metier.tendances} />
+            </Field>
+          )}
+
+          {metier.avantages && (
+            <Field label="🎁 Avantages en nature courants">
+              <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">{metier.avantages}</p>
+            </Field>
+          )}
+
+          {(metier.penibilitePhysique != null || metier.penibiliteStress != null || metier.penibiliteRisques != null) && (
+            <Field label="⚠️ Niveau de pénibilité" wide>
+              <div className="space-y-3">
+                {metier.penibilitePhysique != null && (
+                  <PenibiliteGauge label="Physique / effort corporel" niveau={metier.penibilitePhysique} />
+                )}
+                {metier.penibiliteStress != null && (
+                  <PenibiliteGauge label="Stress et pression" niveau={metier.penibiliteStress} />
+                )}
+                {metier.penibiliteRisques != null && (
+                  <PenibiliteGauge label="Risques professionnels" niveau={metier.penibiliteRisques} />
+                )}
+              </div>
+            </Field>
+          )}
+        </AccordionSection>
+      )}
+
+      {/* ══════════════ SECTION 4 : ACCÈS AU MÉTIER ══════════════ */}
+      {hasAcces && (
+        <AccordionSection
+          id="section-acces"
+          icon="🎓"
+          title="Accès au métier"
+          subtitle="Diplômes, séries de bac et formations à Madagascar."
+          isOpen={openSections.acces}
+          onToggle={() => toggleSection('acces')}
+        >
+          {(metier.niveauRequis || metier.specialiteDiplome) && (
+            <Field label="🎓 Diplôme &amp; Niveau requis">
+              {metier.niveauRequis && (
+                <p className="text-slate-700 dark:text-slate-300 text-sm font-semibold">{metier.niveauRequis}</p>
+              )}
+              {metier.specialiteDiplome && (
+                <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">Spécialité : {metier.specialiteDiplome}</p>
+              )}
+            </Field>
+          )}
+
+          {metier.seriesBacMadagascar.length > 0 && (
+            <Field label="📜 Série du Bac recommandée">
+              <TagList items={metier.seriesBacMadagascar} />
+            </Field>
+          )}
+
+          {metier.formationsMadagascar?.length > 0 && (
+            <Field label="🇲🇬 Formations à Madagascar" wide>
+              <ul className="text-slate-700 dark:text-slate-300 text-sm list-disc list-inside space-y-1.5 leading-relaxed">
+                {metier.formationsMadagascar.map((f) => <li key={f}>{f}</li>)}
+              </ul>
+            </Field>
+          )}
+
+          {metier.certifications?.length > 0 && (
+            <Field label="📑 Certifications valorisées">
+              <TagList items={metier.certifications} />
+            </Field>
+          )}
+
+          {metier.autoFormation && (
+            <Field label="🧑‍💻 Accès par auto-formation">
+              <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">{metier.autoFormation}</p>
+            </Field>
+          )}
+        </AccordionSection>
       )}
 
       {/* Métiers similaires */}

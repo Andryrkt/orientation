@@ -405,6 +405,7 @@ export interface Metier {
   niveauDemande: string | null;
   regionsPresence: string[];
   postesEvolution: string | null;
+  etapesEvolution: string[];
   mobiliteInternationale: string | null;
   tendances: string[];
   employeurs: string[];
