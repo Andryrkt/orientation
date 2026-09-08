@@ -187,7 +187,7 @@ export function MetiersAdmin() {
       toPayload={toPayload}
       columns={[
         { key: 'nom', label: 'Nom' },
-        { key: 'domaine', label: 'Domaine', render: (item) => item.domaine?.nom ?? '—' },
+        { key: 'domaine', label: 'Domaine professionnel', render: (item) => item.domaine?.nom ?? '—' },
         {
           key: 'salaire',
           label: 'Salaire (Ar)',
@@ -198,94 +198,117 @@ export function MetiersAdmin() {
         },
       ]}
       fields={[
-        { name: 'domaineId', label: 'Domaine', type: 'select', required: true, options: domaineOptions },
-        { name: 'nom', label: 'Nom', type: 'text', required: true },
-        { name: 'autresAppellations', label: 'Autres appellations (séparées par des virgules)', type: 'text' },
-        { name: 'sousDomaine', label: 'Sous-domaine / spécialité', type: 'text' },
-        { name: 'secteursActivite', label: "Secteurs d'activité (séparés par des virgules)", type: 'text' },
-        { name: 'codeRome', label: 'Code ROME', type: 'text' },
-        { name: 'description', label: 'Description', type: 'textarea' },
+        // ── Identification ──
+        { name: 'domaineId', label: 'Domaine professionnel', type: 'select', required: true, options: domaineOptions, section: 'Identification' },
+        { name: 'nom', label: 'Nom', type: 'text', required: true, section: 'Identification' },
+        { name: 'autresAppellations', label: 'Autres appellations (séparées par des virgules)', type: 'text', section: 'Identification' },
+        { name: 'sousDomaine', label: 'Sous-domaine / spécialité', type: 'text', section: 'Identification' },
+        { name: 'secteursActivite', label: "Secteurs d'activité (séparés par des virgules)", type: 'text', section: 'Identification' },
+        { name: 'codeRome', label: 'Code ROME', type: 'text', section: 'Identification' },
+
+        // ── Présentation ──
+        { name: 'description', label: 'Description', type: 'textarea', section: 'Présentation' },
         {
           name: 'imageBanniere',
           label: "Image de bannière — si vide, l'image par défaut du domaine est utilisée",
           type: 'image',
+          section: 'Présentation',
         },
-        { name: 'missions', label: 'Missions (une par ligne)', type: 'textarea' },
-        { name: 'environnementTravail', label: 'Environnement de travail (séparés par des virgules)', type: 'text' },
-        { name: 'environnementAutre', label: 'Environnement de travail — autre précision', type: 'text' },
-        { name: 'competences', label: 'Compétences techniques (séparées par des virgules)', type: 'text' },
+
+        // ── Le métier ──
+        { name: 'missions', label: 'Missions (une par ligne)', type: 'textarea', section: 'Le métier' },
+        { name: 'competences', label: 'Compétences techniques (séparées par des virgules)', type: 'text', section: 'Le métier' },
         {
           name: 'competencesComportementales',
           label: 'Compétences comportementales / soft skills — aptitudes à développer pour bien exercer le métier (séparées par des virgules)',
           type: 'text',
+          section: 'Le métier',
         },
-        { name: 'languesRequises', label: 'Langues requises (séparées par des virgules)', type: 'text' },
-        { name: 'niveauLangues', label: 'Niveau requis en langues', type: 'text' },
-        { name: 'niveauRequis', label: 'Niveau de diplôme requis', type: 'text' },
-        { name: 'specialiteDiplome', label: 'Spécialité de diplôme recommandée', type: 'text' },
+        { name: 'languesRequises', label: 'Langues requises (séparées par des virgules)', type: 'text', section: 'Le métier' },
+        { name: 'niveauLangues', label: 'Niveau requis en langues', type: 'text', section: 'Le métier' },
+        {
+          name: 'traitsPersonnalite',
+          label: 'Traits de personnalité type — profil qui réussit naturellement dans ce métier, pour matcher un élève (séparés par des virgules)',
+          type: 'text',
+          section: 'Le métier',
+        },
+        { name: 'valeursProfessionnelles', label: 'Valeurs professionnelles (séparées par des virgules)', type: 'text', section: 'Le métier' },
+        { name: 'centresInteret', label: "Centres d'intérêt typiques (séparés par des virgules)", type: 'text', section: 'Le métier' },
+        { name: 'profilIntroExtraverti', label: 'Adéquation introverti / extraverti', type: 'textarea', section: 'Le métier' },
+        {
+          name: 'riasecCodes',
+          label: 'Codes RIASEC (ex: R, I) — pour les recommandations du questionnaire',
+          type: 'text',
+          section: 'Le métier',
+        },
+
+        // ── Où l'exercer ? ──
+        { name: 'environnementTravail', label: 'Environnement de travail (séparés par des virgules)', type: 'text', section: "Où l'exercer ?" },
+        { name: 'environnementAutre', label: 'Environnement de travail — autre précision', type: 'text', section: "Où l'exercer ?" },
+        { name: 'typeContrat', label: 'Type de contrat habituel (séparés par des virgules)', type: 'text', section: "Où l'exercer ?" },
+        { name: 'volumeHoraire', label: 'Volume horaire typique (séparés par des virgules)', type: 'text', section: "Où l'exercer ?" },
+        { name: 'avantages', label: 'Avantages en nature courants', type: 'text', section: "Où l'exercer ?" },
+
+        // ── Accès au métier ──
+        { name: 'niveauRequis', label: 'Niveau de diplôme requis', type: 'text', section: 'Accès au métier' },
+        { name: 'specialiteDiplome', label: 'Spécialité de diplôme recommandée', type: 'text', section: 'Accès au métier' },
         {
           name: 'seriesBacMadagascar',
           label: 'Séries du Bac malgache donnant accès à ce métier (ex: C, D, S, A, Technique)',
           type: 'text',
+          section: 'Accès au métier',
         },
-        { name: 'formationsMadagascar', label: 'Formations à Madagascar (une par ligne)', type: 'textarea' },
-        { name: 'certifications', label: 'Certifications valorisées (séparées par des virgules)', type: 'text' },
-        { name: 'autoFormation', label: 'Accès par auto-formation', type: 'text' },
-        { name: 'salaireMin', label: 'Salaire minimum (Ar)', type: 'number' },
-        { name: 'salaireMax', label: 'Salaire maximum (Ar)', type: 'number' },
-        { name: 'salaireSource', label: 'Source des données salariales', type: 'text' },
-        { name: 'typeContrat', label: 'Type de contrat habituel (séparés par des virgules)', type: 'text' },
-        { name: 'volumeHoraire', label: 'Volume horaire typique (séparés par des virgules)', type: 'text' },
-        { name: 'penibilitePhysique', label: 'Pénibilité — physique / effort corporel (1 à 5)', type: 'number' },
-        { name: 'penibiliteStress', label: 'Pénibilité — stress et pression (1 à 5)', type: 'number' },
-        { name: 'penibiliteRisques', label: 'Pénibilité — risques professionnels (1 à 5)', type: 'number' },
-        { name: 'avantages', label: 'Avantages en nature courants', type: 'text' },
-        { name: 'niveauDemande', label: "Niveau de demande d'emploi à Madagascar", type: 'text' },
-        { name: 'regionsPresence', label: 'Régions où le métier est présent (séparées par des virgules)', type: 'text' },
-        { name: 'employeurs', label: 'Principaux employeurs (séparés par des virgules)', type: 'text' },
-        { name: 'perspectivesEmploi', label: "Perspectives d'emploi", type: 'textarea' },
-        { name: 'postesEvolution', label: 'Évolution professionnelle et hiérarchique', type: 'textarea' },
+        { name: 'formationsMadagascar', label: 'Formations à Madagascar (une par ligne)', type: 'textarea', section: 'Accès au métier' },
+        { name: 'certifications', label: 'Certifications valorisées (séparées par des virgules)', type: 'text', section: 'Accès au métier' },
+        { name: 'autoFormation', label: 'Accès par auto-formation', type: 'text', section: 'Accès au métier' },
+
+        // ── Carrières ──
+        { name: 'salaireMin', label: 'Salaire minimum (Ar)', type: 'number', section: 'Carrières' },
+        { name: 'salaireMax', label: 'Salaire maximum (Ar)', type: 'number', section: 'Carrières' },
+        { name: 'salaireSource', label: 'Source des données salariales', type: 'text', section: 'Carrières' },
+        { name: 'niveauDemande', label: "Niveau de demande d'emploi à Madagascar", type: 'text', section: 'Carrières' },
+        { name: 'regionsPresence', label: 'Régions où le métier est présent (séparées par des virgules)', type: 'text', section: 'Carrières' },
+        { name: 'employeurs', label: 'Principaux employeurs (séparés par des virgules)', type: 'text', section: 'Carrières' },
+        { name: 'perspectivesEmploi', label: "Perspectives d'emploi", type: 'textarea', section: 'Carrières' },
+        { name: 'postesEvolution', label: 'Évolution professionnelle et hiérarchique', type: 'textarea', section: 'Carrières' },
         {
           name: 'etapesEvolution',
           label:
             "Étapes de carrière détaillées (une par ligne, format : Poste | Expérience ou niveau requis) — ex : « Développeur junior | 0-2 ans d'expérience ». Le poste est automatiquement mis en lien vers sa fiche métier s'il est reconnu.",
           type: 'textarea',
+          section: 'Carrières',
         },
-        { name: 'mobiliteInternationale', label: 'Mobilité internationale / opportunités institutionnelles', type: 'textarea' },
-        { name: 'tendances', label: 'Tendances du secteur (séparées par des virgules)', type: 'text' },
-        {
-          name: 'traitsPersonnalite',
-          label: 'Traits de personnalité type — profil qui réussit naturellement dans ce métier, pour matcher un élève (séparés par des virgules)',
-          type: 'text',
-        },
-        { name: 'centresInteret', label: "Centres d'intérêt typiques (séparés par des virgules)", type: 'text' },
-        { name: 'valeursProfessionnelles', label: 'Valeurs professionnelles (séparées par des virgules)', type: 'text' },
-        { name: 'profilIntroExtraverti', label: 'Adéquation introverti / extraverti', type: 'textarea' },
-        {
-          name: 'riasecCodes',
-          label: 'Codes RIASEC (ex: R, I) — pour les recommandations du questionnaire',
-          type: 'text',
-        },
-        { name: 'temoignagePrenom', label: 'Témoignage — prénom', type: 'text' },
-        { name: 'temoignageAnneesExperience', label: "Témoignage — années d'expérience", type: 'number' },
-        { name: 'temoignageVille', label: 'Témoignage — ville', type: 'text' },
-        { name: 'temoignageSecteurEmployeur', label: 'Témoignage — secteur / employeur', type: 'text' },
-        { name: 'temoignageCePlait', label: 'Témoignage — ce qui lui plaît', type: 'textarea' },
-        { name: 'temoignageDifficultes', label: 'Témoignage — difficultés rencontrées', type: 'textarea' },
-        { name: 'temoignageConseil', label: 'Témoignage — son conseil', type: 'textarea' },
-        { name: 'temoignageCitation', label: 'Témoignage — citation', type: 'textarea' },
+        { name: 'mobiliteInternationale', label: 'Mobilité internationale / opportunités institutionnelles', type: 'textarea', section: 'Carrières' },
+        { name: 'tendances', label: 'Tendances du secteur (séparées par des virgules)', type: 'text', section: 'Carrières' },
+        { name: 'penibilitePhysique', label: 'Pénibilité — physique / effort corporel (1 à 5)', type: 'number', section: 'Carrières' },
+        { name: 'penibiliteStress', label: 'Pénibilité — stress et pression (1 à 5)', type: 'number', section: 'Carrières' },
+        { name: 'penibiliteRisques', label: 'Pénibilité — risques professionnels (1 à 5)', type: 'number', section: 'Carrières' },
+
+        // ── Témoignage professionnel ──
+        { name: 'temoignagePrenom', label: 'Témoignage — prénom', type: 'text', section: 'Témoignage professionnel' },
+        { name: 'temoignageAnneesExperience', label: "Témoignage — années d'expérience", type: 'number', section: 'Témoignage professionnel' },
+        { name: 'temoignageVille', label: 'Témoignage — ville', type: 'text', section: 'Témoignage professionnel' },
+        { name: 'temoignageSecteurEmployeur', label: 'Témoignage — secteur / employeur', type: 'text', section: 'Témoignage professionnel' },
+        { name: 'temoignageCePlait', label: 'Témoignage — ce qui lui plaît', type: 'textarea', section: 'Témoignage professionnel' },
+        { name: 'temoignageDifficultes', label: 'Témoignage — difficultés rencontrées', type: 'textarea', section: 'Témoignage professionnel' },
+        { name: 'temoignageConseil', label: 'Témoignage — son conseil', type: 'textarea', section: 'Témoignage professionnel' },
+        { name: 'temoignageCitation', label: 'Témoignage — citation', type: 'textarea', section: 'Témoignage professionnel' },
         {
           name: 'temoignageAccordPublication',
           label: 'Témoignage — accord de publication (OUI_PHOTO, OUI_PRENOM, OUI_ANONYME, NON)',
           type: 'text',
+          section: 'Témoignage professionnel',
         },
-        { name: 'sources', label: 'Sources consultées (une par ligne, ex : Type — Référence — Date)', type: 'textarea' },
+
+        // ── Sources et fiabilité ──
+        { name: 'sources', label: 'Sources consultées (une par ligne, ex : Type — Référence — Date)', type: 'textarea', section: 'Sources et fiabilité' },
         {
           name: 'fiabilite',
           label: 'Évaluation de la fiabilité (TRES_FIABLE, FIABLE, A_VERIFIER, PARTIELLE)',
           type: 'text',
+          section: 'Sources et fiabilité',
         },
-        { name: 'observations', label: 'Observations complémentaires', type: 'textarea' },
+        { name: 'observations', label: 'Observations complémentaires', type: 'textarea', section: 'Sources et fiabilité' },
       ]}
     />
   );

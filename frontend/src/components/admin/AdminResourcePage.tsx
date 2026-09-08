@@ -13,6 +13,8 @@ export interface FieldConfig {
   type: FieldType;
   required?: boolean;
   options?: { value: string; label: string }[];
+  /** Regroupe les champs sous un même intertitre dans le formulaire (ex: "Identification", "Carrières"). */
+  section?: string;
 }
 
 export interface ColumnConfig<T> {
@@ -169,6 +171,26 @@ export function AdminResourcePage<T extends { id: string }>({
     }
   }
 
+  // Regroupe les champs par rubrique (`field.section`) pour l'affichage du formulaire, sans
+  // changer l'ordre déclaré à l'intérieur de chaque rubrique. Les champs sans section restent
+  // affichés sans intertitre, dans leur ordre d'origine.
+  const fieldGroups: { heading?: string; items: FieldConfig[] }[] = [];
+  {
+    const bySection = new Map<string, FieldConfig[]>();
+    const order: string[] = [];
+    for (const f of fields) {
+      const key = f.section ?? '';
+      if (!bySection.has(key)) {
+        bySection.set(key, []);
+        order.push(key);
+      }
+      bySection.get(key)!.push(f);
+    }
+    for (const key of order) {
+      fieldGroups.push({ heading: key || undefined, items: bySection.get(key)! });
+    }
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -240,15 +262,32 @@ export function AdminResourcePage<T extends { id: string }>({
 
       {showForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-20 p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div className="bg-white dark:bg-slate-900 rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
               <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
                 {editing ? 'Modifier' : 'Ajouter'} — {title}
               </h2>
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                aria-label="Fermer"
+                className="shrink-0 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-md p-1 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
               {error && (
                 <div className="bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">{error}</div>
               )}
-              {fields.map((field) => (
+              {fieldGroups.map((group, groupIndex) => (
+              <div key={group.heading ?? `__section-${groupIndex}`} className="space-y-4">
+                {group.heading && (
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400 border-b border-slate-200 dark:border-slate-800 pb-1.5">
+                    {group.heading}
+                  </h3>
+                )}
+                {group.items.map((field) => (
                 <div key={field.name}>
                   <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
                     {field.label}
@@ -387,6 +426,8 @@ export function AdminResourcePage<T extends { id: string }>({
                     />
                   )}
                 </div>
+                ))}
+              </div>
               ))}
               <div className="flex justify-end gap-2 pt-2">
                 <button

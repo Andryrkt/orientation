@@ -188,149 +188,6 @@ function AccordionSection({
   );
 }
 
-/* ── Composant : Boussole du Métier (Schéma SVG Interactif) ── */
-interface BoussoleProps {
-  nom: string;
-  hasMissions: boolean;
-  hasCompetences: boolean;
-  hasTraits: boolean;
-  hasSalaire: boolean;
-  onNavigate: (sectionId: string) => void;
-}
-function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalaire, onNavigate }: BoussoleProps) {
-  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
-
-  return (
-    <div className="glass-card p-6 relative overflow-hidden flex flex-col items-center">
-      {/* Glow effect */}
-      {hoveredNode && (
-        <div
-          className="absolute -top-20 -right-20 w-72 h-72 rounded-full opacity-40 pointer-events-none transition-all duration-500 animate-pulse-glow"
-          style={{
-            background: `radial-gradient(circle, ${
-              hoveredNode === 'missions' ? 'rgba(168,85,247,0.4)' :
-              hoveredNode === 'competences' ? 'rgba(34,211,238,0.4)' :
-              hoveredNode === 'traits' ? 'rgba(236,72,153,0.4)' : 'rgba(52,211,153,0.4)'
-            } 0%, transparent 70%)`
-          }}
-        />
-      )}
-
-      <h3 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-6 text-center">
-        Boussole &amp; Structure du Métier
-      </h3>
-
-      <div className="w-full max-w-[340px] h-[280px] relative">
-        <svg viewBox="0 0 400 340" className="w-full h-full">
-          {/* Liens en arrière-plan */}
-          {hasMissions && (
-            <line x1="200" y1="170" x2="200" y2="60"
-              stroke={hoveredNode === 'missions' ? '#a855f7' : 'rgba(255,255,255,0.08)'}
-              strokeWidth={hoveredNode === 'missions' ? '3' : '1.5'}
-              className="transition-all duration-300"
-            />
-          )}
-          {hasCompetences && (
-            <line x1="200" y1="170" x2="70" y2="170"
-              stroke={hoveredNode === 'competences' ? '#22d3ee' : 'rgba(255,255,255,0.08)'}
-              strokeWidth={hoveredNode === 'competences' ? '3' : '1.5'}
-              className="transition-all duration-300"
-            />
-          )}
-          {hasTraits && (
-            <line x1="200" y1="170" x2="330" y2="170"
-              stroke={hoveredNode === 'traits' ? '#ec4899' : 'rgba(255,255,255,0.08)'}
-              strokeWidth={hoveredNode === 'traits' ? '3' : '1.5'}
-              className="transition-all duration-300"
-            />
-          )}
-          {hasSalaire && (
-            <line x1="200" y1="170" x2="200" y2="280"
-              stroke={hoveredNode === 'salaire' ? '#34d399' : 'rgba(255,255,255,0.08)'}
-              strokeWidth={hoveredNode === 'salaire' ? '3' : '1.5'}
-              className="transition-all duration-300"
-            />
-          )}
-
-          {/* Nœud Central (Métier) */}
-          <circle cx="200" cy="170" r="48" fill="rgba(15,12,41,0.95)" stroke="url(#centralGradient)" strokeWidth="3" style={{ filter: 'drop-shadow(0 0 10px rgba(168,85,247,0.35))' }} />
-          <foreignObject x="160" y="140" width="80" height="60">
-            <div className="w-full h-full flex items-center justify-center text-center px-1">
-              <span className="text-[10px] font-black text-white leading-tight line-clamp-3 select-none">{nom}</span>
-            </div>
-          </foreignObject>
-
-          {/* Nœud Haut (Missions) */}
-          {hasMissions && (
-            <g
-              className="cursor-pointer group"
-              onMouseEnter={() => setHoveredNode('missions')}
-              onMouseLeave={() => setHoveredNode(null)}
-              onClick={() => onNavigate('section-missions')}
-            >
-              <circle cx="200" cy="60" r="28" fill="rgba(10,8,24,0.9)" stroke={hoveredNode === 'missions' ? '#a855f7' : 'rgba(255,255,255,0.12)'} strokeWidth="1.5" className="transition-all duration-300" />
-              <text x="200" y="56" textAnchor="middle" fill={hoveredNode === 'missions' ? '#e9d5ff' : '#94a3b8'} className="text-[16px] select-none transition-colors duration-300">📋</text>
-              <text x="200" y="74" textAnchor="middle" fill={hoveredNode === 'missions' ? '#a855f7' : '#64748b'} className="text-[8px] uppercase tracking-wider font-extrabold select-none transition-colors duration-300">Missions</text>
-            </g>
-          )}
-
-          {/* Nœud Gauche (Compétences) */}
-          {hasCompetences && (
-            <g
-              className="cursor-pointer group"
-              onMouseEnter={() => setHoveredNode('competences')}
-              onMouseLeave={() => setHoveredNode(null)}
-              onClick={() => onNavigate('section-competences')}
-            >
-              <circle cx="70" cy="170" r="28" fill="rgba(10,8,24,0.9)" stroke={hoveredNode === 'competences' ? '#22d3ee' : 'rgba(255,255,255,0.12)'} strokeWidth="1.5" className="transition-all duration-300" />
-              <text x="70" y="166" textAnchor="middle" fill={hoveredNode === 'competences' ? '#cffafe' : '#94a3b8'} className="text-[16px] select-none transition-colors duration-300">⚡</text>
-              <text x="70" y="184" textAnchor="middle" fill={hoveredNode === 'competences' ? '#22d3ee' : '#64748b'} className="text-[8px] uppercase tracking-wider font-extrabold select-none transition-colors duration-300">Compétences</text>
-            </g>
-          )}
-
-          {/* Nœud Droite (Traits) */}
-          {hasTraits && (
-            <g
-              className="cursor-pointer group"
-              onMouseEnter={() => setHoveredNode('traits')}
-              onMouseLeave={() => setHoveredNode(null)}
-              onClick={() => onNavigate('section-personnalite')}
-            >
-              <circle cx="330" cy="170" r="28" fill="rgba(10,8,24,0.9)" stroke={hoveredNode === 'traits' ? '#ec4899' : 'rgba(255,255,255,0.12)'} strokeWidth="1.5" className="transition-all duration-300" />
-              <text x="330" y="166" textAnchor="middle" fill={hoveredNode === 'traits' ? '#fce7f3' : '#94a3b8'} className="text-[16px] select-none transition-colors duration-300">🧠</text>
-              <text x="330" y="184" textAnchor="middle" fill={hoveredNode === 'traits' ? '#ec4899' : '#64748b'} className="text-[8px] uppercase tracking-wider font-extrabold select-none transition-colors duration-300">Profil</text>
-            </g>
-          )}
-
-          {/* Nœud Bas (Salaire) */}
-          {hasSalaire && (
-            <g
-              className="cursor-pointer group"
-              onMouseEnter={() => setHoveredNode('salaire')}
-              onMouseLeave={() => setHoveredNode(null)}
-              onClick={() => onNavigate('section-salaire')}
-            >
-              <circle cx="200" cy="280" r="28" fill="rgba(10,8,24,0.9)" stroke={hoveredNode === 'salaire' ? '#34d399' : 'rgba(255,255,255,0.12)'} strokeWidth="1.5" className="transition-all duration-300" />
-              <text x="200" y="276" textAnchor="middle" fill={hoveredNode === 'salaire' ? '#d1fae5' : '#94a3b8'} className="text-[16px] select-none transition-colors duration-300">💰</text>
-              <text x="200" y="294" textAnchor="middle" fill={hoveredNode === 'salaire' ? '#34d399' : '#64748b'} className="text-[8px] uppercase tracking-wider font-extrabold select-none transition-colors duration-300">Salaire</text>
-            </g>
-          )}
-
-          <defs>
-            <linearGradient id="centralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#a855f7" />
-              <stop offset="100%" stopColor="#818cf8" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-      <p className="text-[10px] text-slate-500 italic text-center mt-3 select-none">
-        * Astuce : Survolez et cliquez sur les nœuds pour naviguer.
-      </p>
-    </div>
-  );
-}
-
 /* ── Composant : Barres de Niveaux de Compétences ── */
 interface SkillProps {
   title: string;
@@ -460,7 +317,7 @@ function PenibiliteGauge({ label, niveau }: { label: string; niveau: number }) {
   );
 }
 
-type AccordionKey = 'metier' | 'exercice' | 'carrieres' | 'acces';
+type AccordionKey = 'metier' | 'temoignage' | 'exercice' | 'carrieres' | 'acces';
 
 // Sections cliquables de la boussole/résumé -> section repliable qui les contient.
 const SECTION_OWNER: Record<string, AccordionKey> = {
@@ -468,6 +325,7 @@ const SECTION_OWNER: Record<string, AccordionKey> = {
   'section-missions': 'metier',
   'section-competences': 'metier',
   'section-personnalite': 'metier',
+  'section-temoignage': 'temoignage',
   'section-exercice': 'exercice',
   'section-carrieres': 'carrieres',
   'section-salaire': 'carrieres',
@@ -478,6 +336,7 @@ export function MetierDetail() {
   const { slug } = useParams();
   const [openSections, setOpenSections] = useState<Record<AccordionKey, boolean>>({
     metier: true,
+    temoignage: false,
     exercice: false,
     carrieres: false,
     acces: false,
@@ -507,7 +366,7 @@ export function MetierDetail() {
 
   if (!metier) return <p className="text-slate-400 py-16 text-center">Métier introuvable.</p>;
 
-  const hasTemoignage = metier.temoignageCitation || metier.temoignageCePlait || metier.temoignageConseil;
+  const hasTemoignage = !!(metier.temoignageCitation || metier.temoignageCePlait || metier.temoignageConseil);
   const hasMissions = metier.missions && metier.missions.length > 0;
   const hasCompetences = metier.competences && metier.competences.length > 0;
   const hasTraits = metier.traitsPersonnalite && metier.traitsPersonnalite.length > 0;
@@ -560,6 +419,7 @@ export function MetierDetail() {
 
   const NAV_ITEMS: { key: AccordionKey; id: string; icon: string; label: string; show: boolean }[] = [
     { key: 'metier', id: 'section-metier', icon: '💼', label: 'Le métier', show: true },
+    { key: 'temoignage', id: 'section-temoignage', icon: '💬', label: 'Témoignage', show: hasTemoignage },
     { key: 'exercice', id: 'section-exercice', icon: '🏞️', label: "Où l'exercer ?", show: hasExercice },
     { key: 'carrieres', id: 'section-carrieres', icon: '📈', label: 'Carrières', show: hasCarrieres },
     { key: 'acces', id: 'section-acces', icon: '🎓', label: 'Accès au métier', show: hasAcces },
@@ -620,7 +480,7 @@ export function MetierDetail() {
         )}
         {metier.seriesBacMadagascar.length > 0 && (
           <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-700 dark:text-slate-200">
-            📜 Bac {metier.seriesBacMadagascar.join(' / ')}
+            📜 Bac recommandé {metier.seriesBacMadagascar.join(' / ')}
           </span>
         )}
         {hasSalaire && (
@@ -658,69 +518,11 @@ export function MetierDetail() {
         isOpen={openSections.metier}
         onToggle={() => toggleSection('metier')}
       >
-        {/* Description & Boussole interactive */}
-        <div className="md:col-span-2 grid md:grid-cols-5 gap-6 items-start">
-          <div className="md:col-span-3 space-y-6">
-            <div>
-              <p className="text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
-                {metier.description}
-              </p>
-            </div>
-
-            {/* Témoignage si existant */}
-            {hasTemoignage && (
-              <div className="p-6 rounded-2xl border bg-blue-500/5 border-blue-500/15 dark:border-blue-500/20 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-20 pointer-events-none"
-                  style={{ background: 'radial-gradient(circle, rgba(0,163,255,0.4) 0%, transparent 70%)' }} />
-
-                <h3 className="font-bold text-blue-600 dark:text-blue-300 text-sm mb-3 flex items-center gap-2">
-                  💬 Témoignage de {metier.temoignagePrenom || 'Professionnel'}
-                  {metier.temoignageAnneesExperience != null &&
-                    ` (${metier.temoignageAnneesExperience} ans d'exp.)`}
-                </h3>
-                {(metier.temoignageVille || metier.temoignageSecteurEmployeur) && (
-                  <p className="text-slate-500 dark:text-slate-500 text-xs italic mb-2">
-                    {[metier.temoignageVille, metier.temoignageSecteurEmployeur].filter(Boolean).join(' · ')}
-                  </p>
-                )}
-                {metier.temoignageCitation && (
-                  <p className="italic text-slate-700 dark:text-slate-200 text-sm leading-relaxed mb-3">
-                    « {metier.temoignageCitation} »
-                  </p>
-                )}
-                {metier.temoignageCePlait && (
-                  <p className="text-slate-600 dark:text-slate-400 text-xs mb-1.5">
-                    <span className="font-semibold text-blue-600 dark:text-blue-400">Ce qui plaît : </span>
-                    {metier.temoignageCePlait}
-                  </p>
-                )}
-                {metier.temoignageDifficultes && (
-                  <p className="text-slate-600 dark:text-slate-400 text-xs mb-1.5">
-                    <span className="font-semibold text-blue-600 dark:text-blue-400">Difficultés : </span>
-                    {metier.temoignageDifficultes}
-                  </p>
-                )}
-                {metier.temoignageConseil && (
-                  <p className="text-slate-600 dark:text-slate-400 text-xs">
-                    <span className="font-semibold text-blue-600 dark:text-blue-400">Conseil : </span>
-                    {metier.temoignageConseil}
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Schéma de Représentation (Boussole) */}
-          <div className="md:col-span-2">
-            <BoussoleMetier
-              nom={metier.nom}
-              hasMissions={hasMissions}
-              hasCompetences={hasCompetences}
-              hasTraits={hasTraits}
-              hasSalaire={hasSalaire}
-              onNavigate={goToSection}
-            />
-          </div>
+        {/* Description */}
+        <div className="md:col-span-2">
+          <p className="text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
+            {metier.description}
+          </p>
         </div>
 
         {/* Nature du travail : Missions */}
@@ -814,6 +616,57 @@ export function MetierDetail() {
           </Field>
         )}
       </AccordionSection>
+
+      {/* ══════════════ SECTION : TÉMOIGNAGE ══════════════ */}
+      {hasTemoignage && (
+        <AccordionSection
+          id="section-temoignage"
+          icon="💬"
+          title="Témoignage"
+          subtitle="Le retour d'expérience d'un professionnel du métier."
+          isOpen={openSections.temoignage}
+          onToggle={() => toggleSection('temoignage')}
+        >
+          <div className="md:col-span-2 p-6 rounded-2xl border bg-blue-500/5 border-blue-500/15 dark:border-blue-500/20 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-20 pointer-events-none"
+              style={{ background: 'radial-gradient(circle, rgba(0,163,255,0.4) 0%, transparent 70%)' }} />
+
+            <h3 className="font-bold text-blue-600 dark:text-blue-300 text-sm mb-3 flex items-center gap-2">
+              💬 Témoignage de {metier.temoignagePrenom || 'Professionnel'}
+              {metier.temoignageAnneesExperience != null &&
+                ` (${metier.temoignageAnneesExperience} ans d'exp.)`}
+            </h3>
+            {(metier.temoignageVille || metier.temoignageSecteurEmployeur) && (
+              <p className="text-slate-500 dark:text-slate-500 text-xs italic mb-2">
+                {[metier.temoignageVille, metier.temoignageSecteurEmployeur].filter(Boolean).join(' · ')}
+              </p>
+            )}
+            {metier.temoignageCitation && (
+              <p className="italic text-slate-700 dark:text-slate-200 text-sm leading-relaxed mb-3">
+                « {metier.temoignageCitation} »
+              </p>
+            )}
+            {metier.temoignageCePlait && (
+              <p className="text-slate-600 dark:text-slate-400 text-xs mb-1.5">
+                <span className="font-semibold text-blue-600 dark:text-blue-400">Ce qui plaît : </span>
+                {metier.temoignageCePlait}
+              </p>
+            )}
+            {metier.temoignageDifficultes && (
+              <p className="text-slate-600 dark:text-slate-400 text-xs mb-1.5">
+                <span className="font-semibold text-blue-600 dark:text-blue-400">Difficultés : </span>
+                {metier.temoignageDifficultes}
+              </p>
+            )}
+            {metier.temoignageConseil && (
+              <p className="text-slate-600 dark:text-slate-400 text-xs">
+                <span className="font-semibold text-blue-600 dark:text-blue-400">Conseil : </span>
+                {metier.temoignageConseil}
+              </p>
+            )}
+          </div>
+        </AccordionSection>
+      )}
 
       {/* ══════════════ SECTION 2 : OÙ L'EXERCER ══════════════ */}
       {hasExercice && (
@@ -1000,7 +853,7 @@ export function MetierDetail() {
       {metier.similaires && metier.similaires.length > 0 && (
         <div className="glass-card p-6">
           <h3 className="font-bold text-slate-900 dark:text-white text-base border-b border-black/5 dark:border-white/5 pb-2 mb-4">
-            🔄 Métiers similaires
+            🔄 Autres métiers à découvrir
           </h3>
           <div className="flex flex-wrap gap-2.5">
             {metier.similaires.map((m) => (
