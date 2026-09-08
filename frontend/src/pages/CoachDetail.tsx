@@ -5,6 +5,7 @@ import { api } from '../lib/api';
 import { useAuth } from '../lib/auth-context';
 import { Coach } from '../lib/types';
 import { FavoriteButton } from '../components/FavoriteButton';
+import { BackButton } from '../components/BackButton';
 
 export function CoachDetail() {
   const { id } = useParams();
@@ -71,6 +72,7 @@ export function CoachDetail() {
 
   return (
     <div className="max-w-2xl mx-auto">
+      <BackButton fallback="/coachs" />
       <div className="flex items-start justify-between gap-4 mb-2">
         <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{coach.prenom} {coach.nom}</h1>
         <FavoriteButton type="COACH" entityId={coach.id} className="shrink-0" />

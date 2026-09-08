@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { Metier, Paginated } from '../lib/types';
 import { FavoriteButton } from '../components/FavoriteButton';
+import { BackButton } from '../components/BackButton';
 import { RIASEC_LABELS } from '../lib/riasec';
 
 /* ── Mise en lien des étapes de carrière avec les fiches métiers existantes ── */
@@ -427,6 +428,7 @@ export function MetierDetail() {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto pb-12">
+      <BackButton fallback="/metiers" />
       {/* ── Bannière de Représentation avec Photo ── */}
       <section
         className="relative overflow-hidden px-6 py-12 sm:py-16 rounded-[2rem] border border-white/10 flex flex-col justify-end min-h-[260px] sm:min-h-[300px]"

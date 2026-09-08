@@ -5,6 +5,7 @@ import { api } from '../lib/api';
 import { useAuth } from '../lib/auth-context';
 import { Enseignant } from '../lib/types';
 import { FavoriteButton } from '../components/FavoriteButton';
+import { BackButton } from '../components/BackButton';
 
 export function EnseignantDetail() {
   const { id } = useParams();
@@ -71,6 +72,7 @@ export function EnseignantDetail() {
 
   return (
     <div className="max-w-2xl mx-auto">
+      <BackButton fallback="/enseignants" />
       <div className="flex items-start justify-between gap-4 mb-2">
         <div>
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{enseignant.prenom} {enseignant.nom}</h1>

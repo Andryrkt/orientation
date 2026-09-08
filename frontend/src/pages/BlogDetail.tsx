@@ -5,6 +5,7 @@ import { api } from '../lib/api';
 import { useAuth } from '../lib/auth-context';
 import { Blog } from '../lib/types';
 import { BLOG_CATEGORIES } from '../lib/blog-categories';
+import { BackButton } from '../components/BackButton';
 
 function formatDate(value: string | null) {
   if (!value) return null;
@@ -68,6 +69,7 @@ export function BlogDetail() {
 
   return (
     <div className="max-w-2xl mx-auto">
+      <BackButton fallback="/blog" />
       {blog.categorie && (
         <p className="text-sm font-medium text-brand-600 dark:text-blue-400 mb-1">
           {BLOG_CATEGORIES.find((c) => c.value === blog.categorie)?.label ?? blog.categorie}

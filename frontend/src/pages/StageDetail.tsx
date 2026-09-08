@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { Stage } from '../lib/types';
 import { FavoriteButton } from '../components/FavoriteButton';
+import { BackButton } from '../components/BackButton';
 
 function formatDate(value: string | null) {
   if (!value) return null;
@@ -21,6 +22,7 @@ export function StageDetail() {
 
   return (
     <div className="max-w-3xl mx-auto">
+      <BackButton fallback="/stages" />
       {stage.domaine && <p className="text-sm font-medium text-brand-600 dark:text-blue-400 mb-1">{stage.domaine.nom}</p>}
       <div className="flex items-start justify-between gap-4 mb-2">
         <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{stage.titre}</h1>

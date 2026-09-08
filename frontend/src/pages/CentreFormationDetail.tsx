@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { CentreFormation } from '../lib/types';
 import { FavoriteButton } from '../components/FavoriteButton';
+import { BackButton } from '../components/BackButton';
 
 export function CentreFormationDetail() {
   const { slug } = useParams();
@@ -16,6 +17,7 @@ export function CentreFormationDetail() {
 
   return (
     <div className="max-w-2xl mx-auto">
+      <BackButton fallback="/etablissements" />
       <div className="flex items-start justify-between gap-4 mb-2">
         <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{centre.nom}</h1>
         <FavoriteButton type="CENTRE_FORMATION" entityId={centre.id} className="shrink-0" />

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { Universite } from '../lib/types';
 import { FavoriteButton } from '../components/FavoriteButton';
+import { BackButton } from '../components/BackButton';
 import { UniversitesMap } from '../components/UniversitesMap';
 
 export function UniversiteDetail() {
@@ -17,6 +18,7 @@ export function UniversiteDetail() {
 
   return (
     <div className="max-w-3xl mx-auto">
+      <BackButton fallback="/etablissements" />
       <div className="flex items-start justify-between gap-4 mb-2">
         <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{universite.nom}</h1>
         <FavoriteButton type="UNIVERSITE" entityId={universite.id} className="shrink-0" />
