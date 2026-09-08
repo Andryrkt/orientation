@@ -310,9 +310,11 @@ export interface User {
   enseignantProfil?: { id: string } | null;
   // Débloque l'accès aux pages "Vie étudiante" (budget, ressources), indépendamment de `role`.
   estEtudiantValide?: boolean;
+  // Débloque la création/modification d'établissements (soumis à validation), indépendamment de `role`.
+  estGestionnaireEtablissement?: boolean;
 }
 
-export type DemandeRoleType = 'COACH' | 'ENSEIGNANT' | 'ETUDIANT';
+export type DemandeRoleType = 'COACH' | 'ENSEIGNANT' | 'ETUDIANT' | 'GESTIONNAIRE_ETABLISSEMENT';
 export type DemandeRoleStatut = 'EN_ATTENTE' | 'CLARIFICATION_DEMANDEE' | 'APPROUVEE' | 'REJETEE';
 
 export interface DemandeRole {
@@ -448,6 +450,8 @@ export interface Universite {
   longitude: number | null;
   photos: string[];
   statut: string;
+  auteurId?: string | null;
+  statutValidation?: 'EN_ATTENTE' | 'APPROUVE' | 'REJETE';
   mentions?: Mention[];
 }
 
@@ -658,6 +662,8 @@ export interface CentreFormation {
   region: string | null;
   contact: string | null;
   siteWeb: string | null;
+  auteurId?: string | null;
+  statutValidation?: 'EN_ATTENTE' | 'APPROUVE' | 'REJETE';
   formations?: Formation[];
 }
 

@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { PublicLayout } from './components/PublicLayout';
 import { AdminLayout } from './components/admin/AdminLayout';
-import { ProtectedRoute, AdminRoute, AdminStrictRoute, SecretaireRoute, ModerateurRoute, CoachOuEnseignantRoute, EtudiantRoute } from './components/ProtectedRoute';
+import { ProtectedRoute, AdminRoute, AdminStrictRoute, SecretaireRoute, ModerateurRoute, CoachOuEnseignantRoute, EtudiantRoute, GestionnaireEtablissementRoute } from './components/ProtectedRoute';
 import { Home } from './pages/Home';
 import { MetiersList } from './pages/MetiersList';
 import { MetierDetail } from './pages/MetierDetail';
@@ -13,6 +13,7 @@ import { StageDetail } from './pages/StageDetail';
 import { BoursesList } from './pages/BoursesList';
 import { BourseDetail } from './pages/BourseDetail';
 import { BudgetSimulator } from './pages/BudgetSimulator';
+import { MesEtablissements } from './pages/MesEtablissements';
 import { BlogsList } from './pages/BlogsList';
 import { BlogDetail } from './pages/BlogDetail';
 import { QuestionnairesList } from './pages/QuestionnairesList';
@@ -129,6 +130,9 @@ export default function App() {
         <Route element={<EtudiantRoute />}>
           <Route path="budget" element={<BudgetSimulator />} />
           <Route path="ressources" element={<RessourcesApprentissage />} />
+        </Route>
+        <Route element={<GestionnaireEtablissementRoute />}>
+          <Route path="mes-etablissements" element={<MesEtablissements />} />
         </Route>
       </Route>
 

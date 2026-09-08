@@ -39,6 +39,7 @@ const DEMANDE_TYPE_LABELS: Record<DemandeRoleType, string> = {
   COACH: 'Coach',
   ENSEIGNANT: 'Enseignant',
   ETUDIANT: 'Étudiant',
+  GESTIONNAIRE_ETABLISSEMENT: "Gestionnaire d'établissement",
 };
 
 const NIVEAUX_ETUDE_OPTIONS: { value: string; label: string }[] = [
@@ -497,6 +498,85 @@ function DevenirEtudiant({
   );
 }
 
+function DevenirGestionnaireEtablissement({
+  estGestionnaire,
+  demandes,
+  onSubmitted,
+}: {
+  estGestionnaire: boolean;
+  demandes: DemandeRole[];
+  onSubmitted: () => void;
+}) {
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const demandeEnCours = demandes.find((d) => d.statut === 'EN_ATTENTE' || d.statut === 'CLARIFICATION_DEMANDEE');
+
+  const submitMutation = useMutation({
+    mutationFn: () => api.post('/demandes-role', { type: 'GESTIONNAIRE_ETABLISSEMENT', message: message || undefined }),
+    onSuccess: () => {
+      setMessage('');
+      setError(null);
+      onSubmitted();
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
+      setError(Array.isArray(msg) ? msg.join(', ') : msg ?? 'Une erreur est survenue');
+    },
+  });
+
+  if (estGestionnaire) {
+    return (
+      <Link
+        to="/mes-etablissements"
+        className="block px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-sm font-semibold text-slate-700 dark:text-slate-200"
+      >
+        🏛️ Gérer mes établissements →
+      </Link>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {demandes.length > 0 && (
+        <div className="space-y-2 mb-2">
+          {demandes.map((d) => (
+            <DemandeRow key={d.id} demande={d} onCompleted={onSubmitted} />
+          ))}
+        </div>
+      )}
+
+      {!demandeEnCours && (
+        <div className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-3">
+          {error && (
+            <div className="bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">
+              {error}
+            </div>
+          )}
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Devenez gestionnaire pour ajouter ou tenir à jour la fiche d'une université ou d'un centre de formation professionnelle. Toute fiche créée ou modifiée passe par une validation avant publication.
+          </p>
+          <textarea
+            className="field-input"
+            rows={2}
+            placeholder="Motivation, établissement(s) concerné(s)... (optionnel)"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <button
+            type="button"
+            disabled={submitMutation.isPending}
+            onClick={() => submitMutation.mutate()}
+            className="btn-primary text-sm px-4 py-2 disabled:opacity-50"
+          >
+            {submitMutation.isPending ? 'Envoi...' : 'Demander à devenir gestionnaire'}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Card({ title, icon, children, action }: { title: string; icon: string; children: ReactNode; action?: ReactNode }) {
   return (
     <div className="card p-5">
@@ -665,6 +745,7 @@ export function MonEspace() {
   const estEnseignant = !!user?.enseignantProfil;
   const isCoachOuEnseignant = estCoach || estEnseignant;
   const estEtudiantValide = !!user?.estEtudiantValide;
+  const estGestionnaireEtablissement = !!user?.estGestionnaireEtablissement;
 
   const { data: resultats } = useQuery({
     queryKey: ['resultats-orientation'],
@@ -701,8 +782,11 @@ export function MonEspace() {
 
   if (!user) return null;
 
-  const demandesCoachEnseignant = (mesDemandesRole ?? []).filter((d) => d.type !== 'ETUDIANT');
+  const demandesCoachEnseignant = (mesDemandesRole ?? []).filter(
+    (d) => d.type !== 'ETUDIANT' && d.type !== 'GESTIONNAIRE_ETABLISSEMENT',
+  );
   const demandesEtudiant = (mesDemandesRole ?? []).filter((d) => d.type === 'ETUDIANT');
+  const demandesGestionnaire = (mesDemandesRole ?? []).filter((d) => d.type === 'GESTIONNAIRE_ETABLISSEMENT');
 
   const dernierResultat = resultats?.[0];
   const profilLabel = dernierResultat?.profilDominant
@@ -812,6 +896,16 @@ export function MonEspace() {
               </Card>
             </div>
           )}
+
+          <div className="sm:col-span-2">
+            <Card title="Gestionnaire d'établissement" icon="🏛️">
+              <DevenirGestionnaireEtablissement
+                estGestionnaire={estGestionnaireEtablissement}
+                demandes={demandesGestionnaire}
+                onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['mes-demandes-role'] })}
+              />
+            </Card>
+          </div>
 
           <div className="sm:col-span-2">
             <Card

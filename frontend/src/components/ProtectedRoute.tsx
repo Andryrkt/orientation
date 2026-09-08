@@ -60,3 +60,12 @@ export function EtudiantRoute() {
   if (!user.estEtudiantValide) return <Navigate to="/mon-espace" replace />;
   return <Outlet />;
 }
+
+// Réservé aux comptes dont la demande "Gestionnaire d'établissement" a été approuvée (cf. Mon espace).
+export function GestionnaireEtablissementRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="p-8 text-center text-slate-500">Chargement...</div>;
+  if (!user) return <Navigate to="/login" replace />;
+  if (!user.estGestionnaireEtablissement) return <Navigate to="/mon-espace" replace />;
+  return <Outlet />;
+}

@@ -13,6 +13,7 @@ const TYPE_LABELS: Record<DemandeRoleType, string> = {
   COACH: 'coach',
   ENSEIGNANT: 'enseignant',
   ETUDIANT: 'étudiant',
+  GESTIONNAIRE_ETABLISSEMENT: "gestionnaire d'établissement",
 };
 
 @Injectable()
@@ -83,6 +84,9 @@ export class DemandesRoleService {
       return !!(await this.prisma.enseignant.findFirst({ where: { utilisateurId } }));
     }
     const utilisateur = await this.prisma.utilisateur.findUnique({ where: { id: utilisateurId } });
+    if (type === DemandeRoleType.GESTIONNAIRE_ETABLISSEMENT) {
+      return !!utilisateur?.estGestionnaireEtablissement;
+    }
     return !!utilisateur?.estEtudiantValide;
   }
 
@@ -240,6 +244,11 @@ export class DemandesRoleService {
             },
           });
         }
+      } else if (demande.type === DemandeRoleType.GESTIONNAIRE_ETABLISSEMENT) {
+        await this.prisma.utilisateur.update({
+          where: { id: utilisateur.id },
+          data: { estGestionnaireEtablissement: true },
+        });
       } else {
         await this.prisma.utilisateur.update({
           where: { id: utilisateur.id },
@@ -262,6 +271,11 @@ export class DemandesRoleService {
         await this.prisma.coach.updateMany({ where: { utilisateurId: utilisateur.id }, data: { utilisateurId: null } });
       } else if (demande.type === DemandeRoleType.ENSEIGNANT) {
         await this.prisma.enseignant.updateMany({ where: { utilisateurId: utilisateur.id }, data: { utilisateurId: null } });
+      } else if (demande.type === DemandeRoleType.GESTIONNAIRE_ETABLISSEMENT) {
+        await this.prisma.utilisateur.update({
+          where: { id: utilisateur.id },
+          data: { estGestionnaireEtablissement: false },
+        });
       } else {
         await this.prisma.utilisateur.update({
           where: { id: utilisateur.id },

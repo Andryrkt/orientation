@@ -79,6 +79,9 @@ model Utilisateur {
   // Statut indépendant du Role système (comme coachProfil/enseignantProfil) : débloque l'accès
   // aux pages "Vie étudiante" (budget, ressources) une fois la demande ETUDIANT approuvée.
   estEtudiantValide Boolean  @default(false)
+  // Débloque la possibilité de créer/modifier des fiches Université ou Formation professionnelle
+  // (soumises à validation admin) une fois la demande GESTIONNAIRE_ETABLISSEMENT approuvée.
+  estGestionnaireEtablissement Boolean @default(false)
   emailVerifiedAt  DateTime?
   refreshTokenHash String?
   createdAt        DateTime  @default(now())
@@ -99,6 +102,8 @@ model Utilisateur {
   rendezVous           RendezVous[]
   notifications        Notification[]
   demandesRole         DemandeRole[]
+  universites          Universite[]
+  centresFormation     CentreFormation[]
 
   pointDeVenteId      String?
   pointDeVente        PointDeVente?       @relation("SecretairesPointDeVente", fields: [pointDeVenteId], references: [id], onDelete: SetNull)
@@ -249,6 +254,12 @@ model Universite {
   statut      String   @default("public")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  // Gestionnaire d'établissement à l'origine de la fiche (null pour les fiches créées par un
+  // admin). Une fiche soumise par un gestionnaire part en modération avant publication publique.
+  auteurId         String?
+  auteur           Utilisateur? @relation(fields: [auteurId], references: [id], onDelete: SetNull)
+  statutValidation BlogStatut   @default(APPROUVE)
 
   mentions Mention[]
 
@@ -447,6 +458,12 @@ model CentreFormation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Gestionnaire d'établissement à l'origine de la fiche (null pour les fiches créées par un
+  // admin). Une fiche soumise par un gestionnaire part en modération avant publication publique.
+  auteurId         String?
+  auteur           Utilisateur? @relation(fields: [auteurId], references: [id], onDelete: SetNull)
+  statutValidation BlogStatut   @default(APPROUVE)
+
   formations Formation[]
 
   @@map("centres_formation")
@@ -591,6 +608,7 @@ enum DemandeRoleType {
   COACH
   ENSEIGNANT
   ETUDIANT
+  GESTIONNAIRE_ETABLISSEMENT
 }
 
 enum DemandeRoleStatut {

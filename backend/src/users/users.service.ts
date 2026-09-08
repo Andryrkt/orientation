@@ -27,6 +27,7 @@ export class UsersService {
     coachProfil: { select: { id: true } },
     enseignantProfil: { select: { id: true } },
     estEtudiantValide: true,
+    estGestionnaireEtablissement: true,
   };
 
   async findMe(userId: string) {
