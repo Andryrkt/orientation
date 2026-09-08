@@ -6,7 +6,7 @@ import { Home } from './pages/Home';
 import { MetiersList } from './pages/MetiersList';
 import { MetierDetail } from './pages/MetierDetail';
 import { DomainesList } from './pages/DomainesList';
-import { UniversitesList } from './pages/UniversitesList';
+import { EtablissementsList } from './pages/EtablissementsList';
 import { UniversiteDetail } from './pages/UniversiteDetail';
 import { StagesList } from './pages/StagesList';
 import { StageDetail } from './pages/StageDetail';
@@ -23,7 +23,6 @@ import { CoachsList } from './pages/CoachsList';
 import { CoachDetail } from './pages/CoachDetail';
 import { EnseignantsList } from './pages/EnseignantsList';
 import { EnseignantDetail } from './pages/EnseignantDetail';
-import { CentresFormationList } from './pages/CentresFormationList';
 import { CentreFormationDetail } from './pages/CentreFormationDetail';
 import { Login } from './pages/Login';
 import { MotDePasseOublie } from './pages/MotDePasseOublie';
@@ -42,7 +41,7 @@ import { SaisieJournaliere } from './pages/SaisieJournaliere';
 import { Dashboard } from './pages/admin/Dashboard';
 import { DomainesAdmin } from './pages/admin/DomainesAdmin';
 import { MetiersAdmin } from './pages/admin/MetiersAdmin';
-import { UniversitesAdmin } from './pages/admin/UniversitesAdmin';
+import { EtablissementsAdmin } from './pages/admin/EtablissementsAdmin';
 import { MentionsAdmin } from './pages/admin/MentionsAdmin';
 import { ParcoursAdmin } from './pages/admin/ParcoursAdmin';
 import { StagesAdmin } from './pages/admin/StagesAdmin';
@@ -52,7 +51,6 @@ import { BlogCommentairesAdmin } from './pages/admin/BlogCommentairesAdmin';
 import { QuestionnairesAdmin } from './pages/admin/QuestionnairesAdmin';
 import { QuestionnaireBuilder } from './pages/admin/QuestionnaireBuilder';
 import { CoachsAdmin } from './pages/admin/CoachsAdmin';
-import { CentresFormationAdmin } from './pages/admin/CentresFormationAdmin';
 import { FormationsAdmin } from './pages/admin/FormationsAdmin';
 import { UtilisateursAdmin } from './pages/admin/UtilisateursAdmin';
 import { Tickets } from './pages/Tickets';
@@ -86,9 +84,8 @@ export default function App() {
         <Route path="metiers" element={<MetiersList />} />
         <Route path="metiers/:slug" element={<MetierDetail />} />
         <Route path="domaines" element={<DomainesList />} />
-        <Route path="universites" element={<UniversitesList />} />
+        <Route path="etablissements" element={<EtablissementsList />} />
         <Route path="universites/:slug" element={<UniversiteDetail />} />
-        <Route path="centres-formation" element={<CentresFormationList />} />
         <Route path="centres-formation/:slug" element={<CentreFormationDetail />} />
         <Route path="stages" element={<StagesList />} />
         <Route path="stages/:id" element={<StageDetail />} />
@@ -141,7 +138,7 @@ export default function App() {
             <Route index element={<Dashboard />} />
             <Route path="domaines" element={<DomainesAdmin />} />
             <Route path="metiers" element={<MetiersAdmin />} />
-            <Route path="universites" element={<UniversitesAdmin />} />
+            <Route path="etablissements" element={<EtablissementsAdmin />} />
             <Route path="mentions" element={<MentionsAdmin />} />
             <Route path="parcours" element={<ParcoursAdmin />} />
             <Route path="stages" element={<StagesAdmin />} />
@@ -154,7 +151,6 @@ export default function App() {
             <Route path="coachs" element={<CoachsAdmin />} />
             <Route path="enseignants" element={<EnseignantsAdmin />} />
             <Route path="demandes-role" element={<DemandesRoleAdmin />} />
-            <Route path="centres-formation" element={<CentresFormationAdmin />} />
             <Route path="formations" element={<FormationsAdmin />} />
             <Route path="utilisateurs" element={<UtilisateursAdmin />} />
             <Route path="tickets" element={<TicketsAdmin />} />

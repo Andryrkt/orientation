@@ -494,7 +494,7 @@ export function Home() {
             <Link to="/register" className="btn-primary px-8 py-4 text-base">
               {t('home.cta_btn_register')}
             </Link>
-            <Link to="/universites" className="btn-secondary px-8 py-4 text-base">
+            <Link to="/etablissements" className="btn-secondary px-8 py-4 text-base">
               {t('home.cta_btn_explore')}
             </Link>
           </div>
