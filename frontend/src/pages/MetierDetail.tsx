@@ -74,16 +74,10 @@ interface BoussoleProps {
   hasCompetences: boolean;
   hasTraits: boolean;
   hasSalaire: boolean;
+  onNavigate: (sectionId: string) => void;
 }
-function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalaire }: BoussoleProps) {
+function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalaire, onNavigate }: BoussoleProps) {
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
-
-  const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  };
 
   return (
     <div className="glass-card p-6 relative overflow-hidden flex flex-col items-center">
@@ -151,7 +145,7 @@ function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalair
               className="cursor-pointer group" 
               onMouseEnter={() => setHoveredNode('missions')}
               onMouseLeave={() => setHoveredNode(null)}
-              onClick={() => scrollToSection('section-missions')}
+              onClick={() => onNavigate('section-missions')}
             >
               <circle cx="200" cy="60" r="28" fill="rgba(10,8,24,0.9)" stroke={hoveredNode === 'missions' ? '#a855f7' : 'rgba(255,255,255,0.12)'} strokeWidth="1.5" className="transition-all duration-300" />
               <text x="200" y="56" textAnchor="middle" fill={hoveredNode === 'missions' ? '#e9d5ff' : '#94a3b8'} className="text-[16px] select-none transition-colors duration-300">📋</text>
@@ -165,7 +159,7 @@ function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalair
               className="cursor-pointer group" 
               onMouseEnter={() => setHoveredNode('competences')}
               onMouseLeave={() => setHoveredNode(null)}
-              onClick={() => scrollToSection('section-competences')}
+              onClick={() => onNavigate('section-competences')}
             >
               <circle cx="70" cy="170" r="28" fill="rgba(10,8,24,0.9)" stroke={hoveredNode === 'competences' ? '#22d3ee' : 'rgba(255,255,255,0.12)'} strokeWidth="1.5" className="transition-all duration-300" />
               <text x="70" y="166" textAnchor="middle" fill={hoveredNode === 'competences' ? '#cffafe' : '#94a3b8'} className="text-[16px] select-none transition-colors duration-300">⚡</text>
@@ -179,7 +173,7 @@ function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalair
               className="cursor-pointer group" 
               onMouseEnter={() => setHoveredNode('traits')}
               onMouseLeave={() => setHoveredNode(null)}
-              onClick={() => scrollToSection('section-personnalite')}
+              onClick={() => onNavigate('section-personnalite')}
             >
               <circle cx="330" cy="170" r="28" fill="rgba(10,8,24,0.9)" stroke={hoveredNode === 'traits' ? '#ec4899' : 'rgba(255,255,255,0.12)'} strokeWidth="1.5" className="transition-all duration-300" />
               <text x="330" y="166" textAnchor="middle" fill={hoveredNode === 'traits' ? '#fce7f3' : '#94a3b8'} className="text-[16px] select-none transition-colors duration-300">🧠</text>
@@ -193,7 +187,7 @@ function BoussoleMetier({ nom, hasMissions, hasCompetences, hasTraits, hasSalair
               className="cursor-pointer group" 
               onMouseEnter={() => setHoveredNode('salaire')}
               onMouseLeave={() => setHoveredNode(null)}
-              onClick={() => scrollToSection('section-salaire')}
+              onClick={() => onNavigate('section-salaire')}
             >
               <circle cx="200" cy="280" r="28" fill="rgba(10,8,24,0.9)" stroke={hoveredNode === 'salaire' ? '#34d399' : 'rgba(255,255,255,0.12)'} strokeWidth="1.5" className="transition-all duration-300" />
               <text x="200" y="276" textAnchor="middle" fill={hoveredNode === 'salaire' ? '#d1fae5' : '#94a3b8'} className="text-[16px] select-none transition-colors duration-300">💰</text>
@@ -347,6 +341,7 @@ function PenibiliteGauge({ label, niveau }: { label: string; niveau: number }) {
 
 export function MetierDetail() {
   const { slug } = useParams();
+  const [showDetails, setShowDetails] = useState(false);
   const { data: metier, isLoading } = useQuery({
     queryKey: ['metier', slug],
     queryFn: async () => (await api.get<Metier>(`/metiers/${slug}`)).data,
@@ -370,6 +365,15 @@ export function MetierDetail() {
   const slugDomaine = metier.domaine?.slug || '';
   const imageUrl = metier.imageBanniere || DOMAINE_IMAGES[slugDomaine] || DEFAULT_IMAGE;
   const domainColor = DOMAINE_COLORS[slugDomaine] || DEFAULT_COLOR;
+
+  // Les nœuds "Compétences" et "Profil" vivent dans la section repliable : il faut la déplier avant de défiler vers eux.
+  const goToSection = (id: string) => {
+    const needsExpand = id === 'section-competences' || id === 'section-personnalite';
+    if (needsExpand) setShowDetails(true);
+    const scroll = () => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (needsExpand) setTimeout(scroll, 50);
+    else scroll();
+  };
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto pb-12">
@@ -512,19 +516,19 @@ export function MetierDetail() {
 
         {/* Schéma de Représentation (Boussole) */}
         <div className="md:col-span-2">
-          <BoussoleMetier 
+          <BoussoleMetier
             nom={metier.nom}
             hasMissions={hasMissions}
             hasCompetences={hasCompetences}
             hasTraits={hasTraits}
             hasSalaire={hasSalaire}
+            onNavigate={goToSection}
           />
         </div>
       </div>
 
-      {/* Grille de Détails Visuels */}
+      {/* Essentiel : missions & salaire, toujours visibles */}
       <div className="grid md:grid-cols-2 gap-6">
-        
         {/* Missions (avec id pour le smooth-scroll) */}
         {hasMissions && (
           <Field label="📋 Missions Principales" id="section-missions">
@@ -534,6 +538,32 @@ export function MetierDetail() {
           </Field>
         )}
 
+        {/* Salaire Jauge */}
+        {hasSalaire && (
+          <JaugeSalaire
+            min={metier.salaireMin || 0}
+            max={metier.salaireMax || 0}
+            source={metier.salaireSource ?? undefined}
+            id="section-salaire"
+          />
+        )}
+      </div>
+
+      {/* Bouton pour déplier le reste des informations */}
+      <div className="flex justify-center">
+        <button
+          type="button"
+          onClick={() => setShowDetails((v) => !v)}
+          className="px-5 py-2.5 rounded-full text-sm font-bold border border-blue-500/25 bg-blue-500/10 text-blue-600 dark:text-blue-300 hover:bg-blue-500/20 transition-colors flex items-center gap-2"
+        >
+          {showDetails ? '▲ Réduire' : '▼ Voir tous les détails du métier'}
+        </button>
+      </div>
+
+      {/* Grille de Détails Visuels (repliable) */}
+      {showDetails && (
+      <div className="grid md:grid-cols-2 gap-6">
+
         {/* Environnement de travail */}
         {metier.environnementTravail?.length > 0 && (
           <Field label="🏞️ Environnement de travail">
@@ -542,16 +572,6 @@ export function MetierDetail() {
               <p className="text-slate-500 dark:text-slate-400 text-xs mt-2">{metier.environnementAutre}</p>
             )}
           </Field>
-        )}
-
-        {/* Salaire Jauge */}
-        {hasSalaire && (
-          <JaugeSalaire 
-            min={metier.salaireMin || 0}
-            max={metier.salaireMax || 0}
-            source={metier.salaireSource ?? undefined}
-            id="section-salaire"
-          />
         )}
 
         {/* Compétences Techniques */}
@@ -711,6 +731,7 @@ export function MetierDetail() {
           </div>
         )}
       </div>
+      )}
 
       {/* Métiers similaires */}
       {metier.similaires && metier.similaires.length > 0 && (
