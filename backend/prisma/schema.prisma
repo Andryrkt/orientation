@@ -76,12 +76,18 @@ model Utilisateur {
   password         String?
   googleId         String?   @unique
   role             Role      @default(STUDENT)
-  // Statut indépendant du Role système (comme coachProfil/enseignantProfil) : débloque l'accès
-  // aux pages "Vie étudiante" (budget, ressources) une fois la demande ETUDIANT approuvée.
+  // Statut indépendant du Role système : débloque l'accès aux pages "Vie étudiante" (budget,
+  // ressources) une fois la demande ETUDIANT approuvée.
   estEtudiantValide Boolean  @default(false)
   // Débloque la possibilité de créer/modifier des fiches Université ou Formation professionnelle
   // (soumises à validation admin) une fois la demande GESTIONNAIRE_ETABLISSEMENT approuvée.
   estGestionnaireEtablissement Boolean @default(false)
+  // Débloque la possibilité de créer/modifier plusieurs profils Coach (soumis à validation admin)
+  // une fois la demande COACH approuvée — un même compte peut gérer plusieurs profils (ex: coach
+  // sportif, coach en orientation).
+  estCoach Boolean @default(false)
+  // Idem pour les profils Enseignant (ex: enseignant en Maths au lycée, en Algèbre à l'université).
+  estEnseignant Boolean @default(false)
   emailVerifiedAt  DateTime?
   refreshTokenHash String?
   createdAt        DateTime  @default(now())
@@ -93,9 +99,9 @@ model Utilisateur {
   blogLikes            BlogLike[]
   commentaires         BlogCommentaire[]
   resultatsOrientation ResultatOrientation[]
-  coachProfil          Coach?
+  coachProfils         Coach[]
   avisCoachs           CoachAvis[]
-  enseignantProfil     Enseignant?
+  enseignantProfils    Enseignant[]
   avisEnseignants      EnseignantAvis[]
   tickets              Ticket[]
   ticketMessages       TicketMessage[]
@@ -485,7 +491,9 @@ model Formation {
 
 model Coach {
   id              String       @id @default(uuid())
-  utilisateurId   String?      @unique
+  // Non-unique : un même compte peut créer plusieurs profils coach (ex: coach sportif, coach en
+  // orientation), chacun soumis à validation indépendamment — comme pour les établissements.
+  utilisateurId   String?
   utilisateur     Utilisateur? @relation(fields: [utilisateurId], references: [id], onDelete: SetNull)
   nom             String
   prenom          String
@@ -525,7 +533,9 @@ model CoachAvis {
 
 model Enseignant {
   id              String           @id @default(uuid())
-  utilisateurId   String?          @unique
+  // Non-unique : un même compte peut créer plusieurs profils enseignant (ex: Maths au lycée,
+  // Algèbre à l'université), chacun soumis à validation indépendamment.
+  utilisateurId   String?
   utilisateur     Utilisateur?     @relation(fields: [utilisateurId], references: [id], onDelete: SetNull)
   nom             String
   prenom          String

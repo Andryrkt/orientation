@@ -1,9 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { BlogStatut, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEnseignantDto } from './dto/create-enseignant.dto';
 import { UpdateEnseignantDto } from './dto/update-enseignant.dto';
-import { UpdateMyEnseignantDto } from './dto/update-my-enseignant.dto';
 import { QueryEnseignantDto } from './dto/query-enseignant.dto';
 import { CreateAvisDto } from './dto/create-avis.dto';
 
@@ -67,20 +66,7 @@ export class EnseignantsService {
   }
 
   findMine(utilisateurId: string) {
-    return this.prisma.enseignant.findFirst({ where: { utilisateurId } });
-  }
-
-  async updateMine(utilisateurId: string, dto: UpdateMyEnseignantDto) {
-    const existing = await this.prisma.enseignant.findFirst({ where: { utilisateurId } });
-    if (!existing) throw new NotFoundException('Profil enseignant introuvable');
-    return this.prisma.enseignant.update({
-      where: { id: existing.id },
-      data: {
-        ...dto,
-        // Toute modification renvoie la fiche en modération, même si elle était déjà publiée.
-        statutValidation: BlogStatut.EN_ATTENTE,
-      },
-    });
+    return this.prisma.enseignant.findMany({ where: { utilisateurId }, orderBy: { createdAt: 'desc' } });
   }
 
   async findAllAdmin(query: QueryEnseignantDto) {
@@ -98,8 +84,47 @@ export class EnseignantsService {
     return { items: items.map(withNoteMoyenne), total, page, limit };
   }
 
-  create(dto: CreateEnseignantDto) {
-    return this.prisma.enseignant.create({ data: dto });
+  async create(utilisateurId: string, isAdmin: boolean, isEnseignant: boolean, dto: CreateEnseignantDto) {
+    if (isAdmin) {
+      // nom/prenom sont requis pour une création admin (imposé côté formulaire) mais optionnels
+      // dans le DTO pour permettre l'auto-création (cf. branche ci-dessous).
+      return this.prisma.enseignant.create({ data: dto as Prisma.EnseignantUncheckedCreateInput });
+    }
+    if (!isEnseignant) {
+      throw new ForbiddenException('Seul un enseignant peut ajouter un profil enseignant');
+    }
+    // Auto-service : l'identité vient toujours du compte connecté (jamais du corps de la requête),
+    // pour permettre de créer plusieurs profils (Maths au lycée, Algèbre à l'université...) sans
+    // pouvoir usurper un autre compte ni s'auto-approuver.
+    const utilisateur = await this.prisma.utilisateur.findUnique({ where: { id: utilisateurId } });
+    if (!utilisateur) throw new NotFoundException('Utilisateur introuvable');
+    const { utilisateurId: _ignored, visible: _ignoredVisible, ...rest } = dto;
+    return this.prisma.enseignant.create({
+      data: {
+        ...rest,
+        utilisateurId,
+        nom: utilisateur.nom,
+        prenom: utilisateur.prenom,
+        email: utilisateur.email,
+        visible: true,
+        statutValidation: BlogStatut.EN_ATTENTE,
+      },
+    });
+  }
+
+  async updateMine(utilisateurId: string, id: string, dto: CreateEnseignantDto) {
+    const existing = await this.prisma.enseignant.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException('Profil enseignant introuvable');
+    if (existing.utilisateurId !== utilisateurId) throw new ForbiddenException();
+    const { utilisateurId: _ignored, nom: _ignoredNom, prenom: _ignoredPrenom, email: _ignoredEmail, visible: _ignoredVisible, ...rest } = dto;
+    return this.prisma.enseignant.update({
+      where: { id },
+      data: {
+        ...rest,
+        // Toute modification renvoie la fiche en modération, même si elle était déjà publiée.
+        statutValidation: BlogStatut.EN_ATTENTE,
+      },
+    });
   }
 
   async update(id: string, dto: UpdateEnseignantDto) {
@@ -130,5 +155,9 @@ export class EnseignantsService {
     if (!avis || avis.enseignantId !== enseignantId) throw new NotFoundException('Avis introuvable');
     await this.prisma.enseignantAvis.delete({ where: { id: avisId } });
     return { message: 'Avis supprime' };
+  }
+
+  countAll() {
+    return this.prisma.enseignant.count();
   }
 }

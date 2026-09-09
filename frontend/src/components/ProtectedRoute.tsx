@@ -42,13 +42,13 @@ export function ModerateurRoute() {
   return <Outlet />;
 }
 
-// Le statut coach/enseignant est déterminé par le lien de profil (coachProfil/enseignantProfil),
-// pas par le rôle système — un compte peut avoir les deux liens à la fois.
+// Le statut coach/enseignant est déterminé par la capacité du compte (estCoach/estEnseignant),
+// pas par le rôle système — un compte peut avoir les deux à la fois.
 export function CoachOuEnseignantRoute() {
   const { user, loading } = useAuth();
   if (loading) return <div className="p-8 text-center text-slate-500">Chargement...</div>;
   if (!user) return <Navigate to="/login" replace />;
-  if (!user.coachProfil && !user.enseignantProfil) return <Navigate to="/" replace />;
+  if (!user.estCoach && !user.estEnseignant) return <Navigate to="/" replace />;
   return <Outlet />;
 }
 

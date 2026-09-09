@@ -14,6 +14,7 @@ import { BoursesList } from './pages/BoursesList';
 import { BourseDetail } from './pages/BourseDetail';
 import { BudgetSimulator } from './pages/BudgetSimulator';
 import { MesEtablissements } from './pages/MesEtablissements';
+import { MonProfilProfessionnel } from './pages/MonProfilProfessionnel';
 import { BlogsList } from './pages/BlogsList';
 import { BlogDetail } from './pages/BlogDetail';
 import { QuestionnairesList } from './pages/QuestionnairesList';
@@ -126,6 +127,7 @@ export default function App() {
         </Route>
         <Route element={<CoachOuEnseignantRoute />}>
           <Route path="rendez-vous-a-traiter" element={<RendezVousATraiter />} />
+          <Route path="mon-profil-professionnel" element={<MonProfilProfessionnel />} />
         </Route>
         <Route element={<EtudiantRoute />}>
           <Route path="budget" element={<BudgetSimulator />} />

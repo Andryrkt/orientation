@@ -304,14 +304,15 @@ export interface User {
   role: Role;
   emailVerifiedAt: string | null;
   profil?: Profil | null;
-  // Détermine si le compte est coach/enseignant, indépendamment de `role` — un même compte peut
-  // avoir les deux liens simultanément.
-  coachProfil?: { id: string } | null;
-  enseignantProfil?: { id: string } | null;
   // Débloque l'accès aux pages "Vie étudiante" (budget, ressources), indépendamment de `role`.
   estEtudiantValide?: boolean;
   // Débloque la création/modification d'établissements (soumis à validation), indépendamment de `role`.
   estGestionnaireEtablissement?: boolean;
+  // Débloque la création/gestion de plusieurs profils Coach (soumis à validation), indépendamment
+  // de `role` — un même compte peut créer plusieurs profils (coach sportif, coach en orientation...).
+  estCoach?: boolean;
+  // Idem pour les profils Enseignant (ex: Maths au lycée, Algèbre à l'université).
+  estEnseignant?: boolean;
 }
 
 export type DemandeRoleType = 'COACH' | 'ENSEIGNANT' | 'ETUDIANT' | 'GESTIONNAIRE_ETABLISSEMENT';

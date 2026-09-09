@@ -18,9 +18,10 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { CoachsService } from './coachs.service';
 import { CreateCoachDto } from './dto/create-coach.dto';
 import { UpdateCoachDto } from './dto/update-coach.dto';
-import { UpdateMyCoachDto } from './dto/update-my-coach.dto';
 import { QueryCoachDto } from './dto/query-coach.dto';
 import { CreateAvisDto } from './dto/create-avis.dto';
+
+type AuthUser = { id: string; role: Role; estCoach: boolean };
 
 @ApiTags('coachs')
 @Controller()
@@ -34,15 +35,21 @@ export class CoachsController {
   }
 
   @ApiBearerAuth()
-  @Get('coachs/mon-profil')
-  findMine(@CurrentUser() user: { id: string }) {
+  @Get('coachs/mes-profils')
+  findMine(@CurrentUser() user: AuthUser) {
     return this.coachsService.findMine(user.id);
   }
 
   @ApiBearerAuth()
-  @Patch('coachs/mon-profil')
-  updateMine(@CurrentUser() user: { id: string }, @Body() dto: UpdateMyCoachDto) {
-    return this.coachsService.updateMine(user.id, dto);
+  @Post('coachs')
+  create(@CurrentUser() user: AuthUser, @Body() dto: CreateCoachDto) {
+    return this.coachsService.create(user.id, user.role === Role.ADMIN, user.estCoach, dto);
+  }
+
+  @ApiBearerAuth()
+  @Patch('coachs/mine/:id')
+  updateMine(@CurrentUser() user: AuthUser, @Param('id') id: string, @Body() dto: CreateCoachDto) {
+    return this.coachsService.updateMine(user.id, id, dto);
   }
 
   @Public()
@@ -67,14 +74,6 @@ export class CoachsController {
   @Get('admin/coachs')
   findAllAdmin(@Query() query: QueryCoachDto) {
     return this.coachsService.findAllAdmin(query);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
-  @Post('coachs')
-  create(@Body() dto: CreateCoachDto) {
-    return this.coachsService.create(dto);
   }
 
   @ApiBearerAuth()

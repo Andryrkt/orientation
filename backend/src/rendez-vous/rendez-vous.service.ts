@@ -102,18 +102,19 @@ export class RendezVousService {
     const where: Prisma.RendezVousWhereInput = {};
 
     if (query.vue === 'a-traiter') {
-      // Le statut coach/enseignant est déterminé par le lien de profil, pas par le rôle système —
-      // un même compte peut être coach, enseignant, ou les deux à la fois.
-      const [coach, enseignant] = await Promise.all([
-        this.prisma.coach.findFirst({ where: { utilisateurId } }),
-        this.prisma.enseignant.findFirst({ where: { utilisateurId } }),
+      // Le statut coach/enseignant est déterminé par la capacité du compte (estCoach/estEnseignant),
+      // pas par le rôle système — un même compte peut être coach, enseignant, ou les deux à la
+      // fois, et gérer plusieurs profils de chaque (coach sportif, coach en orientation...).
+      const [coachs, enseignants] = await Promise.all([
+        this.prisma.coach.findMany({ where: { utilisateurId }, select: { id: true } }),
+        this.prisma.enseignant.findMany({ where: { utilisateurId }, select: { id: true } }),
       ]);
-      if (!coach && !enseignant) {
+      if (coachs.length === 0 && enseignants.length === 0) {
         throw new ForbiddenException('Réservé aux coachs et enseignants');
       }
       where.OR = [
-        ...(coach ? [{ coachId: coach.id }] : []),
-        ...(enseignant ? [{ enseignantId: enseignant.id }] : []),
+        ...(coachs.length > 0 ? [{ coachId: { in: coachs.map((c) => c.id) } }] : []),
+        ...(enseignants.length > 0 ? [{ enseignantId: { in: enseignants.map((e) => e.id) } }] : []),
       ];
     } else {
       where.utilisateurId = utilisateurId;

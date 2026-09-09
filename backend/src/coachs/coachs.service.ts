@@ -1,9 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { BlogStatut, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCoachDto } from './dto/create-coach.dto';
 import { UpdateCoachDto } from './dto/update-coach.dto';
-import { UpdateMyCoachDto } from './dto/update-my-coach.dto';
 import { QueryCoachDto } from './dto/query-coach.dto';
 import { CreateAvisDto } from './dto/create-avis.dto';
 
@@ -61,20 +60,7 @@ export class CoachsService {
   }
 
   findMine(utilisateurId: string) {
-    return this.prisma.coach.findFirst({ where: { utilisateurId } });
-  }
-
-  async updateMine(utilisateurId: string, dto: UpdateMyCoachDto) {
-    const existing = await this.prisma.coach.findFirst({ where: { utilisateurId } });
-    if (!existing) throw new NotFoundException('Profil coach introuvable');
-    return this.prisma.coach.update({
-      where: { id: existing.id },
-      data: {
-        ...dto,
-        // Toute modification renvoie la fiche en modération, même si elle était déjà publiée.
-        statutValidation: BlogStatut.EN_ATTENTE,
-      },
-    });
+    return this.prisma.coach.findMany({ where: { utilisateurId }, orderBy: { createdAt: 'desc' } });
   }
 
   async findAllAdmin(query: QueryCoachDto) {
@@ -92,8 +78,47 @@ export class CoachsService {
     return { items: items.map(withNoteMoyenne), total, page, limit };
   }
 
-  create(dto: CreateCoachDto) {
-    return this.prisma.coach.create({ data: dto });
+  async create(utilisateurId: string, isAdmin: boolean, isCoach: boolean, dto: CreateCoachDto) {
+    if (isAdmin) {
+      // nom/prenom sont requis pour une création admin (imposé côté formulaire) mais optionnels
+      // dans le DTO pour permettre l'auto-création (cf. branche ci-dessous).
+      return this.prisma.coach.create({ data: dto as Prisma.CoachUncheckedCreateInput });
+    }
+    if (!isCoach) {
+      throw new ForbiddenException('Seul un coach peut ajouter un profil coach');
+    }
+    // Auto-service : l'identité vient toujours du compte connecté (jamais du corps de la requête),
+    // pour permettre de créer plusieurs profils (coach sportif, coach en orientation...) sans
+    // pouvoir usurper un autre compte ni s'auto-approuver.
+    const utilisateur = await this.prisma.utilisateur.findUnique({ where: { id: utilisateurId } });
+    if (!utilisateur) throw new NotFoundException('Utilisateur introuvable');
+    const { utilisateurId: _ignored, visible: _ignoredVisible, ...rest } = dto;
+    return this.prisma.coach.create({
+      data: {
+        ...rest,
+        utilisateurId,
+        nom: utilisateur.nom,
+        prenom: utilisateur.prenom,
+        email: utilisateur.email,
+        visible: true,
+        statutValidation: BlogStatut.EN_ATTENTE,
+      },
+    });
+  }
+
+  async updateMine(utilisateurId: string, id: string, dto: CreateCoachDto) {
+    const existing = await this.prisma.coach.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException('Profil coach introuvable');
+    if (existing.utilisateurId !== utilisateurId) throw new ForbiddenException();
+    const { utilisateurId: _ignored, nom: _ignoredNom, prenom: _ignoredPrenom, email: _ignoredEmail, visible: _ignoredVisible, ...rest } = dto;
+    return this.prisma.coach.update({
+      where: { id },
+      data: {
+        ...rest,
+        // Toute modification renvoie la fiche en modération, même si elle était déjà publiée.
+        statutValidation: BlogStatut.EN_ATTENTE,
+      },
+    });
   }
 
   async update(id: string, dto: UpdateCoachDto) {

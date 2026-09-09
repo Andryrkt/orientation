@@ -22,12 +22,12 @@ export class UsersService {
     emailVerifiedAt: true,
     createdAt: true,
     profil: true,
-    // Le statut coach/enseignant est déterminé par ce lien, indépendamment du rôle — un même
-    // compte peut être coach, enseignant, ou les deux à la fois.
-    coachProfil: { select: { id: true } },
-    enseignantProfil: { select: { id: true } },
     estEtudiantValide: true,
     estGestionnaireEtablissement: true,
+    // Débloque la création/gestion de profils Coach/Enseignant (plusieurs possibles, comme les
+    // établissements), indépendamment du rôle système.
+    estCoach: true,
+    estEnseignant: true,
   };
 
   async findMe(userId: string) {

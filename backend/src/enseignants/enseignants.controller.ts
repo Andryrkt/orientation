@@ -18,9 +18,10 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { EnseignantsService } from './enseignants.service';
 import { CreateEnseignantDto } from './dto/create-enseignant.dto';
 import { UpdateEnseignantDto } from './dto/update-enseignant.dto';
-import { UpdateMyEnseignantDto } from './dto/update-my-enseignant.dto';
 import { QueryEnseignantDto } from './dto/query-enseignant.dto';
 import { CreateAvisDto } from './dto/create-avis.dto';
+
+type AuthUser = { id: string; role: Role; estEnseignant: boolean };
 
 @ApiTags('enseignants')
 @Controller()
@@ -34,15 +35,21 @@ export class EnseignantsController {
   }
 
   @ApiBearerAuth()
-  @Get('enseignants/mon-profil')
-  findMine(@CurrentUser() user: { id: string }) {
+  @Get('enseignants/mes-profils')
+  findMine(@CurrentUser() user: AuthUser) {
     return this.enseignantsService.findMine(user.id);
   }
 
   @ApiBearerAuth()
-  @Patch('enseignants/mon-profil')
-  updateMine(@CurrentUser() user: { id: string }, @Body() dto: UpdateMyEnseignantDto) {
-    return this.enseignantsService.updateMine(user.id, dto);
+  @Post('enseignants')
+  create(@CurrentUser() user: AuthUser, @Body() dto: CreateEnseignantDto) {
+    return this.enseignantsService.create(user.id, user.role === Role.ADMIN, user.estEnseignant, dto);
+  }
+
+  @ApiBearerAuth()
+  @Patch('enseignants/mine/:id')
+  updateMine(@CurrentUser() user: AuthUser, @Param('id') id: string, @Body() dto: CreateEnseignantDto) {
+    return this.enseignantsService.updateMine(user.id, id, dto);
   }
 
   @Public()
@@ -67,14 +74,6 @@ export class EnseignantsController {
   @Get('admin/enseignants')
   findAllAdmin(@Query() query: QueryEnseignantDto) {
     return this.enseignantsService.findAllAdmin(query);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
-  @Post('enseignants')
-  create(@Body() dto: CreateEnseignantDto) {
-    return this.enseignantsService.create(dto);
   }
 
   @ApiBearerAuth()

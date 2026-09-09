@@ -1,5 +1,5 @@
 import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { BlogStatut, DemandeRoleStatut, DemandeRoleType, Prisma, Role } from '@prisma/client';
+import { DemandeRoleStatut, DemandeRoleType, Prisma, Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { CreateDemandeRoleDto } from './dto/create-demande-role.dto';
@@ -77,13 +77,13 @@ export class DemandesRoleService {
   }
 
   private async aDejaLeStatut(utilisateurId: string, type: DemandeRoleType): Promise<boolean> {
+    const utilisateur = await this.prisma.utilisateur.findUnique({ where: { id: utilisateurId } });
     if (type === DemandeRoleType.COACH) {
-      return !!(await this.prisma.coach.findFirst({ where: { utilisateurId } }));
+      return !!utilisateur?.estCoach;
     }
     if (type === DemandeRoleType.ENSEIGNANT) {
-      return !!(await this.prisma.enseignant.findFirst({ where: { utilisateurId } }));
+      return !!utilisateur?.estEnseignant;
     }
-    const utilisateur = await this.prisma.utilisateur.findUnique({ where: { id: utilisateurId } });
     if (type === DemandeRoleType.GESTIONNAIRE_ETABLISSEMENT) {
       return !!utilisateur?.estGestionnaireEtablissement;
     }
@@ -196,60 +196,18 @@ export class DemandesRoleService {
 
     if (dto.statut === DemandeRoleStatut.APPROUVEE) {
       if (demande.type === DemandeRoleType.COACH) {
-        const existant = await this.prisma.coach.findFirst({ where: { utilisateurId: utilisateur.id } });
-        // Un profil délié (ex. suite à une remise en attente précédente) est réutilisé plutôt que
-        // dupliqué — il conserve son historique d'avis/rendez-vous.
-        const orphelin = existant
-          ? null
-          : await this.prisma.coach.findFirst({ where: { utilisateurId: null, email: utilisateur.email } });
-        if (orphelin) {
-          await this.prisma.coach.update({ where: { id: orphelin.id }, data: { utilisateurId: utilisateur.id, visible: true } });
-        } else if (!existant) {
-          await this.prisma.coach.create({
-            data: {
-              utilisateurId: utilisateur.id,
-              nom: utilisateur.nom,
-              prenom: utilisateur.prenom,
-              email: utilisateur.email,
-              telephone: demande.telephone || utilisateur.telephone,
-              bio: demande.bio,
-              specialites: demande.specialites,
-              experience: demande.experience,
-              disponibilites: demande.disponibilites,
-              visible: true,
-              // Le profil est créé "vide" (à compléter par le coach lui-même dans son espace) et
-              // repasse par une validation admin avant d'être visible publiquement.
-              statutValidation: BlogStatut.EN_ATTENTE,
-            },
-          });
-        }
+        // Ne crée aucun profil automatiquement : le coach crée lui-même autant de profils qu'il
+        // veut (ex: coach sportif, coach en orientation) dans son espace, chacun soumis à
+        // validation admin — comme pour les établissements.
+        await this.prisma.utilisateur.update({
+          where: { id: utilisateur.id },
+          data: { estCoach: true },
+        });
       } else if (demande.type === DemandeRoleType.ENSEIGNANT) {
-        const existant = await this.prisma.enseignant.findFirst({ where: { utilisateurId: utilisateur.id } });
-        const orphelin = existant
-          ? null
-          : await this.prisma.enseignant.findFirst({ where: { utilisateurId: null, email: utilisateur.email } });
-        if (orphelin) {
-          await this.prisma.enseignant.update({ where: { id: orphelin.id }, data: { utilisateurId: utilisateur.id, visible: true } });
-        } else if (!existant) {
-          await this.prisma.enseignant.create({
-            data: {
-              utilisateurId: utilisateur.id,
-              nom: utilisateur.nom,
-              prenom: utilisateur.prenom,
-              email: utilisateur.email,
-              telephone: demande.telephone || utilisateur.telephone,
-              bio: demande.bio,
-              matieres: demande.matieres,
-              niveauxEtude: demande.niveauxEtude,
-              etablissement: demande.etablissement,
-              disponibilites: demande.disponibilites,
-              visible: true,
-              // Le profil est créé "vide" (à compléter par l'enseignant lui-même dans son espace)
-              // et repasse par une validation admin avant d'être visible publiquement.
-              statutValidation: BlogStatut.EN_ATTENTE,
-            },
-          });
-        }
+        await this.prisma.utilisateur.update({
+          where: { id: utilisateur.id },
+          data: { estEnseignant: true },
+        });
       } else if (demande.type === DemandeRoleType.GESTIONNAIRE_ETABLISSEMENT) {
         await this.prisma.utilisateur.update({
           where: { id: utilisateur.id },
@@ -271,12 +229,12 @@ export class DemandesRoleService {
     } else if (demande.statut === DemandeRoleStatut.APPROUVEE && dto.statut === DemandeRoleStatut.EN_ATTENTE) {
       // Remettre en attente une demande déjà approuvée retire l'accès accordé — sinon "Mon espace"
       // continuerait d'afficher le statut débloqué alors que la demande est de nouveau en cours
-      // d'examen. Le profil Coach/Enseignant n'est pas supprimé (avis, rendez-vous liés) : on le
-      // délie juste du compte, comme le permet déjà le schéma (utilisateurId optionnel).
+      // d'examen. Les profils Coach/Enseignant déjà créés ne sont pas supprimés ni déliés (avis,
+      // rendez-vous liés) : seule la capacité d'en créer/modifier de nouveaux est retirée.
       if (demande.type === DemandeRoleType.COACH) {
-        await this.prisma.coach.updateMany({ where: { utilisateurId: utilisateur.id }, data: { utilisateurId: null } });
+        await this.prisma.utilisateur.update({ where: { id: utilisateur.id }, data: { estCoach: false } });
       } else if (demande.type === DemandeRoleType.ENSEIGNANT) {
-        await this.prisma.enseignant.updateMany({ where: { utilisateurId: utilisateur.id }, data: { utilisateurId: null } });
+        await this.prisma.utilisateur.update({ where: { id: utilisateur.id }, data: { estEnseignant: false } });
       } else if (demande.type === DemandeRoleType.GESTIONNAIRE_ETABLISSEMENT) {
         await this.prisma.utilisateur.update({
           where: { id: utilisateur.id },

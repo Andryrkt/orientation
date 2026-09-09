@@ -5,7 +5,7 @@ import Editor from 'react-simple-wysiwyg';
 import { useAuth } from '../lib/auth-context';
 import { useFavoris } from '../lib/use-favoris';
 import { api } from '../lib/api';
-import { Blog, Coach, DemandeRole, DemandeRoleType, Enseignant, Paginated, RendezVous, ResultatOrientation } from '../lib/types';
+import { Blog, DemandeRole, DemandeRoleType, Paginated, RendezVous, ResultatOrientation } from '../lib/types';
 import { RIASEC_LABELS } from '../lib/riasec';
 import { BLOG_CATEGORIES } from '../lib/blog-categories';
 
@@ -295,250 +295,6 @@ function DemandeRow({ demande, onCompleted }: { demande: DemandeRole; onComplete
   );
 }
 
-const PROFIL_VALIDATION_LABELS: Record<string, string> = {
-  EN_ATTENTE: 'En attente de validation',
-  APPROUVE: 'Publié',
-  REJETE: 'Refusé',
-};
-
-const PROFIL_VALIDATION_CLASSES: Record<string, string> = {
-  EN_ATTENTE: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20',
-  APPROUVE: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20',
-  REJETE: 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20',
-};
-
-/* ── Édition du profil Coach par le coach lui-même — repasse en modération à chaque enregistrement ── */
-function MonProfilCoach() {
-  const queryClient = useQueryClient();
-  const { data: coach, isLoading } = useQuery({
-    queryKey: ['mon-profil-coach'],
-    queryFn: async () => (await api.get<Coach | null>('/coachs/mon-profil')).data,
-  });
-  const [values, setValues] = useState({ bio: '', specialites: '', experience: '', disponibilites: '', telephone: '' });
-  const [initialized, setInitialized] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
-
-  useEffect(() => {
-    if (coach && !initialized) {
-      setValues({
-        bio: coach.bio ?? '',
-        specialites: (coach.specialites ?? []).join(', '),
-        experience: coach.experience ?? '',
-        disponibilites: coach.disponibilites ?? '',
-        telephone: coach.telephone ?? '',
-      });
-      setInitialized(true);
-    }
-  }, [coach, initialized]);
-
-  const saveMutation = useMutation({
-    mutationFn: () =>
-      api.patch('/coachs/mon-profil', {
-        bio: values.bio || undefined,
-        specialites: values.specialites.split(',').map((s) => s.trim()).filter(Boolean),
-        experience: values.experience || undefined,
-        disponibilites: values.disponibilites || undefined,
-        telephone: values.telephone || undefined,
-      }),
-    onSuccess: () => {
-      setError(null);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-      queryClient.invalidateQueries({ queryKey: ['mon-profil-coach'] });
-    },
-    onError: (err: unknown) => {
-      const msg = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
-      setError(Array.isArray(msg) ? msg.join(', ') : msg ?? 'Une erreur est survenue');
-    },
-  });
-
-  if (isLoading || !coach) return null;
-  const statut = coach.statutValidation ?? 'APPROUVE';
-
-  return (
-    <div className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-bold text-slate-800 dark:text-white">🧑‍🏫 Mon profil Coach</h3>
-        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${PROFIL_VALIDATION_CLASSES[statut]}`}>
-          {PROFIL_VALIDATION_LABELS[statut]}
-        </span>
-      </div>
-      {statut === 'EN_ATTENTE' && (
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          Votre profil est en cours de vérification avant d'être visible publiquement.
-        </p>
-      )}
-      {error && (
-        <div className="bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">{error}</div>
-      )}
-      <textarea
-        className="field-input"
-        rows={2}
-        placeholder="Bio"
-        value={values.bio}
-        onChange={(e) => setValues((v) => ({ ...v, bio: e.target.value }))}
-      />
-      <input
-        className="field-input"
-        placeholder="Spécialités (séparées par des virgules)"
-        value={values.specialites}
-        onChange={(e) => setValues((v) => ({ ...v, specialites: e.target.value }))}
-      />
-      <textarea
-        className="field-input"
-        rows={2}
-        placeholder="Expérience"
-        value={values.experience}
-        onChange={(e) => setValues((v) => ({ ...v, experience: e.target.value }))}
-      />
-      <input
-        className="field-input"
-        placeholder="Disponibilités"
-        value={values.disponibilites}
-        onChange={(e) => setValues((v) => ({ ...v, disponibilites: e.target.value }))}
-      />
-      <input
-        className="field-input"
-        placeholder="Téléphone"
-        value={values.telephone}
-        onChange={(e) => setValues((v) => ({ ...v, telephone: e.target.value }))}
-      />
-      <button
-        type="button"
-        disabled={saveMutation.isPending}
-        onClick={() => saveMutation.mutate()}
-        className="btn-primary text-sm px-4 py-2 disabled:opacity-50"
-      >
-        {saveMutation.isPending ? 'Enregistrement...' : saved ? 'Enregistré ✓' : 'Enregistrer'}
-      </button>
-    </div>
-  );
-}
-
-/* ── Édition du profil Enseignant par l'enseignant lui-même — repasse en modération à chaque enregistrement ── */
-function MonProfilEnseignant() {
-  const queryClient = useQueryClient();
-  const { data: enseignant, isLoading } = useQuery({
-    queryKey: ['mon-profil-enseignant'],
-    queryFn: async () => (await api.get<Enseignant | null>('/enseignants/mon-profil')).data,
-  });
-  const [values, setValues] = useState({
-    bio: '',
-    matieres: '',
-    niveauxEtude: '',
-    etablissement: '',
-    disponibilites: '',
-    telephone: '',
-  });
-  const [initialized, setInitialized] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
-
-  useEffect(() => {
-    if (enseignant && !initialized) {
-      setValues({
-        bio: enseignant.bio ?? '',
-        matieres: (enseignant.matieres ?? []).join(', '),
-        niveauxEtude: (enseignant.niveauxEtude ?? []).join(', '),
-        etablissement: enseignant.etablissement ?? '',
-        disponibilites: enseignant.disponibilites ?? '',
-        telephone: enseignant.telephone ?? '',
-      });
-      setInitialized(true);
-    }
-  }, [enseignant, initialized]);
-
-  const saveMutation = useMutation({
-    mutationFn: () =>
-      api.patch('/enseignants/mon-profil', {
-        bio: values.bio || undefined,
-        matieres: values.matieres.split(',').map((s) => s.trim()).filter(Boolean),
-        niveauxEtude: values.niveauxEtude.split(',').map((s) => s.trim().toUpperCase()).filter(Boolean),
-        etablissement: values.etablissement || undefined,
-        disponibilites: values.disponibilites || undefined,
-        telephone: values.telephone || undefined,
-      }),
-    onSuccess: () => {
-      setError(null);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-      queryClient.invalidateQueries({ queryKey: ['mon-profil-enseignant'] });
-    },
-    onError: (err: unknown) => {
-      const msg = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
-      setError(Array.isArray(msg) ? msg.join(', ') : msg ?? 'Une erreur est survenue');
-    },
-  });
-
-  if (isLoading || !enseignant) return null;
-  const statut = enseignant.statutValidation ?? 'APPROUVE';
-
-  return (
-    <div className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-bold text-slate-800 dark:text-white">📖 Mon profil Enseignant</h3>
-        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${PROFIL_VALIDATION_CLASSES[statut]}`}>
-          {PROFIL_VALIDATION_LABELS[statut]}
-        </span>
-      </div>
-      {statut === 'EN_ATTENTE' && (
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          Votre profil est en cours de vérification avant d'être visible publiquement.
-        </p>
-      )}
-      {error && (
-        <div className="bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">{error}</div>
-      )}
-      <textarea
-        className="field-input"
-        rows={2}
-        placeholder="Bio"
-        value={values.bio}
-        onChange={(e) => setValues((v) => ({ ...v, bio: e.target.value }))}
-      />
-      <input
-        className="field-input"
-        placeholder="Matières (séparées par des virgules)"
-        value={values.matieres}
-        onChange={(e) => setValues((v) => ({ ...v, matieres: e.target.value }))}
-      />
-      <input
-        className="field-input"
-        placeholder="Niveaux d'études (LYCEE, NOUVEAU_BACHELIER, UNIVERSITE)"
-        value={values.niveauxEtude}
-        onChange={(e) => setValues((v) => ({ ...v, niveauxEtude: e.target.value }))}
-      />
-      <input
-        className="field-input"
-        placeholder="Établissement de rattachement"
-        value={values.etablissement}
-        onChange={(e) => setValues((v) => ({ ...v, etablissement: e.target.value }))}
-      />
-      <input
-        className="field-input"
-        placeholder="Disponibilités"
-        value={values.disponibilites}
-        onChange={(e) => setValues((v) => ({ ...v, disponibilites: e.target.value }))}
-      />
-      <input
-        className="field-input"
-        placeholder="Téléphone"
-        value={values.telephone}
-        onChange={(e) => setValues((v) => ({ ...v, telephone: e.target.value }))}
-      />
-      <button
-        type="button"
-        disabled={saveMutation.isPending}
-        onClick={() => saveMutation.mutate()}
-        className="btn-primary text-sm px-4 py-2 disabled:opacity-50"
-      >
-        {saveMutation.isPending ? 'Enregistrement...' : saved ? 'Enregistré ✓' : 'Enregistrer'}
-      </button>
-    </div>
-  );
-}
-
 function DevenirCoachEnseignant({
   estCoach,
   estEnseignant,
@@ -589,8 +345,29 @@ function DevenirCoachEnseignant({
 
   return (
     <div className="space-y-3">
-      {estCoach && <MonProfilCoach />}
-      {estEnseignant && <MonProfilEnseignant />}
+      {(estCoach || estEnseignant) && (
+        <div className="flex flex-wrap gap-2">
+          {estCoach && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              ✅ Vous êtes Coach
+            </span>
+          )}
+          {estEnseignant && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              ✅ Vous êtes Enseignant
+            </span>
+          )}
+        </div>
+      )}
+
+      {(estCoach || estEnseignant) && (
+        <Link
+          to="/mon-profil-professionnel"
+          className="block px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-sm font-semibold text-slate-700 dark:text-slate-200"
+        >
+          🎓 Gérer mon profil professionnel →
+        </Link>
+      )}
 
       {demandes.length > 0 && (
         <div className="space-y-2 mb-2">
@@ -1003,10 +780,10 @@ export function MonEspace() {
   }, []);
 
   const isEmploye = user?.role === 'SECRETAIRE' || user?.role === 'MODERATEUR' || user?.role === 'MODERATEUR_FINANCE';
-  // Déterminé par le lien de profil, pas par le rôle système — un compte peut être coach,
-  // enseignant, ou les deux à la fois.
-  const estCoach = !!user?.coachProfil;
-  const estEnseignant = !!user?.enseignantProfil;
+  // Déterminé par la capacité du compte, pas par le rôle système — un compte peut être coach,
+  // enseignant, ou les deux à la fois, et gérer plusieurs profils de chaque.
+  const estCoach = !!user?.estCoach;
+  const estEnseignant = !!user?.estEnseignant;
   const isCoachOuEnseignant = estCoach || estEnseignant;
   const estEtudiantValide = !!user?.estEtudiantValide;
   const estGestionnaireEtablissement = !!user?.estGestionnaireEtablissement;
@@ -1158,16 +935,14 @@ export function MonEspace() {
                 />
               </Card>
 
-              {!(estCoach && estEnseignant) && (
-                <Card title="Devenir coach ou enseignant" icon="🎓">
-                  <DevenirCoachEnseignant
-                    estCoach={estCoach}
-                    estEnseignant={estEnseignant}
-                    demandes={demandesCoachEnseignant}
-                    onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['mes-demandes-role'] })}
-                  />
-                </Card>
-              )}
+              <Card title={isCoachOuEnseignant ? 'Coach / Enseignant' : 'Devenir coach ou enseignant'} icon="🎓">
+                <DevenirCoachEnseignant
+                  estCoach={estCoach}
+                  estEnseignant={estEnseignant}
+                  demandes={demandesCoachEnseignant}
+                  onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['mes-demandes-role'] })}
+                />
+              </Card>
 
               <Card title="Gestionnaire d'établissement" icon="🏛️">
                 <DevenirGestionnaireEtablissement

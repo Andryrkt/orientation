@@ -7,13 +7,18 @@ export class CreateCoachDto {
   @IsUUID()
   utilisateurId?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+    description: "Requis pour une création admin ; ignoré et repris du compte connecté pour une auto-création",
+  })
+  @IsOptional()
   @IsString()
-  nom: string;
+  nom?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsString()
-  prenom: string;
+  prenom?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
