@@ -342,7 +342,7 @@ export function RessourcesApprentissage() {
               >
                 <FavoriteButton type="ENSEIGNANT" entityId={ens.id} compact className="absolute top-4 right-4" />
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 pr-8 leading-snug">{ens.prenom} {ens.nom}</h3>
-                {ens.noteMoyenne !== null && (
+                {ens.noteMoyenne != null && (
                   <p className="text-sm text-amber-600 dark:text-amber-400 mb-2">★ {ens.noteMoyenne.toFixed(1)} ({ens.avisCount} avis)</p>
                 )}
                 <div className="flex flex-wrap gap-1.5 mb-2">

@@ -1,11 +1,11 @@
-import { FormEvent, ReactNode, useState } from 'react';
+import { FormEvent, ReactNode, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Editor from 'react-simple-wysiwyg';
 import { useAuth } from '../lib/auth-context';
 import { useFavoris } from '../lib/use-favoris';
 import { api } from '../lib/api';
-import { Blog, DemandeRole, DemandeRoleType, Paginated, RendezVous, ResultatOrientation } from '../lib/types';
+import { Blog, Coach, DemandeRole, DemandeRoleType, Enseignant, Paginated, RendezVous, ResultatOrientation } from '../lib/types';
 import { RIASEC_LABELS } from '../lib/riasec';
 import { BLOG_CATEGORIES } from '../lib/blog-categories';
 
@@ -295,6 +295,250 @@ function DemandeRow({ demande, onCompleted }: { demande: DemandeRole; onComplete
   );
 }
 
+const PROFIL_VALIDATION_LABELS: Record<string, string> = {
+  EN_ATTENTE: 'En attente de validation',
+  APPROUVE: 'Publié',
+  REJETE: 'Refusé',
+};
+
+const PROFIL_VALIDATION_CLASSES: Record<string, string> = {
+  EN_ATTENTE: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20',
+  APPROUVE: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20',
+  REJETE: 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20',
+};
+
+/* ── Édition du profil Coach par le coach lui-même — repasse en modération à chaque enregistrement ── */
+function MonProfilCoach() {
+  const queryClient = useQueryClient();
+  const { data: coach, isLoading } = useQuery({
+    queryKey: ['mon-profil-coach'],
+    queryFn: async () => (await api.get<Coach | null>('/coachs/mon-profil')).data,
+  });
+  const [values, setValues] = useState({ bio: '', specialites: '', experience: '', disponibilites: '', telephone: '' });
+  const [initialized, setInitialized] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (coach && !initialized) {
+      setValues({
+        bio: coach.bio ?? '',
+        specialites: (coach.specialites ?? []).join(', '),
+        experience: coach.experience ?? '',
+        disponibilites: coach.disponibilites ?? '',
+        telephone: coach.telephone ?? '',
+      });
+      setInitialized(true);
+    }
+  }, [coach, initialized]);
+
+  const saveMutation = useMutation({
+    mutationFn: () =>
+      api.patch('/coachs/mon-profil', {
+        bio: values.bio || undefined,
+        specialites: values.specialites.split(',').map((s) => s.trim()).filter(Boolean),
+        experience: values.experience || undefined,
+        disponibilites: values.disponibilites || undefined,
+        telephone: values.telephone || undefined,
+      }),
+    onSuccess: () => {
+      setError(null);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+      queryClient.invalidateQueries({ queryKey: ['mon-profil-coach'] });
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
+      setError(Array.isArray(msg) ? msg.join(', ') : msg ?? 'Une erreur est survenue');
+    },
+  });
+
+  if (isLoading || !coach) return null;
+  const statut = coach.statutValidation ?? 'APPROUVE';
+
+  return (
+    <div className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-3">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-bold text-slate-800 dark:text-white">🧑‍🏫 Mon profil Coach</h3>
+        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${PROFIL_VALIDATION_CLASSES[statut]}`}>
+          {PROFIL_VALIDATION_LABELS[statut]}
+        </span>
+      </div>
+      {statut === 'EN_ATTENTE' && (
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          Votre profil est en cours de vérification avant d'être visible publiquement.
+        </p>
+      )}
+      {error && (
+        <div className="bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">{error}</div>
+      )}
+      <textarea
+        className="field-input"
+        rows={2}
+        placeholder="Bio"
+        value={values.bio}
+        onChange={(e) => setValues((v) => ({ ...v, bio: e.target.value }))}
+      />
+      <input
+        className="field-input"
+        placeholder="Spécialités (séparées par des virgules)"
+        value={values.specialites}
+        onChange={(e) => setValues((v) => ({ ...v, specialites: e.target.value }))}
+      />
+      <textarea
+        className="field-input"
+        rows={2}
+        placeholder="Expérience"
+        value={values.experience}
+        onChange={(e) => setValues((v) => ({ ...v, experience: e.target.value }))}
+      />
+      <input
+        className="field-input"
+        placeholder="Disponibilités"
+        value={values.disponibilites}
+        onChange={(e) => setValues((v) => ({ ...v, disponibilites: e.target.value }))}
+      />
+      <input
+        className="field-input"
+        placeholder="Téléphone"
+        value={values.telephone}
+        onChange={(e) => setValues((v) => ({ ...v, telephone: e.target.value }))}
+      />
+      <button
+        type="button"
+        disabled={saveMutation.isPending}
+        onClick={() => saveMutation.mutate()}
+        className="btn-primary text-sm px-4 py-2 disabled:opacity-50"
+      >
+        {saveMutation.isPending ? 'Enregistrement...' : saved ? 'Enregistré ✓' : 'Enregistrer'}
+      </button>
+    </div>
+  );
+}
+
+/* ── Édition du profil Enseignant par l'enseignant lui-même — repasse en modération à chaque enregistrement ── */
+function MonProfilEnseignant() {
+  const queryClient = useQueryClient();
+  const { data: enseignant, isLoading } = useQuery({
+    queryKey: ['mon-profil-enseignant'],
+    queryFn: async () => (await api.get<Enseignant | null>('/enseignants/mon-profil')).data,
+  });
+  const [values, setValues] = useState({
+    bio: '',
+    matieres: '',
+    niveauxEtude: '',
+    etablissement: '',
+    disponibilites: '',
+    telephone: '',
+  });
+  const [initialized, setInitialized] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (enseignant && !initialized) {
+      setValues({
+        bio: enseignant.bio ?? '',
+        matieres: (enseignant.matieres ?? []).join(', '),
+        niveauxEtude: (enseignant.niveauxEtude ?? []).join(', '),
+        etablissement: enseignant.etablissement ?? '',
+        disponibilites: enseignant.disponibilites ?? '',
+        telephone: enseignant.telephone ?? '',
+      });
+      setInitialized(true);
+    }
+  }, [enseignant, initialized]);
+
+  const saveMutation = useMutation({
+    mutationFn: () =>
+      api.patch('/enseignants/mon-profil', {
+        bio: values.bio || undefined,
+        matieres: values.matieres.split(',').map((s) => s.trim()).filter(Boolean),
+        niveauxEtude: values.niveauxEtude.split(',').map((s) => s.trim().toUpperCase()).filter(Boolean),
+        etablissement: values.etablissement || undefined,
+        disponibilites: values.disponibilites || undefined,
+        telephone: values.telephone || undefined,
+      }),
+    onSuccess: () => {
+      setError(null);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+      queryClient.invalidateQueries({ queryKey: ['mon-profil-enseignant'] });
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
+      setError(Array.isArray(msg) ? msg.join(', ') : msg ?? 'Une erreur est survenue');
+    },
+  });
+
+  if (isLoading || !enseignant) return null;
+  const statut = enseignant.statutValidation ?? 'APPROUVE';
+
+  return (
+    <div className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-3">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-bold text-slate-800 dark:text-white">📖 Mon profil Enseignant</h3>
+        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${PROFIL_VALIDATION_CLASSES[statut]}`}>
+          {PROFIL_VALIDATION_LABELS[statut]}
+        </span>
+      </div>
+      {statut === 'EN_ATTENTE' && (
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          Votre profil est en cours de vérification avant d'être visible publiquement.
+        </p>
+      )}
+      {error && (
+        <div className="bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">{error}</div>
+      )}
+      <textarea
+        className="field-input"
+        rows={2}
+        placeholder="Bio"
+        value={values.bio}
+        onChange={(e) => setValues((v) => ({ ...v, bio: e.target.value }))}
+      />
+      <input
+        className="field-input"
+        placeholder="Matières (séparées par des virgules)"
+        value={values.matieres}
+        onChange={(e) => setValues((v) => ({ ...v, matieres: e.target.value }))}
+      />
+      <input
+        className="field-input"
+        placeholder="Niveaux d'études (LYCEE, NOUVEAU_BACHELIER, UNIVERSITE)"
+        value={values.niveauxEtude}
+        onChange={(e) => setValues((v) => ({ ...v, niveauxEtude: e.target.value }))}
+      />
+      <input
+        className="field-input"
+        placeholder="Établissement de rattachement"
+        value={values.etablissement}
+        onChange={(e) => setValues((v) => ({ ...v, etablissement: e.target.value }))}
+      />
+      <input
+        className="field-input"
+        placeholder="Disponibilités"
+        value={values.disponibilites}
+        onChange={(e) => setValues((v) => ({ ...v, disponibilites: e.target.value }))}
+      />
+      <input
+        className="field-input"
+        placeholder="Téléphone"
+        value={values.telephone}
+        onChange={(e) => setValues((v) => ({ ...v, telephone: e.target.value }))}
+      />
+      <button
+        type="button"
+        disabled={saveMutation.isPending}
+        onClick={() => saveMutation.mutate()}
+        className="btn-primary text-sm px-4 py-2 disabled:opacity-50"
+      >
+        {saveMutation.isPending ? 'Enregistrement...' : saved ? 'Enregistré ✓' : 'Enregistrer'}
+      </button>
+    </div>
+  );
+}
+
 function DevenirCoachEnseignant({
   estCoach,
   estEnseignant,
@@ -307,11 +551,15 @@ function DevenirCoachEnseignant({
   onSubmitted: () => void;
 }) {
   const [selection, setSelection] = useState<DemandeRoleType[]>([]);
-  const [values, setValues] = useState<DemandeFormValues>(EMPTY_DEMANDE_FORM);
+  const [message, setMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
 
+  // Inclut aussi APPROUVEE : évite de réafficher le choix juste après l'approbation, le temps
+  // que le profil utilisateur (estCoach/estEnseignant) soit rechargé.
   const typesEnCours = new Set(
-    demandes.filter((d) => d.statut === 'EN_ATTENTE' || d.statut === 'CLARIFICATION_DEMANDEE').map((d) => d.type),
+    demandes
+      .filter((d) => d.statut === 'EN_ATTENTE' || d.statut === 'CLARIFICATION_DEMANDEE' || d.statut === 'APPROUVEE')
+      .map((d) => d.type),
   );
   const typesDisponibles: DemandeRoleType[] = (['COACH', 'ENSEIGNANT'] as DemandeRoleType[]).filter(
     (t) => !(t === 'COACH' ? estCoach : estEnseignant) && !typesEnCours.has(t),
@@ -319,14 +567,13 @@ function DevenirCoachEnseignant({
 
   const submitMutation = useMutation({
     mutationFn: async () => {
-      const payload = buildDemandeFieldsPayload(values);
       for (const type of selection) {
-        await api.post('/demandes-role', { type, ...payload });
+        await api.post('/demandes-role', { type, message: message || undefined });
       }
     },
     onSuccess: () => {
       setSelection([]);
-      setValues(EMPTY_DEMANDE_FORM);
+      setMessage('');
       setError(null);
       onSubmitted();
     },
@@ -342,6 +589,9 @@ function DevenirCoachEnseignant({
 
   return (
     <div className="space-y-3">
+      {estCoach && <MonProfilCoach />}
+      {estEnseignant && <MonProfilEnseignant />}
+
       {demandes.length > 0 && (
         <div className="space-y-2 mb-2">
           {demandes.map((d) => (
@@ -350,13 +600,16 @@ function DevenirCoachEnseignant({
         </div>
       )}
 
-      {typesDisponibles.length > 0 ? (
+      {typesDisponibles.length > 0 && (
         <div className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-3">
           {error && (
             <div className="bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm rounded-md px-3 py-2">
               {error}
             </div>
           )}
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Une fois approuvé, vous pourrez renseigner votre profil (bio, spécialités/matières, disponibilités...) vous-même — il sera revu par un admin avant d'être visible publiquement.
+          </p>
           <div className="flex flex-wrap gap-3">
             {typesDisponibles.map((type) => (
               <label key={type} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
@@ -370,14 +623,13 @@ function DevenirCoachEnseignant({
               </label>
             ))}
           </div>
-          {selection.length > 0 && (
-            <DemandeFieldsInputs
-              values={values}
-              onChange={(patch) => setValues((v) => ({ ...v, ...patch }))}
-              showCoach={selection.includes('COACH')}
-              showEnseignant={selection.includes('ENSEIGNANT')}
-            />
-          )}
+          <textarea
+            className="field-input"
+            rows={2}
+            placeholder="Motivation (optionnel)"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
           <button
             type="button"
             disabled={selection.length === 0 || submitMutation.isPending}
@@ -387,10 +639,6 @@ function DevenirCoachEnseignant({
             {submitMutation.isPending ? 'Envoi...' : 'Envoyer la demande'}
           </button>
         </div>
-      ) : (
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Vous avez déjà accès aux deux espaces, ou une demande est déjà en cours pour chacun.
-        </p>
       )}
     </div>
   );
@@ -409,7 +657,11 @@ function DevenirEtudiant({
   const [niveauEtude, setNiveauEtude] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const demandeEnCours = demandes.find((d) => d.statut === 'EN_ATTENTE' || d.statut === 'CLARIFICATION_DEMANDEE');
+  // Inclut aussi APPROUVEE : évite de réafficher le formulaire de demande juste après
+  // l'approbation, le temps que le profil utilisateur (estEtudiant/estGestionnaire) soit rechargé.
+  const demandeEnCours = demandes.find(
+    (d) => d.statut === 'EN_ATTENTE' || d.statut === 'CLARIFICATION_DEMANDEE' || d.statut === 'APPROUVEE',
+  );
 
   const submitMutation = useMutation({
     mutationFn: () => api.post('/demandes-role', { type: 'ETUDIANT', message: message || undefined, niveauEtude }),
@@ -510,7 +762,11 @@ function DevenirGestionnaireEtablissement({
   const [message, setMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const demandeEnCours = demandes.find((d) => d.statut === 'EN_ATTENTE' || d.statut === 'CLARIFICATION_DEMANDEE');
+  // Inclut aussi APPROUVEE : évite de réafficher le formulaire de demande juste après
+  // l'approbation, le temps que le profil utilisateur (estEtudiant/estGestionnaire) soit rechargé.
+  const demandeEnCours = demandes.find(
+    (d) => d.statut === 'EN_ATTENTE' || d.statut === 'CLARIFICATION_DEMANDEE' || d.statut === 'APPROUVEE',
+  );
 
   const submitMutation = useMutation({
     mutationFn: () => api.post('/demandes-role', { type: 'GESTIONNAIRE_ETABLISSEMENT', message: message || undefined }),
@@ -732,11 +988,19 @@ function ArticleForm({
 }
 
 export function MonEspace() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const { favoris } = useFavoris();
   const queryClient = useQueryClient();
   const [showArticleForm, setShowArticleForm] = useState(false);
   const [editingArticle, setEditingArticle] = useState<Blog | null>(null);
+
+  // Le profil (estEtudiantValide, coachProfil, enseignantProfil, estGestionnaireEtablissement)
+  // n'est chargé qu'une fois au démarrage de l'app — on le resynchronise à chaque visite de "Mon
+  // espace" pour refléter une demande approuvée entre-temps sans exiger un rechargement complet.
+  useEffect(() => {
+    refreshUser().catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isEmploye = user?.role === 'SECRETAIRE' || user?.role === 'MODERATEUR' || user?.role === 'MODERATEUR_FINANCE';
   // Déterminé par le lien de profil, pas par le rôle système — un compte peut être coach,
@@ -815,99 +1079,110 @@ export function MonEspace() {
           </Link>
         </Card>
       ) : (
-        <div className="grid sm:grid-cols-2 gap-4">
-          {isCoachOuEnseignant && (
-            <Card title="Rendez-vous à traiter" icon="📅">
-              <p className="text-3xl font-black text-slate-800 dark:text-white mb-1">{rdvATraiterEnAttente}</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">demande(s) en attente</p>
-              <Link to="/rendez-vous-a-traiter" className="text-sm text-brand-600 dark:text-blue-400 hover:underline">
-                Voir les demandes →
-              </Link>
-            </Card>
-          )}
+        <div className="space-y-8">
+          <section>
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3">
+              Aperçu
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {isCoachOuEnseignant && (
+                <Card title="Rendez-vous à traiter" icon="📅">
+                  <p className="text-3xl font-black text-slate-800 dark:text-white mb-1">{rdvATraiterEnAttente}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">demande(s) en attente</p>
+                  <Link to="/rendez-vous-a-traiter" className="text-sm text-brand-600 dark:text-blue-400 hover:underline">
+                    Voir les demandes →
+                  </Link>
+                </Card>
+              )}
 
-          <Card title="Mes rendez-vous" icon="🗓️">
-            <p className="text-3xl font-black text-slate-800 dark:text-white mb-1">{rdvEnAttente}</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">en attente de réponse</p>
-            <Link to="/mes-rendez-vous" className="text-sm text-brand-600 dark:text-blue-400 hover:underline">
-              Voir mes rendez-vous →
-            </Link>
-          </Card>
+              <Card title="Mes rendez-vous" icon="🗓️">
+                <p className="text-3xl font-black text-slate-800 dark:text-white mb-1">{rdvEnAttente}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">en attente de réponse</p>
+                <Link to="/mes-rendez-vous" className="text-sm text-brand-600 dark:text-blue-400 hover:underline">
+                  Voir mes rendez-vous →
+                </Link>
+              </Card>
 
-          <Card title="Mes favoris" icon="⭐">
-            <p className="text-3xl font-black text-slate-800 dark:text-white mb-1">{favoris?.length ?? 0}</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">élément(s) enregistré(s)</p>
-            <Link to="/favoris" className="text-sm text-brand-600 dark:text-blue-400 hover:underline">
-              Voir mes favoris →
-            </Link>
-          </Card>
+              <Card title="Mes favoris" icon="⭐">
+                <p className="text-3xl font-black text-slate-800 dark:text-white mb-1">{favoris?.length ?? 0}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">élément(s) enregistré(s)</p>
+                <Link to="/favoris" className="text-sm text-brand-600 dark:text-blue-400 hover:underline">
+                  Voir mes favoris →
+                </Link>
+              </Card>
 
-          <Card title="Mon profil d'orientation" icon="🧭">
-            {profilLabel ? (
-              <>
-                <p className="text-lg font-black text-slate-800 dark:text-white mb-1">{profilLabel}</p>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">Dernier résultat</p>
-              </>
-            ) : (
-              <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">Aucun test complété.</p>
-            )}
-            <Link to="/mes-resultats" className="text-sm text-brand-600 dark:text-blue-400 hover:underline">
-              Voir mes résultats →
-            </Link>
-          </Card>
+              <Card title="Mon profil d'orientation" icon="🧭">
+                {profilLabel ? (
+                  <>
+                    <p className="text-lg font-black text-slate-800 dark:text-white mb-1">{profilLabel}</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">Dernier résultat</p>
+                  </>
+                ) : (
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">Aucun test complété.</p>
+                )}
+                <Link to="/mes-resultats" className="text-sm text-brand-600 dark:text-blue-400 hover:underline">
+                  Voir mes résultats →
+                </Link>
+              </Card>
 
-          <Card title="Mon CV" icon="📄">
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
-              Générez un CV professionnel basé sur votre profil.
-            </p>
-            <Link to="/mon-cv" className="text-sm text-brand-600 dark:text-blue-400 hover:underline">
-              Créer / modifier mon CV →
-            </Link>
-          </Card>
+              <Card title="Mon CV" icon="📄">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
+                  Générez un CV professionnel basé sur votre profil.
+                </p>
+                <Link to="/mon-cv" className="text-sm text-brand-600 dark:text-blue-400 hover:underline">
+                  Créer / modifier mon CV →
+                </Link>
+              </Card>
 
-          <Card title="Mon profil" icon="⚙️">
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
-              {user.prenom} {user.nom} — {user.email}
-            </p>
-            <Link to="/profil" className="text-sm text-brand-600 dark:text-blue-400 hover:underline">
-              Modifier mes informations →
-            </Link>
-          </Card>
+              <Card title="Mon profil" icon="⚙️">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
+                  {user.prenom} {user.nom} — {user.email}
+                </p>
+                <Link to="/profil" className="text-sm text-brand-600 dark:text-blue-400 hover:underline">
+                  Modifier mes informations →
+                </Link>
+              </Card>
+            </div>
+          </section>
 
-          <div className="sm:col-span-2">
-            <Card title="Vie étudiante" icon="🎒">
-              <DevenirEtudiant
-                estEtudiant={estEtudiantValide}
-                demandes={demandesEtudiant}
-                onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['mes-demandes-role'] })}
-              />
-            </Card>
-          </div>
+          <section>
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3">
+              Statuts &amp; demandes
+            </h2>
+            <div className="space-y-4">
+              <Card title="Vie étudiante" icon="🎒">
+                <DevenirEtudiant
+                  estEtudiant={estEtudiantValide}
+                  demandes={demandesEtudiant}
+                  onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['mes-demandes-role'] })}
+                />
+              </Card>
 
-          {!(estCoach && estEnseignant) && (
-            <div className="sm:col-span-2">
-              <Card title="Devenir coach ou enseignant" icon="🎓">
-                <DevenirCoachEnseignant
-                  estCoach={estCoach}
-                  estEnseignant={estEnseignant}
-                  demandes={demandesCoachEnseignant}
+              {!(estCoach && estEnseignant) && (
+                <Card title="Devenir coach ou enseignant" icon="🎓">
+                  <DevenirCoachEnseignant
+                    estCoach={estCoach}
+                    estEnseignant={estEnseignant}
+                    demandes={demandesCoachEnseignant}
+                    onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['mes-demandes-role'] })}
+                  />
+                </Card>
+              )}
+
+              <Card title="Gestionnaire d'établissement" icon="🏛️">
+                <DevenirGestionnaireEtablissement
+                  estGestionnaire={estGestionnaireEtablissement}
+                  demandes={demandesGestionnaire}
                   onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['mes-demandes-role'] })}
                 />
               </Card>
             </div>
-          )}
+          </section>
 
-          <div className="sm:col-span-2">
-            <Card title="Gestionnaire d'établissement" icon="🏛️">
-              <DevenirGestionnaireEtablissement
-                estGestionnaire={estGestionnaireEtablissement}
-                demandes={demandesGestionnaire}
-                onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['mes-demandes-role'] })}
-              />
-            </Card>
-          </div>
-
-          <div className="sm:col-span-2">
+          <section>
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3">
+              Mon activité
+            </h2>
             <Card
               title="Mes articles"
               icon="✍️"
@@ -948,7 +1223,7 @@ export function MonEspace() {
                 </div>
               )}
             </Card>
-          </div>
+          </section>
         </div>
       )}
 

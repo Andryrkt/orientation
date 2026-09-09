@@ -80,7 +80,7 @@ export function EnseignantDetail() {
         <FavoriteButton type="ENSEIGNANT" entityId={enseignant.id} className="shrink-0" />
       </div>
 
-      {enseignant.noteMoyenne !== null && (
+      {enseignant.noteMoyenne != null && (
         <p className="text-amber-600 dark:text-amber-400 mb-4">★ {enseignant.noteMoyenne.toFixed(1)} ({enseignant.avisCount} avis)</p>
       )}
 

@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { BlogStatut, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEnseignantDto } from './dto/create-enseignant.dto';
 import { UpdateEnseignantDto } from './dto/update-enseignant.dto';
+import { UpdateMyEnseignantDto } from './dto/update-my-enseignant.dto';
 import { QueryEnseignantDto } from './dto/query-enseignant.dto';
 import { CreateAvisDto } from './dto/create-avis.dto';
 
@@ -21,7 +22,7 @@ export class EnseignantsService {
   async findAllVisible(query: QueryEnseignantDto) {
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
-    const filters: Prisma.EnseignantWhereInput[] = [{ visible: true }];
+    const filters: Prisma.EnseignantWhereInput[] = [{ visible: true }, { statutValidation: BlogStatut.APPROUVE }];
     if (query.matiere) filters.push({ matieres: { has: query.matiere } });
     if (query.niveauEtude) {
       filters.push({
@@ -59,8 +60,27 @@ export class EnseignantsService {
         avis: { include: { utilisateur: AUTEUR_SELECT }, orderBy: { createdAt: 'desc' } },
       },
     });
-    if (!enseignant || !enseignant.visible) throw new NotFoundException('Enseignant introuvable');
+    if (!enseignant || !enseignant.visible || enseignant.statutValidation !== BlogStatut.APPROUVE) {
+      throw new NotFoundException('Enseignant introuvable');
+    }
     return withNoteMoyenne(enseignant);
+  }
+
+  findMine(utilisateurId: string) {
+    return this.prisma.enseignant.findFirst({ where: { utilisateurId } });
+  }
+
+  async updateMine(utilisateurId: string, dto: UpdateMyEnseignantDto) {
+    const existing = await this.prisma.enseignant.findFirst({ where: { utilisateurId } });
+    if (!existing) throw new NotFoundException('Profil enseignant introuvable');
+    return this.prisma.enseignant.update({
+      where: { id: existing.id },
+      data: {
+        ...dto,
+        // Toute modification renvoie la fiche en modération, même si elle était déjà publiée.
+        statutValidation: BlogStatut.EN_ATTENTE,
+      },
+    });
   }
 
   async findAllAdmin(query: QueryEnseignantDto) {

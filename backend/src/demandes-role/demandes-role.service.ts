@@ -1,5 +1,5 @@
 import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { DemandeRoleStatut, DemandeRoleType, Prisma, Role } from '@prisma/client';
+import { BlogStatut, DemandeRoleStatut, DemandeRoleType, Prisma, Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { CreateDemandeRoleDto } from './dto/create-demande-role.dto';
@@ -217,6 +217,9 @@ export class DemandesRoleService {
               experience: demande.experience,
               disponibilites: demande.disponibilites,
               visible: true,
+              // Le profil est créé "vide" (à compléter par le coach lui-même dans son espace) et
+              // repasse par une validation admin avant d'être visible publiquement.
+              statutValidation: BlogStatut.EN_ATTENTE,
             },
           });
         }
@@ -241,6 +244,9 @@ export class DemandesRoleService {
               etablissement: demande.etablissement,
               disponibilites: demande.disponibilites,
               visible: true,
+              // Le profil est créé "vide" (à compléter par l'enseignant lui-même dans son espace)
+              // et repasse par une validation admin avant d'être visible publiquement.
+              statutValidation: BlogStatut.EN_ATTENTE,
             },
           });
         }

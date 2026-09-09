@@ -18,6 +18,7 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { CoachsService } from './coachs.service';
 import { CreateCoachDto } from './dto/create-coach.dto';
 import { UpdateCoachDto } from './dto/update-coach.dto';
+import { UpdateMyCoachDto } from './dto/update-my-coach.dto';
 import { QueryCoachDto } from './dto/query-coach.dto';
 import { CreateAvisDto } from './dto/create-avis.dto';
 
@@ -30,6 +31,18 @@ export class CoachsController {
   @Get('coachs')
   findAllVisible(@Query() query: QueryCoachDto) {
     return this.coachsService.findAllVisible(query);
+  }
+
+  @ApiBearerAuth()
+  @Get('coachs/mon-profil')
+  findMine(@CurrentUser() user: { id: string }) {
+    return this.coachsService.findMine(user.id);
+  }
+
+  @ApiBearerAuth()
+  @Patch('coachs/mon-profil')
+  updateMine(@CurrentUser() user: { id: string }, @Body() dto: UpdateMyCoachDto) {
+    return this.coachsService.updateMine(user.id, dto);
   }
 
   @Public()

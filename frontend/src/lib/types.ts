@@ -638,8 +638,9 @@ export interface Coach {
   experience: string | null;
   disponibilites: string | null;
   visible: boolean;
-  noteMoyenne: number | null;
-  avisCount: number;
+  statutValidation?: 'EN_ATTENTE' | 'APPROUVE' | 'REJETE';
+  noteMoyenne?: number | null;
+  avisCount?: number;
   avis?: CoachAvis[];
 }
 
@@ -743,8 +744,9 @@ export interface Enseignant {
   visible: boolean;
   createdAt: string;
   updatedAt: string;
-  noteMoyenne: number | null;
-  avisCount: number;
+  statutValidation?: 'EN_ATTENTE' | 'APPROUVE' | 'REJETE';
+  noteMoyenne?: number | null;
+  avisCount?: number;
   avis?: EnseignantAvis[];
 }
 

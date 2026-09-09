@@ -3,6 +3,12 @@ import { AdminResourcePage } from '../../components/admin/AdminResourcePage';
 import { api } from '../../lib/api';
 import { Coach, Paginated, User } from '../../lib/types';
 
+const VALIDATION_LABELS: Record<string, string> = {
+  EN_ATTENTE: 'En attente',
+  APPROUVE: 'Publié',
+  REJETE: 'Refusé',
+};
+
 function toPayload(values: Record<string, unknown>): Record<string, unknown> {
   const payload: Record<string, unknown> = {
     ...values,
@@ -44,6 +50,7 @@ export function CoachsAdmin() {
         experience: '',
         disponibilites: '',
         visible: 'true',
+        statutValidation: 'APPROUVE',
       }}
       toFormValues={(item) => ({
         ...item,
@@ -58,12 +65,17 @@ export function CoachsAdmin() {
         {
           key: 'noteMoyenne',
           label: 'Note',
-          render: (item) => (item.noteMoyenne !== null ? `★ ${item.noteMoyenne.toFixed(1)} (${item.avisCount})` : '—'),
+          render: (item) => (item.noteMoyenne != null ? `★ ${item.noteMoyenne.toFixed(1)} (${item.avisCount})` : '—'),
         },
         {
           key: 'visible',
           label: 'Visibilité',
           render: (item) => (item.visible ? 'Visible' : 'Masqué'),
+        },
+        {
+          key: 'statutValidation',
+          label: 'Validation',
+          render: (item) => VALIDATION_LABELS[item.statutValidation ?? 'APPROUVE'] ?? item.statutValidation,
         },
       ]}
       fields={[
@@ -88,6 +100,16 @@ export function CoachsAdmin() {
           options: [
             { value: 'true', label: 'Visible' },
             { value: 'false', label: 'Masqué' },
+          ],
+        },
+        {
+          name: 'statutValidation',
+          label: 'Statut de validation (fiches soumises par le coach lui-même)',
+          type: 'select',
+          options: [
+            { value: 'EN_ATTENTE', label: 'En attente' },
+            { value: 'APPROUVE', label: 'Publié' },
+            { value: 'REJETE', label: 'Refusé' },
           ],
         },
       ]}

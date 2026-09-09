@@ -18,6 +18,7 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { EnseignantsService } from './enseignants.service';
 import { CreateEnseignantDto } from './dto/create-enseignant.dto';
 import { UpdateEnseignantDto } from './dto/update-enseignant.dto';
+import { UpdateMyEnseignantDto } from './dto/update-my-enseignant.dto';
 import { QueryEnseignantDto } from './dto/query-enseignant.dto';
 import { CreateAvisDto } from './dto/create-avis.dto';
 
@@ -30,6 +31,18 @@ export class EnseignantsController {
   @Get('enseignants')
   findAllVisible(@Query() query: QueryEnseignantDto) {
     return this.enseignantsService.findAllVisible(query);
+  }
+
+  @ApiBearerAuth()
+  @Get('enseignants/mon-profil')
+  findMine(@CurrentUser() user: { id: string }) {
+    return this.enseignantsService.findMine(user.id);
+  }
+
+  @ApiBearerAuth()
+  @Patch('enseignants/mon-profil')
+  updateMine(@CurrentUser() user: { id: string }, @Body() dto: UpdateMyEnseignantDto) {
+    return this.enseignantsService.updateMine(user.id, dto);
   }
 
   @Public()

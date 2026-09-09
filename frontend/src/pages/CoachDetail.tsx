@@ -78,7 +78,7 @@ export function CoachDetail() {
         <FavoriteButton type="COACH" entityId={coach.id} className="shrink-0" />
       </div>
 
-      {coach.noteMoyenne !== null && (
+      {coach.noteMoyenne != null && (
         <p className="text-amber-600 dark:text-amber-400 mb-4">★ {coach.noteMoyenne.toFixed(1)} ({coach.avisCount} avis)</p>
       )}
 

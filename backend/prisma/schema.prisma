@@ -497,6 +497,9 @@ model Coach {
   experience      String?
   disponibilites  String?
   visible         Boolean      @default(true)
+  // Fiche soumise/modifiée par le coach lui-même (espace self-service) : reste invisible du
+  // public tant qu'un admin ne l'a pas validée, comme les fiches Université/Formation pro.
+  statutValidation BlogStatut  @default(APPROUVE)
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
@@ -535,6 +538,9 @@ model Enseignant {
   etablissement   String?
   disponibilites  String?
   visible         Boolean          @default(true)
+  // Fiche soumise/modifiée par l'enseignant lui-même (espace self-service) : reste invisible du
+  // public tant qu'un admin ne l'a pas validée, comme les fiches Université/Formation pro.
+  statutValidation BlogStatut      @default(APPROUVE)
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
