@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsBoolean, IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
+import { ArrayMinSize, IsArray, IsBoolean, IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateCoachDto {
   @ApiProperty({ required: false, description: "Compte utilisateur lié (rôle Coach), pour l'accès à l'espace self-service" })
@@ -40,11 +40,14 @@ export class CreateCoachDto {
   @IsString()
   bio?: string;
 
-  @ApiProperty({ required: false, type: [String] })
-  @IsOptional()
+  @ApiProperty({
+    type: [String],
+    description: 'Au moins une spécialité — distingue ce profil des autres profils coach du même compte',
+  })
   @IsArray()
+  @ArrayMinSize(1, { message: 'Indiquez au moins une spécialité' })
   @IsString({ each: true })
-  specialites?: string[];
+  specialites: string[];
 
   @ApiProperty({ required: false })
   @IsOptional()

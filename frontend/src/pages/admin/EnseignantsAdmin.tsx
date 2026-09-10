@@ -100,7 +100,7 @@ export function EnseignantsAdmin() {
         { name: 'email', label: 'Email', type: 'text' },
         { name: 'telephone', label: 'Téléphone', type: 'text' },
         { name: 'bio', label: 'Bio', type: 'textarea' },
-        { name: 'matieres', label: 'Matières (séparées par des virgules)', type: 'text' },
+        { name: 'matieres', label: 'Matières (séparées par des virgules)', type: 'text', required: true },
         {
           name: 'niveauxEtude',
           label: 'Niveaux d\'études (LYCEE, NOUVEAU_BACHELIER, UNIVERSITE — vide = tous niveaux)',

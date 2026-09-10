@@ -249,13 +249,17 @@ export function MonProfilProfessionnel() {
 
               <div>
                 <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
-                  {formType === 'coach' ? 'Spécialités' : 'Matières'} (séparées par des virgules)
+                  {formType === 'coach' ? 'Spécialités' : 'Matières'} (séparées par des virgules) <span className="text-red-500">*</span>
                 </label>
                 <input
                   className="field-input"
+                  required
                   value={values.tags}
                   onChange={(e) => setValues((v) => ({ ...v, tags: e.target.value }))}
                 />
+                <p className="text-xs text-slate-400 mt-1">
+                  Distingue ce profil des autres profils {formType === 'coach' ? 'coach' : 'enseignant'} de votre compte.
+                </p>
               </div>
 
               {formType === 'coach' ? (

@@ -88,7 +88,7 @@ export function CoachsAdmin() {
         { name: 'email', label: 'Email', type: 'text' },
         { name: 'telephone', label: 'Téléphone', type: 'text' },
         { name: 'bio', label: 'Bio', type: 'textarea' },
-        { name: 'specialites', label: 'Spécialités (séparées par des virgules)', type: 'text' },
+        { name: 'specialites', label: 'Spécialités (séparées par des virgules)', type: 'text', required: true },
         { name: 'experience', label: 'Expérience', type: 'textarea' },
         { name: 'disponibilites', label: 'Disponibilités', type: 'text' },
         {

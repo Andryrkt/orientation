@@ -11,6 +11,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { UPLOADS_DIR, UPLOADS_IMAGES_DIR } from './uploads/upload-paths';
 import { PrismaService } from './prisma/prisma.service';
 import { backfillUsernames } from './users/backfill-usernames';
+import { backfillCoachEnseignantFlags } from './coachs/backfill-coach-enseignant-flags';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -40,6 +41,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   await backfillUsernames(app.get(PrismaService));
+  await backfillCoachEnseignantFlags(app.get(PrismaService));
 
   if (process.env.SWAGGER_ENABLED !== 'false') {
     const config = new DocumentBuilder()

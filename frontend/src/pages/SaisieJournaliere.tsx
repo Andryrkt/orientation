@@ -656,20 +656,20 @@ function PeriodeCard({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
-              {t('saisieJournaliere.fondDeCaisse')}
+              {t('saisieJournaliere.fondDeCaisse')} <span className="text-rose-400">*</span>
             </label>
             <p className="text-xs text-slate-400 mb-1.5">{t('saisieJournaliere.fondDeCaisseHint')}</p>
             <MontantInput className="field-input" value={fondDeCaisse} onChange={setFondDeCaisse} required />
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
-              {t('saisieJournaliere.montantGagne')}
+              {t('saisieJournaliere.montantGagne')} <span className="text-rose-400">*</span>
             </label>
             <MontantInput className="field-input" value={montantGagne} onChange={setMontantGagne} required />
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
-              {t('saisieJournaliere.montantDepense')}
+              {t('saisieJournaliere.montantDepense')} <span className="text-rose-400">*</span>
             </label>
             <MontantInput className="field-input" value={montantDepense} onChange={setMontantDepense} required />
           </div>

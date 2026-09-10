@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsBoolean, IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
+import { ArrayMinSize, IsArray, IsBoolean, IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateEnseignantDto {
   @ApiProperty({ required: false, description: "Compte utilisateur lié (rôle Enseignant), pour l'accès à l'espace self-service" })
@@ -40,11 +40,14 @@ export class CreateEnseignantDto {
   @IsString()
   bio?: string;
 
-  @ApiProperty({ required: false, type: [String] })
-  @IsOptional()
+  @ApiProperty({
+    type: [String],
+    description: 'Au moins une matière — distingue ce profil des autres profils enseignant du même compte',
+  })
   @IsArray()
+  @ArrayMinSize(1, { message: 'Indiquez au moins une matière' })
   @IsString({ each: true })
-  matieres?: string[];
+  matieres: string[];
 
   @ApiProperty({ required: false, type: [String] })
   @IsOptional()
