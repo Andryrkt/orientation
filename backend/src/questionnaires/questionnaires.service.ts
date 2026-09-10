@@ -237,6 +237,31 @@ export class QuestionnairesService {
       .slice(0, 6)
       .map(({ id, nom, slug }) => ({ id, nom, slug }));
 
+    // Formations universitaires (mentions) correspondant aux domaines recommandés — la Mention
+    // n'a pas ses propres codes RIASEC, on la relie via son domaine, déjà classé par pertinence.
+    const mentionsCandidates = domainesRecommandes.length
+      ? await this.prisma.mention.findMany({
+          where: {
+            domaineId: { in: domainesRecommandes.map((d) => d.id) },
+            universite: { statutValidation: 'APPROUVE' },
+          },
+          select: {
+            id: true,
+            nom: true,
+            slug: true,
+            niveau: true,
+            domaineId: true,
+            universite: { select: { nom: true, slug: true } },
+          },
+          take: 20,
+        })
+      : [];
+    const ordreDomaines = domainesRecommandes.map((d) => d.id);
+    const mentionsRecommandees = mentionsCandidates
+      .sort((a, b) => ordreDomaines.indexOf(a.domaineId) - ordreDomaines.indexOf(b.domaineId))
+      .slice(0, 6)
+      .map(({ domaineId: _domaineId, ...rest }) => rest);
+
     return this.prisma.resultatOrientation.create({
       data: {
         utilisateurId: userId,
@@ -245,6 +270,7 @@ export class QuestionnairesService {
         profilDominant,
         domainesRecommandes: domainesRecommandes as Prisma.InputJsonValue,
         metiersRecommandes: metiersRecommandes as Prisma.InputJsonValue,
+        mentionsRecommandees: mentionsRecommandees as unknown as Prisma.InputJsonValue,
         reponses: answersLog as Prisma.InputJsonValue,
       },
     });

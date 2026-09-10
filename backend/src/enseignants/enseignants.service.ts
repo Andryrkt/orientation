@@ -1,12 +1,17 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { BlogStatut, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
+import { hasMajorChange } from '../common/utils/has-major-change';
 import { CreateEnseignantDto } from './dto/create-enseignant.dto';
 import { UpdateEnseignantDto } from './dto/update-enseignant.dto';
 import { QueryEnseignantDto } from './dto/query-enseignant.dto';
 import { CreateAvisDto } from './dto/create-avis.dto';
 
 const AUTEUR_SELECT = { select: { id: true, nom: true, prenom: true } };
+
+// Cf. coachs.service.ts : seuls ces champs remettent la fiche en modération.
+const CHAMPS_MAJEURS_ENSEIGNANT = ['bio', 'matieres', 'niveauxEtude', 'etablissement'] as const;
 
 function withNoteMoyenne<T extends { avis: { note: number }[] }>(enseignant: T) {
   const { avis, ...rest } = enseignant;
@@ -16,7 +21,10 @@ function withNoteMoyenne<T extends { avis: { note: number }[] }>(enseignant: T) 
 
 @Injectable()
 export class EnseignantsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificationsService: NotificationsService,
+  ) {}
 
   async findAllVisible(query: QueryEnseignantDto) {
     const page = query.page ?? 1;
@@ -117,12 +125,14 @@ export class EnseignantsService {
     if (!existing) throw new NotFoundException('Profil enseignant introuvable');
     if (existing.utilisateurId !== utilisateurId) throw new ForbiddenException();
     const { utilisateurId: _ignored, nom: _ignoredNom, prenom: _ignoredPrenom, email: _ignoredEmail, visible: _ignoredVisible, ...rest } = dto;
+    const statutValidation = hasMajorChange(existing, rest, CHAMPS_MAJEURS_ENSEIGNANT)
+      ? BlogStatut.EN_ATTENTE
+      : existing.statutValidation;
     return this.prisma.enseignant.update({
       where: { id },
       data: {
         ...rest,
-        // Toute modification renvoie la fiche en modération, même si elle était déjà publiée.
-        statutValidation: BlogStatut.EN_ATTENTE,
+        statutValidation,
       },
     });
   }
@@ -130,7 +140,29 @@ export class EnseignantsService {
   async update(id: string, dto: UpdateEnseignantDto) {
     const existing = await this.prisma.enseignant.findUnique({ where: { id } });
     if (!existing) throw new NotFoundException('Enseignant introuvable');
-    return this.prisma.enseignant.update({ where: { id }, data: dto });
+    const updated = await this.prisma.enseignant.update({ where: { id }, data: dto });
+    await this.notifyValidationChange(existing, updated);
+    return updated;
+  }
+
+  // Cf. universites.service.ts : prévient l'enseignant de l'issue de la modération de ce profil.
+  private async notifyValidationChange(
+    existing: { utilisateurId: string | null; statutValidation: BlogStatut; nom: string; prenom: string },
+    updated: { statutValidation: BlogStatut },
+  ) {
+    if (!existing.utilisateurId || updated.statutValidation === existing.statutValidation) return;
+    if (updated.statutValidation !== BlogStatut.APPROUVE && updated.statutValidation !== BlogStatut.REJETE) return;
+
+    const approuve = updated.statutValidation === BlogStatut.APPROUVE;
+    await this.notificationsService.create({
+      utilisateurId: existing.utilisateurId,
+      type: 'VALIDATION_ENSEIGNANT',
+      titre: approuve ? 'Profil enseignant approuvé' : 'Profil enseignant refusé',
+      message: approuve
+        ? `Votre profil enseignant "${existing.prenom} ${existing.nom}" a été approuvé et est maintenant visible publiquement.`
+        : `Votre profil enseignant "${existing.prenom} ${existing.nom}" a été refusé par un modérateur.`,
+      lien: '/mon-profil-professionnel',
+    });
   }
 
   async remove(id: string) {

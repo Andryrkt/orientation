@@ -1,7 +1,9 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { BlogStatut, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { slugify } from '../common/utils/slugify';
+import { hasMajorChange } from '../common/utils/has-major-change';
 import { CreateUniversiteDto } from './dto/create-universite.dto';
 import { UpdateUniversiteDto } from './dto/update-universite.dto';
 import { UpdateMyUniversiteDto } from './dto/update-my-universite.dto';
@@ -9,9 +11,17 @@ import { QueryUniversiteDto } from './dto/query-universite.dto';
 
 const AUTEUR_SELECT = { select: { id: true, nom: true, prenom: true, email: true } };
 
+// Champs dont la modification remet la fiche en modération. Les autres (téléphone, email, site
+// web, photos...) sont des corrections mineures qui ne remettent pas en cause le contenu déjà
+// validé — la fiche garde son statut si elle était déjà publiée.
+const CHAMPS_MAJEURS_UNIVERSITE = ['nom', 'description', 'ville', 'region'] as const;
+
 @Injectable()
 export class UniversitesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificationsService: NotificationsService,
+  ) {}
 
   async findAll(query: QueryUniversiteDto) {
     const page = query.page ?? 1;
@@ -111,9 +121,33 @@ export class UniversitesService {
     if (!existing) throw new NotFoundException('Universite introuvable');
     const slug = dto.nom ? await this.uniqueSlug(dto.nom, id) : undefined;
     const { photos, ...rest } = dto;
-    return this.prisma.universite.update({
+    const updated = await this.prisma.universite.update({
       where: { id },
       data: { ...rest, ...(slug && { slug }), ...(photos && { photos }) },
+    });
+    await this.notifyValidationChange(existing, updated);
+    return updated;
+  }
+
+  // Prévient le gestionnaire quand sa fiche est approuvée/refusée — symétrique aux notifications
+  // déjà envoyées pour les demandes de rôle. Rien à notifier pour une fiche créée par un admin
+  // (auteurId nul) ni si le statut de validation n'a pas changé.
+  private async notifyValidationChange(
+    existing: { auteurId: string | null; statutValidation: BlogStatut; nom: string },
+    updated: { statutValidation: BlogStatut },
+  ) {
+    if (!existing.auteurId || updated.statutValidation === existing.statutValidation) return;
+    if (updated.statutValidation !== BlogStatut.APPROUVE && updated.statutValidation !== BlogStatut.REJETE) return;
+
+    const approuve = updated.statutValidation === BlogStatut.APPROUVE;
+    await this.notificationsService.create({
+      utilisateurId: existing.auteurId,
+      type: 'VALIDATION_UNIVERSITE',
+      titre: approuve ? 'Établissement approuvé' : 'Établissement refusé',
+      message: approuve
+        ? `Votre établissement "${existing.nom}" a été approuvé et est maintenant visible publiquement.`
+        : `Votre établissement "${existing.nom}" a été refusé par un modérateur.`,
+      lien: '/mes-etablissements',
     });
   }
 
@@ -124,14 +158,18 @@ export class UniversitesService {
 
     const slug = dto.nom ? await this.uniqueSlug(dto.nom, id) : undefined;
     const { photos, ...rest } = dto;
+    // Une correction mineure (téléphone, email, site web, photos...) sur une fiche déjà publiée
+    // n'a pas besoin d'être revalidée ; un changement de contenu (nom, description, localisation) si.
+    const statutValidation = hasMajorChange(existing, rest, CHAMPS_MAJEURS_UNIVERSITE)
+      ? BlogStatut.EN_ATTENTE
+      : existing.statutValidation;
     return this.prisma.universite.update({
       where: { id },
       data: {
         ...rest,
         ...(slug && { slug }),
         ...(photos && { photos }),
-        // Toute modification renvoie la fiche en modération, même si elle était déjà publiée.
-        statutValidation: BlogStatut.EN_ATTENTE,
+        statutValidation,
       },
     });
   }

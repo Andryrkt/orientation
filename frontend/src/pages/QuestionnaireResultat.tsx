@@ -75,6 +75,27 @@ export function QuestionnaireResultat() {
         </div>
       )}
 
+      {resultat.mentionsRecommandees.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-3">Formations recommandées</h2>
+          <div className="flex flex-col gap-2">
+            {resultat.mentionsRecommandees.map((m) => (
+              <Link
+                key={m.id}
+                to={`/universites/${m.universite.slug}`}
+                className="flex items-center justify-between px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800"
+              >
+                <span>
+                  <span className="font-medium text-slate-700 dark:text-slate-200">{m.nom}</span>
+                  <span className="text-slate-400 dark:text-slate-500"> — {m.universite.nom}</span>
+                </span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 shrink-0 ml-3">{m.niveau}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       <p className="text-sm text-slate-500 dark:text-slate-400">
         <Link to="/mes-resultats" className="text-brand-600 dark:text-blue-400 hover:underline">
           Voir l'historique de mes résultats

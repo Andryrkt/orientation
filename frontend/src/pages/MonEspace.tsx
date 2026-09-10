@@ -1,4 +1,4 @@
-import { FormEvent, ReactNode, useEffect, useState } from 'react';
+import { FormEvent, ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Editor from 'react-simple-wysiwyg';
@@ -765,19 +765,11 @@ function ArticleForm({
 }
 
 export function MonEspace() {
-  const { user, refreshUser } = useAuth();
+  const { user } = useAuth();
   const { favoris } = useFavoris();
   const queryClient = useQueryClient();
   const [showArticleForm, setShowArticleForm] = useState(false);
   const [editingArticle, setEditingArticle] = useState<Blog | null>(null);
-
-  // Le profil (estEtudiantValide, coachProfil, enseignantProfil, estGestionnaireEtablissement)
-  // n'est chargé qu'une fois au démarrage de l'app — on le resynchronise à chaque visite de "Mon
-  // espace" pour refléter une demande approuvée entre-temps sans exiger un rechargement complet.
-  useEffect(() => {
-    refreshUser().catch(() => {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const isEmploye = user?.role === 'SECRETAIRE' || user?.role === 'MODERATEUR' || user?.role === 'MODERATEUR_FINANCE';
   // Déterminé par la capacité du compte, pas par le rôle système — un compte peut être coach,

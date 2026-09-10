@@ -1,12 +1,18 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { BlogStatut, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
+import { hasMajorChange } from '../common/utils/has-major-change';
 import { CreateCoachDto } from './dto/create-coach.dto';
 import { UpdateCoachDto } from './dto/update-coach.dto';
 import { QueryCoachDto } from './dto/query-coach.dto';
 import { CreateAvisDto } from './dto/create-avis.dto';
 
 const AUTEUR_SELECT = { select: { id: true, nom: true, prenom: true } };
+
+// Seuls ces champs (le cœur du profil) remettent la fiche en modération ; les coordonnées et
+// disponibilités sont des corrections mineures qui ne remettent pas en cause le profil déjà validé.
+const CHAMPS_MAJEURS_COACH = ['bio', 'specialites', 'experience'] as const;
 
 function withNoteMoyenne<T extends { avis: { note: number }[] }>(coach: T) {
   const { avis, ...rest } = coach;
@@ -16,7 +22,10 @@ function withNoteMoyenne<T extends { avis: { note: number }[] }>(coach: T) {
 
 @Injectable()
 export class CoachsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificationsService: NotificationsService,
+  ) {}
 
   async findAllVisible(query: QueryCoachDto) {
     const page = query.page ?? 1;
@@ -111,12 +120,14 @@ export class CoachsService {
     if (!existing) throw new NotFoundException('Profil coach introuvable');
     if (existing.utilisateurId !== utilisateurId) throw new ForbiddenException();
     const { utilisateurId: _ignored, nom: _ignoredNom, prenom: _ignoredPrenom, email: _ignoredEmail, visible: _ignoredVisible, ...rest } = dto;
+    const statutValidation = hasMajorChange(existing, rest, CHAMPS_MAJEURS_COACH)
+      ? BlogStatut.EN_ATTENTE
+      : existing.statutValidation;
     return this.prisma.coach.update({
       where: { id },
       data: {
         ...rest,
-        // Toute modification renvoie la fiche en modération, même si elle était déjà publiée.
-        statutValidation: BlogStatut.EN_ATTENTE,
+        statutValidation,
       },
     });
   }
@@ -124,7 +135,29 @@ export class CoachsService {
   async update(id: string, dto: UpdateCoachDto) {
     const existing = await this.prisma.coach.findUnique({ where: { id } });
     if (!existing) throw new NotFoundException('Coach introuvable');
-    return this.prisma.coach.update({ where: { id }, data: dto });
+    const updated = await this.prisma.coach.update({ where: { id }, data: dto });
+    await this.notifyValidationChange(existing, updated);
+    return updated;
+  }
+
+  // Cf. universites.service.ts : prévient le coach de l'issue de la modération de ce profil.
+  private async notifyValidationChange(
+    existing: { utilisateurId: string | null; statutValidation: BlogStatut; nom: string; prenom: string },
+    updated: { statutValidation: BlogStatut },
+  ) {
+    if (!existing.utilisateurId || updated.statutValidation === existing.statutValidation) return;
+    if (updated.statutValidation !== BlogStatut.APPROUVE && updated.statutValidation !== BlogStatut.REJETE) return;
+
+    const approuve = updated.statutValidation === BlogStatut.APPROUVE;
+    await this.notificationsService.create({
+      utilisateurId: existing.utilisateurId,
+      type: 'VALIDATION_COACH',
+      titre: approuve ? 'Profil coach approuvé' : 'Profil coach refusé',
+      message: approuve
+        ? `Votre profil coach "${existing.prenom} ${existing.nom}" a été approuvé et est maintenant visible publiquement.`
+        : `Votre profil coach "${existing.prenom} ${existing.nom}" a été refusé par un modérateur.`,
+      lien: '/mon-profil-professionnel',
+    });
   }
 
   async remove(id: string) {

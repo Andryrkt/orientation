@@ -28,6 +28,7 @@ interface FormValues {
   email: string;
   contact: string;
   siteWeb: string;
+  photos: string[];
 }
 
 const EMPTY_VALUES: FormValues = {
@@ -40,6 +41,7 @@ const EMPTY_VALUES: FormValues = {
   email: '',
   contact: '',
   siteWeb: '',
+  photos: [],
 };
 
 function toValues(item: Universite | CentreFormation): FormValues {
@@ -53,6 +55,7 @@ function toValues(item: Universite | CentreFormation): FormValues {
     email: 'email' in item ? item.email ?? '' : '',
     contact: 'contact' in item ? item.contact ?? '' : '',
     siteWeb: item.siteWeb ?? '',
+    photos: 'photos' in item && Array.isArray(item.photos) ? (item.photos as string[]) : [],
   };
 }
 
@@ -63,6 +66,7 @@ export function MesEtablissements() {
   const [editing, setEditing] = useState<{ type: EtablissementType; id: string } | null>(null);
   const [values, setValues] = useState<FormValues>(EMPTY_VALUES);
   const [error, setError] = useState<string | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   const { data: universites } = useQuery({
     queryKey: ['mes-universites'],
@@ -99,9 +103,36 @@ export function MesEtablissements() {
       siteWeb: values.siteWeb || undefined,
     };
     if (formType === 'universite') {
-      return { ...base, description: values.description || undefined, telephone: values.telephone || undefined, email: values.email || undefined };
+      return {
+        ...base,
+        description: values.description || undefined,
+        telephone: values.telephone || undefined,
+        email: values.email || undefined,
+        photos: values.photos,
+      };
     }
     return { ...base, contact: values.contact || undefined };
+  }
+
+  async function handlePhotoUpload(file: File) {
+    setUploadingPhoto(true);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const { data } = await api.post<{ url: string }>('/uploads/image', formData);
+      const fullUrl = `${api.defaults.baseURL ?? ''}${data.url}`;
+      setValues((v) => ({ ...v, photos: [...v.photos, fullUrl] }));
+    } catch (err) {
+      const msg = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
+      setError(Array.isArray(msg) ? msg.join(', ') : msg ?? "Échec de l'envoi de la photo");
+    } finally {
+      setUploadingPhoto(false);
+    }
+  }
+
+  function removePhoto(index: number) {
+    setValues((v) => ({ ...v, photos: v.photos.filter((_, i) => i !== index) }));
   }
 
   const saveMutation = useMutation({
@@ -307,6 +338,43 @@ export function MesEtablissements() {
                     value={values.contact}
                     onChange={(e) => setValues({ ...values, contact: e.target.value })}
                   />
+                </div>
+              )}
+
+              {formType === 'universite' && (
+                <div>
+                  <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Photos</label>
+                  {values.photos.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {values.photos.map((url, i) => (
+                        <div key={url + i} className="relative">
+                          <img src={url} alt="" className="h-16 w-16 rounded-md object-cover border border-slate-300 dark:border-slate-700" />
+                          <button
+                            type="button"
+                            onClick={() => removePhoto(i)}
+                            aria-label="Supprimer la photo"
+                            className="absolute -top-1.5 -right-1.5 w-5 h-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs leading-none hover:bg-red-600"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <label className="inline-block px-3 py-2 text-sm rounded-md border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
+                    {uploadingPhoto ? 'Envoi...' : '+ Ajouter une photo'}
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      className="hidden"
+                      disabled={uploadingPhoto}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        e.target.value = '';
+                        if (file) handlePhotoUpload(file);
+                      }}
+                    />
+                  </label>
                 </div>
               )}
 

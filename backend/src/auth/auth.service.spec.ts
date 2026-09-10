@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ConflictException, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
+import { MailService } from '../mail/mail.service';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -35,6 +36,10 @@ describe('AuthService', () => {
     }),
   };
 
+  const mockMail = {
+    sendPasswordResetEmail: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -42,6 +47,7 @@ describe('AuthService', () => {
         { provide: PrismaService, useValue: mockPrisma },
         { provide: JwtService, useValue: mockJwt },
         { provide: ConfigService, useValue: mockConfig },
+        { provide: MailService, useValue: mockMail },
       ],
     }).compile();
 
@@ -222,20 +228,23 @@ describe('AuthService', () => {
 
   describe('forgotPassword', () => {
     it('devrait retourner un message de succes meme si l utilisateur n existe pas', async () => {
-      mockPrisma.utilisateur.findUnique.mockResolvedValue(null);
+      // forgotPassword cherche par email via findFirst (pas findUnique) : on force explicitement
+      // null ici pour ne pas heriter d'un utilisateur mocke par un test precedent (findFirst est
+      // partage avec login/register, dont mockResolvedValue n'est pas reinitialise entre tests).
+      mockPrisma.utilisateur.findFirst.mockResolvedValue(null);
 
       const result = await service.forgotPassword('inconnu@test.com');
-      expect(result.message).toBe('Si ce compte existe, un email a ete envoye.');
+      expect(result.message).toBe('Si ce compte existe, un lien de reinitialisation a ete envoye.');
       expect(jwt.sign).not.toHaveBeenCalled();
     });
 
     it('devrait generer un token si l utilisateur existe', async () => {
       const user = { id: 'user-123', email: 'jean@test.com' };
-      mockPrisma.utilisateur.findUnique.mockResolvedValue(user);
+      mockPrisma.utilisateur.findFirst.mockResolvedValue(user);
       mockJwt.sign.mockReturnValue('reset-token-123');
 
       const result = await service.forgotPassword('jean@test.com');
-      expect(result.message).toBe('Si ce compte existe, un email a ete envoye.');
+      expect(result.message).toBe('Si ce compte existe, un lien de reinitialisation a ete envoye.');
       expect(jwt.sign).toHaveBeenCalledWith(
         { sub: 'user-123', purpose: 'reset-password' },
         { secret: 'access-secret', expiresIn: '1h' },

@@ -603,6 +603,14 @@ export interface RecommendationItem {
   slug: string;
 }
 
+export interface MentionRecommendationItem {
+  id: string;
+  nom: string;
+  slug: string;
+  niveau: string;
+  universite: { nom: string; slug: string };
+}
+
 export interface ResultatOrientation {
   id: string;
   utilisateurId: string;
@@ -612,6 +620,7 @@ export interface ResultatOrientation {
   profilDominant: string | null;
   domainesRecommandes: RecommendationItem[];
   metiersRecommandes: RecommendationItem[];
+  mentionsRecommandees: MentionRecommendationItem[];
   reponses: unknown[];
   createdAt: string;
 }

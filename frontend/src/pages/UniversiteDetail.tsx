@@ -29,6 +29,19 @@ export function UniversiteDetail() {
       </p>
       <p className="text-slate-700 dark:text-slate-300 mb-6">{universite.description}</p>
 
+      {universite.photos?.length > 0 && (
+        <div className="flex flex-wrap gap-3 mb-6">
+          {universite.photos.map((url, i) => (
+            <img
+              key={url + i}
+              src={url}
+              alt={`${universite.nom} — photo ${i + 1}`}
+              className="h-28 w-40 rounded-lg object-cover border border-slate-200 dark:border-slate-800"
+            />
+          ))}
+        </div>
+      )}
+
       <div className="flex flex-wrap gap-4 text-sm text-slate-600 dark:text-slate-400 mb-8">
         {universite.telephone && <span>Tél : {universite.telephone}</span>}
         {universite.email && <span>Email : {universite.email}</span>}

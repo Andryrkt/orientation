@@ -39,6 +39,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })();
   }, []);
 
+  // Filet de sécurité général : certaines actions (validation d'une fiche, approbation d'une
+  // demande de rôle...) changent des attributs du compte (estCoach, estGestionnaireEtablissement...)
+  // sans que la page actuellement ouverte le sache. Plutôt que de rafraîchir "user" page par page,
+  // on le refait périodiquement en tâche de fond tant qu'une session est active.
+  useEffect(() => {
+    if (!user) return;
+    const interval = setInterval(() => {
+      loadCurrentUser().catch(() => {});
+    }, 60_000);
+    return () => clearInterval(interval);
+  }, [user?.id]);
+
   async function login(identifiant: string, password: string) {
     const res = await api.post('/auth/login', { identifiant, password });
     setAccessToken(res.data.accessToken);

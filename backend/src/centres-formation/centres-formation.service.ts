@@ -1,7 +1,9 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { BlogStatut, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { slugify } from '../common/utils/slugify';
+import { hasMajorChange } from '../common/utils/has-major-change';
 import { CreateCentreFormationDto } from './dto/create-centre-formation.dto';
 import { UpdateCentreFormationDto } from './dto/update-centre-formation.dto';
 import { UpdateMyCentreFormationDto } from './dto/update-my-centre-formation.dto';
@@ -9,9 +11,15 @@ import { QueryCentreFormationDto } from './dto/query-centre-formation.dto';
 
 const AUTEUR_SELECT = { select: { id: true, nom: true, prenom: true, email: true } };
 
+// Cf. universites.service.ts : seuls ces champs remettent la fiche en modération.
+const CHAMPS_MAJEURS_CENTRE_FORMATION = ['nom', 'ville', 'region'] as const;
+
 @Injectable()
 export class CentresFormationService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificationsService: NotificationsService,
+  ) {}
 
   async findAll(query: QueryCentreFormationDto) {
     const page = query.page ?? 1;
@@ -108,9 +116,31 @@ export class CentresFormationService {
     const existing = await this.prisma.centreFormation.findUnique({ where: { id } });
     if (!existing) throw new NotFoundException('Centre de formation introuvable');
     const slug = dto.nom ? await this.uniqueSlug(dto.nom, id) : undefined;
-    return this.prisma.centreFormation.update({
+    const updated = await this.prisma.centreFormation.update({
       where: { id },
       data: { ...dto, ...(slug && { slug }) },
+    });
+    await this.notifyValidationChange(existing, updated);
+    return updated;
+  }
+
+  // Cf. universites.service.ts : prévient le gestionnaire de l'issue de la modération.
+  private async notifyValidationChange(
+    existing: { auteurId: string | null; statutValidation: BlogStatut; nom: string },
+    updated: { statutValidation: BlogStatut },
+  ) {
+    if (!existing.auteurId || updated.statutValidation === existing.statutValidation) return;
+    if (updated.statutValidation !== BlogStatut.APPROUVE && updated.statutValidation !== BlogStatut.REJETE) return;
+
+    const approuve = updated.statutValidation === BlogStatut.APPROUVE;
+    await this.notificationsService.create({
+      utilisateurId: existing.auteurId,
+      type: 'VALIDATION_CENTRE_FORMATION',
+      titre: approuve ? 'Centre de formation approuvé' : 'Centre de formation refusé',
+      message: approuve
+        ? `Votre centre de formation "${existing.nom}" a été approuvé et est maintenant visible publiquement.`
+        : `Votre centre de formation "${existing.nom}" a été refusé par un modérateur.`,
+      lien: '/mes-etablissements',
     });
   }
 
@@ -120,13 +150,15 @@ export class CentresFormationService {
     if (existing.auteurId !== auteurId) throw new ForbiddenException();
 
     const slug = dto.nom ? await this.uniqueSlug(dto.nom, id) : undefined;
+    const statutValidation = hasMajorChange(existing, dto, CHAMPS_MAJEURS_CENTRE_FORMATION)
+      ? BlogStatut.EN_ATTENTE
+      : existing.statutValidation;
     return this.prisma.centreFormation.update({
       where: { id },
       data: {
         ...dto,
         ...(slug && { slug }),
-        // Toute modification renvoie la fiche en modération, même si elle était déjà publiée.
-        statutValidation: BlogStatut.EN_ATTENTE,
+        statutValidation,
       },
     });
   }

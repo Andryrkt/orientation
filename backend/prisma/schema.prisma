@@ -446,6 +446,7 @@ model ResultatOrientation {
   profilDominant      String?
   domainesRecommandes Json          @default("[]")
   metiersRecommandes  Json          @default("[]")
+  mentionsRecommandees Json         @default("[]")
   reponses            Json          @default("[]")
   createdAt           DateTime      @default(now())
 

@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Bell } from 'lucide-react';
 import { api } from '../lib/api';
 import { Notification, Paginated } from '../lib/types';
+import { useAuth } from '../lib/auth-context';
 
 function timeAgo(dateStr: string) {
   const diffMs = Date.now() - new Date(dateStr).getTime();
@@ -21,12 +22,25 @@ export function NotificationBell() {
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { refreshUser } = useAuth();
+  const previousCount = useRef<number | undefined>(undefined);
 
   const { data: unread } = useQuery({
     queryKey: ['notifications-unread-count'],
     queryFn: async () => (await api.get<{ count: number }>('/notifications/unread-count')).data,
     refetchInterval: 30000,
   });
+
+  // Une nouvelle notification signale souvent un changement de compte (fiche approuvée/refusée,
+  // demande de rôle traitée...) : on resynchronise "user" tout de suite plutôt que d'attendre le
+  // rafraîchissement périodique de secours dans AuthContext.
+  useEffect(() => {
+    if (unread === undefined) return;
+    if (previousCount.current !== undefined && unread.count > previousCount.current) {
+      refreshUser().catch(() => {});
+    }
+    previousCount.current = unread.count;
+  }, [unread, refreshUser]);
 
   const { data: list } = useQuery({
     queryKey: ['notifications-list'],
