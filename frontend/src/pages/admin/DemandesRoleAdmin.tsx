@@ -21,6 +21,7 @@ const TYPE_LABELS: Record<string, string> = {
   COACH: 'Coach',
   ENSEIGNANT: 'Enseignant',
   ETUDIANT: 'Étudiant',
+  GESTIONNAIRE_ETABLISSEMENT: "Gestionnaire d'établissement",
 };
 
 const NIVEAU_ETUDE_LABELS: Record<string, string> = {
@@ -154,79 +155,149 @@ function ReponseForm({
   );
 }
 
-export function DemandesRoleAdmin() {
+function DemandeDetailModal({ demande, onClose }: { demande: DemandeRole; onClose: () => void }) {
   const queryClient = useQueryClient();
+
+  const updateMutation = useMutation({
+    mutationFn: ({ statut, reponse }: { statut: DemandeRoleStatut; reponse: string }) =>
+      api.patch(`/admin/demandes-role/${demande.id}`, { statut, reponse: reponse || undefined }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-demandes-role'] });
+      onClose();
+    },
+  });
+
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-20 p-4">
+      <div className="bg-white dark:bg-slate-900 rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex items-start justify-between gap-4 mb-2">
+            <div>
+              <p className="font-bold text-slate-800 dark:text-white">
+                {demande.utilisateur ? `${demande.utilisateur.prenom} ${demande.utilisateur.nom}` : 'Demandeur'}
+                {' — '}
+                <span className="font-semibold">{TYPE_LABELS[demande.type] ?? demande.type}</span>
+              </p>
+              {demande.utilisateur?.email && (
+                <p className="text-xs text-slate-400 mt-0.5">{demande.utilisateur.email}</p>
+              )}
+              <p className="text-xs text-slate-400 mt-0.5">
+                {new Date(demande.createdAt).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' })}
+              </p>
+            </div>
+            <span className={`px-2 py-0.5 rounded-full text-xs font-bold shrink-0 ${STATUT_CLASSES[demande.statut]}`}>
+              {STATUT_LABELS[demande.statut]}
+            </span>
+          </div>
+          {demande.message && <p className="text-sm text-slate-600 dark:text-slate-400">{demande.message}</p>}
+          <ProfilPropose d={demande} />
+          {demande.reponse && (
+            <p className="text-sm text-slate-700 dark:text-slate-300 mt-2 border-t border-slate-100 dark:border-slate-800 pt-2">
+              <span className="font-semibold">Réponse : </span>{demande.reponse}
+            </p>
+          )}
+          {demande.statut === 'EN_ATTENTE' && (
+            <ReponseForm
+              submitting={updateMutation.isPending}
+              onSubmit={(statut, reponse) => updateMutation.mutate({ statut, reponse })}
+            />
+          )}
+          {demande.statut === 'REJETEE' && (
+            <ReexaminerToggle
+              submitting={updateMutation.isPending}
+              onSubmit={(statut, reponse) => updateMutation.mutate({ statut, reponse })}
+            />
+          )}
+          {demande.statut === 'APPROUVEE' && (
+            <RemettreEnAttenteButton
+              submitting={updateMutation.isPending}
+              onConfirm={() => updateMutation.mutate({ statut: 'EN_ATTENTE', reponse: '' })}
+            />
+          )}
+          <div className="flex justify-end pt-4 mt-2 border-t border-slate-100 dark:border-slate-800">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-sm rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function DemandesRoleAdmin() {
+  const [selected, setSelected] = useState<DemandeRole | null>(null);
   const { data, isLoading } = useQuery({
     queryKey: ['admin-demandes-role'],
     queryFn: async () => (await api.get<Paginated<DemandeRole>>('/admin/demandes-role?limit=100')).data,
   });
 
-  const updateMutation = useMutation({
-    mutationFn: ({ id, statut, reponse }: { id: string; statut: DemandeRoleStatut; reponse: string }) =>
-      api.patch(`/admin/demandes-role/${id}`, { statut, reponse: reponse || undefined }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-demandes-role'] }),
-  });
-
   return (
-    <div className="max-w-2xl mx-auto">
+    <div>
       <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Demandes de statut</h1>
-      <p className="text-slate-500 dark:text-slate-400 mb-8">
+      <p className="text-slate-500 dark:text-slate-400 mb-6">
         Approuve, refuse, ou demande un complément d'information sur les demandes des utilisateurs souhaitant devenir
-        coach, enseignant, ou obtenir l'accès étudiant (budget, ressources).
+        coach, enseignant, gestionnaire d'établissement, ou obtenir l'accès étudiant (budget, ressources).
       </p>
 
-      {isLoading && <p className="text-slate-400">Chargement...</p>}
-      {!isLoading && data?.items.length === 0 && (
-        <p className="text-slate-400">Aucune demande pour le moment.</p>
-      )}
-
-      <div className="space-y-3">
-        {data?.items.map((d) => (
-          <div key={d.id} className="card p-5">
-            <div className="flex items-start justify-between gap-4 mb-2">
-              <div>
-                <p className="font-bold text-slate-800 dark:text-white">
-                  {d.utilisateur ? `${d.utilisateur.prenom} ${d.utilisateur.nom}` : 'Demandeur'}
-                  {' — '}
-                  <span className="font-semibold">{TYPE_LABELS[d.type] ?? d.type}</span>
-                </p>
-                {d.utilisateur?.email && <p className="text-xs text-slate-400 mt-0.5">{d.utilisateur.email}</p>}
-                <p className="text-xs text-slate-400 mt-0.5">
-                  {new Date(d.createdAt).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' })}
-                </p>
-              </div>
-              <span className={`px-2 py-0.5 rounded-full text-xs font-bold shrink-0 ${STATUT_CLASSES[d.statut]}`}>
-                {STATUT_LABELS[d.statut]}
-              </span>
-            </div>
-            {d.message && <p className="text-sm text-slate-600 dark:text-slate-400">{d.message}</p>}
-            <ProfilPropose d={d} />
-            {d.reponse && (
-              <p className="text-sm text-slate-700 dark:text-slate-300 mt-2 border-t border-slate-100 dark:border-slate-800 pt-2">
-                <span className="font-semibold">Réponse : </span>{d.reponse}
-              </p>
+      <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-slate-50 dark:bg-slate-800/60 text-left text-slate-500 dark:text-slate-400">
+            <tr>
+              <th className="px-4 py-3 font-medium">Demandeur</th>
+              <th className="px-4 py-3 font-medium">Type</th>
+              <th className="px-4 py-3 font-medium">Date</th>
+              <th className="px-4 py-3 font-medium">Statut</th>
+              <th className="px-4 py-3" />
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            {isLoading && (
+              <tr>
+                <td colSpan={5} className="px-4 py-6 text-center text-slate-400">Chargement...</td>
+              </tr>
             )}
-            {d.statut === 'EN_ATTENTE' && (
-              <ReponseForm
-                submitting={updateMutation.isPending}
-                onSubmit={(statut, reponse) => updateMutation.mutate({ id: d.id, statut, reponse })}
-              />
+            {!isLoading && data?.items.length === 0 && (
+              <tr>
+                <td colSpan={5} className="px-4 py-6 text-center text-slate-400">Aucune demande pour le moment.</td>
+              </tr>
             )}
-            {d.statut === 'REJETEE' && (
-              <ReexaminerToggle
-                submitting={updateMutation.isPending}
-                onSubmit={(statut, reponse) => updateMutation.mutate({ id: d.id, statut, reponse })}
-              />
-            )}
-            {d.statut === 'APPROUVEE' && (
-              <RemettreEnAttenteButton
-                submitting={updateMutation.isPending}
-                onConfirm={() => updateMutation.mutate({ id: d.id, statut: 'EN_ATTENTE', reponse: '' })}
-              />
-            )}
-          </div>
-        ))}
+            {data?.items.map((d) => (
+              <tr key={d.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td className="px-4 py-3">
+                  <p className="text-slate-700 dark:text-slate-300 font-medium">
+                    {d.utilisateur ? `${d.utilisateur.prenom} ${d.utilisateur.nom}` : 'Demandeur'}
+                  </p>
+                  {d.utilisateur?.email && <p className="text-xs text-slate-400">{d.utilisateur.email}</p>}
+                </td>
+                <td className="px-4 py-3 text-slate-700 dark:text-slate-300">{TYPE_LABELS[d.type] ?? d.type}</td>
+                <td className="px-4 py-3 text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                  {new Date(d.createdAt).toLocaleDateString('fr-FR')}
+                </td>
+                <td className="px-4 py-3">
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ${STATUT_CLASSES[d.statut]}`}>
+                    {STATUT_LABELS[d.statut]}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-right">
+                  <button
+                    onClick={() => setSelected(d)}
+                    className="text-brand-600 dark:text-brand-400 hover:underline font-medium"
+                  >
+                    Détail
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
+
+      {selected && <DemandeDetailModal demande={selected} onClose={() => setSelected(null)} />}
     </div>
   );
 }
