@@ -40,6 +40,10 @@ export function PublicLayout() {
   ];
 
   const isEmploye = user?.role === 'SECRETAIRE' || user?.role === 'MODERATEUR' || user?.role === 'MODERATEUR_FINANCE';
+  // Orientation, Opportunités et Information/Conseils (blog) exposent les outils de la plateforme
+  // (métiers, questionnaire, stages, bourses...) : réservés aux comptes connectés. Un visiteur non
+  // connecté ne voit que la vitrine (Services, Qui sommes-nous, Contact).
+  const showMemberNav = !isEmploye && !!user;
 
   // Un seul point d'entrée vers l'espace personnel de l'utilisateur (favoris, résultats,
   // rendez-vous, CV, profil, articles...) plutôt que des liens éparpillés dans le menu.
@@ -70,11 +74,15 @@ export function PublicLayout() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
-            {!isEmploye && (
+            {showMemberNav && (
               <>
                 <NavDropdown label={t('nav.orientation')} items={ORIENTATION_ITEMS} />
                 <NavDropdown label={t('nav.opportunities')} items={OPPORTUNITES_ITEMS} />
                 <NavLink to="/blog" className={navLinkClass}>{t('nav.blog')}</NavLink>
+              </>
+            )}
+            {!isEmploye && (
+              <>
                 <NavLink to="/services" className={navLinkClass}>Services</NavLink>
                 <NavLink to="/qui-sommes-nous" className={navLinkClass}>Qui sommes-nous</NavLink>
                 <NavLink to="/contact" className={navLinkClass}>{t('nav.contact')}</NavLink>
@@ -289,11 +297,16 @@ export function PublicLayout() {
               boxShadow: theme === 'dark' ? '0 20px 40px rgba(0, 0, 0, 0.5)' : '0 20px 40px rgba(15, 23, 42, 0.08)',
             }}
           >
+            {showMemberNav &&
+              [...ORIENTATION_ITEMS, ...OPPORTUNITES_ITEMS, { to: '/blog', label: t('nav.blog') }].map(
+                (item) => (
+                  <NavLink key={item.to} to={item.to} className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
+                    {item.label}
+                  </NavLink>
+                ),
+              )}
             {!isEmploye &&
               [
-                ...ORIENTATION_ITEMS,
-                ...OPPORTUNITES_ITEMS,
-                { to: '/blog', label: t('nav.blog') },
                 { to: '/services', label: 'Services' },
                 { to: '/qui-sommes-nous', label: 'Qui sommes-nous' },
                 { to: '/contact', label: t('nav.contact') },
@@ -375,7 +388,7 @@ export function PublicLayout() {
               {t('footer.description')}
             </p>
           </div>
-          {!isEmploye && (
+          {showMemberNav && (
             <div>
               <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">{t('footer.orientation')}</h4>
               <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
@@ -387,7 +400,7 @@ export function PublicLayout() {
               </ul>
             </div>
           )}
-          {!isEmploye && (
+          {showMemberNav && (
             <div>
               <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">{t('footer.opportunities')}</h4>
               <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
@@ -399,6 +412,13 @@ export function PublicLayout() {
                 <li>
                   <Link to="/blog" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.blog')}</Link>
                 </li>
+              </ul>
+            </div>
+          )}
+          {!isEmploye && (
+            <div>
+              <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">Informations</h4>
+              <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
                 <li>
                   <Link to="/services" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Services</Link>
                 </li>
