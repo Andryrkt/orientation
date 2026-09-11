@@ -39,6 +39,12 @@ export function PublicLayout() {
     { to: '/bourses', label: t('nav.scholarships') },
   ];
 
+  const CONTACT_ITEMS = [
+    { to: '/contact', label: t('nav.contact') },
+    { to: '/services', label: 'Nos services' },
+    { to: '/qui-sommes-nous', label: 'Qui sommes-nous' },
+  ];
+
   const isEmploye = user?.role === 'SECRETAIRE' || user?.role === 'MODERATEUR' || user?.role === 'MODERATEUR_FINANCE';
   // Orientation, Opportunités et Information/Conseils (blog) exposent les outils de la plateforme
   // (métiers, questionnaire, stages, bourses...) : réservés aux comptes connectés. Un visiteur non
@@ -79,11 +85,12 @@ export function PublicLayout() {
                 <NavDropdown label={t('nav.orientation')} items={ORIENTATION_ITEMS} />
                 <NavDropdown label={t('nav.opportunities')} items={OPPORTUNITES_ITEMS} />
                 <NavLink to="/blog" className={navLinkClass}>{t('nav.blog')}</NavLink>
+                <NavDropdown label={t('nav.contact')} items={CONTACT_ITEMS} />
               </>
             )}
-            {!isEmploye && (
+            {!isEmploye && !showMemberNav && (
               <>
-                <NavLink to="/services" className={navLinkClass}>Services</NavLink>
+                <NavLink to="/services" className={navLinkClass}>Nos services</NavLink>
                 <NavLink to="/qui-sommes-nous" className={navLinkClass}>Qui sommes-nous</NavLink>
                 <NavLink to="/contact" className={navLinkClass}>{t('nav.contact')}</NavLink>
               </>
@@ -307,7 +314,7 @@ export function PublicLayout() {
               )}
             {!isEmploye &&
               [
-                { to: '/services', label: 'Services' },
+                { to: '/services', label: 'Nos services' },
                 { to: '/qui-sommes-nous', label: 'Qui sommes-nous' },
                 { to: '/contact', label: t('nav.contact') },
               ].map(
@@ -420,7 +427,7 @@ export function PublicLayout() {
               <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">Informations</h4>
               <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
                 <li>
-                  <Link to="/services" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Services</Link>
+                  <Link to="/services" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Nos services</Link>
                 </li>
                 <li>
                   <Link to="/qui-sommes-nous" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Qui sommes-nous</Link>
