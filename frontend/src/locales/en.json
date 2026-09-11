@@ -4,6 +4,8 @@
     "opportunities": "Opportunities",
     "student_life": "Student Life",
     "blog": "Information / Tips",
+    "services": "Our services",
+    "about": "About us",
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
@@ -106,6 +108,7 @@
     "description": "The reference platform for academic, university, and professional guidance in Madagascar.",
     "orientation": "Orientation",
     "opportunities": "Opportunities",
+    "information": "Information",
     "account": "Account",
     "copyright": "Avenir assuré — Academic, university, and professional guidance in Madagascar"
   },
@@ -219,6 +222,204 @@
       "riasec_model": "RIASEC personality model",
       "match_indication": "Indicative match:",
       "match_strong": "Strong"
+    }
+  },
+  "home_guest": {
+    "hero": {
+      "text1": "Making a decision about your future is a big deal. At Avenir Assuré, we help you see things clearly, with no pressure and no judgment. Our goal: that every decision — academic, professional, or personal — is made with confidence.",
+      "text2": "You don't have to choose alone. We build your future together with you.",
+      "cta_rdv": "Book an appointment",
+      "cta_services": "Discover our services"
+    },
+    "mission": {
+      "eyebrow": "Our mission",
+      "title": "A commitment, not just a slogan",
+      "text1": "The name Avenir Assuré isn't just a slogan. It's a commitment. Whether you're a student, an employee, a job seeker, or a future entrepreneur, you deserve to leave with clear ideas and a real action plan.",
+      "text2": "Guidance doesn't stop at an exam or a diploma. It follows you throughout your life, through every change, every doubt, every new beginning. Avenir Assuré is here to support you, today and tomorrow."
+    },
+    "domaines": {
+      "eyebrow": "Our areas of expertise",
+      "title": "Support for every situation",
+      "cta": "See all our services",
+      "items": {
+        "scolaire": { "titre": "School guidance", "desc": "We help students get to know themselves better so they can choose a track that truly suits them." },
+        "post_bac": { "titre": "Post-secondary guidance", "desc": "Parcoursup, schools, universities: we help you choose the training that's right for you, based on your profile and your goals." },
+        "professionnelle": { "titre": "Career guidance", "desc": "Unsure about your career? We take stock together and identify the jobs that are made for you." },
+        "demandeurs_emploi": { "titre": "Job seekers", "desc": "We help you regain a clear direction and build a concrete plan to land a job." },
+        "entrepreneuriale": { "titre": "Entrepreneurial guidance", "desc": "We help you structure your project and launch it with confidence, without going off in every direction." },
+        "transition": { "titre": "Career transition", "desc": "Changing careers or professional life takes preparation. We support you every step of the way." }
+      }
+    },
+    "pourquoi": {
+      "eyebrow": "Why choose us",
+      "title": "Why choose Avenir Assuré?",
+      "items": {
+        "ecoute": { "titre": "We really listen to you", "desc": "Before advising you, we take the time to understand who you are and what you want." },
+        "methodes": { "titre": "Methods that work", "desc": "Tests, assessments, interviews: our tools are proven and tailored to your situation." },
+        "accompagnement": { "titre": "Human support", "desc": "No one-size-fits-all answers. Every journey deserves real, personalized follow-up." },
+        "cotes": { "titre": "We stay by your side", "desc": "One appointment is never enough. We stay with you for as long as you need." }
+      }
+    },
+    "cta_final": {
+      "title": "Ready to move forward?",
+      "desc": "A doubt, a question, a desire to change direction? Contact us for a first conversation, no strings attached.",
+      "cta_rdv": "Book an appointment",
+      "cta_contact": "Contact us"
+    }
+  },
+  "services_page": {
+    "eyebrow": "Our services",
+    "title": "Support at every step",
+    "subtitle": "Whatever your age or situation, there's support suited to your needs.",
+    "ce_quon_propose": "What we offer:",
+    "pour_qui": "Who is this for? ",
+    "cta_rdv": "Book an appointment",
+    "items": {
+      "scolaire": {
+        "titre": "School guidance",
+        "intro": "In middle school and high school, guidance decisions come up fast — sometimes too fast. We help students and their parents take the time to think it through, so they can choose a path that truly makes sense.",
+        "propose": [
+          "Guidance assessments suited to the student's age",
+          "Personality and interest tests",
+          "Interviews with the student, and parents if needed",
+          "Discovering general, technological, and vocational tracks",
+          "Preparing for end-of-year track choices"
+        ],
+        "pourQui": "Middle and high school students and their families."
+      },
+      "post_bac": {
+        "titre": "Post-secondary guidance",
+        "intro": "Parcoursup, top schools, universities, apprenticeships... there are so many options it's easy to get lost. We help you choose based on what you really want, not just rankings.",
+        "propose": [
+          "Full A-to-Z Parcoursup support",
+          "Analysis of your skills and interests",
+          "Comparing programs and career outcomes",
+          "Preparing for admission interviews",
+          "Help writing your motivation letters",
+          "Help writing your dissertation and preparing your presentation"
+        ],
+        "pourQui": "High school seniors, students considering a change of direction."
+      },
+      "professionnelle": {
+        "titre": "Career guidance",
+        "intro": "Going in circles in your career? No longer sure of your path? We take stock with you to identify your real strengths and the jobs that suit you.",
+        "propose": [
+          "Full skills assessment",
+          "Identifying your know-how",
+          "Exploring new career paths",
+          "A clear, realistic action plan",
+          "Support to help you decide"
+        ],
+        "pourQui": "Employees in doubt, managers, professionals looking for meaning."
+      },
+      "demandeurs_emploi": {
+        "titre": "Guidance for job seekers",
+        "intro": "Job hunting can wear you down. We help you regain direction, showcase your strengths, and structure your search so you can move forward with peace of mind.",
+        "propose": [
+          "Clarifying your career project",
+          "Highlighting your skills",
+          "Help with your CV and cover letter",
+          "Preparing for job interviews",
+          "A targeted search strategy"
+        ],
+        "pourQui": "Job seekers, people actively looking for work."
+      },
+      "entrepreneuriale": {
+        "titre": "Entrepreneurial guidance",
+        "intro": "Starting a business is exciting but risky without preparation. We help you validate your idea and build solid foundations before you launch.",
+        "propose": [
+          "Validating your project idea",
+          "Analysis of your entrepreneurial profile",
+          "Step-by-step structuring",
+          "Guidance toward the right funding options",
+          "Launch preparation"
+        ],
+        "pourQui": "Future entrepreneurs, project holders."
+      },
+      "transition": {
+        "titre": "Career transition",
+        "intro": "Changing careers or industries doesn't happen by chance. We help you turn this change into a well-managed step, not one you're forced into.",
+        "propose": [
+          "Assessment of your transferable skills",
+          "Exploring new industries",
+          "A realistic transition plan",
+          "Human support through the change",
+          "Follow-up throughout the process"
+        ],
+        "pourQui": "Professionals in career transition."
+      }
+    }
+  },
+  "about_page": {
+    "eyebrow": "About us",
+    "text1": "We believe no guidance decision should be made in doubt. That's why Avenir Assuré exists: to support you at every key stage, from middle school to career change.",
+    "text2": "Our team brings together guidance counselors, work psychologists, and employment integration experts. Their goal: turning your questions into a plan, and your plan into success.",
+    "values_title": "Our values",
+    "values": {
+      "ecoute": { "titre": "Listening", "desc": "Every journey is different." },
+      "rigueur": { "titre": "Rigor", "desc": "Methods that have proven themselves." },
+      "bienveillance": { "titre": "Kindness", "desc": "Never judgment." },
+      "engagement": { "titre": "Commitment", "desc": "We stay by your side until the end." }
+    }
+  },
+  "contact_page": {
+    "hero": {
+      "badge": "Contact us",
+      "title_pre": "We're here to ",
+      "title_highlight": "help",
+      "subtitle": "A question about the platform, a technical issue, or a partnership? Our team replies within 24 hours."
+    },
+    "form": {
+      "title": "Send a message",
+      "subtitle": "Fill out the form below and we'll get back to you quickly.",
+      "nom_label": "Full name",
+      "nom_placeholder": "e.g. Jean Rabe",
+      "email_label": "Email",
+      "email_placeholder": "e.g. jean@email.mg",
+      "sujet_label": "Subject",
+      "sujet_placeholder": "— Choose a subject —",
+      "sujet_options": {
+        "prise_rendez_vous": "Book an appointment",
+        "question_generale": "General question",
+        "probleme_technique": "Technical issue",
+        "orientation": "Guidance advice",
+        "partenariat": "Partnership / Collaboration",
+        "signalement": "Report content",
+        "autre": "Other"
+      },
+      "message_label": "Message",
+      "message_placeholder": "Describe your request in detail...",
+      "message_counter": "/ 20 min.",
+      "error": "An error occurred while sending. Please try again.",
+      "submit_loading": "Sending…",
+      "submit": "Send message",
+      "success_title": "Message sent!",
+      "success_desc": "Thank you for your message. Our team will reply as soon as possible, usually within 24 hours.",
+      "success_btn": "Send another message"
+    },
+    "info": {
+      "address_title": "Address",
+      "email_title": "Email",
+      "phone_title": "Phone",
+      "phone_hours": "Mon – Fri, 8am – 5pm",
+      "social_title": "Social media"
+    },
+    "faq": {
+      "title": "Check our FAQ",
+      "desc": "Before writing to us, you might find the answer in our frequently asked questions.",
+      "link": "See the FAQ →"
+    },
+    "team": {
+      "title": "Our team is here to help",
+      "subtitle": "Professionals dedicated to your guidance",
+      "support": { "name": "Support Team", "role": "Technical issues & Accounts" },
+      "orientation": { "name": "Guidance Team", "role": "Advice & Academic paths" },
+      "partenariats": { "name": "Partnerships Team", "role": "Collaborations & Institutions" }
+    },
+    "cta_final": {
+      "title": "Not sure where to start?",
+      "desc": "Whatever your age or situation, we have a solution for you. The first conversation is exactly what it's for: pointing you toward the right kind of support.",
+      "cta": "Book an appointment"
     }
   },
   "profile": {

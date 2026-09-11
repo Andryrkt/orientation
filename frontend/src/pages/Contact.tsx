@@ -26,30 +26,41 @@ type FormState = {
 const CONTACT_INFO = [
   {
     icon: MapPin,
-    title: 'Adresse',
+    titleKey: 'address_title',
     lines: ['Analamanga, Antananarivo, Madagascar', 'Lot IVT 173 Tsaramasay'],
   },
   {
     icon: Mail,
-    title: 'E-mail',
+    titleKey: 'email_title',
     lines: ['contact@avenirassure.mg', 'support@avenirassure.mg'],
   },
   {
     icon: Phone,
-    title: 'Téléphone',
-    lines: ['+261 34 20 685 10', 'Lun – Ven, 8h – 17h'],
+    titleKey: 'phone_title',
+    lines: ['+261 34 20 685 10'],
+    hoursKey: 'phone_hours',
   },
   {
     icon: MessageCircle,
-    title: 'Réseaux sociaux',
+    titleKey: 'social_title',
     lines: ['facebook.com/avenirassure', '@avenirassure'],
   },
 ];
 
+const SUJET_OPTIONS = [
+  'prise_rendez_vous',
+  'question_generale',
+  'probleme_technique',
+  'orientation',
+  'partenariat',
+  'signalement',
+  'autre',
+];
+
 const TEAM = [
-  { icon: Headset, name: 'Équipe Support', role: 'Problèmes techniques & Comptes', delay: '0ms', to: '/tickets' },
-  { icon: GraduationCap, name: 'Équipe Orientation', role: 'Conseils & Parcours académiques', delay: '80ms' },
-  { icon: Handshake, name: 'Équipe Partenariats', role: 'Collaborations & Institutions', delay: '160ms' },
+  { icon: Headset, key: 'support', delay: '0ms', to: '/tickets' },
+  { icon: GraduationCap, key: 'orientation', delay: '80ms' },
+  { icon: Handshake, key: 'partenariats', delay: '160ms' },
 ];
 
 export function Contact() {
@@ -67,7 +78,7 @@ export function Contact() {
       await api.post('/contact', form);
       setSubmitted(true);
     } catch {
-      setError("Une erreur est survenue lors de l'envoi. Veuillez réessayer.");
+      setError(t('contact_page.form.error'));
     } finally {
       setLoading(false);
     }
@@ -103,19 +114,19 @@ export function Contact() {
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-5"
             style={{ background: 'rgba(0,163,255,0.15)', border: '1px solid rgba(0,163,255,0.3)', color: '#00A3FF' }}
           >
-            <Mail className="w-3.5 h-3.5" strokeWidth={2.5} /> Contactez-nous
+            <Mail className="w-3.5 h-3.5" strokeWidth={2.5} /> {t('contact_page.hero.badge')}
           </span>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight">
-            On est là pour vous{' '}
+            {t('contact_page.hero.title_pre')}
             <span
               className="text-transparent bg-clip-text"
               style={{ backgroundImage: 'linear-gradient(90deg, #0052FF, #00A3FF)' }}
             >
-              aider
+              {t('contact_page.hero.title_highlight')}
             </span>
           </h1>
           <p className="text-slate-600 dark:text-slate-400 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            Une question sur la plateforme, un problème technique ou un partenariat ? Notre équipe répond dans les 24h.
+            {t('contact_page.hero.subtitle')}
           </p>
         </div>
       </section>
@@ -133,34 +144,34 @@ export function Contact() {
                   <CheckCircle2 className="w-10 h-10 text-white" strokeWidth={2} />
                 </div>
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-3">
-                  Message envoyé !
+                  {t('contact_page.form.success_title')}
                 </h2>
                 <p className="text-slate-500 dark:text-slate-400 text-sm max-w-sm mx-auto leading-relaxed">
-                  Merci pour votre message. Notre équipe vous répondra dans les plus brefs délais, généralement sous 24h.
+                  {t('contact_page.form.success_desc')}
                 </p>
                 <button
                   onClick={() => { setSubmitted(false); setForm({ nom: '', email: '', sujet: '', message: '' }); }}
                   className="btn-primary mt-6 px-6 py-2.5 text-sm"
                 >
-                  Envoyer un autre message
+                  {t('contact_page.form.success_btn')}
                 </button>
               </div>
             ) : (
               <>
-                <h2 className="text-xl font-black text-slate-900 dark:text-white mb-1">Envoyer un message</h2>
+                <h2 className="text-xl font-black text-slate-900 dark:text-white mb-1">{t('contact_page.form.title')}</h2>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mb-7">
-                  Remplissez le formulaire ci-dessous et nous vous répondrons rapidement.
+                  {t('contact_page.form.subtitle')}
                 </p>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
-                        Nom complet <span className="text-rose-400">*</span>
+                        {t('contact_page.form.nom_label')} <span className="text-rose-400">*</span>
                       </label>
                       <input
                         className="field-input"
-                        placeholder="ex : Jean Rabe"
+                        placeholder={t('contact_page.form.nom_placeholder')}
                         value={form.nom}
                         onChange={(e) => setForm({ ...form, nom: e.target.value })}
                         required
@@ -168,12 +179,12 @@ export function Contact() {
                     </div>
                     <div>
                       <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
-                        E-mail <span className="text-rose-400">*</span>
+                        {t('contact_page.form.email_label')} <span className="text-rose-400">*</span>
                       </label>
                       <input
                         type="email"
                         className="field-input"
-                        placeholder="ex : jean@email.mg"
+                        placeholder={t('contact_page.form.email_placeholder')}
                         value={form.email}
                         onChange={(e) => setForm({ ...form, email: e.target.value })}
                         required
@@ -183,7 +194,7 @@ export function Contact() {
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
-                      Sujet <span className="text-rose-400">*</span>
+                      {t('contact_page.form.sujet_label')} <span className="text-rose-400">*</span>
                     </label>
                     <select
                       className="field-input"
@@ -191,31 +202,31 @@ export function Contact() {
                       onChange={(e) => setForm({ ...form, sujet: e.target.value })}
                       required
                     >
-                      <option value="">— Choisir un sujet —</option>
-                      <option value="prise_rendez_vous">Prendre rendez-vous</option>
-                      <option value="question_generale">Question générale</option>
-                      <option value="probleme_technique">Problème technique</option>
-                      <option value="orientation">Conseil en orientation</option>
-                      <option value="partenariat">Partenariat / Collaboration</option>
-                      <option value="signalement">Signalement de contenu</option>
-                      <option value="autre">Autre</option>
+                      <option value="">{t('contact_page.form.sujet_placeholder')}</option>
+                      {SUJET_OPTIONS.map((key) => (
+                        <option key={key} value={key}>
+                          {t(`contact_page.form.sujet_options.${key}`)}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
-                      Message <span className="text-rose-400">*</span>
+                      {t('contact_page.form.message_label')} <span className="text-rose-400">*</span>
                     </label>
                     <textarea
                       rows={6}
                       className="field-input resize-none"
-                      placeholder="Décrivez votre demande en détail..."
+                      placeholder={t('contact_page.form.message_placeholder')}
                       value={form.message}
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
                       required
                       minLength={20}
                     />
-                    <p className="text-xs text-slate-400 mt-1.5 text-right">{form.message.length} / 20 min.</p>
+                    <p className="text-xs text-slate-400 mt-1.5 text-right">
+                      {form.message.length} {t('contact_page.form.message_counter')}
+                    </p>
                   </div>
 
                   {error && (
@@ -230,12 +241,12 @@ export function Contact() {
                     {loading ? (
                       <span className="flex items-center justify-center gap-2">
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        Envoi en cours…
+                        {t('contact_page.form.submit_loading')}
                       </span>
                     ) : (
                       <span className="flex items-center justify-center gap-2">
                         <Send className="w-4 h-4" />
-                        Envoyer le message
+                        {t('contact_page.form.submit')}
                       </span>
                     )}
                   </button>
@@ -249,7 +260,7 @@ export function Contact() {
         <div className="lg:col-span-2 flex flex-col gap-5">
           {CONTACT_INFO.map((info) => (
             <div
-              key={info.title}
+              key={info.titleKey}
               className="glass-card p-6 flex items-start gap-4 group hover:-translate-y-1 transition-transform duration-300"
             >
               <div
@@ -260,13 +271,18 @@ export function Contact() {
               </div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-blue-500 dark:text-blue-400 mb-1">
-                  {info.title}
+                  {t(`contact_page.info.${info.titleKey}`)}
                 </p>
                 {info.lines.map((line) => (
                   <p key={line} className="text-sm text-slate-700 dark:text-slate-300 font-medium">
                     {line}
                   </p>
                 ))}
+                {info.hoursKey && (
+                  <p className="text-sm text-slate-700 dark:text-slate-300 font-medium">
+                    {t(`contact_page.info.${info.hoursKey}`)}
+                  </p>
+                )}
               </div>
             </div>
           ))}
@@ -277,16 +293,16 @@ export function Contact() {
             style={{ background: 'linear-gradient(135deg, rgba(0,82,255,0.08), rgba(0,163,255,0.06))' }}
           >
             <p className="text-xs font-bold uppercase tracking-wider text-blue-500 dark:text-blue-400 mb-2 flex items-center gap-1.5">
-              <Lightbulb className="w-3.5 h-3.5" strokeWidth={2.5} /> Consultez notre FAQ
+              <Lightbulb className="w-3.5 h-3.5" strokeWidth={2.5} /> {t('contact_page.faq.title')}
             </p>
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-              Avant de nous écrire, vous trouverez peut-être la réponse dans notre foire aux questions.
+              {t('contact_page.faq.desc')}
             </p>
             <a
               href="/faq"
               className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
             >
-              Voir la FAQ →
+              {t('contact_page.faq.link')}
             </a>
           </div>
         </div>
@@ -295,8 +311,8 @@ export function Contact() {
       {/* ── Section Équipe ── */}
       <section className="mb-12">
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white">Notre équipe vous répond</h2>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Des professionnels dévoués à votre orientation</p>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-white">{t('contact_page.team.title')}</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">{t('contact_page.team.subtitle')}</p>
         </div>
         <div className="grid sm:grid-cols-3 gap-5">
           {TEAM.map((member) => {
@@ -308,17 +324,19 @@ export function Contact() {
                 >
                   <member.icon className="w-7 h-7 text-blue-600 dark:text-blue-400" strokeWidth={1.75} />
                 </div>
-                <p className="font-bold text-slate-900 dark:text-white text-sm">{member.name}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{member.role}</p>
+                <p className="font-bold text-slate-900 dark:text-white text-sm">{t(`contact_page.team.${member.key}.name`)}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  {t(`contact_page.team.${member.key}.role`)}
+                </p>
               </>
             );
             const className = "glass-card p-6 text-center hover:-translate-y-1 transition-transform duration-300";
             return member.to ? (
-              <Link key={member.name} to={member.to} className={className} style={{ animationDelay: member.delay }}>
+              <Link key={member.key} to={member.to} className={className} style={{ animationDelay: member.delay }}>
                 {content}
               </Link>
             ) : (
-              <div key={member.name} className={className} style={{ animationDelay: member.delay }}>
+              <div key={member.key} className={className} style={{ animationDelay: member.delay }}>
                 {content}
               </div>
             );
@@ -337,14 +355,13 @@ export function Contact() {
 
         <div className="relative z-10 max-w-xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight">
-            Vous ne savez pas par où commencer ?
+            {t('contact_page.cta_final.title')}
           </h2>
           <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
-            Quel que soit votre âge ou votre situation, on a une solution pour vous. Le premier échange est justement
-            là pour ça : vous orienter vers l'accompagnement adapté.
+            {t('contact_page.cta_final.desc')}
           </p>
           <a href="#formulaire" className="btn-primary px-8 py-4 text-base inline-block">
-            Prendre rendez-vous
+            {t('contact_page.cta_final.cta')}
           </a>
         </div>
       </section>

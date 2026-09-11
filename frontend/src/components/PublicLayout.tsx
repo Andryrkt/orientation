@@ -41,8 +41,8 @@ export function PublicLayout() {
 
   const CONTACT_ITEMS = [
     { to: '/contact', label: t('nav.contact') },
-    { to: '/services', label: 'Nos services' },
-    { to: '/qui-sommes-nous', label: 'Qui sommes-nous' },
+    { to: '/services', label: t('nav.services') },
+    { to: '/qui-sommes-nous', label: t('nav.about') },
   ];
 
   const isEmploye = user?.role === 'SECRETAIRE' || user?.role === 'MODERATEUR' || user?.role === 'MODERATEUR_FINANCE';
@@ -90,8 +90,8 @@ export function PublicLayout() {
             )}
             {!isEmploye && !showMemberNav && (
               <>
-                <NavLink to="/services" className={navLinkClass}>Nos services</NavLink>
-                <NavLink to="/qui-sommes-nous" className={navLinkClass}>Qui sommes-nous</NavLink>
+                <NavLink to="/services" className={navLinkClass}>{t('nav.services')}</NavLink>
+                <NavLink to="/qui-sommes-nous" className={navLinkClass}>{t('nav.about')}</NavLink>
                 <NavLink to="/contact" className={navLinkClass}>{t('nav.contact')}</NavLink>
               </>
             )}
@@ -314,8 +314,8 @@ export function PublicLayout() {
               )}
             {!isEmploye &&
               [
-                { to: '/services', label: 'Nos services' },
-                { to: '/qui-sommes-nous', label: 'Qui sommes-nous' },
+                { to: '/services', label: t('nav.services') },
+                { to: '/qui-sommes-nous', label: t('nav.about') },
                 { to: '/contact', label: t('nav.contact') },
               ].map(
                 (item) => (
@@ -424,13 +424,13 @@ export function PublicLayout() {
           )}
           {!isEmploye && (
             <div>
-              <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">Informations</h4>
+              <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-3">{t('footer.information')}</h4>
               <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-500">
                 <li>
-                  <Link to="/services" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Nos services</Link>
+                  <Link to="/services" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.services')}</Link>
                 </li>
                 <li>
-                  <Link to="/qui-sommes-nous" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Qui sommes-nous</Link>
+                  <Link to="/qui-sommes-nous" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.about')}</Link>
                 </li>
                 <li>
                   <Link to="/contact" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.contact')}</Link>

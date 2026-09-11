@@ -283,60 +283,20 @@ function MiniRiasecTeaser() {
 }
 
 /* ── Domaine d'expertise (visiteur non connecté) ── */
-const DOMAINES_EXPERTISE = [
-  {
-    emoji: '🎓',
-    titre: 'Orientation scolaire',
-    desc: 'On aide les élèves à mieux se connaître pour choisir une série qui leur correspond vraiment.',
-  },
-  {
-    emoji: '🎯',
-    titre: 'Orientation post-bac',
-    desc: 'Parcoursup, écoles, universités : on vous aide à choisir la formation qui vous convient, selon votre profil et vos envies.',
-  },
-  {
-    emoji: '💼',
-    titre: 'Orientation professionnelle',
-    desc: 'Vous doutez de votre carrière ? On fait le point ensemble et on identifie les métiers faits pour vous.',
-  },
-  {
-    emoji: '🔍',
-    titre: 'Demandeurs d\'emploi',
-    desc: 'On vous aide à retrouver un cap clair et à construire un plan concret pour décrocher un emploi.',
-  },
-  {
-    emoji: '🚀',
-    titre: 'Orientation entrepreneuriale',
-    desc: 'On vous aide à structurer votre projet et à vous lancer avec assurance, sans partir dans tous les sens.',
-  },
-  {
-    emoji: '🔄',
-    titre: 'Transition professionnelle',
-    desc: 'Changer de métier ou de vie professionnelle, ça se prépare. On vous accompagne à chaque étape.',
-  },
+const DOMAINES_EXPERTISE_KEYS = [
+  { emoji: '🎓', key: 'scolaire' },
+  { emoji: '🎯', key: 'post_bac' },
+  { emoji: '💼', key: 'professionnelle' },
+  { emoji: '🔍', key: 'demandeurs_emploi' },
+  { emoji: '🚀', key: 'entrepreneuriale' },
+  { emoji: '🔄', key: 'transition' },
 ];
 
-const POURQUOI_NOUS = [
-  {
-    titre: 'On vous écoute vraiment',
-    desc: 'Avant de vous conseiller, on prend le temps de comprendre qui vous êtes et ce que vous voulez.',
-  },
-  {
-    titre: 'Des méthodes qui fonctionnent',
-    desc: 'Tests, bilans, entretiens : nos outils sont éprouvés et adaptés à votre situation.',
-  },
-  {
-    titre: 'Un accompagnement humain',
-    desc: 'Pas de réponses toutes faites. Chaque parcours mérite un vrai suivi personnalisé.',
-  },
-  {
-    titre: 'On reste à vos côtés',
-    desc: 'Un seul rendez-vous ne suffit jamais. On vous suit tant que vous en avez besoin.',
-  },
-];
+const POURQUOI_NOUS_KEYS = ['ecoute', 'methodes', 'accompagnement', 'cotes'];
 
 /* ── Home Page (visiteur non connecté) ── */
 function HomeGuest() {
+  const { t } = useTranslation();
   return (
     <div className="space-y-24 pb-12">
       {/* ── Bannière principale ── */}
@@ -354,20 +314,18 @@ function HomeGuest() {
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-4 leading-relaxed">
-            Un choix d'orientation, c'est un bout de votre avenir qui se joue. Chez Avenir Assuré, on vous aide à y
-            voir clair, sans pression et sans jugement. Notre but : que chaque décision, scolaire, professionnelle ou
-            personnelle, soit prise avec confiance.
+            {t('home_guest.hero.text1')}
           </p>
           <p className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-white max-w-2xl mx-auto mb-10 leading-relaxed">
-            Vous n'avez pas à choisir seul. On construit votre avenir avec vous.
+            {t('home_guest.hero.text2')}
           </p>
 
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/contact" className="btn-primary px-7 py-3.5 text-base">
-              Prendre rendez-vous
+              {t('home_guest.hero.cta_rdv')}
             </Link>
             <Link to="/services" className="btn-secondary px-7 py-3.5 text-base">
-              Découvrir nos services
+              {t('home_guest.hero.cta_services')}
             </Link>
           </div>
         </div>
@@ -375,37 +333,38 @@ function HomeGuest() {
 
       {/* ── Notre mission ── */}
       <section className="max-w-3xl mx-auto text-center">
-        <span className="eyebrow mb-2">Notre mission</span>
-        <h2 className="section-title">Un engagement, pas juste un slogan</h2>
+        <span className="eyebrow mb-2">{t('home_guest.mission.eyebrow')}</span>
+        <h2 className="section-title">{t('home_guest.mission.title')}</h2>
         <p className="text-slate-600 dark:text-slate-400 mt-4 leading-relaxed">
-          Le nom Avenir Assuré, ce n'est pas juste un slogan. C'est un engagement. Que vous soyez élève, étudiant,
-          salarié, demandeur d'emploi ou futur entrepreneur, vous méritez de repartir avec des idées claires et un
-          vrai plan d'action.
+          {t('home_guest.mission.text1')}
         </p>
         <p className="text-slate-600 dark:text-slate-400 mt-4 leading-relaxed">
-          L'orientation ne s'arrête pas à un examen ou un diplôme. Elle vous suit toute la vie, à chaque changement,
-          chaque doute, chaque nouveau départ. Avenir Assuré est là pour vous accompagner, aujourd'hui comme demain.
+          {t('home_guest.mission.text2')}
         </p>
       </section>
 
       {/* ── Nos domaines d'expertise ── */}
       <section>
         <div className="section-header">
-          <span className="eyebrow mb-2">Nos domaines d'expertise</span>
-          <h2 className="section-title">Un accompagnement pour chaque situation</h2>
+          <span className="eyebrow mb-2">{t('home_guest.domaines.eyebrow')}</span>
+          <h2 className="section-title">{t('home_guest.domaines.title')}</h2>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
-          {DOMAINES_EXPERTISE.map((d) => (
-            <div key={d.titre} className="glass-card p-6">
+          {DOMAINES_EXPERTISE_KEYS.map((d) => (
+            <div key={d.key} className="glass-card p-6">
               <span className="text-3xl mb-3 block">{d.emoji}</span>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{d.titre}</h3>
-              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{d.desc}</p>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                {t(`home_guest.domaines.items.${d.key}.titre`)}
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                {t(`home_guest.domaines.items.${d.key}.desc`)}
+              </p>
             </div>
           ))}
         </div>
         <div className="text-center">
           <Link to="/services" className="btn-secondary px-6 py-3 text-sm">
-            Voir tous nos services
+            {t('home_guest.domaines.cta')}
           </Link>
         </div>
       </section>
@@ -413,14 +372,18 @@ function HomeGuest() {
       {/* ── Pourquoi choisir Avenir Assuré ? ── */}
       <section>
         <div className="section-header">
-          <span className="eyebrow mb-2">Pourquoi nous choisir</span>
-          <h2 className="section-title">Pourquoi choisir Avenir Assuré ?</h2>
+          <span className="eyebrow mb-2">{t('home_guest.pourquoi.eyebrow')}</span>
+          <h2 className="section-title">{t('home_guest.pourquoi.title')}</h2>
         </div>
         <div className="grid sm:grid-cols-2 gap-5">
-          {POURQUOI_NOUS.map((p) => (
-            <div key={p.titre} className="glass-card p-6">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{p.titre}</h3>
-              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{p.desc}</p>
+          {POURQUOI_NOUS_KEYS.map((key) => (
+            <div key={key} className="glass-card p-6">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                {t(`home_guest.pourquoi.items.${key}.titre`)}
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                {t(`home_guest.pourquoi.items.${key}.desc`)}
+              </p>
             </div>
           ))}
         </div>
@@ -442,18 +405,17 @@ function HomeGuest() {
 
         <div className="relative z-10 max-w-2xl mx-auto">
           <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-5 tracking-tight">
-            Prêt à avancer ?
+            {t('home_guest.cta_final.title')}
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-400 mb-10 leading-relaxed">
-            Un doute, une question, une envie de changer de voie ? Contactez-nous pour un premier échange, sans
-            engagement.
+            {t('home_guest.cta_final.desc')}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/contact" className="btn-primary px-8 py-4 text-base">
-              Prendre rendez-vous
+              {t('home_guest.cta_final.cta_rdv')}
             </Link>
             <Link to="/contact" className="btn-secondary px-8 py-4 text-base">
-              Nous contacter
+              {t('home_guest.cta_final.cta_contact')}
             </Link>
           </div>
         </div>

@@ -4,6 +4,8 @@
     "opportunities": "Tolotra",
     "student_life": "Fiainan'ny mpianatra",
     "blog": "Vaovao / Torohevitra",
+    "services": "Ny tolotray",
+    "about": "Iza izahay",
     "login": "Hiditra",
     "register": "Hisoratra anarana",
     "logout": "Hivoaka",
@@ -106,6 +108,7 @@
     "description": "Ny sehatra fakan-kevitra ho an'ny fizahan-dalana amin'ny fianarana, an-danin'ny oniversite ary ny asa eto Madagasikara.",
     "orientation": "Fizahan-dalana",
     "opportunities": "Tolotra",
+    "information": "Fampahalalana",
     "account": "Kaonty",
     "copyright": "Avenir assuré — Sehatra fakan-kevitra ho an'ny fizahan-dalana amin'ny fianarana sy ny asa eto Madagasikara"
   },
@@ -219,6 +222,204 @@
       "riasec_model": "Modely toetra RIASEC",
       "match_indication": "Mifanaraka tsara :",
       "match_strong": "Eny"
+    }
+  },
+  "home_guest": {
+    "hero": {
+      "text1": "Ny safidy amin'ny fizahan-dalana dia ampahany amin'ny hoavinao. Ao amin'ny Avenir Assuré, manampy anao hahita mazava izahay, tsy misy fanerena na fitsarana. Ny tanjonay: ny fanapahan-kevitra rehetra — ara-pianarana, ara-tsampan-draharaha na manokana — dia atao amim-pahatokiana.",
+      "text2": "Tsy tokony hisafidy irery ianao. Miara-manorina ny hoavinao aminao izahay.",
+      "cta_rdv": "Maka fotoana fihaonana",
+      "cta_services": "Hizaha ireo tolotray"
+    },
+    "mission": {
+      "eyebrow": "Ny iraka mifanentana aminay",
+      "title": "Fanoloran-tena, fa tsy teny fanentanana fotsiny",
+      "text1": "Ny anarana hoe Avenir Assuré dia tsy teny fanentanana fotsiny. Fanoloran-tena izy io. Na mpianatra ianao, na miasa, na mikaroka asa na hanangana orinasa, dia mendrika ny hahazo hevitra mazava sy drafitra azo ampiharina ianao.",
+      "text2": "Ny fizahan-dalana dia tsy mifarana amin'ny fanadinana na diplaoma. Manaraka anao mandritra ny fiainana izy io, isaky ny fiovana, isaky ny fisalasalana, isaky ny fanombohana vaovao. Eo anilanao Avenir Assuré, anio sy rahampitso."
+    },
+    "domaines": {
+      "eyebrow": "Ny sehatra ahay",
+      "title": "Fanampiana ho an'ny toe-javatra rehetra",
+      "cta": "Hizaha ny tolotray rehetra",
+      "items": {
+        "scolaire": { "titre": "Fizahan-dalana ho an'ny mpianatra", "desc": "Manampy ny mpianatra hahafantatra tena tsara izahay mba hisafidianany lalam-piofanana mifanaraka aminy tokoa." },
+        "post_bac": { "titre": "Fizahan-dalana aorian'ny bakalorea", "desc": "Parcoursup, sekoly, oniversite: manampy anao hisafidy ny fiofanana mifanaraka aminao, arakaraka ny toe-tenanao sy ny irinao izahay." },
+        "professionnelle": { "titre": "Fizahan-dalana ara-tsampan-draharaha", "desc": "Misalasala momba ny asanao ve ianao? Miara-mizaha izahay ary mamantatra ireo asa mifanaraka aminao." },
+        "demandeurs_emploi": { "titre": "Mikaroka asa", "desc": "Manampy anao hahazo tanjona mazava sy hanangana drafitra azo ampiharina hahazoana asa izahay." },
+        "entrepreneuriale": { "titre": "Fizahan-dalana ho an'ny mpandraharaha", "desc": "Manampy anao handrafitra ny tetikasanao sy hanomboka amim-patokiana, tsy hivezivezy foana, izahay." },
+        "transition": { "titre": "Fiovana ara-tsampan-draharaha", "desc": "Ny fanovana asa na fiainana ara-tsampan-draharaha dia mila fiomanana. Manaraka anao amin'ny dingana rehetra izahay." }
+      }
+    },
+    "pourquoi": {
+      "eyebrow": "Nahoana no mifidy anay",
+      "title": "Nahoana ianao no tokony hifidy an'i Avenir Assuré ?",
+      "items": {
+        "ecoute": { "titre": "Mihaino anao tokoa izahay", "desc": "Alohan'ny hanome torohevitra, dia mandray fotoana hahatakatra iza ianao sy ny tianao izahay." },
+        "methodes": { "titre": "Fomba fiasa efa voamarina", "desc": "Fizahana, tombana, dinika: efa voamarina sy mifanaraka amin'ny toe-javatrao ny fitaovanay." },
+        "accompagnement": { "titre": "Fanarahana araka ny maha olona", "desc": "Tsy misy valiny vonona. Mendrika fanarahana manokana tokoa ny dia rehetra." },
+        "cotes": { "titre": "Eo anilanao izahay", "desc": "Tsy ampy ny fihaonana indray mandeha. Manaraka anao izahay raha mbola ilainao." }
+      }
+    },
+    "cta_final": {
+      "title": "Vonona handroso ve ianao ?",
+      "desc": "Misalasala, manontany, te hanova lalana ve ianao ? Mifandraisa aminay mba hifampiresahana voalohany, tsy misy fifamatorana.",
+      "cta_rdv": "Maka fotoana fihaonana",
+      "cta_contact": "Mifandraisa aminay"
+    }
+  },
+  "services_page": {
+    "eyebrow": "Ny tolotray",
+    "title": "Fanampiana amin'ny dingana rehetra",
+    "subtitle": "Na firy taona na inona toe-javatra misy anao, dia misy fanampiana mifanaraka amin'ny ilanao.",
+    "ce_quon_propose": "Izay atolotray :",
+    "pour_qui": "Ho an'iza ? ",
+    "cta_rdv": "Maka fotoana fihaonana",
+    "items": {
+      "scolaire": {
+        "titre": "Fizahan-dalana ho an'ny mpianatra",
+        "intro": "Any amin'ny kolejy sy ny lisea, dia haingana be, indraindray mihoa-pampana, ny fotoana hanapahana hevitra momba ny fizahan-dalana. Manampy ny mpianatra sy ny ray aman-dreniny mba handray fotoana hisaintsainana izahay, mba hisafidianana lalana misy dikany tokoa.",
+        "propose": [
+          "Tombana fizahan-dalana mifanaraka amin'ny taonan'ny mpianatra",
+          "Fizahana ny toetra sy ny zavatra tiana",
+          "Dinika amin'ny mpianatra, ary amin'ny ray aman-dreny raha ilaina",
+          "Fahafantarana ny sokajim-pianarana ankapobeny, ara-teknolojia ary ara-tsampan-draharaha",
+          "Fiomanana amin'ny safidy amin'ny faran'ny kilasy fahatelo sy faharoa"
+        ],
+        "pourQui": "Mpianatra ao amin'ny kolejy sy lisea ary ny fianakaviany."
+      },
+      "post_bac": {
+        "titre": "Fizahan-dalana aorian'ny bakalorea",
+        "intro": "Parcoursup, sekoly ambony, oniversite, fiofanana miserasera... Betsaka loatra ny safidy ka mora very lalana. Manampy anao hisafidy araka izay tena irinao izahay, fa tsy araka ny laharana fotsiny.",
+        "propose": [
+          "Fanarahana feno ny fizotry ny Parcoursup",
+          "Famakafakana ny fahaizanao sy ny tianao",
+          "Fampitahana ny sokajim-pianarana sy ny vokany",
+          "Fiomanana amin'ny dinika fidirana",
+          "Fanampiana amin'ny fanoratana ny taratasy fangatahana",
+          "Fanampiana amin'ny fanoratana ny mémoire sy ny fanolorana"
+        ],
+        "pourQui": "Mpianatra ao amin'ny kilasy terminal, mpianatra mikaroka lalana hafa."
+      },
+      "professionnelle": {
+        "titre": "Fizahan-dalana ara-tsampan-draharaha",
+        "intro": "Mihodinkodina foana ve ianao amin'ny asanao ? Tsy azo antoka intsony ny lalanao ? Miara-mizaha aminao izahay mba hamantarana ny fahaizanao tena izy sy ny asa mifanaraka aminao.",
+        "propose": [
+          "Tombana feno ny fahaizana",
+          "Famantarana ny fahaizanao manokana",
+          "Fikarohana lalam-pirasa vaovao",
+          "Drafitra mazava sy azo tanterahina",
+          "Fanampiana hanapahana hevitra tsara"
+        ],
+        "pourQui": "Mpiasa misalasala, mpitantana, olona mikaroka dikan'ny asany."
+      },
+      "demandeurs_emploi": {
+        "titre": "Fizahan-dalana ho an'ny mikaroka asa",
+        "intro": "Mety mahareraka ny fikarohana asa. Manampy anao hahazo tanjona indray, hampiseho ny mahasoa anao, ary handrafitra ny fikarohanao mba handrosoana amim-pilaminana izahay.",
+        "propose": [
+          "Fanazavana ny tetikasanao ara-tsampan-draharaha",
+          "Fanasongadinana ny fahaizanao",
+          "Fanampiana amin'ny CV sy ny taratasy fangatahana",
+          "Fiomanana amin'ny dinika fandraisana asa",
+          "Paikady fikarohana voafaritra"
+        ],
+        "pourQui": "Mikaroka asa, olona mikaroka asa mavitrika."
+      },
+      "entrepreneuriale": {
+        "titre": "Fizahan-dalana ho an'ny mpandraharaha",
+        "intro": "Mahaliana ny fananganana orinasa nefa misy risika raha tsy misy fiomanana. Manampy anao hanamarina ny hevitrao sy hametraka fototra matanjaka alohan'ny hanombohana izahay.",
+        "propose": [
+          "Fanamarinana ny hevitry ny tetikasanao",
+          "Famakafakana ny mombamomba ny mpandraharaha ao aminao",
+          "Fandrafetana isaky ny dingana",
+          "Fitarihana mankany amin'ny fomba famatsiam-bola mety",
+          "Fiomanana amin'ny fanombohana"
+        ],
+        "pourQui": "Mpandraharaha ho avy, mpitondra tetikasa."
+      },
+      "transition": {
+        "titre": "Fiovana ara-tsampan-draharaha",
+        "intro": "Ny fanovana asa na sehatra dia tsy azo atao tampoka. Manampy anao hampitovy io fiovana io ho dingana voafehy, fa tsy zavatra iaretana, izahay.",
+        "propose": [
+          "Tombana ny fahaizanao azo ampiharina amin'ny sehatra hafa",
+          "Fikarohana sehatra vaovao",
+          "Drafitra fiovana azo tanterahina",
+          "Fanarahana araka ny maha olona eo anivon'ny fiovana",
+          "Fanarahana mandritra ny dingana rehetra"
+        ],
+        "pourQui": "Mpiasa ao anatin'ny fiovana asa."
+      }
+    }
+  },
+  "about_page": {
+    "eyebrow": "Iza izahay",
+    "text1": "Mino izahay fa tsy tokony hisy safidy amin'ny fizahan-dalana atao amin'ny fisalasalana. Izany no antony isian'ny Avenir Assuré : manaraka anao amin'ny dingana lehibe rehetra, manomboka amin'ny kolejy ka hatramin'ny fanovana asa.",
+    "text2": "Ny ekipanay dia mitambatra mpanoro hevitra momba ny fizahan-dalana, psikolojia momba ny asa ary manam-pahaizana momba ny fidirana amin'ny asa. Ny tanjony : mamadika ny fanontanianao ho tetikasa, ary ny tetikasanao ho fahombiazana.",
+    "values_title": "Ny soatoavinay",
+    "values": {
+      "ecoute": { "titre": "Fihainoana", "desc": "Samy hafa ny dia rehetra." },
+      "rigueur": { "titre": "Fahamarinana", "desc": "Fomba fiasa efa voamarina." },
+      "bienveillance": { "titre": "Halemem-panahy", "desc": "Tsy misy fitsarana." },
+      "engagement": { "titre": "Fanoloran-tena", "desc": "Eo anilanao izahay hatramin'ny farany." }
+    }
+  },
+  "contact_page": {
+    "hero": {
+      "badge": "Mifandraisa aminay",
+      "title_pre": "Eto izahay hanampy ",
+      "title_highlight": "anao",
+      "subtitle": "Manana fanontaniana momba ny sehatra ve ianao, olana ara-teknika sa fiaraha-miasa ? Mamaly ao anatin'ny 24 ora ny ekipanay."
+    },
+    "form": {
+      "title": "Handefa hafatra",
+      "subtitle": "Fenoy ny taratasy etsy ambany ary hovalianay haingana ianao.",
+      "nom_label": "Anarana feno",
+      "nom_placeholder": "oh : Jean Rabe",
+      "email_label": "Mailaka",
+      "email_placeholder": "oh : jean@email.mg",
+      "sujet_label": "Lohahevitra",
+      "sujet_placeholder": "— Misafidiana lohahevitra —",
+      "sujet_options": {
+        "prise_rendez_vous": "Maka fotoana fihaonana",
+        "question_generale": "Fanontaniana ankapobeny",
+        "probleme_technique": "Olana ara-teknika",
+        "orientation": "Torohevitra momba ny fizahan-dalana",
+        "partenariat": "Fiaraha-miasa",
+        "signalement": "Fitarainana momba ny votoaty",
+        "autre": "Hafa"
+      },
+      "message_label": "Hafatra",
+      "message_placeholder": "Hazavao amin'ny an-tsipiriany ny fangatahanao...",
+      "message_counter": "/ 20 farafahakeliny.",
+      "error": "Nisy olana teo am-pandefasana. Andramo indray azafady.",
+      "submit_loading": "Mandefa…",
+      "submit": "Handefa ny hafatra",
+      "success_title": "Voalefa ny hafatra !",
+      "success_desc": "Misaotra amin'ny hafatrao. Hovalian'ny ekipanay haingana araka izay azo atao ianao, matetika ao anatin'ny 24 ora.",
+      "success_btn": "Handefa hafatra hafa"
+    },
+    "info": {
+      "address_title": "Adiresy",
+      "email_title": "Mailaka",
+      "phone_title": "Telefaonina",
+      "phone_hours": "Alatsinainy – Zoma, 8 ora – 17 ora",
+      "social_title": "Tambajotra sosialy"
+    },
+    "faq": {
+      "title": "Jereo ny FAQ",
+      "desc": "Alohan'ny hanoratanao aminay, angamba ho hitanao ao amin'ny fanontaniana matetika apetraka ny valiny.",
+      "link": "Hijery ny FAQ →"
+    },
+    "team": {
+      "title": "Vonona hamaly anao ny ekipanay",
+      "subtitle": "Matihanina miroso amin'ny fizahan-dalanao",
+      "support": { "name": "Ekipa Fanampiana", "role": "Olana ara-teknika sy Kaonty" },
+      "orientation": { "name": "Ekipa Fizahan-dalana", "role": "Torohevitra sy Lalam-piofanana" },
+      "partenariats": { "name": "Ekipa Fiaraha-miasa", "role": "Fiaraha-miasa sy Andrim-panjakana" }
+    },
+    "cta_final": {
+      "title": "Tsy fantatrao izay hanombohana ?",
+      "desc": "Na firy taona na inona toe-javatra misy anao, dia manana vahaolana ho anao izahay. Ny dinika voalohany no natao mba hitarihana anao amin'ny fanampiana mifanaraka.",
+      "cta": "Maka fotoana fihaonana"
     }
   },
   "profile": {

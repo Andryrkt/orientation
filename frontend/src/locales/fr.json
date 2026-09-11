@@ -4,6 +4,8 @@
     "opportunities": "Opportunités",
     "student_life": "Vie étudiante",
     "blog": "Information / Conseils",
+    "services": "Nos services",
+    "about": "Qui sommes-nous",
     "login": "Connexion",
     "register": "Inscription",
     "logout": "Déconnexion",
@@ -106,6 +108,7 @@
     "description": "La plateforme de référence pour l'orientation scolaire, universitaire et professionnelle à Madagascar.",
     "orientation": "Orientation",
     "opportunities": "Opportunités",
+    "information": "Informations",
     "account": "Compte",
     "copyright": "Avenir assuré — Orientation scolaire, universitaire et professionnelle à Madagascar"
   },
@@ -219,6 +222,204 @@
       "riasec_model": "Modèle de personnalité RIASEC",
       "match_indication": "Correspondance indicative :",
       "match_strong": "Forte"
+    }
+  },
+  "home_guest": {
+    "hero": {
+      "text1": "Un choix d'orientation, c'est un bout de votre avenir qui se joue. Chez Avenir Assuré, on vous aide à y voir clair, sans pression et sans jugement. Notre but : que chaque décision, scolaire, professionnelle ou personnelle, soit prise avec confiance.",
+      "text2": "Vous n'avez pas à choisir seul. On construit votre avenir avec vous.",
+      "cta_rdv": "Prendre rendez-vous",
+      "cta_services": "Découvrir nos services"
+    },
+    "mission": {
+      "eyebrow": "Notre mission",
+      "title": "Un engagement, pas juste un slogan",
+      "text1": "Le nom Avenir Assuré, ce n'est pas juste un slogan. C'est un engagement. Que vous soyez élève, étudiant, salarié, demandeur d'emploi ou futur entrepreneur, vous méritez de repartir avec des idées claires et un vrai plan d'action.",
+      "text2": "L'orientation ne s'arrête pas à un examen ou un diplôme. Elle vous suit toute la vie, à chaque changement, chaque doute, chaque nouveau départ. Avenir Assuré est là pour vous accompagner, aujourd'hui comme demain."
+    },
+    "domaines": {
+      "eyebrow": "Nos domaines d'expertise",
+      "title": "Un accompagnement pour chaque situation",
+      "cta": "Voir tous nos services",
+      "items": {
+        "scolaire": { "titre": "Orientation scolaire", "desc": "On aide les élèves à mieux se connaître pour choisir une série qui leur correspond vraiment." },
+        "post_bac": { "titre": "Orientation post-bac", "desc": "Parcoursup, écoles, universités : on vous aide à choisir la formation qui vous convient, selon votre profil et vos envies." },
+        "professionnelle": { "titre": "Orientation professionnelle", "desc": "Vous doutez de votre carrière ? On fait le point ensemble et on identifie les métiers faits pour vous." },
+        "demandeurs_emploi": { "titre": "Demandeurs d'emploi", "desc": "On vous aide à retrouver un cap clair et à construire un plan concret pour décrocher un emploi." },
+        "entrepreneuriale": { "titre": "Orientation entrepreneuriale", "desc": "On vous aide à structurer votre projet et à vous lancer avec assurance, sans partir dans tous les sens." },
+        "transition": { "titre": "Transition professionnelle", "desc": "Changer de métier ou de vie professionnelle, ça se prépare. On vous accompagne à chaque étape." }
+      }
+    },
+    "pourquoi": {
+      "eyebrow": "Pourquoi nous choisir",
+      "title": "Pourquoi choisir Avenir Assuré ?",
+      "items": {
+        "ecoute": { "titre": "On vous écoute vraiment", "desc": "Avant de vous conseiller, on prend le temps de comprendre qui vous êtes et ce que vous voulez." },
+        "methodes": { "titre": "Des méthodes qui fonctionnent", "desc": "Tests, bilans, entretiens : nos outils sont éprouvés et adaptés à votre situation." },
+        "accompagnement": { "titre": "Un accompagnement humain", "desc": "Pas de réponses toutes faites. Chaque parcours mérite un vrai suivi personnalisé." },
+        "cotes": { "titre": "On reste à vos côtés", "desc": "Un seul rendez-vous ne suffit jamais. On vous suit tant que vous en avez besoin." }
+      }
+    },
+    "cta_final": {
+      "title": "Prêt à avancer ?",
+      "desc": "Un doute, une question, une envie de changer de voie ? Contactez-nous pour un premier échange, sans engagement.",
+      "cta_rdv": "Prendre rendez-vous",
+      "cta_contact": "Nous contacter"
+    }
+  },
+  "services_page": {
+    "eyebrow": "Nos services",
+    "title": "Un accompagnement pour chaque étape",
+    "subtitle": "Quel que soit votre âge ou votre situation, il y a un accompagnement adapté à votre besoin.",
+    "ce_quon_propose": "Ce qu'on propose :",
+    "pour_qui": "Pour qui ? ",
+    "cta_rdv": "Prendre rendez-vous",
+    "items": {
+      "scolaire": {
+        "titre": "Orientation scolaire",
+        "intro": "Au collège comme au lycée, les choix d'orientation arrivent vite, parfois trop vite. On aide les élèves et leurs parents à prendre le temps de réfléchir, pour choisir une voie qui a du sens.",
+        "propose": [
+          "Bilans d'orientation adaptés à l'âge",
+          "Tests de personnalité et d'intérêts",
+          "Entretiens avec l'élève, et les parents si besoin",
+          "Découverte des filières générales, technologiques et professionnelles",
+          "Préparation aux choix de fin de 3e et de 2nde"
+        ],
+        "pourQui": "Collégiens, lycéens et leurs familles."
+      },
+      "post_bac": {
+        "titre": "Orientation post-bac",
+        "intro": "Parcoursup, grandes écoles, universités, alternance... Il y a tellement d'options qu'on s'y perd facilement. On vous aide à choisir selon vos vraies envies, pas juste selon les classements.",
+        "propose": [
+          "Accompagnement Parcoursup de A à Z",
+          "Analyse de vos compétences et de vos envies",
+          "Comparaison des filières et des débouchés",
+          "Préparation aux entretiens de sélection",
+          "Aide à la rédaction de vos lettres de motivation",
+          "Aide à la rédaction de mémoire, à la présentation"
+        ],
+        "pourQui": "Lycéens en terminale, étudiants en réorientation."
+      },
+      "professionnelle": {
+        "titre": "Orientation professionnelle",
+        "intro": "Vous tournez en rond dans votre carrière ? Vous n'êtes plus sûr de votre voie ? On fait le point avec vous pour identifier vos vraies compétences et les métiers qui vous correspondent.",
+        "propose": [
+          "Bilan de compétences complet",
+          "Identification de vos savoir-faire",
+          "Exploration de nouvelles pistes de carrière",
+          "Un plan d'action clair et réaliste",
+          "Un accompagnement pour bien décider"
+        ],
+        "pourQui": "Salariés en questionnement, cadres, professionnels en quête de sens."
+      },
+      "demandeurs_emploi": {
+        "titre": "Orientation pour demandeurs d'emploi",
+        "intro": "Chercher un emploi peut vite user. On vous aide à retrouver un cap, à mettre en valeur vos atouts et à structurer votre recherche pour avancer sereinement.",
+        "propose": [
+          "Clarification de votre projet professionnel",
+          "Valorisation de vos compétences",
+          "Aide au CV et à la lettre de motivation",
+          "Préparation aux entretiens d'embauche",
+          "Une stratégie de recherche ciblée"
+        ],
+        "pourQui": "Demandeurs d'emploi, personnes en recherche active."
+      },
+      "entrepreneuriale": {
+        "titre": "Orientation entrepreneuriale",
+        "intro": "Créer son entreprise, c'est excitant mais risqué si on part sans préparation. On vous aide à valider votre idée et à poser des bases solides avant de vous lancer.",
+        "propose": [
+          "Validation de votre idée de projet",
+          "Analyse de votre profil entrepreneurial",
+          "Structuration étape par étape",
+          "Orientation vers les bons dispositifs de financement",
+          "Préparation au lancement"
+        ],
+        "pourQui": "Futurs entrepreneurs, porteurs de projet."
+      },
+      "transition": {
+        "titre": "Transition professionnelle",
+        "intro": "Changer de métier ou de secteur, ça ne s'improvise pas. On vous aide à transformer ce changement en une étape maîtrisée, pas subie.",
+        "propose": [
+          "Bilan de vos compétences transférables",
+          "Exploration de nouveaux secteurs",
+          "Un plan de transition réaliste",
+          "Un accompagnement humain face au changement",
+          "Un suivi tout au long du processus"
+        ],
+        "pourQui": "Professionnels en reconversion."
+      }
+    }
+  },
+  "about_page": {
+    "eyebrow": "Qui sommes-nous",
+    "text1": "On pense qu'aucun choix d'orientation ne devrait se faire dans le doute. C'est pour ça qu'Avenir Assuré existe : vous accompagner à chaque étape clé, du collège à la reconversion professionnelle.",
+    "text2": "Notre équipe réunit conseillers en orientation, psychologues du travail et experts de l'insertion professionnelle. Leur but : transformer vos questions en projet, et votre projet en réussite.",
+    "values_title": "Nos valeurs",
+    "values": {
+      "ecoute": { "titre": "Écoute", "desc": "Chaque parcours est différent." },
+      "rigueur": { "titre": "Rigueur", "desc": "Des méthodes qui ont fait leurs preuves." },
+      "bienveillance": { "titre": "Bienveillance", "desc": "Jamais de jugement." },
+      "engagement": { "titre": "Engagement", "desc": "On reste à vos côtés jusqu'au bout." }
+    }
+  },
+  "contact_page": {
+    "hero": {
+      "badge": "Contactez-nous",
+      "title_pre": "On est là pour vous ",
+      "title_highlight": "aider",
+      "subtitle": "Une question sur la plateforme, un problème technique ou un partenariat ? Notre équipe répond dans les 24h."
+    },
+    "form": {
+      "title": "Envoyer un message",
+      "subtitle": "Remplissez le formulaire ci-dessous et nous vous répondrons rapidement.",
+      "nom_label": "Nom complet",
+      "nom_placeholder": "ex : Jean Rabe",
+      "email_label": "E-mail",
+      "email_placeholder": "ex : jean@email.mg",
+      "sujet_label": "Sujet",
+      "sujet_placeholder": "— Choisir un sujet —",
+      "sujet_options": {
+        "prise_rendez_vous": "Prendre rendez-vous",
+        "question_generale": "Question générale",
+        "probleme_technique": "Problème technique",
+        "orientation": "Conseil en orientation",
+        "partenariat": "Partenariat / Collaboration",
+        "signalement": "Signalement de contenu",
+        "autre": "Autre"
+      },
+      "message_label": "Message",
+      "message_placeholder": "Décrivez votre demande en détail...",
+      "message_counter": "/ 20 min.",
+      "error": "Une erreur est survenue lors de l'envoi. Veuillez réessayer.",
+      "submit_loading": "Envoi en cours…",
+      "submit": "Envoyer le message",
+      "success_title": "Message envoyé !",
+      "success_desc": "Merci pour votre message. Notre équipe vous répondra dans les plus brefs délais, généralement sous 24h.",
+      "success_btn": "Envoyer un autre message"
+    },
+    "info": {
+      "address_title": "Adresse",
+      "email_title": "E-mail",
+      "phone_title": "Téléphone",
+      "phone_hours": "Lun – Ven, 8h – 17h",
+      "social_title": "Réseaux sociaux"
+    },
+    "faq": {
+      "title": "Consultez notre FAQ",
+      "desc": "Avant de nous écrire, vous trouverez peut-être la réponse dans notre foire aux questions.",
+      "link": "Voir la FAQ →"
+    },
+    "team": {
+      "title": "Notre équipe vous répond",
+      "subtitle": "Des professionnels dévoués à votre orientation",
+      "support": { "name": "Équipe Support", "role": "Problèmes techniques & Comptes" },
+      "orientation": { "name": "Équipe Orientation", "role": "Conseils & Parcours académiques" },
+      "partenariats": { "name": "Équipe Partenariats", "role": "Collaborations & Institutions" }
+    },
+    "cta_final": {
+      "title": "Vous ne savez pas par où commencer ?",
+      "desc": "Quel que soit votre âge ou votre situation, on a une solution pour vous. Le premier échange est justement là pour ça : vous orienter vers l'accompagnement adapté.",
+      "cta": "Prendre rendez-vous"
     }
   },
   "profile": {
