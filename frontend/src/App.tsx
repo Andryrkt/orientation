@@ -38,6 +38,8 @@ import { RessourcesApprentissage } from './pages/RessourcesApprentissage';
 import { NotFound } from './pages/NotFound';
 import { GuideUtilisateur } from './pages/GuideUtilisateur';
 import { Contact } from './pages/Contact';
+import { Services } from './pages/Services';
+import { QuiSommesNous } from './pages/QuiSommesNous';
 import { FAQ } from './pages/FAQ';
 import { SaisieJournaliere } from './pages/SaisieJournaliere';
 import { Dashboard } from './pages/admin/Dashboard';
@@ -106,6 +108,8 @@ export default function App() {
         <Route path="register" element={<Register />} />
         <Route path="guide" element={<GuideUtilisateur />} />
         <Route path="contact" element={<Contact />} />
+        <Route path="services" element={<Services />} />
+        <Route path="qui-sommes-nous" element={<QuiSommesNous />} />
         <Route path="faq" element={<FAQ />} />
         <Route element={<ProtectedRoute />}>
           <Route path="mon-espace" element={<MonEspace />} />

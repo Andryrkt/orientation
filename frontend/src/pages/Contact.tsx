@@ -123,7 +123,7 @@ export function Contact() {
       <div className="grid lg:grid-cols-5 gap-10 mb-16">
         {/* ── Formulaire ── */}
         <div className="lg:col-span-3">
-          <div className="glass-card p-8 sm:p-10">
+          <div id="formulaire" className="glass-card p-8 sm:p-10">
             {submitted ? (
               <div className="text-center py-10 animate-fade-in">
                 <div
@@ -192,6 +192,7 @@ export function Contact() {
                       required
                     >
                       <option value="">— Choisir un sujet —</option>
+                      <option value="prise_rendez_vous">Prendre rendez-vous</option>
                       <option value="question_generale">Question générale</option>
                       <option value="probleme_technique">Problème technique</option>
                       <option value="orientation">Conseil en orientation</option>
@@ -322,6 +323,29 @@ export function Contact() {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* ── CTA final ── */}
+      <section className="relative overflow-hidden -mx-4 px-6 py-16 rounded-[2.5rem] text-center">
+        <div
+          className="absolute inset-0 -z-10"
+          style={{ background: 'linear-gradient(135deg, rgba(0,82,255,0.15) 0%, rgba(0,163,255,0.1) 50%, rgba(0,240,255,0.1) 100%)' }}
+        />
+        <div className="absolute inset-0 -z-10" style={{ background: 'rgba(10,8,24,0.5)', backdropFilter: 'blur(2px)' }} />
+        <div style={{ border: '1px solid rgba(0,82,255,0.15)' }} className="absolute inset-0 -z-10 rounded-[2.5rem]" />
+
+        <div className="relative z-10 max-w-xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight">
+            Vous ne savez pas par où commencer ?
+          </h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+            Quel que soit votre âge ou votre situation, on a une solution pour vous. Le premier échange est justement
+            là pour ça : vous orienter vers l'accompagnement adapté.
+          </p>
+          <a href="#formulaire" className="btn-primary px-8 py-4 text-base inline-block">
+            Prendre rendez-vous
+          </a>
         </div>
       </section>
     </div>

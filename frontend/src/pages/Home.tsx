@@ -2,6 +2,7 @@ import { ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../lib/theme-context';
+import { useAuth } from '../lib/auth-context';
 
 
 
@@ -281,8 +282,188 @@ function MiniRiasecTeaser() {
   );
 }
 
-/* ── Home Page ── */
-export function Home() {
+/* ── Domaine d'expertise (visiteur non connecté) ── */
+const DOMAINES_EXPERTISE = [
+  {
+    emoji: '🎓',
+    titre: 'Orientation scolaire',
+    desc: 'On aide les élèves à mieux se connaître pour choisir une série qui leur correspond vraiment.',
+  },
+  {
+    emoji: '🎯',
+    titre: 'Orientation post-bac',
+    desc: 'Parcoursup, écoles, universités : on vous aide à choisir la formation qui vous convient, selon votre profil et vos envies.',
+  },
+  {
+    emoji: '💼',
+    titre: 'Orientation professionnelle',
+    desc: 'Vous doutez de votre carrière ? On fait le point ensemble et on identifie les métiers faits pour vous.',
+  },
+  {
+    emoji: '🔍',
+    titre: 'Demandeurs d\'emploi',
+    desc: 'On vous aide à retrouver un cap clair et à construire un plan concret pour décrocher un emploi.',
+  },
+  {
+    emoji: '🚀',
+    titre: 'Orientation entrepreneuriale',
+    desc: 'On vous aide à structurer votre projet et à vous lancer avec assurance, sans partir dans tous les sens.',
+  },
+  {
+    emoji: '🔄',
+    titre: 'Transition professionnelle',
+    desc: 'Changer de métier ou de vie professionnelle, ça se prépare. On vous accompagne à chaque étape.',
+  },
+];
+
+const POURQUOI_NOUS = [
+  {
+    titre: 'On vous écoute vraiment',
+    desc: 'Avant de vous conseiller, on prend le temps de comprendre qui vous êtes et ce que vous voulez.',
+  },
+  {
+    titre: 'Des méthodes qui fonctionnent',
+    desc: 'Tests, bilans, entretiens : nos outils sont éprouvés et adaptés à votre situation.',
+  },
+  {
+    titre: 'Un accompagnement humain',
+    desc: 'Pas de réponses toutes faites. Chaque parcours mérite un vrai suivi personnalisé.',
+  },
+  {
+    titre: 'On reste à vos côtés',
+    desc: 'Un seul rendez-vous ne suffit jamais. On vous suit tant que vous en avez besoin.',
+  },
+];
+
+/* ── Home Page (visiteur non connecté) ── */
+function HomeGuest() {
+  return (
+    <div className="space-y-24 pb-12">
+      {/* ── Bannière principale ── */}
+      <section className="relative overflow-hidden -mx-4 px-4 pt-20 pb-24 text-center">
+        <div className="glow-orb w-[600px] h-[600px] -top-48 left-1/2 -translate-x-1/2 animate-pulse-glow"
+          style={{ background: 'radial-gradient(circle, rgba(0,163,255,0.18) 0%, transparent 70%)' }} />
+        <div className="glow-orb w-80 h-80 top-10 -left-20 animate-float-slow"
+          style={{ background: 'radial-gradient(circle, rgba(0,82,255,0.12) 0%, transparent 70%)' }} />
+        <div className="glow-orb w-80 h-80 top-10 -right-20 animate-float-slow"
+          style={{ background: 'radial-gradient(circle, rgba(0,240,255,0.1) 0%, transparent 70%)' }} />
+
+        <div className="relative z-10 max-w-3xl mx-auto">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
+            <span className="gradient-text animate-text-shine">Avenir assuré</span>
+          </h1>
+
+          <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-4 leading-relaxed">
+            Un choix d'orientation, c'est un bout de votre avenir qui se joue. Chez Avenir Assuré, on vous aide à y
+            voir clair, sans pression et sans jugement. Notre but : que chaque décision, scolaire, professionnelle ou
+            personnelle, soit prise avec confiance.
+          </p>
+          <p className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-white max-w-2xl mx-auto mb-10 leading-relaxed">
+            Vous n'avez pas à choisir seul. On construit votre avenir avec vous.
+          </p>
+
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link to="/contact" className="btn-primary px-7 py-3.5 text-base">
+              Prendre rendez-vous
+            </Link>
+            <Link to="/services" className="btn-secondary px-7 py-3.5 text-base">
+              Découvrir nos services
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Notre mission ── */}
+      <section className="max-w-3xl mx-auto text-center">
+        <span className="eyebrow mb-2">Notre mission</span>
+        <h2 className="section-title">Un engagement, pas juste un slogan</h2>
+        <p className="text-slate-600 dark:text-slate-400 mt-4 leading-relaxed">
+          Le nom Avenir Assuré, ce n'est pas juste un slogan. C'est un engagement. Que vous soyez élève, étudiant,
+          salarié, demandeur d'emploi ou futur entrepreneur, vous méritez de repartir avec des idées claires et un
+          vrai plan d'action.
+        </p>
+        <p className="text-slate-600 dark:text-slate-400 mt-4 leading-relaxed">
+          L'orientation ne s'arrête pas à un examen ou un diplôme. Elle vous suit toute la vie, à chaque changement,
+          chaque doute, chaque nouveau départ. Avenir Assuré est là pour vous accompagner, aujourd'hui comme demain.
+        </p>
+      </section>
+
+      {/* ── Nos domaines d'expertise ── */}
+      <section>
+        <div className="section-header">
+          <span className="eyebrow mb-2">Nos domaines d'expertise</span>
+          <h2 className="section-title">Un accompagnement pour chaque situation</h2>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+          {DOMAINES_EXPERTISE.map((d) => (
+            <div key={d.titre} className="glass-card p-6">
+              <span className="text-3xl mb-3 block">{d.emoji}</span>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{d.titre}</h3>
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{d.desc}</p>
+            </div>
+          ))}
+        </div>
+        <div className="text-center">
+          <Link to="/services" className="btn-secondary px-6 py-3 text-sm">
+            Voir tous nos services
+          </Link>
+        </div>
+      </section>
+
+      {/* ── Pourquoi choisir Avenir Assuré ? ── */}
+      <section>
+        <div className="section-header">
+          <span className="eyebrow mb-2">Pourquoi nous choisir</span>
+          <h2 className="section-title">Pourquoi choisir Avenir Assuré ?</h2>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-5">
+          {POURQUOI_NOUS.map((p) => (
+            <div key={p.titre} className="glass-card p-6">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{p.titre}</h3>
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{p.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Appel à l'action final ── */}
+      <section className="relative overflow-hidden -mx-4 px-6 py-20 rounded-[2.5rem] text-center">
+        <div className="absolute inset-0 -z-10"
+          style={{ background: 'linear-gradient(135deg, rgba(0,82,255,0.15) 0%, rgba(0,163,255,0.1) 50%, rgba(0,240,255,0.1) 100%)' }} />
+        <div className="absolute inset-0 -z-10"
+          style={{ background: 'rgba(10,8,24,0.5)', backdropFilter: 'blur(2px)' }} />
+        <div style={{ border: '1px solid rgba(0,82,255,0.15)' }}
+          className="absolute inset-0 -z-10 rounded-[2.5rem]" />
+
+        <div className="glow-orb w-80 h-80 -top-20 left-1/4"
+          style={{ background: 'radial-gradient(circle, rgba(0,82,255,0.2) 0%, transparent 70%)' }} />
+        <div className="glow-orb w-80 h-80 -bottom-20 right-1/4"
+          style={{ background: 'radial-gradient(circle, rgba(0,240,255,0.15) 0%, transparent 70%)' }} />
+
+        <div className="relative z-10 max-w-2xl mx-auto">
+          <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-5 tracking-tight">
+            Prêt à avancer ?
+          </h2>
+          <p className="text-lg text-slate-600 dark:text-slate-400 mb-10 leading-relaxed">
+            Un doute, une question, une envie de changer de voie ? Contactez-nous pour un premier échange, sans
+            engagement.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link to="/contact" className="btn-primary px-8 py-4 text-base">
+              Prendre rendez-vous
+            </Link>
+            <Link to="/contact" className="btn-secondary px-8 py-4 text-base">
+              Nous contacter
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+/* ── Home Page (utilisateur connecté) ── */
+function HomePlatform() {
   const { theme } = useTheme();
   const { t } = useTranslation();
 
@@ -502,4 +683,11 @@ export function Home() {
       </section>
     </div>
   );
+}
+
+/* ── Home Page ── */
+export function Home() {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="p-8 text-center text-slate-500">Chargement...</div>;
+  return user ? <HomePlatform /> : <HomeGuest />;
 }

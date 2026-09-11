@@ -75,6 +75,8 @@ export function PublicLayout() {
                 <NavDropdown label={t('nav.orientation')} items={ORIENTATION_ITEMS} />
                 <NavDropdown label={t('nav.opportunities')} items={OPPORTUNITES_ITEMS} />
                 <NavLink to="/blog" className={navLinkClass}>{t('nav.blog')}</NavLink>
+                <NavLink to="/services" className={navLinkClass}>Services</NavLink>
+                <NavLink to="/qui-sommes-nous" className={navLinkClass}>Qui sommes-nous</NavLink>
                 <NavLink to="/contact" className={navLinkClass}>{t('nav.contact')}</NavLink>
               </>
             )}
@@ -288,7 +290,14 @@ export function PublicLayout() {
             }}
           >
             {!isEmploye &&
-              [...ORIENTATION_ITEMS, ...OPPORTUNITES_ITEMS, { to: '/blog', label: t('nav.blog') }, { to: '/contact', label: t('nav.contact') }].map(
+              [
+                ...ORIENTATION_ITEMS,
+                ...OPPORTUNITES_ITEMS,
+                { to: '/blog', label: t('nav.blog') },
+                { to: '/services', label: 'Services' },
+                { to: '/qui-sommes-nous', label: 'Qui sommes-nous' },
+                { to: '/contact', label: t('nav.contact') },
+              ].map(
                 (item) => (
                   <NavLink key={item.to} to={item.to} className={mobileLinkClass} onClick={() => setMobileOpen(false)}>
                     {item.label}
@@ -389,6 +398,12 @@ export function PublicLayout() {
                 ))}
                 <li>
                   <Link to="/blog" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.blog')}</Link>
+                </li>
+                <li>
+                  <Link to="/services" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Services</Link>
+                </li>
+                <li>
+                  <Link to="/qui-sommes-nous" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Qui sommes-nous</Link>
                 </li>
                 <li>
                   <Link to="/contact" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.contact')}</Link>
