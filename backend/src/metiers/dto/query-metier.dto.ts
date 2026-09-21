@@ -9,6 +9,11 @@ export class QueryMetierDto extends PaginationQueryDto {
   @IsString()
   domaine?: string;
 
+  @ApiProperty({ required: false, description: 'Slug du secteur' })
+  @IsOptional()
+  @IsString()
+  secteur?: string;
+
   @ApiProperty({ required: false })
   @IsOptional()
   @Type(() => Number)

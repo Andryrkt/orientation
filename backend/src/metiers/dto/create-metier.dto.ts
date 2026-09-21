@@ -8,6 +8,14 @@ export class CreateMetierDto {
   @IsUUID()
   domaineId: string;
 
+  @ApiProperty({
+    required: false,
+    description: "Secteur professionnel/stratégique (ex : Numérique & BPO, BTP & Mines...), distinct du domaine d'étude.",
+  })
+  @IsOptional()
+  @IsUUID()
+  secteurId?: string;
+
   @ApiProperty()
   @IsString()
   nom: string;

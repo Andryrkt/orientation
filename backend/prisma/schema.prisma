@@ -159,10 +159,28 @@ model Domaine {
   @@map("domaines")
 }
 
+// Secteur professionnel/stratégique (ex : Numérique & BPO, BTP & Mines, Santé...),
+// distinct du Domaine qui représente un domaine d'étude académique.
+model Secteur {
+  id          String   @id @default(uuid())
+  nom         String
+  slug        String   @unique
+  description String?
+  ordre       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  metiers Metier[]
+
+  @@map("secteurs")
+}
+
 model Metier {
   id                  String   @id @default(uuid())
   domaineId           String
   domaine             Domaine  @relation(fields: [domaineId], references: [id], onDelete: Restrict)
+  secteurId           String?
+  secteur             Secteur? @relation(fields: [secteurId], references: [id], onDelete: SetNull)
   nom                 String
   slug                String   @unique
   description         String?

@@ -8,6 +8,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { DomainesModule } from './domaines/domaines.module';
+import { SecteursModule } from './secteurs/secteurs.module';
 import { MetiersModule } from './metiers/metiers.module';
 import { UniversitesModule } from './universites/universites.module';
 import { MentionsModule } from './mentions/mentions.module';
@@ -50,6 +51,7 @@ import { DemandesRoleModule } from './demandes-role/demandes-role.module';
     AuthModule,
     UsersModule,
     DomainesModule,
+    SecteursModule,
     MetiersModule,
     UniversitesModule,
     MentionsModule,

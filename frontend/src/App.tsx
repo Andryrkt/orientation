@@ -44,6 +44,7 @@ import { FAQ } from './pages/FAQ';
 import { SaisieJournaliere } from './pages/SaisieJournaliere';
 import { Dashboard } from './pages/admin/Dashboard';
 import { DomainesAdmin } from './pages/admin/DomainesAdmin';
+import { SecteursAdmin } from './pages/admin/SecteursAdmin';
 import { MetiersAdmin } from './pages/admin/MetiersAdmin';
 import { EtablissementsAdmin } from './pages/admin/EtablissementsAdmin';
 import { MentionsAdmin } from './pages/admin/MentionsAdmin';
@@ -147,6 +148,7 @@ export default function App() {
           <Route element={<AdminStrictRoute />}>
             <Route index element={<Dashboard />} />
             <Route path="domaines" element={<DomainesAdmin />} />
+            <Route path="secteurs" element={<SecteursAdmin />} />
             <Route path="metiers" element={<MetiersAdmin />} />
             <Route path="etablissements" element={<EtablissementsAdmin />} />
             <Route path="mentions" element={<MentionsAdmin />} />

@@ -17,6 +17,7 @@ export class MetiersService {
     const limit = query.limit ?? 20;
     const where: Prisma.MetierWhereInput = {
       ...(query.domaine && { domaine: { slug: query.domaine } }),
+      ...(query.secteur && { secteur: { slug: query.secteur } }),
       ...(query.niveauRequis && { niveauRequis: { contains: query.niveauRequis, mode: 'insensitive' } }),
       ...(query.q && { nom: { contains: query.q, mode: 'insensitive' } }),
       ...((query.salaireMin || query.salaireMax) && {
@@ -30,7 +31,7 @@ export class MetiersService {
     const [items, total] = await Promise.all([
       this.prisma.metier.findMany({
         where,
-        include: { domaine: true },
+        include: { domaine: true, secteur: true },
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { nom: 'asc' },
@@ -43,7 +44,7 @@ export class MetiersService {
   async findOne(slug: string) {
     const metier = await this.prisma.metier.findUnique({
       where: { slug },
-      include: { domaine: true },
+      include: { domaine: true, secteur: true },
     });
     if (!metier) throw new NotFoundException('Metier introuvable');
     const similaires = await this.prisma.metier.findMany({

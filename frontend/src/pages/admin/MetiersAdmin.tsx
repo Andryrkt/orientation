@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AdminResourcePage } from '../../components/admin/AdminResourcePage';
 import { api } from '../../lib/api';
-import { Domaine, Metier, Paginated } from '../../lib/types';
+import { Domaine, Metier, Paginated, Secteur } from '../../lib/types';
 
 // Champs tableau édités comme une liste séparée par des virgules dans le formulaire.
 const COMMA_LIST_FIELDS = [
@@ -36,6 +36,7 @@ function toFormValues(item: Record<string, unknown>): Record<string, unknown> {
   for (const key of LINE_LIST_FIELDS) {
     values[key] = (((item[key] as string[]) ?? []) as string[]).join('\n');
   }
+  values.secteurId = item.secteurId ?? '';
   return values;
 }
 
@@ -53,6 +54,7 @@ function toPayload(values: Record<string, unknown>): Record<string, unknown> {
   for (const key of LINE_LIST_FIELDS) {
     payload[key] = lines(values[key]);
   }
+  if (payload.secteurId === '') delete payload.secteurId;
   return payload;
 }
 
@@ -69,6 +71,13 @@ export function MetiersAdmin() {
   });
 
   const domaineOptions = (domaines?.items ?? []).map((d) => ({ value: d.id, label: d.nom }));
+
+  const { data: secteurs } = useQuery({
+    queryKey: ['all-secteurs'],
+    queryFn: async () => (await api.get<Paginated<Secteur>>('/secteurs?limit=100')).data,
+  });
+
+  const secteurOptions = (secteurs?.items ?? []).map((s) => ({ value: s.id, label: s.nom }));
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState(false);
@@ -129,6 +138,7 @@ export function MetiersAdmin() {
       )}
       emptyItem={{
         domaineId: '',
+        secteurId: '',
         nom: '',
         description: '',
         imageBanniere: '',
@@ -159,11 +169,6 @@ export function MetiersAdmin() {
         employeurs: '',
         traitsPersonnalite: '',
         valeursProfessionnelles: '',
-        temoignagePrenom: '',
-        temoignageAnneesExperience: undefined,
-        temoignageCitation: '',
-        temoignageCePlait: '',
-        temoignageConseil: '',
         environnementAutre: '',
         volumeHoraire: '',
         penibilitePhysique: undefined,
@@ -175,10 +180,6 @@ export function MetiersAdmin() {
         tendances: '',
         centresInteret: '',
         profilIntroExtraverti: '',
-        temoignageVille: '',
-        temoignageSecteurEmployeur: '',
-        temoignageDifficultes: '',
-        temoignageAccordPublication: '',
         sources: '',
         fiabilite: '',
         observations: '',
@@ -188,6 +189,7 @@ export function MetiersAdmin() {
       columns={[
         { key: 'nom', label: 'Nom' },
         { key: 'domaine', label: 'Domaine professionnel', render: (item) => item.domaine?.nom ?? '—' },
+        { key: 'secteur', label: 'Secteur', render: (item) => item.secteur?.nom ?? '—' },
         {
           key: 'salaire',
           label: 'Salaire (Ar)',
@@ -200,6 +202,13 @@ export function MetiersAdmin() {
       fields={[
         // ── Identification ──
         { name: 'domaineId', label: 'Domaine professionnel', type: 'select', required: true, options: domaineOptions, section: 'Identification' },
+        {
+          name: 'secteurId',
+          label: 'Secteur stratégique',
+          type: 'select',
+          options: secteurOptions,
+          section: 'Identification',
+        },
         { name: 'nom', label: 'Nom', type: 'text', required: true, section: 'Identification' },
         { name: 'autresAppellations', label: 'Autres appellations (séparées par des virgules)', type: 'text', section: 'Identification' },
         { name: 'sousDomaine', label: 'Sous-domaine / spécialité', type: 'text', section: 'Identification' },
@@ -283,22 +292,6 @@ export function MetiersAdmin() {
         { name: 'penibilitePhysique', label: 'Pénibilité — physique / effort corporel (1 à 5)', type: 'number', section: 'Carrières' },
         { name: 'penibiliteStress', label: 'Pénibilité — stress et pression (1 à 5)', type: 'number', section: 'Carrières' },
         { name: 'penibiliteRisques', label: 'Pénibilité — risques professionnels (1 à 5)', type: 'number', section: 'Carrières' },
-
-        // ── Témoignage professionnel ──
-        { name: 'temoignagePrenom', label: 'Témoignage — prénom', type: 'text', section: 'Témoignage professionnel' },
-        { name: 'temoignageAnneesExperience', label: "Témoignage — années d'expérience", type: 'number', section: 'Témoignage professionnel' },
-        { name: 'temoignageVille', label: 'Témoignage — ville', type: 'text', section: 'Témoignage professionnel' },
-        { name: 'temoignageSecteurEmployeur', label: 'Témoignage — secteur / employeur', type: 'text', section: 'Témoignage professionnel' },
-        { name: 'temoignageCePlait', label: 'Témoignage — ce qui lui plaît', type: 'textarea', section: 'Témoignage professionnel' },
-        { name: 'temoignageDifficultes', label: 'Témoignage — difficultés rencontrées', type: 'textarea', section: 'Témoignage professionnel' },
-        { name: 'temoignageConseil', label: 'Témoignage — son conseil', type: 'textarea', section: 'Témoignage professionnel' },
-        { name: 'temoignageCitation', label: 'Témoignage — citation', type: 'textarea', section: 'Témoignage professionnel' },
-        {
-          name: 'temoignageAccordPublication',
-          label: 'Témoignage — accord de publication (OUI_PHOTO, OUI_PRENOM, OUI_ANONYME, NON)',
-          type: 'text',
-          section: 'Témoignage professionnel',
-        },
 
         // ── Sources et fiabilité ──
         { name: 'sources', label: 'Sources consultées (une par ligne, ex : Type — Référence — Date)', type: 'textarea', section: 'Sources et fiabilité' },

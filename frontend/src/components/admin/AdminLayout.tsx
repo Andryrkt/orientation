@@ -13,6 +13,7 @@ const groups: { title?: string; links: { to: string; label: string; end?: boolea
     title: 'Catalogue',
     links: [
       { to: '/admin/domaines', label: 'Domaines' },
+      { to: '/admin/secteurs', label: 'Secteurs' },
       { to: '/admin/metiers', label: 'Métiers' },
       { to: '/admin/etablissements', label: 'Établissements' },
       { to: '/admin/formations', label: 'Formations' },

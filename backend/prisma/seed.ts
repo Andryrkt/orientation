@@ -229,9 +229,32 @@ async function main() {
     domaines.set(d.slug, domaine.id);
   }
 
+  // Secteurs professionnels/strategiques, distincts des domaines d'etude ci-dessus.
+  const secteursData = [
+    { nom: 'Numerique, BPO & Services Externalises', slug: 'numerique-bpo-services-externalises', ordre: 1 },
+    { nom: 'Energies Renouvelables, BTP & Industrie Miniere', slug: 'energies-renouvelables-btp-industrie-miniere', ordre: 2 },
+    { nom: 'Agro-industrie, Elevage & Gestion des Ressources', slug: 'agro-industrie-elevage-gestion-des-ressources', ordre: 3 },
+    { nom: 'Finance de Proximite, Microfinance & Commerce Distributif', slug: 'finance-proximite-microfinance-commerce-distributif', ordre: 4 },
+    { nom: 'Sante, Paramedical & Action Humanitaire', slug: 'sante-paramedical-action-humanitaire', ordre: 5 },
+    { nom: 'Transport, Transit & Economie Bleue (Maritime)', slug: 'transport-transit-economie-bleue-maritime', ordre: 6 },
+    { nom: 'Tourisme & Hotellerie', slug: 'tourisme-hotellerie', ordre: 7 },
+    { nom: 'Education & Enseignement', slug: 'education-enseignement', ordre: 8 },
+    { nom: 'Autres Secteurs Porteurs', slug: 'autres-secteurs-porteurs', ordre: 9 },
+  ];
+
+  const secteurs = new Map<string, string>();
+  for (const s of secteursData) {
+    const secteur = await prisma.secteur.upsert({
+      where: { slug: s.slug },
+      update: { nom: s.nom, ordre: s.ordre },
+      create: s,
+    });
+    secteurs.set(s.slug, secteur.id);
+  }
+
   const metiersData = [
     {
-      nom: 'Developpeur logiciel', slug: 'developpeur-logiciel', domaine: 'sciences-technologies',
+      nom: 'Developpeur logiciel', slug: 'developpeur-logiciel', domaine: 'sciences-technologies', secteur: 'numerique-bpo-services-externalises',
       autresAppellations: ['Ingenieur logiciel', 'Programmeur', 'Developpeur full-stack'],
       sousDomaine: 'Developpement web et mobile',
       secteursActivite: ['Prive', 'Freelance / Independant', 'Entrepreneuriat', 'International'],
@@ -274,7 +297,7 @@ async function main() {
       riasecCodes: ['R', 'I'],
     },
     {
-      nom: 'Medecin generaliste', slug: 'medecin-generaliste', domaine: 'sante',
+      nom: 'Medecin generaliste', slug: 'medecin-generaliste', domaine: 'sante', secteur: 'sante-paramedical-action-humanitaire',
       autresAppellations: ['Docteur en medecine generale'],
       sousDomaine: 'Medecine generale',
       secteursActivite: ['Public / Etat', 'Prive', 'ONG / Associations'],
@@ -303,7 +326,7 @@ async function main() {
       riasecCodes: ['I', 'S'],
     },
     {
-      nom: 'Avocat', slug: 'avocat', domaine: 'droit-sciences-politiques',
+      nom: 'Avocat', slug: 'avocat', domaine: 'droit-sciences-politiques', secteur: 'autres-secteurs-porteurs',
       sousDomaine: 'Droit prive et affaires',
       secteursActivite: ['Prive', 'Freelance / Independant'],
       codeRome: 'K1903',
@@ -327,7 +350,7 @@ async function main() {
       riasecCodes: ['E', 'S'],
     },
     {
-      nom: 'Traducteur-interprete', slug: 'traducteur-interprete', domaine: 'lettres-sciences-humaines',
+      nom: 'Traducteur-interprete', slug: 'traducteur-interprete', domaine: 'lettres-sciences-humaines', secteur: 'tourisme-hotellerie',
       sousDomaine: 'Traduction et interpretation',
       secteursActivite: ['Freelance / Independant', 'ONG / Associations', 'International'],
       description: 'Traduit des documents ecrits ou interprete des echanges oraux entre plusieurs langues, notamment pour le tourisme, les ONG et les organismes internationaux.',
@@ -349,7 +372,7 @@ async function main() {
       riasecCodes: ['A', 'S'],
     },
     {
-      nom: 'Comptable', slug: 'comptable', domaine: 'economie-gestion',
+      nom: 'Comptable', slug: 'comptable', domaine: 'economie-gestion', secteur: 'finance-proximite-microfinance-commerce-distributif',
       sousDomaine: 'Comptabilite generale',
       secteursActivite: ['Prive', 'Public / Etat'],
       codeRome: 'M1203',
@@ -374,11 +397,12 @@ async function main() {
   ];
 
   for (const m of metiersData) {
-    const { domaine, ...data } = m;
+    const { domaine, secteur, ...data } = m;
+    const secteurId = secteur ? secteurs.get(secteur) : undefined;
     await prisma.metier.upsert({
       where: { slug: m.slug },
-      update: data,
-      create: { ...data, domaineId: domaines.get(domaine)! },
+      update: { ...data, ...(secteurId && { secteurId }) },
+      create: { ...data, domaineId: domaines.get(domaine)!, ...(secteurId && { secteurId }) },
     });
   }
 

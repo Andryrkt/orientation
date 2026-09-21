@@ -356,10 +356,22 @@ export interface Domaine {
   riasecCodes?: string[];
 }
 
+// Secteur professionnel/stratégique (ex : Numérique & BPO, BTP & Mines...), distinct du
+// domaine d'étude ci-dessus.
+export interface Secteur {
+  id: string;
+  nom: string;
+  slug: string;
+  description: string | null;
+  ordre: number;
+}
+
 export interface Metier {
   id: string;
   domaineId: string;
   domaine?: Domaine;
+  secteurId: string | null;
+  secteur?: Secteur | null;
   nom: string;
   slug: string;
   description: string | null;

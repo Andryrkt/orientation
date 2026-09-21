@@ -101,14 +101,20 @@ function formatSalaryCompact(val: number | null) {
   return val.toString();
 }
 
-/* ── Liste de Tags Stylisée (Sombre) ── */
+function penibiliteLabel(niveau: number) {
+  if (niveau <= 2) return 'Faible';
+  if (niveau === 3) return 'Modérée';
+  return 'Élevée';
+}
+
+/* ── Liste de Tags ── */
 function TagList({ items }: { items: string[] }) {
   return (
     <div className="flex flex-wrap gap-1.5">
       {items.map((item) => (
         <span
           key={item}
-          className="px-3 py-1 bg-slate-200/50 dark:bg-white/5 border border-slate-300/50 dark:border-white/8 rounded-full text-xs text-slate-700 dark:text-slate-300 font-semibold hover:border-blue-500 dark:hover:border-blue-500/30 hover:text-slate-950 dark:hover:text-white transition-colors"
+          className="px-3 py-1 bg-slate-200/50 dark:bg-white/5 border border-slate-300/50 dark:border-white/8 rounded-full text-xs text-slate-700 dark:text-slate-300 font-semibold"
         >
           {item}
         </span>
@@ -122,226 +128,51 @@ function Field({
   label,
   subtitle,
   children,
-  id,
   wide,
 }: {
   label: string;
   subtitle?: string;
   children: React.ReactNode;
-  id?: string;
   wide?: boolean;
 }) {
   return (
-    <div className={`glass-card p-5 ${wide ? 'md:col-span-2' : ''}`} id={id}>
-      <div className="border-b border-black/5 dark:border-white/5 pb-2 mb-3">
-        <h3 className="font-bold text-slate-900 dark:text-white text-base">{label}</h3>
-        {subtitle && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{subtitle}</p>}
-      </div>
+    <div className={wide ? 'md:col-span-2' : ''}>
+      <h3 className="font-bold text-slate-900 dark:text-white text-sm mb-1.5">{label}</h3>
+      {subtitle && <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{subtitle}</p>}
       {children}
     </div>
   );
 }
 
-/* ── Section repliable façon "fiche métier" (inspirée de la présentation Onisep) ── */
-function AccordionSection({
-  id,
+/* ── Section de fiche métier : titre + contenu, toujours visible (façon fiche imprimée) ── */
+function SectionCard({
   icon,
   title,
   subtitle,
-  isOpen,
-  onToggle,
   children,
+  twoCol,
 }: {
-  id: string;
   icon: string;
   title: string;
   subtitle?: string;
-  isOpen: boolean;
-  onToggle: () => void;
   children: React.ReactNode;
+  twoCol?: boolean;
 }) {
   return (
-    <section id={id} className="glass-card overflow-hidden scroll-mt-4">
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-expanded={isOpen}
-        className="w-full flex items-center justify-between gap-4 p-5 text-left"
-      >
-        <div>
-          <h2 className="font-black text-lg sm:text-xl text-slate-900 dark:text-white flex items-center gap-2.5">
-            <span>{icon}</span> {title}
-          </h2>
-          {subtitle && <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{subtitle}</p>}
-        </div>
-        <span
-          className={`shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 dark:bg-white/5 text-slate-500 dark:text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
-        >
-          ▾
-        </span>
-      </button>
-      {isOpen && (
-        <div className="px-5 pb-6 pt-1 border-t border-black/5 dark:border-white/5 grid md:grid-cols-2 gap-6">
-          {children}
-        </div>
-      )}
+    <section className="glass-card overflow-hidden">
+      <div className="p-5 border-b border-black/5 dark:border-white/5">
+        <h2 className="font-black text-lg sm:text-xl text-slate-900 dark:text-white flex items-center gap-2.5">
+          <span>{icon}</span> {title}
+        </h2>
+        {subtitle && <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{subtitle}</p>}
+      </div>
+      <div className={`p-5 ${twoCol ? 'grid md:grid-cols-2 gap-6' : 'space-y-5'}`}>{children}</div>
     </section>
   );
 }
 
-/* ── Composant : Barres de Niveaux de Compétences ── */
-interface SkillProps {
-  title: string;
-  subtitle?: string;
-  items: string[];
-  color?: 'cyan' | 'blue' | 'pink';
-  id?: string;
-}
-function VisualSkillBars({ title, subtitle, items, color = 'cyan', id }: SkillProps) {
-  const getLevel = (name: string, index: number) => {
-    let sum = 0;
-    for (let i = 0; i < name.length; i++) sum += name.charCodeAt(i);
-    return 65 + ((sum + index * 17) % 31);
-  };
-
-  const colorConfig = {
-    cyan: { bar: 'from-cyan-500 to-indigo-500', glow: 'rgba(34,211,238,0.2)', text: 'text-cyan-400' },
-    blue: { bar: 'from-blue-500 to-indigo-500', glow: 'rgba(0,163,255,0.2)', text: 'text-blue-400' },
-    pink: { bar: 'from-pink-500 to-rose-500', glow: 'rgba(236,72,153,0.2)', text: 'text-pink-400' },
-  }[color];
-
-  return (
-    <div className="glass-card p-5 space-y-4" id={id}>
-      <div className="border-b border-black/5 dark:border-white/5 pb-2">
-        <h3 className="font-bold text-slate-900 dark:text-white text-base">{title}</h3>
-        {subtitle && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{subtitle}</p>}
-      </div>
-      <div className="space-y-3.5">
-        {items.map((item, index) => {
-          const level = getLevel(item, index);
-          return (
-            <div key={item} className="space-y-1">
-              <div className="flex justify-between text-xs font-semibold">
-                <span className="text-slate-700 dark:text-slate-300">{item}</span>
-                <span className={colorConfig.text}>{level}%</span>
-              </div>
-              <div className="h-2 w-full bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden relative">
-                <div
-                  className={`h-full rounded-full bg-gradient-to-r ${colorConfig.bar} transition-all duration-1000 ease-out`}
-                  style={{
-                    width: `${level}%`,
-                    boxShadow: `0 0 10px ${colorConfig.glow}`
-                  }}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-/* ── Composant : Jauge de Salaire Estimé ── */
-interface SalaireProps {
-  min: number;
-  max: number;
-  source?: string;
-  id?: string;
-}
-function JaugeSalaire({ min, max, source, id }: SalaireProps) {
-  return (
-    <div className="glass-card p-5 space-y-4" id={id}>
-      <div className="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-2">
-        <h3 className="font-bold text-slate-900 dark:text-white text-base">💰 Salaire Estimé</h3>
-        <span className="badge">Mensuel</span>
-      </div>
-
-      <div className="space-y-6 pt-2">
-        <div className="flex justify-between items-end">
-          <div>
-            <p className="text-[10px] uppercase font-black tracking-wider text-slate-500">Minimum</p>
-            <p className="text-lg font-black text-slate-800 dark:text-slate-200">{min.toLocaleString('fr-FR')} Ar</p>
-          </div>
-          <div className="text-right">
-            <p className="text-[10px] uppercase font-black tracking-wider text-slate-500">Maximum</p>
-            <p className="text-lg font-black text-blue-600 dark:text-blue-300">{max.toLocaleString('fr-FR')} Ar</p>
-          </div>
-        </div>
-
-        <div className="relative pt-1">
-          <div className="h-3 w-full bg-white/5 rounded-full relative overflow-hidden">
-            <div
-              className="absolute h-full rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 shadow-[0_0_15px_rgba(0,163,255,0.4)]"
-              style={{
-                left: '15%',
-                right: '15%'
-              }}
-            />
-          </div>
-          <div className="flex justify-between text-[10px] text-slate-500 font-bold mt-2">
-            <span>Débutant</span>
-            <span>Confirmé</span>
-            <span>Expert</span>
-          </div>
-        </div>
-      </div>
-
-      {source && (
-        <p className="text-[10px] text-slate-500 italic text-right pt-2 border-t border-white/5">
-          Source : {source}
-        </p>
-      )}
-    </div>
-  );
-}
-
-/* ── Jauge de Pénibilité (1 à 5) ── */
-function PenibiliteGauge({ label, niveau }: { label: string; niveau: number }) {
-  return (
-    <div className="space-y-1">
-      <div className="flex justify-between text-xs font-semibold">
-        <span className="text-slate-700 dark:text-slate-300">{label}</span>
-        <span className="text-slate-500 dark:text-slate-400">{niveau} / 5</span>
-      </div>
-      <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map((n) => (
-          <div
-            key={n}
-            className={`h-2 flex-1 rounded-full ${
-              n <= niveau ? 'bg-gradient-to-r from-amber-500 to-rose-500' : 'bg-slate-200 dark:bg-white/5'
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-type AccordionKey = 'metier' | 'temoignage' | 'exercice' | 'carrieres' | 'acces';
-
-// Sections cliquables de la boussole/résumé -> section repliable qui les contient.
-const SECTION_OWNER: Record<string, AccordionKey> = {
-  'section-metier': 'metier',
-  'section-missions': 'metier',
-  'section-competences': 'metier',
-  'section-personnalite': 'metier',
-  'section-temoignage': 'temoignage',
-  'section-exercice': 'exercice',
-  'section-carrieres': 'carrieres',
-  'section-salaire': 'carrieres',
-  'section-acces': 'acces',
-};
-
 export function MetierDetail() {
   const { slug } = useParams();
-  const [openSections, setOpenSections] = useState<Record<AccordionKey, boolean>>({
-    metier: true,
-    temoignage: false,
-    exercice: false,
-    carrieres: false,
-    acces: false,
-  });
   const { data: metier, isLoading } = useQuery({
     queryKey: ['metier', slug],
     queryFn: async () => (await api.get<Metier>(`/metiers/${slug}`)).data,
@@ -367,13 +198,12 @@ export function MetierDetail() {
 
   if (!metier) return <p className="text-slate-400 py-16 text-center">Métier introuvable.</p>;
 
-  const hasTemoignage = !!(metier.temoignageCitation || metier.temoignageCePlait || metier.temoignageConseil);
   const hasMissions = metier.missions && metier.missions.length > 0;
   const hasCompetences = metier.competences && metier.competences.length > 0;
   const hasTraits = metier.traitsPersonnalite && metier.traitsPersonnalite.length > 0;
   const hasSalaire = !!(metier.salaireMin || metier.salaireMax);
   const hasRiasec = !!(metier.riasecCodes && metier.riasecCodes.length > 0);
-  const hasAcces = !!(
+  const hasFormations = !!(
     metier.niveauRequis ||
     metier.specialiteDiplome ||
     metier.seriesBacMadagascar.length > 0 ||
@@ -389,42 +219,23 @@ export function MetierDetail() {
     metier.regionsPresence?.length > 0 ||
     metier.employeurs?.length > 0
   );
-  const hasCarrieres = !!(
+  const hasRemuneration = !!(
     hasSalaire ||
     metier.niveauDemande ||
     metier.perspectivesEmploi ||
     metier.postesEvolution ||
     metier.etapesEvolution?.length > 0 ||
     metier.mobiliteInternationale ||
-    metier.tendances?.length > 0 ||
-    metier.avantages ||
-    metier.penibilitePhysique != null ||
-    metier.penibiliteStress != null ||
-    metier.penibiliteRisques != null
+    metier.tendances?.length > 0
   );
+  const hasPenibilite = !!(
+    metier.penibilitePhysique != null || metier.penibiliteStress != null || metier.penibiliteRisques != null
+  );
+  const hasAvantagesContraintes = !!metier.avantages || hasPenibilite;
 
   const slugDomaine = metier.domaine?.slug || '';
   const imageUrl = (!bannerFailed && metier.imageBanniere) || DOMAINE_IMAGES[slugDomaine] || DEFAULT_IMAGE;
   const domainColor = DOMAINE_COLORS[slugDomaine] || DEFAULT_COLOR;
-
-  const goToSection = (id: string) => {
-    const key = SECTION_OWNER[id];
-    if (key) setOpenSections((s) => ({ ...s, [key]: true }));
-    setTimeout(
-      () => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: key ? 'start' : 'center' }),
-      key ? 50 : 0,
-    );
-  };
-
-  const toggleSection = (key: AccordionKey) => setOpenSections((s) => ({ ...s, [key]: !s[key] }));
-
-  const NAV_ITEMS: { key: AccordionKey; id: string; icon: string; label: string; show: boolean }[] = [
-    { key: 'metier', id: 'section-metier', icon: '💼', label: 'Le métier', show: true },
-    { key: 'temoignage', id: 'section-temoignage', icon: '💬', label: 'Témoignage', show: hasTemoignage },
-    { key: 'exercice', id: 'section-exercice', icon: '🏞️', label: "Où l'exercer ?", show: hasExercice },
-    { key: 'carrieres', id: 'section-carrieres', icon: '📈', label: 'Carrières', show: hasCarrieres },
-    { key: 'acces', id: 'section-acces', icon: '🎓', label: 'Accès au métier', show: hasAcces },
-  ];
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto pb-12">
@@ -473,7 +284,7 @@ export function MetierDetail() {
         </div>
       </section>
 
-      {/* ── En bref : résumé compact façon fiche Onisep ── */}
+      {/* ── En bref : résumé compact ── */}
       <div className="flex flex-wrap gap-2">
         {metier.niveauRequis && (
           <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-700 dark:text-slate-200">
@@ -497,69 +308,40 @@ export function MetierDetail() {
         )}
       </div>
 
-      {/* ── Navigation rapide vers les sections (façon sommaire Onisep) ── */}
-      <div className="flex flex-wrap gap-2">
-        {NAV_ITEMS.filter((n) => n.show).map((n) => (
-          <button
-            key={n.key}
-            type="button"
-            onClick={() => goToSection(n.id)}
-            className="px-3.5 py-1.5 rounded-full text-xs font-bold border border-black/10 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-blue-500/10 hover:border-blue-500/30 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"
-          >
-            {n.icon} {n.label}
-          </button>
-        ))}
-      </div>
-
-      {/* ══════════════ SECTION 1 : LE MÉTIER ══════════════ */}
-      <AccordionSection
-        id="section-metier"
-        icon="💼"
-        title="Le métier"
-        subtitle="Description, missions, compétences et profil idéal."
-        isOpen={openSections.metier}
-        onToggle={() => toggleSection('metier')}
-      >
-        {/* Description */}
-        <div className="md:col-span-2">
+      {/* ══════════════ EN QUOI CONSISTE CE MÉTIER ══════════════ */}
+      {metier.description && (
+        <SectionCard icon="💼" title="En quoi consiste ce métier au quotidien ?">
           <p className="text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
             {metier.description}
           </p>
-        </div>
+        </SectionCard>
+      )}
 
-        {/* Nature du travail : Missions */}
-        {hasMissions && (
-          <Field label="📋 Nature du travail — Missions Principales" id="section-missions" wide>
-            <ul className="text-slate-700 dark:text-slate-300 text-sm list-disc list-inside space-y-2 leading-relaxed">
-              {metier.missions.map((m) => <li key={m} className="hover:text-slate-950 dark:hover:text-white transition-colors">{m}</li>)}
-            </ul>
-          </Field>
-        )}
+      {/* ══════════════ MISSIONS PRINCIPALES ══════════════ */}
+      {hasMissions && (
+        <SectionCard icon="📋" title="Missions principales">
+          <ul className="text-slate-700 dark:text-slate-300 text-sm list-disc list-inside space-y-2 leading-relaxed">
+            {metier.missions.map((m) => <li key={m}>{m}</li>)}
+          </ul>
+        </SectionCard>
+      )}
 
-        {/* Compétences requises : techniques */}
+      {/* ══════════════ PROFIL & COMPÉTENCES REQUISES ══════════════ */}
+      <SectionCard icon="🧭" title="Profil & Compétences requises" twoCol>
         {hasCompetences && (
-          <Field label="⚡ Compétences requises — Techniques" id="section-competences">
-            <ul className="text-slate-700 dark:text-slate-300 text-sm list-disc list-inside space-y-2 leading-relaxed">
-              {(metier.competences as unknown as string[]).map((c) => (
-                <li key={c} className="hover:text-slate-950 dark:hover:text-white transition-colors">{c}</li>
-              ))}
-            </ul>
+          <Field label="Compétences techniques">
+            <TagList items={metier.competences as unknown as string[]} />
           </Field>
         )}
 
-        {/* Compétences comportementales */}
         {metier.competencesComportementales?.length > 0 && (
-          <Field
-            label="🤝 Compétences requises — Soft Skills"
-            subtitle="Les aptitudes à développer pour bien exercer ce métier au quotidien."
-          >
+          <Field label="Compétences comportementales / soft skills">
             <TagList items={metier.competencesComportementales} />
           </Field>
         )}
 
-        {/* Langues requises */}
         {metier.languesRequises?.length > 0 && (
-          <Field label="🗣️ Langues requises">
+          <Field label="Langues requises">
             <p className="text-slate-700 dark:text-slate-300 text-sm">
               {metier.languesRequises.join(', ')}
               {metier.niveauLangues && ` (${metier.niveauLangues})`}
@@ -567,12 +349,8 @@ export function MetierDetail() {
           </Field>
         )}
 
-        {/* Codes RIASEC */}
         {hasRiasec && (
-          <Field
-            label="🧭 Le profil idéal — Codes RIASEC"
-            subtitle="Le profil d'intérêts (test RIASEC) associé à ce métier."
-          >
+          <Field label="Code RIASEC" subtitle="Le profil d'intérêts (test RIASEC) associé à ce métier.">
             <div className="flex flex-wrap gap-1.5">
               {metier.riasecCodes!.map((code) => (
                 <span
@@ -586,102 +364,36 @@ export function MetierDetail() {
           </Field>
         )}
 
-        {/* Traits de personnalité avec Visual Skill Bars */}
         {hasTraits && (
-          <VisualSkillBars
-            title="🧠 Le profil idéal — Traits de Personnalité"
-            subtitle="Le profil de personnalité qui s'épanouit naturellement dans ce métier — pour situer votre propre profil."
-            items={metier.traitsPersonnalite}
-            color="blue"
-            id="section-personnalite"
-          />
+          <Field label="Traits de personnalité recherchés" subtitle="Le profil qui s'épanouit naturellement dans ce métier.">
+            <TagList items={metier.traitsPersonnalite} />
+          </Field>
         )}
 
-        {/* Valeurs professionnelles */}
         {metier.valeursProfessionnelles?.length > 0 && (
-          <Field label="💎 Valeurs Professionnelles">
+          <Field label="Valeurs professionnelles">
             <TagList items={metier.valeursProfessionnelles} />
           </Field>
         )}
 
-        {/* Centres d'intérêt */}
         {metier.centresInteret?.length > 0 && (
-          <Field label="🎯 Centres d'intérêt typiques">
+          <Field label="Centres d'intérêt typiques">
             <TagList items={metier.centresInteret} />
           </Field>
         )}
 
-        {/* Profil introverti / extraverti */}
         {metier.profilIntroExtraverti && (
-          <Field label="🧭 Adéquation introverti / extraverti" wide>
+          <Field label="Adéquation introverti / extraverti" wide>
             <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">{metier.profilIntroExtraverti}</p>
           </Field>
         )}
-      </AccordionSection>
+      </SectionCard>
 
-      {/* ══════════════ SECTION : TÉMOIGNAGE ══════════════ */}
-      {hasTemoignage && (
-        <AccordionSection
-          id="section-temoignage"
-          icon="💬"
-          title="Témoignage"
-          subtitle="Le retour d'expérience d'un professionnel du métier."
-          isOpen={openSections.temoignage}
-          onToggle={() => toggleSection('temoignage')}
-        >
-          <div className="md:col-span-2 p-6 rounded-2xl border bg-blue-500/5 border-blue-500/15 dark:border-blue-500/20 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-20 pointer-events-none"
-              style={{ background: 'radial-gradient(circle, rgba(0,163,255,0.4) 0%, transparent 70%)' }} />
-
-            <h3 className="font-bold text-blue-600 dark:text-blue-300 text-sm mb-3 flex items-center gap-2">
-              💬 Témoignage de {metier.temoignagePrenom || 'Professionnel'}
-              {metier.temoignageAnneesExperience != null &&
-                ` (${metier.temoignageAnneesExperience} ans d'exp.)`}
-            </h3>
-            {(metier.temoignageVille || metier.temoignageSecteurEmployeur) && (
-              <p className="text-slate-500 dark:text-slate-500 text-xs italic mb-2">
-                {[metier.temoignageVille, metier.temoignageSecteurEmployeur].filter(Boolean).join(' · ')}
-              </p>
-            )}
-            {metier.temoignageCitation && (
-              <p className="italic text-slate-700 dark:text-slate-200 text-sm leading-relaxed mb-3">
-                « {metier.temoignageCitation} »
-              </p>
-            )}
-            {metier.temoignageCePlait && (
-              <p className="text-slate-600 dark:text-slate-400 text-xs mb-1.5">
-                <span className="font-semibold text-blue-600 dark:text-blue-400">Ce qui plaît : </span>
-                {metier.temoignageCePlait}
-              </p>
-            )}
-            {metier.temoignageDifficultes && (
-              <p className="text-slate-600 dark:text-slate-400 text-xs mb-1.5">
-                <span className="font-semibold text-blue-600 dark:text-blue-400">Difficultés : </span>
-                {metier.temoignageDifficultes}
-              </p>
-            )}
-            {metier.temoignageConseil && (
-              <p className="text-slate-600 dark:text-slate-400 text-xs">
-                <span className="font-semibold text-blue-600 dark:text-blue-400">Conseil : </span>
-                {metier.temoignageConseil}
-              </p>
-            )}
-          </div>
-        </AccordionSection>
-      )}
-
-      {/* ══════════════ SECTION 2 : OÙ L'EXERCER ══════════════ */}
+      {/* ══════════════ OÙ L'EXERCER ══════════════ */}
       {hasExercice && (
-        <AccordionSection
-          id="section-exercice"
-          icon="🏞️"
-          title="Où l'exercer ?"
-          subtitle="Environnement, secteurs, contrats et employeurs."
-          isOpen={openSections.exercice}
-          onToggle={() => toggleSection('exercice')}
-        >
+        <SectionCard icon="🏞️" title="Où l'exercer ?" twoCol>
           {metier.environnementTravail?.length > 0 && (
-            <Field label="🏞️ Environnement de travail">
+            <Field label="Environnement de travail">
               <TagList items={metier.environnementTravail} />
               {metier.environnementAutre && (
                 <p className="text-slate-500 dark:text-slate-400 text-xs mt-2">{metier.environnementAutre}</p>
@@ -690,13 +402,13 @@ export function MetierDetail() {
           )}
 
           {metier.secteursActivite?.length > 0 && (
-            <Field label="🏢 Secteurs d'activité">
+            <Field label="Secteurs d'activité">
               <TagList items={metier.secteursActivite} />
             </Field>
           )}
 
           {(metier.typeContrat?.length > 0 || metier.volumeHoraire?.length > 0) && (
-            <Field label="📄 Type de contrat &amp; volume horaire">
+            <Field label="Type de contrat & volume horaire">
               {metier.typeContrat?.length > 0 && <TagList items={metier.typeContrat} />}
               {metier.volumeHoraire?.length > 0 && (
                 <p className="text-slate-500 dark:text-slate-400 text-xs mt-2">{metier.volumeHoraire.join(' · ')}</p>
@@ -705,46 +417,83 @@ export function MetierDetail() {
           )}
 
           {metier.regionsPresence?.length > 0 && (
-            <Field label="📍 Régions de présence">
+            <Field label="Régions de présence">
               <TagList items={metier.regionsPresence} />
             </Field>
           )}
 
           {metier.employeurs?.length > 0 && (
-            <Field label="🏢 Principaux Employeurs" wide>
+            <Field label="Principaux employeurs" wide>
               <TagList items={metier.employeurs} />
             </Field>
           )}
-        </AccordionSection>
+        </SectionCard>
       )}
 
-      {/* ══════════════ SECTION 3 : CARRIÈRES ══════════════ */}
-      {hasCarrieres && (
-        <AccordionSection
-          id="section-carrieres"
-          icon="📈"
-          title="Carrières"
-          subtitle="Salaire, demande du marché et perspectives d'évolution."
-          isOpen={openSections.carrieres}
-          onToggle={() => toggleSection('carrieres')}
-        >
+      {/* ══════════════ FORMATIONS LOCALES RECOMMANDÉES ══════════════ */}
+      {hasFormations && (
+        <SectionCard icon="🎓" title="Formations locales recommandées à Madagascar">
+          {(metier.niveauRequis || metier.specialiteDiplome) && (
+            <Field label="Diplôme & niveau requis">
+              {metier.niveauRequis && (
+                <p className="text-slate-700 dark:text-slate-300 text-sm font-semibold">{metier.niveauRequis}</p>
+              )}
+              {metier.specialiteDiplome && (
+                <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">Spécialité : {metier.specialiteDiplome}</p>
+              )}
+            </Field>
+          )}
+
+          {metier.seriesBacMadagascar.length > 0 && (
+            <Field label="Séries de Bac recommandées">
+              <TagList items={metier.seriesBacMadagascar} />
+            </Field>
+          )}
+
+          {metier.formationsMadagascar?.length > 0 && (
+            <Field label="Établissements & filières">
+              <ul className="text-slate-700 dark:text-slate-300 text-sm list-disc list-inside space-y-1.5 leading-relaxed">
+                {metier.formationsMadagascar.map((f) => <li key={f}>{f}</li>)}
+              </ul>
+            </Field>
+          )}
+
+          {metier.certifications?.length > 0 && (
+            <Field label="Certifications valorisées">
+              <TagList items={metier.certifications} />
+            </Field>
+          )}
+
+          {metier.autoFormation && (
+            <Field label="Accès par auto-formation">
+              <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">{metier.autoFormation}</p>
+            </Field>
+          )}
+        </SectionCard>
+      )}
+
+      {/* ══════════════ RÉMUNÉRATION & DÉBOUCHÉS RÉELS ══════════════ */}
+      {hasRemuneration && (
+        <SectionCard icon="💰" title="Rémunération & Débouchés réels à Madagascar">
           {hasSalaire && (
-            <JaugeSalaire
-              min={metier.salaireMin || 0}
-              max={metier.salaireMax || 0}
-              source={metier.salaireSource ?? undefined}
-              id="section-salaire"
-            />
+            <Field label="Salaire estimé">
+              <p className="text-slate-700 dark:text-slate-300 text-sm">
+                {metier.salaireMin?.toLocaleString('fr-FR') ?? '?'} à {metier.salaireMax?.toLocaleString('fr-FR') ?? '?'} Ar net / mois.
+              </p>
+              {metier.salaireSource && (
+                <p className="text-slate-500 dark:text-slate-400 text-xs mt-1 italic">Source : {metier.salaireSource}</p>
+              )}
+            </Field>
           )}
 
           {metier.niveauDemande && (
-            <Field label="📈 Demande sur le marché malgache">
+            <Field label="Demande sur le marché malgache">
               <p className="text-slate-700 dark:text-slate-300 text-sm font-semibold">{metier.niveauDemande}</p>
             </Field>
           )}
 
           {(metier.perspectivesEmploi || metier.postesEvolution || metier.etapesEvolution?.length > 0 || metier.mobiliteInternationale) && (
-            <Field label="🔮 Perspectives d'évolution" wide>
+            <Field label="Perspectives d'évolution">
               <div className="space-y-4 text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
                 {metier.perspectivesEmploi && <p>{metier.perspectivesEmploi}</p>}
 
@@ -773,82 +522,43 @@ export function MetierDetail() {
           )}
 
           {metier.tendances?.length > 0 && (
-            <Field label="📊 Tendances du secteur">
+            <Field label="Tendances du secteur">
               <TagList items={metier.tendances} />
             </Field>
           )}
-
-          {metier.avantages && (
-            <Field label="🎁 Avantages en nature courants">
-              <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">{metier.avantages}</p>
-            </Field>
-          )}
-
-          {(metier.penibilitePhysique != null || metier.penibiliteStress != null || metier.penibiliteRisques != null) && (
-            <Field label="⚠️ Niveau de pénibilité" wide>
-              <div className="space-y-3">
-                {metier.penibilitePhysique != null && (
-                  <PenibiliteGauge label="Physique / effort corporel" niveau={metier.penibilitePhysique} />
-                )}
-                {metier.penibiliteStress != null && (
-                  <PenibiliteGauge label="Stress et pression" niveau={metier.penibiliteStress} />
-                )}
-                {metier.penibiliteRisques != null && (
-                  <PenibiliteGauge label="Risques professionnels" niveau={metier.penibiliteRisques} />
-                )}
-              </div>
-            </Field>
-          )}
-        </AccordionSection>
+        </SectionCard>
       )}
 
-      {/* ══════════════ SECTION 4 : ACCÈS AU MÉTIER ══════════════ */}
-      {hasAcces && (
-        <AccordionSection
-          id="section-acces"
-          icon="🎓"
-          title="Accès au métier"
-          subtitle="Diplômes, séries de bac et formations à Madagascar."
-          isOpen={openSections.acces}
-          onToggle={() => toggleSection('acces')}
-        >
-          {(metier.niveauRequis || metier.specialiteDiplome) && (
-            <Field label="🎓 Diplôme &amp; Niveau requis">
-              {metier.niveauRequis && (
-                <p className="text-slate-700 dark:text-slate-300 text-sm font-semibold">{metier.niveauRequis}</p>
-              )}
-              {metier.specialiteDiplome && (
-                <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">Spécialité : {metier.specialiteDiplome}</p>
-              )}
-            </Field>
-          )}
-
-          {metier.seriesBacMadagascar.length > 0 && (
-            <Field label="📜 Série du Bac recommandée">
-              <TagList items={metier.seriesBacMadagascar} />
-            </Field>
-          )}
-
-          {metier.formationsMadagascar?.length > 0 && (
-            <Field label="🇲🇬 Formations à Madagascar" wide>
-              <ul className="text-slate-700 dark:text-slate-300 text-sm list-disc list-inside space-y-1.5 leading-relaxed">
-                {metier.formationsMadagascar.map((f) => <li key={f}>{f}</li>)}
+      {/* ══════════════ AVANTAGES & CONTRAINTES DU MÉTIER ══════════════ */}
+      {hasAvantagesContraintes && (
+        <SectionCard icon="⚖️" title="Avantages & Contraintes du métier" twoCol>
+          <div>
+            <h3 className="font-bold text-emerald-700 dark:text-emerald-400 text-sm mb-2">✓ Points forts</h3>
+            {metier.avantages ? (
+              <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">{metier.avantages}</p>
+            ) : (
+              <p className="text-slate-400 text-sm italic">Non renseigné.</p>
+            )}
+          </div>
+          <div>
+            <h3 className="font-bold text-rose-700 dark:text-rose-400 text-sm mb-2">⚠ Contraintes</h3>
+            {hasPenibilite ? (
+              <ul className="text-slate-700 dark:text-slate-300 text-sm space-y-1.5">
+                {metier.penibilitePhysique != null && (
+                  <li>Physique / effort corporel : <span className="font-semibold">{penibiliteLabel(metier.penibilitePhysique)}</span></li>
+                )}
+                {metier.penibiliteStress != null && (
+                  <li>Stress et pression : <span className="font-semibold">{penibiliteLabel(metier.penibiliteStress)}</span></li>
+                )}
+                {metier.penibiliteRisques != null && (
+                  <li>Risques professionnels : <span className="font-semibold">{penibiliteLabel(metier.penibiliteRisques)}</span></li>
+                )}
               </ul>
-            </Field>
-          )}
-
-          {metier.certifications?.length > 0 && (
-            <Field label="📑 Certifications valorisées">
-              <TagList items={metier.certifications} />
-            </Field>
-          )}
-
-          {metier.autoFormation && (
-            <Field label="🧑‍💻 Accès par auto-formation">
-              <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">{metier.autoFormation}</p>
-            </Field>
-          )}
-        </AccordionSection>
+            ) : (
+              <p className="text-slate-400 text-sm italic">Non renseigné.</p>
+            )}
+          </div>
+        </SectionCard>
       )}
 
       {/* Métiers similaires */}
