@@ -1,10 +1,98 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { api } from '../lib/api';
-import { Universite } from '../lib/types';
+import { Domaine, Mention, Universite } from '../lib/types';
 import { FavoriteButton } from '../components/FavoriteButton';
 import { BackButton } from '../components/BackButton';
 import { UniversitesMap } from '../components/UniversitesMap';
+import { CONDITION_ADMISSION_LABELS, formatArgent } from '../lib/mention';
+
+/* ── Mention repliable : titre + niveau, puis description/frais/parcours une fois ouverte ── */
+function MentionAccordionItem({ mention, isOpen, onToggle }: { mention: Mention; isOpen: boolean; onToggle: () => void }) {
+  return (
+    <div className="border-b border-slate-200 dark:border-slate-800 last:border-b-0">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="w-full flex items-center justify-between gap-3 py-4 text-left"
+      >
+        <div className="min-w-0">
+          <p className="font-bold text-slate-800 dark:text-white truncate">{mention.nom}</p>
+        </div>
+        <span className={`shrink-0 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>▾</span>
+      </button>
+
+      {isOpen && (
+        <div className="pb-5 space-y-4">
+          {mention.description && (
+            <p className="text-sm text-slate-600 dark:text-slate-400">{mention.description}</p>
+          )}
+
+          {(mention.conditionAdmission || mention.droitInscription != null || mention.fraisAnnuel != null || mention.fraisAnnexe != null) && (
+            <div className="grid sm:grid-cols-2 gap-3 text-sm">
+              {mention.conditionAdmission && (
+                <p>
+                  <span className="text-slate-500 dark:text-slate-400">Condition d'admission : </span>
+                  <span className="font-medium text-slate-800 dark:text-white">
+                    {CONDITION_ADMISSION_LABELS[mention.conditionAdmission] ?? mention.conditionAdmission}
+                  </span>
+                </p>
+              )}
+              {mention.droitInscription != null && (
+                <p>
+                  <span className="text-slate-500 dark:text-slate-400">Droit d'inscription : </span>
+                  <span className="font-medium text-slate-800 dark:text-white">{formatArgent(mention.droitInscription)}</span>
+                </p>
+              )}
+              {mention.fraisAnnuel != null && (
+                <p>
+                  <span className="text-slate-500 dark:text-slate-400">Frais annuel : </span>
+                  <span className="font-medium text-slate-800 dark:text-white">{formatArgent(mention.fraisAnnuel)}</span>
+                </p>
+              )}
+              {mention.fraisAnnexe != null && (
+                <p>
+                  <span className="text-slate-500 dark:text-slate-400">Frais annexe : </span>
+                  <span className="font-medium text-slate-800 dark:text-white">{formatArgent(mention.fraisAnnexe)}</span>
+                </p>
+              )}
+            </div>
+          )}
+
+          {mention.parcours && mention.parcours.length > 0 && (
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-2">Parcours</p>
+              <div className="space-y-2">
+                {mention.parcours.map((p) => (
+                  <div key={p.id} className="rounded-lg bg-slate-100 dark:bg-slate-800/60 px-3.5 py-2.5">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="font-semibold text-sm text-slate-800 dark:text-white">{p.nom}</span>
+                      {p.duree && <span className="text-xs text-slate-500 dark:text-slate-400 shrink-0">{p.duree}</span>}
+                    </div>
+                    {p.debouches && (
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        <span className="font-medium">Débouchés : </span>{p.debouches}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <Link
+            to={`/mentions/${mention.slug}`}
+            className="inline-block text-xs font-semibold text-brand-600 dark:text-blue-400 hover:underline"
+          >
+            Voir la fiche complète →
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function UniversiteDetail() {
   const { slug } = useParams();
@@ -12,9 +100,29 @@ export function UniversiteDetail() {
     queryKey: ['universite', slug],
     queryFn: async () => (await api.get<Universite>(`/universites/${slug}`)).data,
   });
+  const [openMentionIds, setOpenMentionIds] = useState<Set<string>>(new Set());
+  const toggleMention = (id: string) =>
+    setOpenMentionIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
 
   if (isLoading) return <p className="text-slate-400">Chargement...</p>;
   if (!universite) return <p className="text-slate-400">Université introuvable.</p>;
+
+  // Regroupe les mentions par domaine d'étude, dans l'ordre des domaines.
+  const domaineGroups = Object.values(
+    (universite.mentions ?? []).reduce<Record<string, { domaine?: Domaine; mentions: Mention[] }>>((acc, mention) => {
+      const key = mention.domaine?.id ?? 'sans-domaine';
+      if (!acc[key]) acc[key] = { domaine: mention.domaine, mentions: [] };
+      acc[key].mentions.push(mention);
+      return acc;
+    }, {}),
+  )
+    .map((g) => ({ ...g, mentions: g.mentions.slice().sort((a, b) => a.nom.localeCompare(b.nom, 'fr')) }))
+    .sort((a, b) => (a.domaine?.ordre ?? 999) - (b.domaine?.ordre ?? 999));
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -59,26 +167,26 @@ export function UniversiteDetail() {
         </div>
       )}
 
-      <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-4">Mentions et parcours</h2>
+      <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-4">Domaines, mentions et parcours</h2>
       {(!universite.mentions || universite.mentions.length === 0) && (
         <p className="text-slate-400">Aucune mention renseignée pour le moment.</p>
       )}
-      <div className="space-y-4">
-        {universite.mentions?.map((mention) => (
-          <div key={mention.id} className="card p-5">
-            <p className="text-xs font-medium text-brand-600 dark:text-blue-400 mb-1">{mention.niveau} — {mention.domaine?.nom}</p>
-            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2">{mention.nom}</h3>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mb-3">{mention.description}</p>
-            {mention.parcours && mention.parcours.length > 0 && (
-              <ul className="list-disc list-inside text-sm text-slate-600 dark:text-slate-400 space-y-1">
-                {mention.parcours.map((p) => (
-                  <li key={p.id}>
-                    <span className="font-medium">{p.nom}</span>
-                    {p.duree ? ` — ${p.duree}` : ''}
-                  </li>
-                ))}
-              </ul>
-            )}
+      <div className="space-y-6">
+        {domaineGroups.map(({ domaine, mentions }) => (
+          <div key={domaine?.id ?? 'sans-domaine'} className="card p-5">
+            <h3 className="text-sm font-bold uppercase tracking-wide text-brand-600 dark:text-blue-400 mb-1">
+              {domaine?.nom ?? 'Autres mentions'}
+            </h3>
+            <div>
+              {mentions.map((mention) => (
+                <MentionAccordionItem
+                  key={mention.id}
+                  mention={mention}
+                  isOpen={openMentionIds.has(mention.id)}
+                  onToggle={() => toggleMention(mention.id)}
+                />
+              ))}
+            </div>
           </div>
         ))}
       </div>

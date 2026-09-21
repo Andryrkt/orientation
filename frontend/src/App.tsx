@@ -8,6 +8,7 @@ import { MetierDetail } from './pages/MetierDetail';
 import { DomainesList } from './pages/DomainesList';
 import { EtablissementsList } from './pages/EtablissementsList';
 import { UniversiteDetail } from './pages/UniversiteDetail';
+import { MentionDetail } from './pages/MentionDetail';
 import { StagesList } from './pages/StagesList';
 import { StageDetail } from './pages/StageDetail';
 import { BoursesList } from './pages/BoursesList';
@@ -91,6 +92,7 @@ export default function App() {
         <Route path="domaines" element={<DomainesList />} />
         <Route path="etablissements" element={<EtablissementsList />} />
         <Route path="universites/:slug" element={<UniversiteDetail />} />
+        <Route path="mentions/:slug" element={<MentionDetail />} />
         <Route path="centres-formation/:slug" element={<CentreFormationDetail />} />
         <Route path="stages" element={<StagesList />} />
         <Route path="stages/:id" element={<StageDetail />} />
