@@ -310,7 +310,7 @@ function HomeGuest() {
 
         <div className="relative z-10 max-w-3xl mx-auto">
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
-            <span className="gradient-text animate-text-shine">Avenir assuré</span>
+            <span className="gradient-text animate-text-shine">Ton avenir commence aujourd'hui</span>
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-4 leading-relaxed">
@@ -634,8 +634,8 @@ function HomePlatform() {
             {t('home.cta_desc')}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/register" className="btn-primary px-8 py-4 text-base">
-              {t('home.cta_btn_register')}
+            <Link to="/mon-espace" className="btn-primary px-8 py-4 text-base">
+              {t('home.cta_btn_myspace')}
             </Link>
             <Link to="/etablissements" className="btn-secondary px-8 py-4 text-base">
               {t('home.cta_btn_explore')}
