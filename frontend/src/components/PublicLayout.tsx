@@ -28,7 +28,6 @@ export function PublicLayout() {
 
   const ORIENTATION_ITEMS = [
     { to: '/metiers', label: t('nav.jobs') },
-    { to: '/domaines', label: t('nav.domains') },
     { to: '/etablissements', label: t('nav.establishments') },
     { to: '/questionnaire', label: t('nav.questionnaire') },
     { to: '/coachs', label: t('nav.coaches') },
