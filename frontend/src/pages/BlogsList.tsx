@@ -17,18 +17,26 @@ function excerpt(text: string, length = 140) {
 
 export function BlogsList() {
   const [categorie, setCategorie] = useState('');
+  const [q, setQ] = useState('');
 
   const { data, isLoading } = useQuery({
-    queryKey: ['blogs', categorie],
+    queryKey: ['blogs', categorie, q],
     queryFn: async () =>
-      (await api.get<Paginated<Blog>>('/blogs', { params: { limit: 50, ...(categorie && { categorie }) } })).data,
+      (await api.get<Paginated<Blog>>('/blogs', { params: { limit: 50, ...(categorie && { categorie }), ...(q && { q }) } })).data,
   });
 
   return (
     <div>
-      <h1 className="page-title">Blog / Conseils</h1>
+      <h1 className="page-title">Information / Conseils</h1>
 
       <div className="flex flex-wrap gap-3 mb-6">
+        <input
+          type="text"
+          placeholder="Rechercher par titre..."
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          className="field-input flex-1 min-w-[200px]"
+        />
         <select
           value={categorie}
           onChange={(e) => setCategorie(e.target.value)}
