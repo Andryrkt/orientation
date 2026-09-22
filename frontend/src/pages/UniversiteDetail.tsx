@@ -7,22 +7,60 @@ import { FavoriteButton } from '../components/FavoriteButton';
 import { BackButton } from '../components/BackButton';
 import { UniversitesMap } from '../components/UniversitesMap';
 import { CONDITION_ADMISSION_LABELS, formatArgent } from '../lib/mention';
+import { useComparison } from '../lib/useComparison';
+import { ComparisonBar } from '../components/ComparisonBar';
 
 /* ── Mention repliable : titre + niveau, puis description/frais/parcours une fois ouverte ── */
-function MentionAccordionItem({ mention, isOpen, onToggle }: { mention: Mention; isOpen: boolean; onToggle: () => void }) {
+function MentionAccordionItem({
+  mention,
+  isOpen,
+  onToggle,
+  compareSelected,
+  compareDisabled,
+  onToggleCompare,
+}: {
+  mention: Mention;
+  isOpen: boolean;
+  onToggle: () => void;
+  compareSelected: boolean;
+  compareDisabled: boolean;
+  onToggleCompare: () => void;
+}) {
   return (
     <div className="border-b border-slate-200 dark:border-slate-800 last:border-b-0">
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-expanded={isOpen}
-        className="w-full flex items-center justify-between gap-3 py-4 text-left"
-      >
-        <div className="min-w-0">
-          <p className="font-bold text-slate-800 dark:text-white truncate">{mention.nom}</p>
-        </div>
-        <span className={`shrink-0 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>▾</span>
-      </button>
+      <div className="w-full flex items-center gap-3 py-4">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleCompare();
+          }}
+          disabled={compareDisabled}
+          aria-pressed={compareSelected}
+          aria-label={compareSelected ? 'Retirer de la comparaison' : 'Ajouter à la comparaison'}
+          title={compareSelected ? 'Retirer de la comparaison' : 'Ajouter à la comparaison'}
+          className={`shrink-0 w-5 h-5 rounded border flex items-center justify-center text-[10px] font-bold transition-colors ${
+            compareSelected
+              ? 'bg-blue-600 border-blue-600 text-white'
+              : compareDisabled
+                ? 'border-slate-200 dark:border-white/10 text-transparent cursor-not-allowed'
+                : 'border-slate-300 dark:border-white/20 text-transparent hover:border-blue-400'
+          }`}
+        >
+          ✓
+        </button>
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={isOpen}
+          className="flex-1 flex items-center justify-between gap-3 text-left min-w-0"
+        >
+          <div className="min-w-0">
+            <p className="font-bold text-slate-800 dark:text-white truncate">{mention.nom}</p>
+          </div>
+          <span className={`shrink-0 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>▾</span>
+        </button>
+      </div>
 
       {isOpen && (
         <div className="pb-5 space-y-4">
@@ -108,6 +146,7 @@ export function UniversiteDetail() {
       else next.add(id);
       return next;
     });
+  const comparison = useComparison('comparaison-mentions', 3);
 
   if (isLoading) return <p className="text-slate-400">Chargement...</p>;
   if (!universite) return <p className="text-slate-400">Université introuvable.</p>;
@@ -178,18 +217,32 @@ export function UniversiteDetail() {
               {domaine?.nom ?? 'Autres mentions'}
             </h3>
             <div>
-              {mentions.map((mention) => (
-                <MentionAccordionItem
-                  key={mention.id}
-                  mention={mention}
-                  isOpen={openMentionIds.has(mention.id)}
-                  onToggle={() => toggleMention(mention.id)}
-                />
-              ))}
+              {mentions.map((mention) => {
+                const selected = comparison.isSelected(mention.slug);
+                return (
+                  <MentionAccordionItem
+                    key={mention.id}
+                    mention={mention}
+                    isOpen={openMentionIds.has(mention.id)}
+                    onToggle={() => toggleMention(mention.id)}
+                    compareSelected={selected}
+                    compareDisabled={!selected && comparison.count >= comparison.max}
+                    onToggleCompare={() => comparison.toggle(mention.slug)}
+                  />
+                );
+              })}
             </div>
           </div>
         ))}
       </div>
+
+      <ComparisonBar
+        count={comparison.count}
+        max={comparison.max}
+        label="mention(s)"
+        compareTo={`/mentions/comparer?slugs=${comparison.selected.join(',')}`}
+        onClear={comparison.clear}
+      />
     </div>
   );
 }

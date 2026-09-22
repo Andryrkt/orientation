@@ -20,6 +20,12 @@ export class FormationsController {
     return this.formationsService.findAll(query);
   }
 
+  @Public()
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.formationsService.findOne(id);
+  }
+
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)

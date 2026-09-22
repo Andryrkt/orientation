@@ -29,6 +29,15 @@ export class FormationsService {
     return { items, total, page, limit };
   }
 
+  async findOne(id: string) {
+    const formation = await this.prisma.formation.findUnique({
+      where: { id },
+      include: { centre: true },
+    });
+    if (!formation) throw new NotFoundException('Formation introuvable');
+    return formation;
+  }
+
   async create(dto: CreateFormationDto) {
     return this.prisma.formation.create({ data: dto });
   }
