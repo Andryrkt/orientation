@@ -110,74 +110,64 @@
     "opportunities": "Opportunities",
     "information": "Information",
     "account": "Account",
-    "copyright": "Avenir assuré — Academic, university, and professional guidance in Madagascar"
+    "copyright": "Avenir assuré — Academic and career guidance firm in Madagascar"
   },
   "home": {
-    "hero_title_gradient": "Your future starts here.",
-    "hero_subtitle": "The modern, comprehensive, and local guidance platform.",
-    "hero_desc": "Explore fields, take our RIASEC test, and find your path.",
-    "explore_btn": "Explore Jobs",
-    "take_test_btn": "Take the Test",
-    "explore_section_title": "Explore Guidance",
-    "explore_section_desc": "Access local resources to make the best decisions.",
+    "hero_title_gradient": "Let's build your professional project together.",
+    "hero_subtitle": "We start by getting to know you, then explore the jobs that fit you.",
+    "take_test_btn": "Start my self-assessment",
+    "explore_section_title": "Explore jobs",
+    "explore_section_desc": "Discover job examples, their opportunities and the required skills.",
+    "explore_section_cta": "See all jobs",
+    "explore_etablissements_eyebrow": "Explore",
+    "explore_etablissements_title": "Explore institutions and opportunities",
+    "explore_etablissements_desc": "Discover universities, training programs, internships and scholarships to build your path.",
+    "explore_etablissements_cta": "See all institutions",
+    "explore_formations_cta": "See all training programs",
+    "explore_stages_cta": "See all internships",
+    "explore_bourses_cta": "See all scholarships",
+    "opportunites_tabs": {
+      "universites": "Universities",
+      "formations": "Vocational training",
+      "stages": "Internships",
+      "bourses": "Scholarships",
+      "emplois": "Job listings",
+      "soon": "(soon)"
+    },
+    "opportunites_emplois_title": "Job listings",
+    "opportunites_emplois_desc": "This feature is coming soon: you'll be able to browse job listings directly on the platform.",
     "explore_section_eyebrow": "Explore",
     "how_it_works_eyebrow": "How it works",
-    "how_it_works_title": "Three steps to your decision",
-    "how_it_works_subtitle": "A simple, progressive, and effective support.",
+    "how_it_works_title": "Building your professional project",
+    "how_it_works_subtitle": "A 6-step method to turn your questions into a concrete project.",
     "cta_title": "Ready to discover your path?",
     "cta_desc": "Take the complete orientation questionnaire, save your favorites, and get in touch with our coaches.",
+    "cta_btn_rdv": "Book an appointment",
     "cta_btn_myspace": "Go to my space",
-    "cta_btn_explore": "Explore universities",
-    "stats": {
-      "free": "Free",
-      "domains": "Domains",
-      "jobs": "Job profiles",
-      "local": "Local content"
-    },
-    "features": {
-      "jobs": {
-        "title": "Jobs",
-        "desc": "Explore jobs, their opportunities, and required skills.",
-        "badge": "15+ profiles"
-      },
-      "domains": {
-        "title": "Domains",
-        "desc": "Browse main study fields and their branches.",
-        "badge": "6 domains"
-      },
-      "universities": {
-        "title": "Universities",
-        "desc": "Find Higher Education institutions and programs in Madagascar.",
-        "badge": "4+ universities"
-      },
-      "training_centers": {
-        "title": "Training Centers",
-        "desc": "Discover specialized training centers and institutes near you.",
-        "badge": "Pro courses"
-      },
-      "coaches": {
-        "title": "Coaches",
-        "desc": "Interact with orientation coaches to refine your choice.",
-        "badge": "Guidance support"
-      },
-      "blog": {
-        "title": "Blog & Tips",
-        "desc": "Articles and testimonials to help you choose your path.",
-        "badge": "Tips"
-      }
-    },
     "steps": {
       "step1": {
-        "title": "Identify your interests",
-        "desc": "Through our orientation test."
+        "title": "Self-assessment",
+        "desc": "Who am I? Identify your interests, values and skills with our RIASEC test."
       },
       "step2": {
-        "title": "Find the job",
-        "desc": "That suits you."
+        "title": "Exploration",
+        "desc": "What's possible? Discover the jobs, fields and training paths that fit you."
       },
       "step3": {
-        "title": "Find an institution",
-        "desc": "University, training center, etc. to reach your career goal."
+        "title": "Selection",
+        "desc": "Which one is realistic? Compare career prospects and entry requirements to choose your path."
+      },
+      "step4": {
+        "title": "Formalization",
+        "desc": "Write the project: your goal, the steps to follow and the training you're aiming for."
+      },
+      "step5": {
+        "title": "Action",
+        "desc": "Concrete steps: enrollment, applications, funding, administrative procedures."
+      },
+      "step6": {
+        "title": "Support",
+        "desc": "Don't stay alone: talk with our career coaches at every step."
       }
     },
     "riasec_teaser": {

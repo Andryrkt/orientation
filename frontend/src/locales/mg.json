@@ -113,71 +113,61 @@
     "copyright": "Avenir assuré — Sehatra fakan-kevitra ho an'ny fizahan-dalana amin'ny fianarana sy ny asa eto Madagasikara"
   },
   "home": {
-    "hero_title_gradient": "Eto no manomboka ny hoavinao.",
-    "hero_subtitle": "Sehatra fizahan-dalana vaovao, feno ary ho antsika eto an-toerana.",
-    "hero_desc": "Jereo ireo lalam-piofanana, ataovy ny fizahana RIASEC ary tadiavo ny asanao.",
-    "explore_btn": "Hizaha ireo asa",
-    "take_test_btn": "Hanao ny fizahana",
-    "explore_section_title": "Karohy ny momba ny fizahan-dalana",
-    "explore_section_desc": "Mahazoa loharano eto an-toerana hahafahana misafidy tsara.",
+    "hero_title_gradient": "Aoka isika hiaraka hanangana ny tetikasa momba ny asanao.",
+    "hero_subtitle": "Manomboka amin'ny fahalalana anao isika, avy eo hizaha ireo asa mifanaraka aminao.",
+    "take_test_btn": "Manao ny tombako",
+    "explore_section_title": "Hizaha ireo asa",
+    "explore_section_desc": "Hijery santionany asa, ny vokany ary ny fahaizana ilaina.",
+    "explore_section_cta": "Hijery ny asa rehetra",
+    "explore_etablissements_eyebrow": "Hitady",
+    "explore_etablissements_title": "Hizaha ireo sekoly sy fahafahana",
+    "explore_etablissements_desc": "Hijery oniversite, fiofanana, apprentissage ary vatsim-pianarana hanorenanao ny lalanao.",
+    "explore_etablissements_cta": "Hijery ny sekoly rehetra",
+    "explore_formations_cta": "Hijery ny fiofanana rehetra",
+    "explore_stages_cta": "Hijery ny apprentissage rehetra",
+    "explore_bourses_cta": "Hijery ny vatsim-pianarana rehetra",
+    "opportunites_tabs": {
+      "universites": "Oniversite",
+      "formations": "Fiofanana matihanina",
+      "stages": "Apprentissage",
+      "bourses": "Vatsim-pianarana",
+      "emplois": "Filazana asa",
+      "soon": "(ho avy)"
+    },
+    "opportunites_emplois_title": "Filazana asa",
+    "opportunites_emplois_desc": "Ho avy tsy ho ela ity fizarana ity: afaka hijery filazana asa mivantana eto amin'ny sehatra ianao.",
     "explore_section_eyebrow": "Hitady",
     "how_it_works_eyebrow": "Fomba fiasa",
-    "how_it_works_title": "Dingana telo mankany amin'ny safidinao",
-    "how_it_works_subtitle": "Fanampiana tsotra, miandalana ary mahomby.",
+    "how_it_works_title": "Ny fananganana ny tetikasa momba ny asanao",
+    "how_it_works_subtitle": "Fomba fiasa 6 dingana hamadihana ny fanontanianao ho tetikasa marina.",
     "cta_title": "Vonona hitady ny lalanao ve ianao?",
     "cta_desc": "Ataovy ny fizahana feno, tahirizo ny tianao ary mifandraisa amin'ireo mpanoro hevitra.",
+    "cta_btn_rdv": "Manao fotoam-pihaonana",
     "cta_btn_myspace": "Mankany amin'ny sehatro",
-    "cta_btn_explore": "Hizaha ireo oniversite",
-    "stats": {
-      "free": "Maimaim-poana",
-      "domains": "Sehatra",
-      "jobs": "Taratasy momba ny asa",
-      "local": "Loharano eto an-toerana"
-    },
-    "features": {
-      "jobs": {
-        "title": "Ireo Asa",
-        "desc": "Hizaha ireo asa sy ny fahaizana ilaina.",
-        "badge": "Taratasy 15+"
-      },
-      "domains": {
-        "title": "Ireo Sehatra",
-        "desc": "Hijery ireo sehatra lehibe sy lalam-piofanana.",
-        "badge": "Sehatra 6"
-      },
-      "universities": {
-        "title": "Ireo Oniversite",
-        "desc": "Tadiavo ireo sekoly sy lalam-piofanana eto Madagasikara.",
-        "badge": "Oniversite 4+"
-      },
-      "training_centers": {
-        "title": "Ivon-toeram-piofanana",
-        "desc": "Karohy ireo ivon-toerana manakaiky anao.",
-        "badge": "Fampiofanana"
-      },
-      "coaches": {
-        "title": "Mpanoro hevitra",
-        "desc": "Miresaha amin'ny mpanoro hevitra mba handrafetana ny safidinao.",
-        "badge": "Fanampiana"
-      },
-      "blog": {
-        "title": "Blog / Torohevitra",
-        "desc": "Torohevitra sy fijoroana vavolombelona hanampy anao hisafidy.",
-        "badge": "Torohevitra"
-      }
-    },
     "steps": {
       "step1": {
-        "title": "Fantaro ny zavatra tianao",
-        "desc": "Amin'ny alalan'ny fizahana RIASEC."
+        "title": "Tombana",
+        "desc": "Iza aho? Fantaro ny zavatra tianao, ny soatoavina sy ny fahaizanao amin'ny alalan'ny fizahana RIASEC."
       },
       "step2": {
-        "title": "Tadiavo ny asa",
-        "desc": "Mifanaraka aminao indrindra."
+        "title": "Fikarohana",
+        "desc": "Inona no mety? Hitadiava ny asa, sehatra ary fiofanana mifanaraka aminao."
       },
       "step3": {
-        "title": "Mitadiava sekoly",
-        "desc": "Oniversite, ivon-toeram-piofanana, sns., mba hahatratrarana ny tanjonao ara-kasa."
+        "title": "Safidy",
+        "desc": "Iza no azo tratrarina? Ampitahao ny vokatra sy ny fepetra hidirana mba hisafidianana ny lalanao."
+      },
+      "step4": {
+        "title": "Fanoratana",
+        "desc": "Soraty ny tetikasa: ny tanjona, ny dingana arahina ary ny fiofanana kendrena."
+      },
+      "step5": {
+        "title": "Hetsika",
+        "desc": "Dingana marina: fisoratana anarana, fangatahana, famatsiam-bola, raharaham-panjakana."
+      },
+      "step6": {
+        "title": "Fanaraha-maso",
+        "desc": "Aza mijanona irery: mifandraisa amin'ireo mpanoro hevitra amin'ny dingana rehetra."
       }
     },
     "riasec_teaser": {

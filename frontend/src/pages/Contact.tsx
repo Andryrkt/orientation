@@ -27,7 +27,7 @@ const CONTACT_INFO = [
   {
     icon: MapPin,
     titleKey: 'address_title',
-    lines: ['Analamanga, Antananarivo, Madagascar', 'Lot IVT 173 Tsaramasay'],
+    lines: ['Analamanga, Antananarivo, Madagascar', 'CLT Tsiadana'],
   },
   {
     icon: Mail,

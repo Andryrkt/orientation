@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { api } from '../lib/api';
 import { ResultatOrientation } from '../lib/types';
 import { RIASEC_LABELS } from '../lib/riasec';
+import { MiniRiasecTeaser } from '../components/MiniRiasecTeaser';
 
 export function QuestionnaireHistorique() {
   const { data, isLoading } = useQuery({
@@ -11,11 +12,15 @@ export function QuestionnaireHistorique() {
   });
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Mes résultats d'orientation</h1>
-      <p className="text-slate-500 dark:text-slate-400 mb-8">
-        Retrouve l'historique de tes tests et observe l'évolution de ton profil dans le temps.
-      </p>
+    <div className="max-w-2xl mx-auto space-y-10">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Mes résultats d'orientation</h1>
+        <p className="text-slate-500 dark:text-slate-400">
+          Retrouve l'historique de tes tests et observe l'évolution de ton profil dans le temps.
+        </p>
+      </div>
+
+      <MiniRiasecTeaser />
 
       {isLoading && <p className="text-slate-400">Chargement...</p>}
       {!isLoading && data?.length === 0 && (

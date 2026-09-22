@@ -110,74 +110,64 @@
     "opportunities": "Opportunités",
     "information": "Informations",
     "account": "Compte",
-    "copyright": "Avenir assuré — Orientation scolaire, universitaire et professionnelle à Madagascar"
+    "copyright": "Avenir assuré — Cabinet d'orientation scolaire et professionnelle à Madagascar"
   },
   "home": {
-    "hero_title_gradient": "Ton avenir commence ici.",
-    "hero_subtitle": "La plateforme d'orientation moderne, complète et locale.",
-    "hero_desc": "Découvre les filières, passe notre test RIASEC et trouve ta voie.",
-    "explore_btn": "Explorer les métiers",
-    "take_test_btn": "Passer le test",
-    "explore_section_title": "Explore l'orientation",
-    "explore_section_desc": "Accède à des ressources locales pour faire les meilleurs choix.",
+    "hero_title_gradient": "Construisons ensemble ton projet professionnel.",
+    "hero_subtitle": "On commence par mieux te connaître, puis on explore les métiers qui te correspondent.",
+    "take_test_btn": "Faire mon bilan",
+    "explore_section_title": "Explore les métiers",
+    "explore_section_desc": "Découvre des exemples de métiers, leurs débouchés et les compétences requises.",
+    "explore_section_cta": "Voir tous les métiers",
+    "explore_etablissements_eyebrow": "Explore",
+    "explore_etablissements_title": "Explore les établissements et les opportunités",
+    "explore_etablissements_desc": "Découvre des universités, formations, stages et bourses pour construire ton parcours.",
+    "explore_etablissements_cta": "Voir tous les établissements",
+    "explore_formations_cta": "Voir toutes les formations",
+    "explore_stages_cta": "Voir tous les stages",
+    "explore_bourses_cta": "Voir toutes les bourses",
+    "opportunites_tabs": {
+      "universites": "Universités",
+      "formations": "Formation professionnelle",
+      "stages": "Stages",
+      "bourses": "Bourses",
+      "emplois": "Annonces d'emploi",
+      "soon": "(bientôt)"
+    },
+    "opportunites_emplois_title": "Annonces d'emploi",
+    "opportunites_emplois_desc": "Cette fonctionnalité arrive bientôt : tu pourras consulter des offres d'emploi directement depuis la plateforme.",
     "explore_section_eyebrow": "Explore",
     "how_it_works_eyebrow": "Comment ça marche",
-    "how_it_works_title": "Trois étapes vers ta décision",
-    "how_it_works_subtitle": "Un accompagnement simple, progressif et efficace.",
+    "how_it_works_title": "La construction de ton projet professionnel",
+    "how_it_works_subtitle": "Une méthode en 6 étapes pour passer de tes questions à un projet concret.",
     "cta_title": "Prêt à découvrir ta voie ?",
     "cta_desc": "Passe le questionnaire d'orientation complet, enregistre tes favoris et entre en contact avec nos coachs.",
+    "cta_btn_rdv": "Prendre rendez-vous",
     "cta_btn_myspace": "Accéder à mon espace",
-    "cta_btn_explore": "Explorer les universités",
-    "stats": {
-      "free": "Gratuit",
-      "domains": "Domaines",
-      "jobs": "Fiches métiers",
-      "local": "Contenu local"
-    },
-    "features": {
-      "jobs": {
-        "title": "Métiers",
-        "desc": "Explore les métiers, leurs débouchés et les compétences requises.",
-        "badge": "15+ fiches"
-      },
-      "domains": {
-        "title": "Domaines",
-        "desc": "Parcours les grands domaines de formation et leurs filières.",
-        "badge": "6 domaines"
-      },
-      "universities": {
-        "title": "Universités",
-        "desc": "Trouve les établissements et parcours de formation à Madagascar.",
-        "badge": "4+ universités"
-      },
-      "training_centers": {
-        "title": "Formation professionnelle",
-        "desc": "Découvre les centres et instituts spécialisés près de chez toi.",
-        "badge": "Formations pro"
-      },
-      "coaches": {
-        "title": "Coachs",
-        "desc": "Échange avec des coachs d'orientation pour affiner ton choix.",
-        "badge": "Accompagnement"
-      },
-      "blog": {
-        "title": "Blog & conseils",
-        "desc": "Des articles et témoignages pour t'aider à choisir ta voie.",
-        "badge": "Conseils"
-      }
-    },
     "steps": {
       "step1": {
-        "title": "Identifie tes intérêts",
-        "desc": "Grâce à notre test d'orientation."
+        "title": "Bilan",
+        "desc": "Qui suis-je ? Identifie tes intérêts, tes valeurs et tes compétences grâce à notre test RIASEC."
       },
       "step2": {
-        "title": "Trouve le métier",
-        "desc": "Qui te convient."
+        "title": "Exploration",
+        "desc": "Quelles possibilités ? Découvre les métiers, domaines et formations qui te correspondent."
       },
       "step3": {
-        "title": "Trouve un établissement",
-        "desc": "Université, formation professionnelle, etc. pour atteindre ton objectif de métier."
+        "title": "Sélection",
+        "desc": "Laquelle est réaliste ? Compare les débouchés et les conditions d'accès pour choisir ta voie."
+      },
+      "step4": {
+        "title": "Formalisation",
+        "desc": "Écrire le projet : ton objectif, les étapes à suivre et la formation visée."
+      },
+      "step5": {
+        "title": "Action",
+        "desc": "Étapes concrètes : inscription, candidature, financement, démarches administratives."
+      },
+      "step6": {
+        "title": "Accompagnement",
+        "desc": "Ne reste pas seul : échange avec nos coachs d'orientation à chaque étape."
       }
     },
     "riasec_teaser": {
