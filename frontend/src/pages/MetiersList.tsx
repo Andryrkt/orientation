@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { Metier, Paginated, Secteur } from '../lib/types';
+import { useComparison } from '../lib/useComparison';
+import { ComparisonBar } from '../components/ComparisonBar';
 
 // Palette cyclique appliquée aux secteurs dans l'ordre (il peut y en avoir plus que de couleurs).
 const SECTOR_PALETTE: { glow: string; text: string }[] = [
@@ -19,6 +21,63 @@ function getColor(index: number) {
   return SECTOR_PALETTE[index % SECTOR_PALETTE.length];
 }
 
+/* ── Ligne "sommaire" d'un métier, avec case à cocher pour la comparaison ── */
+function MetierRow({
+  metier,
+  num,
+  selected,
+  disabled,
+  onToggle,
+}: {
+  metier: Metier;
+  num: string;
+  selected: boolean;
+  disabled: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <li className="flex items-center">
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onToggle();
+        }}
+        disabled={disabled}
+        aria-pressed={selected}
+        aria-label={selected ? 'Retirer de la comparaison' : 'Ajouter à la comparaison'}
+        title={selected ? 'Retirer de la comparaison' : 'Ajouter à la comparaison'}
+        className={`shrink-0 ml-4 w-5 h-5 rounded border flex items-center justify-center text-[10px] font-bold transition-colors ${
+          selected
+            ? 'bg-blue-600 border-blue-600 text-white'
+            : disabled
+              ? 'border-slate-200 dark:border-white/10 text-transparent cursor-not-allowed'
+              : 'border-slate-300 dark:border-white/20 text-transparent hover:border-blue-400'
+        }`}
+      >
+        ✓
+      </button>
+      <Link
+        to={`/metiers/${metier.slug}`}
+        className="flex-1 flex items-baseline gap-3 px-5 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.04] transition-colors group min-w-0"
+      >
+        <span className="shrink-0 text-xs font-bold text-slate-400 dark:text-slate-500 tabular-nums">
+          {num}.
+        </span>
+        <span className="flex-1 min-w-0 text-sm font-semibold text-slate-800 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-300 truncate">
+          {metier.nom}
+        </span>
+        {metier.riasecCodes && metier.riasecCodes.length > 0 && (
+          <span className="shrink-0 text-xs text-slate-400 dark:text-slate-500 italic">
+            ({metier.riasecCodes.join(' - ')})
+          </span>
+        )}
+      </Link>
+    </li>
+  );
+}
+
 export function MetiersList() {
   const [searchParams] = useSearchParams();
   const [secteur, setSecteur] = useState(searchParams.get('secteur') ?? '');
@@ -27,6 +86,8 @@ export function MetiersList() {
   // Lien profond depuis les pages Domaines / Résultat de questionnaire, qui filtrent par
   // domaine d'étude (sans dropdown dédié ici, puisque cette page navigue désormais par secteur).
   const domaineParam = searchParams.get('domaine') ?? '';
+
+  const comparison = useComparison('comparaison-metiers', 3);
 
   const { data: secteurs } = useQuery({
     queryKey: ['secteurs-filter'],
@@ -167,25 +228,16 @@ export function MetiersList() {
                   {metiers.map((m) => {
                     runningIndex += 1;
                     const num = String(runningIndex).padStart(2, '0');
+                    const selected = comparison.isSelected(m.slug);
                     return (
-                      <li key={m.id}>
-                        <Link
-                          to={`/metiers/${m.slug}`}
-                          className="flex items-baseline gap-3 px-5 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.04] transition-colors group"
-                        >
-                          <span className="shrink-0 text-xs font-bold text-slate-400 dark:text-slate-500 tabular-nums">
-                            {num}.
-                          </span>
-                          <span className="flex-1 min-w-0 text-sm font-semibold text-slate-800 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-300 truncate">
-                            {m.nom}
-                          </span>
-                          {m.riasecCodes && m.riasecCodes.length > 0 && (
-                            <span className="shrink-0 text-xs text-slate-400 dark:text-slate-500 italic">
-                              ({m.riasecCodes.join(' - ')})
-                            </span>
-                          )}
-                        </Link>
-                      </li>
+                      <MetierRow
+                        key={m.id}
+                        metier={m}
+                        num={num}
+                        selected={selected}
+                        disabled={!selected && comparison.count >= comparison.max}
+                        onToggle={() => comparison.toggle(m.slug)}
+                      />
                     );
                   })}
                 </ul>
@@ -204,25 +256,16 @@ export function MetiersList() {
                 {nonClasses.map((m) => {
                   runningIndex += 1;
                   const num = String(runningIndex).padStart(2, '0');
+                  const selected = comparison.isSelected(m.slug);
                   return (
-                    <li key={m.id}>
-                      <Link
-                        to={`/metiers/${m.slug}`}
-                        className="flex items-baseline gap-3 px-5 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.04] transition-colors group"
-                      >
-                        <span className="shrink-0 text-xs font-bold text-slate-400 dark:text-slate-500 tabular-nums">
-                          {num}.
-                        </span>
-                        <span className="flex-1 min-w-0 text-sm font-semibold text-slate-800 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-300 truncate">
-                          {m.nom}
-                        </span>
-                        {m.riasecCodes && m.riasecCodes.length > 0 && (
-                          <span className="shrink-0 text-xs text-slate-400 dark:text-slate-500 italic">
-                            ({m.riasecCodes.join(' - ')})
-                          </span>
-                        )}
-                      </Link>
-                    </li>
+                    <MetierRow
+                      key={m.id}
+                      metier={m}
+                      num={num}
+                      selected={selected}
+                      disabled={!selected && comparison.count >= comparison.max}
+                      onToggle={() => comparison.toggle(m.slug)}
+                    />
                   );
                 })}
               </ul>
@@ -230,6 +273,14 @@ export function MetiersList() {
           )}
         </div>
       )}
+
+      <ComparisonBar
+        count={comparison.count}
+        max={comparison.max}
+        label="métier(s)"
+        compareTo={`/metiers/comparer?slugs=${comparison.selected.join(',')}`}
+        onClear={comparison.clear}
+      />
     </div>
   );
 }

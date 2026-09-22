@@ -5,6 +5,7 @@ import { ProtectedRoute, AdminRoute, AdminStrictRoute, SecretaireRoute, Moderate
 import { Home } from './pages/Home';
 import { MetiersList } from './pages/MetiersList';
 import { MetierDetail } from './pages/MetierDetail';
+import { MetiersComparer } from './pages/MetiersComparer';
 import { DomainesList } from './pages/DomainesList';
 import { EtablissementsList } from './pages/EtablissementsList';
 import { UniversiteDetail } from './pages/UniversiteDetail';
@@ -94,6 +95,7 @@ export default function App() {
       <Route element={<PublicLayout />}>
         <Route index element={<Home />} />
         <Route path="metiers" element={<MetiersList />} />
+        <Route path="metiers/comparer" element={<MetiersComparer />} />
         <Route path="metiers/:slug" element={<MetierDetail />} />
         <Route path="domaines" element={<DomainesList />} />
         <Route path="etablissements" element={<EtablissementsList />} />
