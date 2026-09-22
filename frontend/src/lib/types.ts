@@ -546,6 +546,28 @@ export interface Emploi {
   updatedAt: string;
 }
 
+export type TypeConcours = 'UNIVERSITAIRE' | 'ADMINISTRATIF';
+
+export interface Concours {
+  id: string;
+  titre: string;
+  type: TypeConcours;
+  organisateur: string;
+  description: string | null;
+  domaineId: string | null;
+  domaine?: Domaine | null;
+  niveauRequis: string | null;
+  nombrePlaces: number | null;
+  region: string | null;
+  fraisInscription: string | null;
+  dateConcours: string | null;
+  dateLimiteInscription: string | null;
+  conditions: string | null;
+  lien: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AuteurResume {
   id: string;
   nom: string;
@@ -594,6 +616,7 @@ export interface AdminStats {
   stages: number;
   bourses: number;
   emplois: number;
+  concours: number;
   blogs: number;
   testsCompletes: number;
   coachs: number;
@@ -710,7 +733,7 @@ export interface CentreFormation {
   formations?: Formation[];
 }
 
-export type FavorisableType = 'METIER' | 'UNIVERSITE' | 'STAGE' | 'BOURSE' | 'EMPLOI' | 'COACH' | 'CENTRE_FORMATION' | 'ENSEIGNANT';
+export type FavorisableType = 'METIER' | 'UNIVERSITE' | 'STAGE' | 'BOURSE' | 'EMPLOI' | 'CONCOURS' | 'COACH' | 'CENTRE_FORMATION' | 'ENSEIGNANT';
 
 export interface Favori {
   id: string;

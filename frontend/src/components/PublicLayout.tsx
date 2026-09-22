@@ -37,6 +37,7 @@ export function PublicLayout() {
     { to: '/stages', label: t('nav.internships') },
     { to: '/bourses', label: t('nav.scholarships') },
     { to: '/emplois', label: t('nav.jobOffers') },
+    { to: '/concours', label: t('nav.competitiveExams') },
   ];
 
   const CONTACT_ITEMS = [

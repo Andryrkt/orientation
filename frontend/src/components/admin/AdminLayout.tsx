@@ -27,6 +27,7 @@ const groups: { title?: string; links: { to: string; label: string; end?: boolea
       { to: '/admin/stages', label: 'Stages' },
       { to: '/admin/bourses', label: 'Bourses' },
       { to: '/admin/emplois', label: "Offres d'emploi" },
+      { to: '/admin/concours', label: 'Concours' },
     ],
   },
   {

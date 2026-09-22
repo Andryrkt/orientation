@@ -52,6 +52,13 @@ export class FavorisService {
         });
         return emploi && { id: emploi.id, nom: emploi.titre, slug: emploi.id };
       }
+      case FavorisableType.CONCOURS: {
+        const concours = await this.prisma.concours.findUnique({
+          where: { id: entityId },
+          select: { id: true, titre: true },
+        });
+        return concours && { id: concours.id, nom: concours.titre, slug: concours.id };
+      }
     }
   }
 

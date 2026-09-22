@@ -12,6 +12,7 @@ import { ParcoursService } from '../parcours/parcours.service';
 import { StagesService } from '../stages/stages.service';
 import { BoursesService } from '../bourses/bourses.service';
 import { EmploisService } from '../emplois/emplois.service';
+import { ConcoursService } from '../concours/concours.service';
 import { BlogsService } from '../blogs/blogs.service';
 import { QuestionnairesService } from '../questionnaires/questionnaires.service';
 import { CoachsService } from '../coachs/coachs.service';
@@ -34,6 +35,7 @@ export class AdminController {
     private stagesService: StagesService,
     private boursesService: BoursesService,
     private emploisService: EmploisService,
+    private concoursService: ConcoursService,
     private blogsService: BlogsService,
     private questionnairesService: QuestionnairesService,
     private coachsService: CoachsService,
@@ -53,6 +55,7 @@ export class AdminController {
       stages,
       bourses,
       emplois,
+      concours,
       blogs,
       testsCompletes,
       coachs,
@@ -68,6 +71,7 @@ export class AdminController {
       this.stagesService.countAll(),
       this.boursesService.countAll(),
       this.emploisService.countAll(),
+      this.concoursService.countAll(),
       this.blogsService.countAll(),
       this.questionnairesService.countAll(),
       this.coachsService.countAll(),
@@ -84,6 +88,7 @@ export class AdminController {
       stages,
       bourses,
       emplois,
+      concours,
       blogs,
       testsCompletes,
       coachs,

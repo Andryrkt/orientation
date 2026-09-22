@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTheme } from '../lib/theme-context';
 import { useAuth } from '../lib/auth-context';
 import { api } from '../lib/api';
-import { Bourse, CentreFormation, Emploi, Metier, Paginated, Stage, Universite } from '../lib/types';
+import { Bourse, CentreFormation, Concours, Emploi, Metier, Paginated, Stage, Universite } from '../lib/types';
 
 
 
@@ -51,6 +51,14 @@ function IconMegaphone() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} className="w-6 h-6">
       <path strokeLinecap="round" strokeLinejoin="round" d="M3 11v2a2 2 0 002 2h1l3 5v-9M3 11l14-6v16l-14-6M18 8a3 3 0 010 6" />
+    </svg>
+  );
+}
+function IconGraduationCap() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} className="w-6 h-6">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3l9 5-9 5-9-5 9-5z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 10.5V16c0 1.1 2.7 3 6 3s6-1.9 6-3v-5.5M21 8v6" />
     </svg>
   );
 }
@@ -431,7 +439,7 @@ function HomeGuest() {
   );
 }
 
-type OpportuniteTab = 'universites' | 'formations' | 'stages' | 'bourses' | 'emplois';
+type OpportuniteTab = 'universites' | 'formations' | 'stages' | 'bourses' | 'emplois' | 'concours';
 
 const OPPORTUNITE_TAB_KEYS: { key: OpportuniteTab; ready: boolean }[] = [
   { key: 'universites', ready: true },
@@ -439,6 +447,7 @@ const OPPORTUNITE_TAB_KEYS: { key: OpportuniteTab; ready: boolean }[] = [
   { key: 'stages', ready: true },
   { key: 'bourses', ready: true },
   { key: 'emplois', ready: true },
+  { key: 'concours', ready: true },
 ];
 
 /* ── Home Page (utilisateur connecté) ── */
@@ -474,6 +483,11 @@ function HomePlatform() {
   const { data: emploisPreview } = useQuery({
     queryKey: ['home-emplois-preview'],
     queryFn: async () => (await api.get<Paginated<Emploi>>('/emplois', { params: { limit: 6, actifs: 'true' } })).data,
+  });
+
+  const { data: concoursPreview } = useQuery({
+    queryKey: ['home-concours-preview'],
+    queryFn: async () => (await api.get<Paginated<Concours>>('/concours', { params: { limit: 6, actifs: 'true' } })).data,
   });
 
   const STEPS = [
@@ -719,6 +733,46 @@ function HomePlatform() {
                 <div className="text-center">
                   <Link to="/emplois" className="btn-secondary px-7 py-3.5 text-base">
                     {t('home.explore_emplois_cta')}
+                  </Link>
+                </div>
+              </>
+            )}
+          </>
+        )}
+
+        {opportuniteTab === 'concours' && (
+          <>
+            {concoursPreview?.items.length === 0 && (
+              <div className="text-center py-16 px-6 rounded-2xl border border-dashed border-slate-300 dark:border-white/15">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center mx-auto mb-4 text-white">
+                  <IconGraduationCap />
+                </div>
+                <p className="font-bold text-slate-800 dark:text-white mb-1">{t('home.opportunites_concours_title')}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md mx-auto">
+                  {t('home.opportunites_concours_desc')}
+                </p>
+              </div>
+            )}
+            {concoursPreview && concoursPreview.items.length > 0 && (
+              <>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+                  {concoursPreview.items.map((c) => (
+                    <OpportunityPreviewCard
+                      key={c.id}
+                      to={`/concours/${c.id}`}
+                      icon={IconGraduationCap}
+                      gradient="from-violet-500 to-indigo-500"
+                      glow="rgba(139,92,246,0.25)"
+                      badge={c.type === 'UNIVERSITAIRE' ? 'Universitaire' : 'Administratif'}
+                      title={c.titre}
+                      description={c.description}
+                      extra={c.region}
+                    />
+                  ))}
+                </div>
+                <div className="text-center">
+                  <Link to="/concours" className="btn-secondary px-7 py-3.5 text-base">
+                    {t('home.explore_concours_cta')}
                   </Link>
                 </div>
               </>

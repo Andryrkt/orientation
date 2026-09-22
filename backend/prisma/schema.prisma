@@ -47,6 +47,12 @@ enum FavorisableType {
   CENTRE_FORMATION
   ENSEIGNANT
   EMPLOI
+  CONCOURS
+}
+
+enum TypeConcours {
+  UNIVERSITAIRE
+  ADMINISTRATIF
 }
 
 enum CommentaireStatut {
@@ -157,6 +163,7 @@ model Domaine {
   stages   Stage[]
   bourses  Bourse[]
   emplois  Emploi[]
+  concours Concours[]
 
   @@map("domaines")
 }
@@ -388,6 +395,28 @@ model Emploi {
   updatedAt             DateTime  @updatedAt
 
   @@map("emplois")
+}
+
+model Concours {
+  id                    String       @id @default(uuid())
+  titre                 String
+  type                  TypeConcours
+  organisateur          String
+  description           String?
+  domaineId             String?
+  domaine               Domaine?     @relation(fields: [domaineId], references: [id], onDelete: SetNull)
+  niveauRequis          String?
+  nombrePlaces          Int?
+  region                String?
+  fraisInscription      String?
+  dateConcours          DateTime?
+  dateLimiteInscription DateTime?
+  conditions            String?
+  lien                  String?
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+
+  @@map("concours")
 }
 
 model Blog {

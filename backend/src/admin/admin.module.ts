@@ -9,6 +9,7 @@ import { ParcoursModule } from '../parcours/parcours.module';
 import { StagesModule } from '../stages/stages.module';
 import { BoursesModule } from '../bourses/bourses.module';
 import { EmploisModule } from '../emplois/emplois.module';
+import { ConcoursModule } from '../concours/concours.module';
 import { BlogsModule } from '../blogs/blogs.module';
 import { QuestionnairesModule } from '../questionnaires/questionnaires.module';
 import { CoachsModule } from '../coachs/coachs.module';
@@ -26,6 +27,7 @@ import { TicketsModule } from '../tickets/tickets.module';
     StagesModule,
     BoursesModule,
     EmploisModule,
+    ConcoursModule,
     BlogsModule,
     QuestionnairesModule,
     CoachsModule,
