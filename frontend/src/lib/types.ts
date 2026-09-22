@@ -527,6 +527,25 @@ export interface Bourse {
   lien: string | null;
 }
 
+export interface Emploi {
+  id: string;
+  titre: string;
+  entreprise: string;
+  description: string | null;
+  domaineId: string | null;
+  domaine?: Domaine | null;
+  secteurId: string | null;
+  secteur?: Secteur | null;
+  typeContrat: string | null;
+  region: string | null;
+  niveauEtude: string | null;
+  salaire: string | null;
+  dateLimiteCandidature: string | null;
+  lien: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AuteurResume {
   id: string;
   nom: string;
@@ -574,6 +593,7 @@ export interface AdminStats {
   parcours: number;
   stages: number;
   bourses: number;
+  emplois: number;
   blogs: number;
   testsCompletes: number;
   coachs: number;
@@ -690,7 +710,7 @@ export interface CentreFormation {
   formations?: Formation[];
 }
 
-export type FavorisableType = 'METIER' | 'UNIVERSITE' | 'STAGE' | 'BOURSE' | 'COACH' | 'CENTRE_FORMATION' | 'ENSEIGNANT';
+export type FavorisableType = 'METIER' | 'UNIVERSITE' | 'STAGE' | 'BOURSE' | 'EMPLOI' | 'COACH' | 'CENTRE_FORMATION' | 'ENSEIGNANT';
 
 export interface Favori {
   id: string;

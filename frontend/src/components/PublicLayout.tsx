@@ -36,6 +36,7 @@ export function PublicLayout() {
   const OPPORTUNITES_ITEMS = [
     { to: '/stages', label: t('nav.internships') },
     { to: '/bourses', label: t('nav.scholarships') },
+    { to: '/emplois', label: t('nav.jobOffers') },
   ];
 
   const CONTACT_ITEMS = [

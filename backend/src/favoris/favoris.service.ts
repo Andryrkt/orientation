@@ -45,6 +45,13 @@ export class FavorisService {
           where: { id: entityId },
           select: { id: true, nom: true, slug: true },
         });
+      case FavorisableType.EMPLOI: {
+        const emploi = await this.prisma.emploi.findUnique({
+          where: { id: entityId },
+          select: { id: true, titre: true },
+        });
+        return emploi && { id: emploi.id, nom: emploi.titre, slug: emploi.id };
+      }
     }
   }
 

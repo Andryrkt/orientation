@@ -46,6 +46,7 @@ enum FavorisableType {
   COACH
   CENTRE_FORMATION
   ENSEIGNANT
+  EMPLOI
 }
 
 enum CommentaireStatut {
@@ -155,6 +156,7 @@ model Domaine {
   mentions Mention[]
   stages   Stage[]
   bourses  Bourse[]
+  emplois  Emploi[]
 
   @@map("domaines")
 }
@@ -171,6 +173,7 @@ model Secteur {
   updatedAt   DateTime @updatedAt
 
   metiers Metier[]
+  emplois Emploi[]
 
   @@map("secteurs")
 }
@@ -364,6 +367,27 @@ model Bourse {
   updatedAt   DateTime  @updatedAt
 
   @@map("bourses")
+}
+
+model Emploi {
+  id                    String    @id @default(uuid())
+  titre                 String
+  entreprise            String
+  description           String?
+  domaineId             String?
+  domaine               Domaine?  @relation(fields: [domaineId], references: [id], onDelete: SetNull)
+  secteurId             String?
+  secteur               Secteur?  @relation(fields: [secteurId], references: [id], onDelete: SetNull)
+  typeContrat           String?
+  region                String?
+  niveauEtude           String?
+  salaire               String?
+  dateLimiteCandidature DateTime?
+  lien                  String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("emplois")
 }
 
 model Blog {

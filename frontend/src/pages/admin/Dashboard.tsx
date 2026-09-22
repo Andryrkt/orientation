@@ -11,6 +11,7 @@ const LABELS: Record<keyof AdminStats, string> = {
   parcours: 'Parcours',
   stages: 'Stages',
   bourses: 'Bourses',
+  emplois: "Offres d'emploi",
   blogs: 'Articles de blog',
   testsCompletes: "Tests d'orientation complétés",
   coachs: 'Coachs',

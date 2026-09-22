@@ -13,6 +13,8 @@ import { StagesList } from './pages/StagesList';
 import { StageDetail } from './pages/StageDetail';
 import { BoursesList } from './pages/BoursesList';
 import { BourseDetail } from './pages/BourseDetail';
+import { EmploisList } from './pages/EmploisList';
+import { EmploiDetail } from './pages/EmploiDetail';
 import { BudgetSimulator } from './pages/BudgetSimulator';
 import { MesEtablissements } from './pages/MesEtablissements';
 import { MonProfilProfessionnel } from './pages/MonProfilProfessionnel';
@@ -52,6 +54,7 @@ import { MentionsAdmin } from './pages/admin/MentionsAdmin';
 import { ParcoursAdmin } from './pages/admin/ParcoursAdmin';
 import { StagesAdmin } from './pages/admin/StagesAdmin';
 import { BoursesAdmin } from './pages/admin/BoursesAdmin';
+import { EmploisAdmin } from './pages/admin/EmploisAdmin';
 import { BlogsAdmin } from './pages/admin/BlogsAdmin';
 import { BlogCommentairesAdmin } from './pages/admin/BlogCommentairesAdmin';
 import { QuestionnairesAdmin } from './pages/admin/QuestionnairesAdmin';
@@ -98,6 +101,8 @@ export default function App() {
         <Route path="stages/:id" element={<StageDetail />} />
         <Route path="bourses" element={<BoursesList />} />
         <Route path="bourses/:id" element={<BourseDetail />} />
+        <Route path="emplois" element={<EmploisList />} />
+        <Route path="emplois/:id" element={<EmploiDetail />} />
         <Route path="blog" element={<BlogsList />} />
         <Route path="blog/:slug" element={<BlogDetail />} />
         <Route path="questionnaire" element={<QuestionnairesList />} />
@@ -157,6 +162,7 @@ export default function App() {
             <Route path="parcours" element={<ParcoursAdmin />} />
             <Route path="stages" element={<StagesAdmin />} />
             <Route path="bourses" element={<BoursesAdmin />} />
+            <Route path="emplois" element={<EmploisAdmin />} />
             <Route path="blogs" element={<BlogsAdmin />} />
             <Route path="blog-commentaires" element={<BlogCommentairesAdmin />} />
             <Route path="ressources" element={<RessourcesAdmin />} />

@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTheme } from '../lib/theme-context';
 import { useAuth } from '../lib/auth-context';
 import { api } from '../lib/api';
-import { Bourse, CentreFormation, Metier, Paginated, Stage, Universite } from '../lib/types';
+import { Bourse, CentreFormation, Emploi, Metier, Paginated, Stage, Universite } from '../lib/types';
 
 
 
@@ -438,7 +438,7 @@ const OPPORTUNITE_TAB_KEYS: { key: OpportuniteTab; ready: boolean }[] = [
   { key: 'formations', ready: true },
   { key: 'stages', ready: true },
   { key: 'bourses', ready: true },
-  { key: 'emplois', ready: false },
+  { key: 'emplois', ready: true },
 ];
 
 /* ── Home Page (utilisateur connecté) ── */
@@ -469,6 +469,11 @@ function HomePlatform() {
   const { data: boursesPreview } = useQuery({
     queryKey: ['home-bourses-preview'],
     queryFn: async () => (await api.get<Paginated<Bourse>>('/bourses', { params: { limit: 6 } })).data,
+  });
+
+  const { data: emploisPreview } = useQuery({
+    queryKey: ['home-emplois-preview'],
+    queryFn: async () => (await api.get<Paginated<Emploi>>('/emplois', { params: { limit: 6, actifs: 'true' } })).data,
   });
 
   const STEPS = [
@@ -682,15 +687,43 @@ function HomePlatform() {
         )}
 
         {opportuniteTab === 'emplois' && (
-          <div className="text-center py-16 px-6 rounded-2xl border border-dashed border-slate-300 dark:border-white/15">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-500 to-slate-600 flex items-center justify-center mx-auto mb-4 text-white">
-              <IconMegaphone />
-            </div>
-            <p className="font-bold text-slate-800 dark:text-white mb-1">{t('home.opportunites_emplois_title')}</p>
-            <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md mx-auto">
-              {t('home.opportunites_emplois_desc')}
-            </p>
-          </div>
+          <>
+            {emploisPreview?.items.length === 0 && (
+              <div className="text-center py-16 px-6 rounded-2xl border border-dashed border-slate-300 dark:border-white/15">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-500 to-slate-600 flex items-center justify-center mx-auto mb-4 text-white">
+                  <IconMegaphone />
+                </div>
+                <p className="font-bold text-slate-800 dark:text-white mb-1">{t('home.opportunites_emplois_title')}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md mx-auto">
+                  {t('home.opportunites_emplois_desc')}
+                </p>
+              </div>
+            )}
+            {emploisPreview && emploisPreview.items.length > 0 && (
+              <>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+                  {emploisPreview.items.map((e) => (
+                    <OpportunityPreviewCard
+                      key={e.id}
+                      to={`/emplois/${e.id}`}
+                      icon={IconMegaphone}
+                      gradient="from-amber-500 to-orange-500"
+                      glow="rgba(245,158,11,0.25)"
+                      badge={e.entreprise}
+                      title={e.titre}
+                      description={e.description}
+                      extra={e.region}
+                    />
+                  ))}
+                </div>
+                <div className="text-center">
+                  <Link to="/emplois" className="btn-secondary px-7 py-3.5 text-base">
+                    {t('home.explore_emplois_cta')}
+                  </Link>
+                </div>
+              </>
+            )}
+          </>
         )}
       </section>
 
