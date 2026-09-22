@@ -4,7 +4,18 @@
 // et seed-secteurs.ts).
 // Usage : npx ts-node scripts/seed-guide-metiers.ts
 import { PrismaClient } from '@prisma/client';
-import { slugify } from '../src/common/utils/slugify';
+
+// Copie locale de src/common/utils/slugify.ts : ce dossier scripts/ doit rester autonome
+// (copiable tel quel dans le conteneur backend de prod, qui n'embarque pas src/).
+function slugify(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 
 const prisma = new PrismaClient();
 
